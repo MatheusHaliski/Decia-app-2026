@@ -136,40 +136,40 @@ export function CopilotPanel(props: CopilotPanelProps) {
               <p className="text-[length:var(--ws-text-body-sm)]">{t("letters.panel.unsupported", { language: t(`letters.language.${analysis.language}`) })}</p>
             </Card>
           ) : null}
+          {props.batch ? (
+            <section aria-labelledby="letters-batch-title" className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-ai-spark bg-ws-ai-spark-soft p-2" data-testid="letters-batch">
+              <h3 id="letters-batch-title" className="text-[length:var(--ws-text-body-sm)] font-semibold">✦ {t("letters.batch.title", { count: props.batch.proposal.changes.length })}</h3>
+              <p className="text-[length:var(--ws-text-caption)]">{t("letters.batch.hint")}</p>
+              <ul className="grid gap-2">
+                {props.batch.proposal.previews.map((pv) => (
+                  <li key={pv.blockId} className="grid gap-1">
+                    <Checkbox checked={props.batch!.selected.has(pv.blockId)} onCheckedChange={() => props.onBatchToggle(pv.blockId)} label={t("letters.batch.include", { block: props.blockLabel(pv.blockId) })} />
+                    <DiffView before={pv.before} after={pv.after} />
+                  </li>
+                ))}
+              </ul>
+              {props.batch.proposal.skipped.length ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("letters.batch.skipped", { count: props.batch.proposal.skipped.length })}</p> : null}
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant="spark" data-testid="ai-btn-apply" disabled={!props.batch.selected.size} onClick={props.onBatchConfirm}>{t("letters.batch.confirm", { count: props.batch.selected.size })}</Button>
+                <Button size="sm" variant="ghost" data-testid="ai-btn-reject" onClick={props.onBatchCancel}>{t("common.cancel")}</Button>
+              </div>
+            </section>
+          ) : null}
+
+          {props.proposals.length ? (
+            <ul className="grid gap-2" aria-label={t("letters.proposal.list")}>
+              {props.proposals.map((p) => (
+                <ProposalCard key={p.id} proposal={p} blockLabel={props.blockLabel} staleReason={props.staleReasonOf(p)} onAccept={() => props.onAccept(p)} onReject={() => props.onReject(p)} onRecompute={() => props.onRecompute(p)} />
+              ))}
+            </ul>
+          ) : null}
+
           {showFindings && analysis ? (
             <>
               <p className="text-[length:var(--ws-text-body-sm)] text-ws-ai-spark-ink" data-testid="letters-summary">
                 ✦ {t("letters.panel.summary", { total: findings.length, erro: findings.filter((f) => f.severity === "ERRO").length, aviso: findings.filter((f) => f.severity === "AVISO").length, sugestao: findings.filter((f) => f.severity === "SUGESTAO").length, safe, revision: analysis.revision })}
               </p>
               {analysis.coverage.truncated ? <p className="text-[length:var(--ws-text-caption)] text-ws-warning-ink">{t("letters.panel.coverage", { count: analysis.coverage.skippedBlockIds.length, limit: analysis.coverage.wordLimit })}</p> : null}
-
-              {props.batch ? (
-                <section aria-labelledby="letters-batch-title" className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-ai-spark bg-ws-ai-spark-soft p-2" data-testid="letters-batch">
-                  <h3 id="letters-batch-title" className="text-[length:var(--ws-text-body-sm)] font-semibold">✦ {t("letters.batch.title", { count: props.batch.proposal.changes.length })}</h3>
-                  <p className="text-[length:var(--ws-text-caption)]">{t("letters.batch.hint")}</p>
-                  <ul className="grid gap-2">
-                    {props.batch.proposal.previews.map((pv) => (
-                      <li key={pv.blockId} className="grid gap-1">
-                        <Checkbox checked={props.batch!.selected.has(pv.blockId)} onCheckedChange={() => props.onBatchToggle(pv.blockId)} label={t("letters.batch.include", { block: props.blockLabel(pv.blockId) })} />
-                        <DiffView before={pv.before} after={pv.after} />
-                      </li>
-                    ))}
-                  </ul>
-                  {props.batch.proposal.skipped.length ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("letters.batch.skipped", { count: props.batch.proposal.skipped.length })}</p> : null}
-                  <div className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="spark" data-testid="ai-btn-apply" disabled={!props.batch.selected.size} onClick={props.onBatchConfirm}>{t("letters.batch.confirm", { count: props.batch.selected.size })}</Button>
-                    <Button size="sm" variant="ghost" data-testid="ai-btn-reject" onClick={props.onBatchCancel}>{t("common.cancel")}</Button>
-                  </div>
-                </section>
-              ) : null}
-
-              {props.proposals.length ? (
-                <ul className="grid gap-2" aria-label={t("letters.proposal.list")}>
-                  {props.proposals.map((p) => (
-                    <ProposalCard key={p.id} proposal={p} blockLabel={props.blockLabel} staleReason={props.staleReasonOf(p)} onAccept={() => props.onAccept(p)} onReject={() => props.onReject(p)} onRecompute={() => props.onRecompute(p)} />
-                  ))}
-                </ul>
-              ) : null}
 
               <Tabs
                 label={t("letters.panel.tabs")}

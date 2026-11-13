@@ -401,3 +401,24 @@ flowchart LR
 | **RF52.CA07** | `ImportReport.rejectedReason`, validação de tamanho, tipo real e estrutura | S4 → E422 | 18–19 | nenhuma (documento atual intacto) | `PSV`, `PLT` |
 
 Regras transversais refletidas: autorização no servidor em toda leitura e comando (`ResourceAuthorizer`, 404 uniforme); SIGILOSO só dono e colaboradores explícitos (D-139); macros e scripts nunca executados; exportação e importação não publicam; nenhuma publicação automática.
+
+## Estado da implementação (12/11/2026)
+
+Mínimo funcional do editor, com dados DEMO na memória da aba (sem `PieceController`/`PieceService` no servidor; `ResourceAuthorizer`
+continua sem rota de peça). Feito para servir de base ao Copiloto do RF53/RF54.
+
+- **Rotas**: `/letters` deixou de ser esqueleto (minhas peças DEMO + criar a partir de modelo: relatório técnico, parecer,
+  ofício/memorando, ADR) e `/letters/[pieceId]` é rota nova (página + linha no `lib/pages/registry.ts`). O bloco de CAs fica
+  recolhido embaixo.
+- **Modelo e comandos** (`lib/letters/pieces.ts`, puros): peça em blocos com id estável (`TITULO`, `PARAGRAFO`, `LISTA`, `CITACAO`,
+  `REFERENCIAS`); inserir, mover, remover, trocar tipo e editar texto (CA01, sem `TABELA`/`IMAGEM`). Cada comando gera uma revisão;
+  digitação contínua no mesmo bloco vira uma versão só (15 s). Histórico de versões com desfazer (pilha) e restaurar, sempre como
+  revisão nova — o que invalida propostas antigas da IA (`proposalValidity`). Trocas exatas atômicas (`TRECHO_ALTERADO` não muda
+  nada). Repositório `LettersRepository` em memória (`lib/letters/repository.ts`, selo DEMO).
+- **Tela** (`components/letters/`): editor por blocos com `Textarea` do DS rotulado ("Bloco n · §m Parágrafo"), numeração de
+  parágrafos e "ir até o trecho" com seleção (CA03 parcial), comandos com nome acessível, região nomeada e anúncios `aria-live`
+  (CA06 parcial).
+- **Fora desta entrega**: formatação do trecho selecionado (CA02), sumário e busca (CA03), importação/exportação com relatório de
+  fidelidade e teste de ida e volta (CA04, CA05, CA07), tabelas e imagens, persistência e autorização no servidor.
+- **Testes**: `lib/letters/pieces.test.ts` (comandos, ids, histórico, desfazer, restaurar, atomicidade, repositório) e
+  `components/letters/editor.test.tsx`, `components/letters/letters.test.tsx` (telas).
