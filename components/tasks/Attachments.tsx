@@ -148,7 +148,8 @@ export function TaskAttachments({ task }: { task: TaskView }) {
   }, [taskId]);
   useEffect(load, [load]);
 
-  async function run(fn: () => Promise<unknown>, ok: string) {
+  /** Executa a ação; 422 com erros por campo vai para `onFields` (junto do campo), o resto vira aviso. Nunca rejeita. */
+  async function run(fn: () => Promise<unknown>, ok: string, onFields?: (fields: Record<string, string>) => void) {
     setBusy(true);
     try {
       await fn();
@@ -157,8 +158,8 @@ export function TaskAttachments({ task }: { task: TaskView }) {
       load();
       return true;
     } catch (e) {
-      if (e instanceof ApiError && e.status === 422 && Object.keys(e.fields).length) throw e;
-      toast({ title: t("tasks.attach.failed"), description: errorText(e), tone: "erro" });
+      if (onFields && e instanceof ApiError && e.status === 422 && Object.keys(e.fields).length) onFields(e.fields);
+      else toast({ title: t("tasks.attach.failed"), description: errorText(e), tone: "erro" });
       return false;
     } finally {
       setBusy(false);
@@ -170,24 +171,23 @@ export function TaskAttachments({ task }: { task: TaskView }) {
     if (!file) { setErrors({ file: t("tasks.attach.chooseFile") }); return; }
     if (file.size > MAX_ATTACHMENT_BYTES) { setErrors({ file: t("tasks.attach.tooBig") }); return; }
     setErrors({});
-    try {
-      const ok = await run(() => (asEvidence ? attachmentsApi.addEvidence(taskId, file, file.name, toMeta(form)) : attachmentsApi.upload(taskId, file, file.name)),
-        t(asEvidence ? "tasks.attach.evidenceSent" : "tasks.attach.sent"));
-      if (ok) { setFile(null); setForm(EMPTY_FORM); setInputKey((k) => k + 1); }
-    } catch (err) {
-      if (err instanceof ApiError) setErrors(err.fields);
-    }
+    const ok = await run(() => (asEvidence ? attachmentsApi.addEvidence(taskId, file, file.name, toMeta(form)) : attachmentsApi.upload(taskId, file, file.name)),
+      t(asEvidence ? "tasks.attach.evidenceSent" : "tasks.attach.sent"), setErrors);
+    if (ok) { setFile(null); setForm(EMPTY_FORM); setInputKey((k) => k + 1); }
   }
 
   async function confirmMark() {
     if (!marking) return;
     setMarkErrors({});
-    try {
-      const ok = await run(() => attachmentsApi.markEvidence(taskId, marking.id!, toMeta(markForm)), t("tasks.attach.marked"));
-      if (ok) { setMarking(null); setMarkForm(EMPTY_FORM); }
-    } catch (err) {
-      if (err instanceof ApiError) setMarkErrors(err.fields);
-    }
+    const ok = await run(() => attachmentsApi.markEvidence(taskId, marking.id!, toMeta(markForm)), t("tasks.attach.marked"), setMarkErrors);
+    if (ok) { setMarking(null); setMarkForm(EMPTY_FORM); }
+  }
+
+  async function confirmRemove() {
+    const a = removing;
+    if (!a) return;
+    await run(() => attachmentsApi.remove(taskId, a.id!), t("tasks.attach.removed"));
+    setRemoving(null);
   }
 
   return (
@@ -205,7 +205,7 @@ export function TaskAttachments({ task }: { task: TaskView }) {
             <Checkbox checked={asEvidence} onCheckedChange={setAsEvidence} disabled={busy} label={t("tasks.attach.asEvidence")} />
             {asEvidence ? <EvidenceFields value={form} onChange={setForm} errors={errors} disabled={busy} /> : null}
             <div><Button type="submit" variant="primary" disabled={busy} busy={busy} aria-describedby={fileId}>{t(asEvidence ? "tasks.attach.sendEvidence" : "tasks.attach.send")}</Button></div>
-            <span id={fileId} className="sr-only">{file ? `${file.name} · ${formatBytes(file.size, intl)}` : t("tasks.attach.chooseFile")}</span>
+            <span id={fileId} className="sr-only">{file ? `${file.name} · ${formatBytes(file.size, intl)}` : ""}</span>
           </form>
         ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("tasks.attach.readOnlyNote")}</p>}
 
@@ -250,7 +250,7 @@ export function TaskAttachments({ task }: { task: TaskView }) {
         description={removing ? t("tasks.attach.removeConfirm", { name: removing.fileName ?? "" }) : undefined}>
         <div className="flex flex-wrap justify-end gap-2">
           <Button variant="ghost" onClick={() => setRemoving(null)}>{t("tasks.detail.cancel")}</Button>
-          <Button variant="danger" disabled={busy} busy={busy} onClick={() => { const a = removing; if (a) void run(() => attachmentsApi.remove(taskId, a.id!), t("tasks.attach.removed")).then(() => setRemoving(null)); }}>
+          <Button variant="danger" disabled={busy} busy={busy} onClick={() => void confirmRemove()}>
             {t("tasks.attach.remove")}
           </Button>
         </div>

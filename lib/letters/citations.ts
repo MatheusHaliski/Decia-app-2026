@@ -147,12 +147,16 @@ export function parseCitations(block: LetterBlock): InTextCitation[] {
 
 /* ── Lista de referências ────────────────────────────────────────────────────────────────────────────────── */
 
-/** Fim do segmento de autoria: primeiro ". " que não fecha uma inicial ("J. A.") nem "et al.". */
+/**
+ * Fim do segmento de autoria: o primeiro ". " que encerra o elemento — não conta o ponto de uma inicial seguida de
+ * outra inicial ("J. A. Título" termina depois do "A.") nem o de "et al.".
+ */
 function authorSegmentEnd(text: string): number {
   for (const m of text.matchAll(/\.\s/g)) {
     const k = m.index ?? 0;
     const before = text.slice(0, k).match(/(\S+)$/)?.[1] ?? "";
-    if (/^\p{Lu}$/u.test(before) || /^(al|et)$/i.test(before)) continue;
+    if (/^(al|et)$/i.test(before)) continue;
+    if (/^\p{Lu}$/u.test(before) && /^\p{Lu}\.(\s|;|$)/u.test(text.slice(k + m[0].length))) continue;
     return k;
   }
   return -1;

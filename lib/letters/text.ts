@@ -30,7 +30,7 @@ export function pluralize(word: string): string | null {
   const lw = w.toLowerCase();
   if (lw.length < 2) return null;
   if (/[sx]$/.test(lw)) return null; // lápis, tórax, mês… (invariável ou incerto)
-  if (/(ç|s)ão$/.test(lw)) return w.slice(0, -2) + "ões"; // reunião → reuniões, gestão → gestões
+  if (/(ç|s|i)ão$/.test(lw) || /^(questão|gestão|sugestão|digestão)$/.test(lw)) return w.slice(0, -2) + "ões"; // reunião → reuniões, gestão → gestões
   if (/ão$/.test(lw)) return null; // irmãos, pães, leões: incerto
   if (/[aeiouáéíóúâêô]$/.test(lw)) return w + "s";
   if (/[rz]$/.test(lw)) return w + "es";

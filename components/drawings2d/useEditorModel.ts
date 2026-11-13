@@ -158,14 +158,16 @@ export function useEditorModel(pieceId: string) {
     const count = parts.reduce((n, p) => n + p.itemIds.length, 0);
     const label: Label = count === 1 ? parts[0]!.label : { key: aiMode === "APLICADA" ? "drw2d.op.aiAssisted" : "drw2d.op.aiBatch", vars: { count } };
     const commitParts = parts.map((part) => ({ patch: batchPatch(part, { id: newId("ia"), actorId: meId, baseRevision: state.doc.revision, aiMode }), view: { ...view, activeLayerId: part.layerId } }));
-    const r = await session.commit(commitParts, { label });
     const ids = parts.flatMap((p) => p.itemIds);
+    // em gravação: o próprio aceite muda a revisão e a reconciliação não pode recusá-las no meio do caminho
+    setProposal((p) => (p ? setStatus(p, ids, "APLICANDO") : p));
+    const r = await session.commit(commitParts, { label });
     if (r.ok) {
-      setProposal((p) => (p ? skipped.reduce((acc, s) => setStatus(acc, [s.id], "RECUSADA", { code: "LOTE", by: s.by }), setStatus(p, ids, "ACEITA")) : p));
+      setProposal((p) => (p ? skipped.reduce((acc, s) => setStatus(acc, [s.id], "RECUSADA", { code: "LOTE", by: s.by }), setStatus(p, ids, "ACEITA", undefined, ["APLICANDO"])) : p));
       const last = parts.at(-1)!.layerId;
       if (last !== view.activeLayerId) setView((v) => ({ ...v, activeLayerId: last }));
     } else {
-      setProposal((p) => (p ? setStatus(p, ids, "RECUSADA", { code: "GRAVACAO", denial: r.denial }) : p));
+      setProposal((p) => (p ? setStatus(p, ids, "RECUSADA", { code: "GRAVACAO", denial: r.denial }, ["APLICANDO"]) : p));
     }
   }, [session, state, proposal, policy, view, meId, now, announce, t]);
 

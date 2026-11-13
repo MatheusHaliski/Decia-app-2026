@@ -83,7 +83,7 @@ export function FactsEditor({ facts, onChange }: { facts: DemandFacts; onChange:
         </Section>
 
         <Section title={t("autopilot.facts.deadline")}>
-          <Field label={<LabelWithMark label={t("autopilot.facts.deadlineLabel")} fact={facts.deadline ? { value: facts.deadline.date, span: facts.deadline.span, edited: facts.deadline.edited } : undefined} />} hint={facts.deadline ? deadlineHint(facts.deadline) : t("autopilot.facts.deadlineNone")}>
+          <Field label={<LabelWithMark label={t("autopilot.facts.deadlineLabel")} fact={facts.deadline ? { edited: facts.deadline.edited } : undefined} />} hint={facts.deadline ? deadlineHint(facts.deadline) : t("autopilot.facts.deadlineNone")}>
             {({ id, describedBy }) => (
               <div className="flex flex-wrap gap-2">
                 <Input id={id} aria-describedby={describedBy} type="date" value={facts.deadline?.date ?? ""} onChange={(e) => setDeadline(e.target.value || null)} className="w-48" data-fact="deadline" />
@@ -95,7 +95,7 @@ export function FactsEditor({ facts, onChange }: { facts: DemandFacts; onChange:
         </Section>
 
         <Section title={t("autopilot.facts.kind")}>
-          <Field label={<LabelWithMark label={t("autopilot.facts.kindLabel")} fact={{ value: facts.kind.value, edited: facts.kind.edited, span: facts.kind.evidence[0] }} />} hint={t("autopilot.facts.kindHint")}>
+          <Field label={<LabelWithMark label={t("autopilot.facts.kindLabel")} fact={{ edited: facts.kind.edited }} />} hint={t("autopilot.facts.kindHint")}>
             {({ id, describedBy }) => (
               <Select id={id} aria-describedby={describedBy} value={facts.kind.value} onChange={(e) => onChange({ ...facts, kind: { ...facts.kind, value: e.target.value as DemandFacts["kind"]["value"], edited: true } })}
                 options={DEMAND_KINDS.map((k) => ({ value: k, label: t(`autopilot.kind.${k}`) }))} className="w-72" data-fact="kind" />

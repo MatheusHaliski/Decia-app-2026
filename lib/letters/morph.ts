@@ -288,7 +288,8 @@ const SUBORDINATORS_FUT = new Set(["quando", "se", "enquanto", "conforme", "onde
 
 const finiteVerbOnly = (w: Work | undefined) => !!w && pOf(w, "VERBO") >= 0.85 && w.verbs.some((v) => !v.forma) && !w.readings.some((x) => isNominal(x.pos) && x.p >= 0.15);
 const hasInfinitive = (w: Work | undefined) => !!w && w.verbs.some((v) => v.forma === "INFINITIVO");
-const looksMasculine = (w: Work | undefined) => !!w && isNominal(best(w)?.pos ?? "ARTIGO") && /(o|os|or|ores|ema|emas)$/.test(w.t.lower) && !/(ção|são)$/.test(w.t.lower);
+/** "a pé", "a prazo": nome com cara de masculino (-o, -ema); -ão e -or ficam de fora ("a reunião", "a cor") */
+const looksMasculine = (w: Work | undefined) => !!w && isNominal(best(w)?.pos ?? "ARTIGO") && /(o|os|ema|emas)$/.test(w.t.lower) && !/(ão|ões)$/.test(w.t.lower);
 
 function contextPass(work: Work[]) {
   for (let i = 0; i < work.length; i++) {

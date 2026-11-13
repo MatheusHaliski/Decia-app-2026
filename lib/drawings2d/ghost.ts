@@ -14,7 +14,8 @@ import type { Denial, DrawingPatch, Label, PatchOp, SharedState } from "./engine
 import { layerById, shapeById, type ViewState } from "./model";
 import { scopeFingerprint, type Suggestion } from "./suggest";
 
-export type GhostStatus = "PENDENTE" | "ACEITA" | "REJEITADA" | "RECUSADA";
+/** APLICANDO = aceita e em gravação: a reconciliação não a recusa enquanto o próprio aceite muda a revisão. */
+export type GhostStatus = "PENDENTE" | "APLICANDO" | "ACEITA" | "REJEITADA" | "RECUSADA";
 
 export type RefusalReason =
   | { code: "POLITICA"; from: number; to: number }
@@ -128,9 +129,10 @@ export function reconcileProposal(proposal: GhostProposal, ctx: ValidityContext)
   return changed ? { ...proposal, items } : proposal;
 }
 
-export function setStatus(proposal: GhostProposal, ids: readonly string[], status: GhostStatus, reason?: RefusalReason): GhostProposal {
+/** Muda o estado das sugestões indicadas que estão em `from` (padrão: só as pendentes). */
+export function setStatus(proposal: GhostProposal, ids: readonly string[], status: GhostStatus, reason?: RefusalReason, from: readonly GhostStatus[] = ["PENDENTE"]): GhostProposal {
   const set = new Set(ids);
-  return { ...proposal, items: proposal.items.map((i) => (set.has(i.suggestion.id) && i.status === "PENDENTE" ? { ...i, status, ...(reason ? { reason } : {}) } : i)) };
+  return { ...proposal, items: proposal.items.map((i) => (set.has(i.suggestion.id) && from.includes(i.status) ? { ...i, status, ...(reason ? { reason } : {}) } : i)) };
 }
 
 export const pendingItems = (proposal: GhostProposal | null) => proposal?.items.filter((i) => i.status === "PENDENTE") ?? [];

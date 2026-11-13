@@ -199,6 +199,21 @@ describe("transporte entre abas (BroadcastChannel simulado)", () => {
   });
 });
 
+describe("ciclo de vida da sessão", () => {
+  it("parada antes de terminar de entrar (StrictMode): sai da peça e não liga relógio, canal nem batimento", async () => {
+    const { shared, bc } = setup();
+    const a = tab("tab-a", "A", shared);
+    const starting = a.session.start();
+    const stopping = a.session.stop();
+    await starting;
+    await stopping;
+    await flush();
+    expect(shared.store.read()!.participants["tab-a"]!.lastSeen).toBe(0);
+    expect(bc.sent.filter((m) => (m as { t: string }).t === "hello")).toHaveLength(0);
+    expect(bc.size("ws-drawings-demo-fachada")).toBe(0);
+  });
+});
+
 describe("colaboradora simulada (determinística)", () => {
   it("roteiro: ciclo par sobe as janelas a 120 cm e libera; ciclo ímpar volta a 100 cm e deixa a reserva de 30 s expirar", () => {
     const even = botCycle(0).map((s) => s.action.kind);

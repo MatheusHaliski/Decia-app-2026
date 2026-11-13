@@ -11,7 +11,7 @@ import { makeRef } from "@/lib/projects/canvas";
 import { effectiveDuration } from "@/lib/projects/derive";
 import { monteCarlo, probabilityWithin, type MonteCarloResult } from "@/lib/projects/engine/montecarlo";
 import { pert, probabilityByTarget } from "@/lib/projects/engine/pert";
-import { DEPENDENCY_TYPES, offsetToDate, type DependencyType } from "@/lib/projects/engine/schedule";
+import { DEPENDENCY_TYPES, dateToOffset, offsetToDate, type DependencyType } from "@/lib/projects/engine/schedule";
 import { evmView, timelineView, type TimelineRow, type TimelineView } from "@/lib/projects/views";
 import { CommitNumber, Theory } from "./common";
 import { TaskInspector } from "./TaskInspector";
@@ -52,7 +52,7 @@ export function Timeline(props: PanelProps) {
             </Button>
           ) : null}
         </div>
-        <Legend />
+        <Legend due={model.tasks.some((x) => x.dueAt)} />
       </div>
       {model.baseline ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("pm.tl.rebaselineHint")}</p> : null}
 
@@ -80,7 +80,7 @@ export function Timeline(props: PanelProps) {
   );
 }
 
-function Legend() {
+function Legend({ due }: { due?: boolean }) {
   const { t } = useI18n();
   const item = (cls: string, key: string) => (
     <span className="inline-flex items-center gap-1.5">
@@ -95,6 +95,7 @@ function Legend() {
       {item("bg-ws-surface-3 border border-dashed border-ws-border-strong", "pm.tl.leg.float")}
       {item("bg-ws-text-faint", "pm.tl.leg.baseline")}
       {item("bg-ws-warning", "pm.tl.leg.status")}
+      {due ? <span className="inline-flex items-center gap-1.5"><span aria-hidden className="text-ws-warning-ink">▼</span>{t("projectPage.gantt.legendDue")}</span> : null}
     </p>
   );
 }
@@ -102,7 +103,9 @@ function Legend() {
 // ------------------------------------------------------------------ Gantt
 function Gantt({ tl, model, selected, onOpen }: PanelProps & { tl: TimelineView; onOpen: (id: string) => void }) {
   const { t, intl } = useI18n();
-  const days = Math.ceil(Math.max(tl.finish, tl.baselineFinish ?? 0, tl.statusOffset, ...tl.rows.map((r) => r.lf))) + 1;
+  // prazo da atividade (dueAt): fim do dia do prazo, no mesmo eixo de dias do cronograma
+  const dueOf = (r: TimelineRow) => (r.task.dueAt ? dateToOffset(model.startDate, r.task.dueAt) + 1 : undefined);
+  const days = Math.ceil(Math.max(tl.finish, tl.baselineFinish ?? 0, tl.statusOffset, ...tl.rows.map((r) => Math.max(r.lf, dueOf(r) ?? 0)))) + 1;
   const dw = Math.max(22, Math.min(48, Math.floor(900 / Math.max(1, days))));
   const width = LABEL_W + days * dw + 16;
   const height = HEAD_H + tl.rows.length * ROW_H + 8;
@@ -149,12 +152,15 @@ function Gantt({ tl, model, selected, onOpen }: PanelProps & { tl: TimelineView;
             const crit = r.critical;
             const w = Math.max(2, (r.ef - r.es) * dw);
             const label = `${r.task.code} ${r.task.title}`;
+            const due = dueOf(r);
+            const late = due !== undefined && r.ef > due + 1e-6 ? Math.ceil(r.ef - due - 1e-6) : 0;
+            const dueText = due !== undefined ? `, ${t("projectPage.gantt.due", { date: fmt.date(intl, r.task.dueAt) })}${late ? `, ${t("projectPage.gantt.late", { n: late })}` : ""}` : "";
             return (
               <g
                 key={r.id}
                 role="button"
                 tabIndex={0}
-                aria-label={t("pm.tl.rowLabel", { code: r.task.code, title: r.task.title, es: fmt.date(intl, r.startDate), ef: fmt.date(intl, r.endDate), float: fmt.number(intl, r.totalFloat, 1) }) + (crit ? `, ${t("pm.task.critical")}` : "")}
+                aria-label={t("pm.tl.rowLabel", { code: r.task.code, title: r.task.title, es: fmt.date(intl, r.startDate), ef: fmt.date(intl, r.endDate), float: fmt.number(intl, r.totalFloat, 1) }) + (crit ? `, ${t("pm.task.critical")}` : "") + dueText}
                 onClick={() => onOpen(r.id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -170,6 +176,7 @@ function Gantt({ tl, model, selected, onOpen }: PanelProps & { tl: TimelineView;
                   {label.length > 30 ? `${label.slice(0, 29)}…` : label}
                 </text>
                 {r.baseline ? <rect x={x(r.baseline.es)} y={y + ROW_H - 7} width={Math.max(2, (r.baseline.ef - r.baseline.es) * dw)} height={4} rx={2} className="fill-ws-text-faint" /> : null}
+                {due !== undefined ? <path d={`M${x(due) - 5},${y + 1} h10 l-5,7 z`} className={late ? "fill-ws-danger" : "fill-ws-warning"} data-due={r.task.code} /> : null}
                 {r.task.milestone ? (
                   <path d={`M${x(r.es)},${y + 7} l9,10 l-9,10 l-9,-10 z`} className={crit ? "fill-ws-danger" : "fill-ws-info"} />
                 ) : (

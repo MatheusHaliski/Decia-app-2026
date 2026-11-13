@@ -171,6 +171,18 @@ describe("prévia fantasma: validade, recusa automática e lote (RF74.CA09/CA10,
     expect(assistedBatch({ ...p, policyVersion: sugg.version }, { ...ctx(s, sugg), selection: new Set(["s-js2"]) })).toEqual({ ok: false, reason: "MODO_NAO_PERMITE" });
   });
 
+  it("sugestão em gravação (APLICANDO) não é recusada pela reconciliação que o próprio aceite provoca", () => {
+    const s = fresh();
+    const policy = personalPolicy("SUGESTOES");
+    const p = setStatus(createProposal(s, policy, suggest(s.doc, VIEW), { id: "pr1", now: T0, requested: true }), ["ALINHAR:s-js2"], "APLICANDO");
+    const moved = commit(s, movePatch(s.doc, "eu", ["s-js2"], 0, -3)!, { now: T0, view: VIEW, autoReserve: true });
+    if (!moved.ok) throw new Error("move");
+    const r = reconcileProposal(p, ctx(moved.state, policy));
+    expect(r.items.find((i) => i.suggestion.id === "ALINHAR:s-js2")!.status).toBe("APLICANDO");
+    expect(setStatus(r, ["ALINHAR:s-js2"], "ACEITA").items.find((i) => i.suggestion.id === "ALINHAR:s-js2")!.status).toBe("APLICANDO");
+    expect(setStatus(r, ["ALINHAR:s-js2"], "ACEITA", undefined, ["APLICANDO"]).items.find((i) => i.suggestion.id === "ALINHAR:s-js2")!.status).toBe("ACEITA");
+  });
+
   it("validade por item usa proposalValidity (mesma regra do servidor)", () => {
     const s = fresh();
     const policy = personalPolicy("SUGESTOES");

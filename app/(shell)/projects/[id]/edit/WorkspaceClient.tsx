@@ -110,6 +110,7 @@ function Inner({ projectId }: { projectId: string }) {
       initialTab={initialTab}
       initialPane={initialPane}
       onViewChange={onViewChange}
+      versionSnapshot={(n) => repo.versionSnapshot?.(projectId, n)}
     />
   );
 }

@@ -1,33 +1,34 @@
 "use client";
-// Mesa de Trabalho (RF21/RF22; Matriz A §2.2): esqueleto com a prévia real da Mesa — skin (RF22, RF38.CA08) e arte de
-// fundo (RF23/RF3, D-37) vêm das preferências do usuário e mudam na hora.
-import { BackgroundArt, Button, Tag } from "@/components/ui";
+// /desk — Mesa de Trabalho do perfil (RF21/RF22; Matriz A §2.2): "Minha mesa" com os projetos desta aba, os rascunhos do
+// Autopiloto e o "criar projeto", mantendo a prévia da skin (RF22, RF38.CA08) e da arte de fundo (RF23/RF3, D-37); "Mesa da
+// equipe" com os projetos por fase. Rota do RF30: `/desk?draft=<id>` abre a proposta do Autopiloto em modo rascunho (sub-aba própria).
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { DraftDesk } from "@/components/projects/desk/DraftDesk";
+import { MyDesk, TeamBoard } from "@/components/projects/desk/MyDesk";
 import { RfPage } from "@/components/shell/RfPage";
-import { useI18n } from "@/lib/i18n/useI18n";
+import { LoadingState } from "@/components/ui";
+import { DESK_TABS, type SubTab } from "@/lib/nav/matrix";
 import { pageByRoute } from "@/lib/pages/registry";
-import { DEMO_PROJECT_ID } from "@/lib/projects/fixtures";
-import { usePreferences } from "@/lib/preferences/PreferencesProvider";
 
 const PAGE = pageByRoute("/desk")!;
+const DRAFT_TAB: SubTab = { slug: "rascunho", labelKey: "deskHome.draft.tab" };
+
+function Desk() {
+  const draft = useSearchParams().get("draft");
+  return (
+    <RfPage
+      page={PAGE}
+      tabs={draft ? [DRAFT_TAB, ...DESK_TABS] : undefined}
+      renderTab={(slug) => (slug === "rascunho" && draft ? <DraftDesk draftId={draft} /> : slug === "equipe" ? <TeamBoard /> : <MyDesk />)}
+    />
+  );
+}
 
 export default function DeskPage() {
-  const { t } = useI18n();
-  const { prefs } = usePreferences();
   return (
-    <RfPage page={PAGE}>
-      <BackgroundArt skin={prefs.deskSkin} backgroundId={prefs.backgroundId} minHeight="14rem" className="shadow-ws-clay">
-        <div className="flex h-full flex-col justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Tag tone="neutral" filled>{t(`deskSkin.${prefs.deskSkin}`)}</Tag>
-            <Tag tone="accent">{t(`background.${prefs.backgroundId}`)}</Tag>
-          </div>
-          <p className="max-w-prose text-[length:var(--ws-text-body-sm)] font-medium">{t("desk.preview")}</p>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="primary" icon="mesa" href={`/projects/${DEMO_PROJECT_ID}/edit`}>{t("pm.ws.openDemo")}</Button>
-            <Button size="sm" href="/settings?tab=aparencia">{t("desk.changeInSettings")}</Button>
-          </div>
-        </div>
-      </BackgroundArt>
-    </RfPage>
+    <Suspense fallback={<LoadingState />}>
+      <Desk />
+    </Suspense>
   );
 }

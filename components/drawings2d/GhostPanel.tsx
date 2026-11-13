@@ -106,7 +106,7 @@ export function GhostPanel({ m }: { m: EditorModel }) {
                       </div>
                     ) : (
                       <p className="text-[length:var(--ws-text-caption)]">
-                        <Tag tone={item.status === "ACEITA" ? "success" : item.status === "RECUSADA" ? "danger" : "neutral"}>{t(`drw2d.ghost.status.${item.status}`)}</Tag>
+                        <Tag tone={item.status === "ACEITA" ? "success" : item.status === "RECUSADA" ? "danger" : item.status === "APLICANDO" ? "spark" : "neutral"}>{t(`drw2d.ghost.status.${item.status}`)}</Tag>
                         {item.status === "RECUSADA" && item.reason ? <span className="ml-1 text-ws-text-muted">{explainRefusal(item.reason, explain)}</span> : null}
                       </p>
                     )}

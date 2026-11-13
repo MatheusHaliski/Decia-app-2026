@@ -4,6 +4,7 @@
  * números do sistema (D-12); funções puras sobre o mesmo modelo que a Mesa projeta.
  */
 import { effectiveDuration } from "../derive";
+import type { CostVerdict, ScheduleVerdict } from "../engine/evm";
 import { offsetToDate } from "../engine/schedule";
 import { computeMetrics } from "../metrics";
 import type { ProjectModel } from "../types";
@@ -23,7 +24,10 @@ export interface ProjectSummary {
   overrunDays: number;
   cpi: number | null;
   spi: number | null;
-  probability?: number;
+  costVerdict: CostVerdict | null;
+  scheduleVerdict: ScheduleVerdict | null;
+  /** probabilidade (PERT) de cumprir a linha de base — ou o término — quando há incerteza nas estimativas */
+  probability?: { value: number; target: number };
   findings: { critical: number; attention: number };
   openRisks: number;
 }
@@ -63,7 +67,9 @@ export function summarizeProject(model: ProjectModel, today: IsoDate): ProjectSu
     overrunDays,
     cpi: e.cpi,
     spi: e.spi,
-    probability: tl.pert && tl.pert.sd > 0 ? tl.pert.probability : undefined,
+    costVerdict: e.cost,
+    scheduleVerdict: e.schedule,
+    probability: tl.pert && tl.pert.sd > 0 ? { value: tl.pert.probability, target: tl.pert.target } : undefined,
     findings: { critical: metrics.findings.filter((f) => f.severity === "CRITICO").length, attention: metrics.findings.filter((f) => f.severity === "ATENCAO").length },
     openRisks: model.risks.filter((r) => r.status === "ABERTO").length,
   };

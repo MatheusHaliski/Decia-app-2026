@@ -34,6 +34,9 @@ const lemmaOf = (t: TaggedToken | undefined) => (t ? new Set(verbReadings(t.lowe
 const quotedTok = (ctx: BlockCtx, t: TaggedToken) => insideSpans(ctx.quoted, t.start, t.end);
 
 const FEM_SUFFIX = /(ção|ções|são|sões|dade|dades|tude|tudes|agem|agens|ência|ências|ância|âncias|ice|ices)$/;
+/** femininos em -ão fora dos sufixos (-ção/-são): reunião, opinião, questão… */
+const FEM_AO = new Set(["reunião", "reuniões", "opinião", "opiniões", "região", "regiões", "união", "uniões", "religião", "legião", "questão", "questões", "gestão", "gestões", "sugestão", "sugestões"]);
+const isFeminineNoun = (w: string) => (FEM_SUFFIX.test(w) && w !== "personagem" && w !== "personagens") || FEM_AO.has(w);
 const MASC_SUFFIX = /(mento|mentos|ismo|ismos)$/;
 /** Femininos terminados em -o: "a foto", "a tribo". */
 const FEM_IN_O = new Set(["foto", "fotos", "moto", "motos", "tribo", "tribos", "libido", "virago", "radio"]);
@@ -128,7 +131,7 @@ function crase(ctx: BlockCtx): RawFinding[] {
       const p = prev(ctx, i);
       const pp = p ? prev(ctx, p.i) : undefined;
       const trigger = p && CRASE_BEFORE.has(p.lower) && (p.lower !== "relação" || (pp && /^(em|com)$/.test(pp.lower)));
-      if (trigger && isNominalTok(n, 0.55) && n.pos === "SUBSTANTIVO" && !/s$/.test(n.lower) && (/a$/.test(n.lower) || FEM_SUFFIX.test(n.lower)) && !isInfinitive(n)) {
+      if (trigger && isNominalTok(n, 0.55) && n.pos === "SUBSTANTIVO" && !/s$/.test(n.lower) && (/a$/.test(n.lower) || isFeminineNoun(n.lower)) && !isInfinitive(n)) {
         out.push({ ruleId: "CRASE_DEVIDO", start: t.start, end: t.end, replacement: matchCase(t.text, "à"), vars: { expr: `${p!.lower} à ${n.lower}` }, confidence: 0.7, certainty: "HIPOTESE" });
       }
     }
@@ -178,7 +181,7 @@ function nominalAgreement(ctx: BlockCtx): RawFinding[] {
     if (n.pos !== "SUBSTANTIVO" || n.lower === "personagem" || n.lower === "personagens") continue;
     const swap = DET_GENDER[dl];
     if (!swap) continue;
-    if ((MASC_DETS.has(dl) && FEM_SUFFIX.test(n.lower)) || (FEM_DETS_SAFE.has(dl) && MASC_SUFFIX.test(n.lower))) {
+    if ((MASC_DETS.has(dl) && isFeminineNoun(n.lower)) || (FEM_DETS_SAFE.has(dl) && MASC_SUFFIX.test(n.lower))) {
       out.push({ ruleId: "CONCORDANCIA_GENERO", start: d.start, end: n.end, replacement: `${matchCase(d.text, swap)}${between}${n.text}`, vars: { det: d.text, word: n.text }, confidence: 0.85, certainty: "DEMONSTRAVEL" });
     }
   }
@@ -212,7 +215,7 @@ function adjectiveAgreement(ctx: BlockCtx): RawFinding[] {
       continue;
     }
     // gênero pelo sufixo do nome
-    const fem = FEM_SUFFIX.test(n.lower) && n.lower !== "personagem";
+    const fem = isFeminineNoun(n.lower);
     const masc = MASC_SUFFIX.test(n.lower);
     if (fem && /(ad|id)os?$/.test(a.lower)) {
       out.push({ ruleId: "CONCORDANCIA_ADJETIVO", start: a.start, end: a.end, replacement: a.text.replace(/o(s?)$/, "a$1"), vars: { noun: n.text, word: a.text, kind: "genero" }, confidence: 0.7 });

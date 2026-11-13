@@ -8,6 +8,8 @@
  *  • ligações: requisito ↔ entrega (rastreabilidade), entrega ↔ atividade (EAP), risco ↔ atividade, parte interessada ↔ requisito.
  * Depois de cada edição estrutural, a faixa "Efeito" diz o que mudou e onde (quadro, linha do tempo, escopo…).
  * Teclado: Tab percorre os itens; setas movem (Shift = passo maior); Enter abre o inspetor; L inicia uma ligação; Delete apaga post-it.
+ * Posição: o arraste só confirma ao SOLTAR (um comando, nunca um por pixel) e a seta, a cada passo; a posição vai para o modelo
+ * sem gerar versão (RF22.CA03) e fica no retrato da versão vigente — o histórico e as posições andam juntos.
  */
 import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Badge, Button, Checkbox, Dialog, Field, Input, Select, Tag, cn } from "@/components/ui";
@@ -104,11 +106,14 @@ export function ProjectCanvas(props: PanelProps) {
   const [openTask, setOpenTask] = useState<string | null>(null);
   const [edgeSel, setEdgeSel] = useState<string | null>(null);
   const [hidden, setHidden] = useState<Set<CanvasEdgeKind>>(new Set());
+  /** última posição confirmada sem versão nova (RF22.CA03): a versão vigente que a guardou */
+  const [saved, setSaved] = useState<number | null>(null);
 
   const run = (cmd: ProjectCommand): CommandResult => {
     const r = dispatch(cmd);
     if (r.ok && r.structural) setEffect({ key: r.versionKey, vars: r.vars });
     if (r.ok && r.createdRef) onSelect?.(r.createdRef);
+    setSaved(r.ok && !r.structural && cmd.type === "CANVAS_MOVE" ? r.model.version : null);
     return r;
   };
 
@@ -180,7 +185,7 @@ export function ProjectCanvas(props: PanelProps) {
           if (w) setZoom(Math.max(0.3, Math.min(1.5, Math.floor((w / view.width) * 100) / 100)));
         }}>{t("pm.canvas.fit")}</Button>
         <p className="min-w-0 flex-1 text-right text-[length:var(--ws-text-caption)] text-ws-text-muted" aria-live="polite">
-          {connectFrom ? t("pm.canvas.connectFrom", { item: labelOf(itemOf.get(connectFrom)) }) : tool === "connect" ? t("pm.canvas.connectHint") : t("pm.canvas.hint")}
+          {connectFrom ? t("pm.canvas.connectFrom", { item: labelOf(itemOf.get(connectFrom)) }) : tool === "connect" ? t("pm.canvas.connectHint") : saved !== null ? t("projectPage.canvas.saved", { n: saved }) : t("pm.canvas.hint")}
         </p>
       </div>
 

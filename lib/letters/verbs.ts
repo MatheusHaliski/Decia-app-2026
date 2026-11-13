@@ -134,15 +134,19 @@ registrar regulamentar reiterar relacionar relatar reportar representar resguard
 retomar revisar revogar salientar salvar selecionar sinalizar sistematizar situar solicitar superar sustentar tentar
 tomar trabalhar tramitar transformar tratar usar utilizar validar verificar visar votar acabar apurar atuar avaliar
 encontrar gostar morar mandar comprar jogar olhar achar lembrar chamar pagar
+acreditar falhar agendar atrasar aguardar alocar digitalizar digitar cumprimentar migrar piorar andar caminhar telefonar
+desenhar gastar custar faltar sobrar bastar importar interessar preocupar julgar opinar aceitar recusar rejeitar negar
+parar terminar procurar emprestar alugar exonerar designar argumentar criticar elogiar agradecer saudar visitar viajar
+voltar retornar trocar testar liderar administrar duvidar perguntar testemunhar casar
 atender absorver acontecer aparecer aprender atender beber compreender conceder conhecer correr crescer decorrer depender
 dever devolver eleger entender envolver escolher esclarecer estabelecer exercer favorecer fornecer fortalecer interromper
 merecer obedecer desobedecer ocorrer oferecer parecer perceber permanecer pertencer prevalecer proceder promover receber
 reconhecer recorrer remeter resolver responder submeter suspender viver comprometer converter preencher
-abastecer enriquecer estender surpreender transcorrer descer correr
+abastecer enriquecer estender surpreender transcorrer descer correr esquecer debater defender prometer nascer
 abrir admitir agir assistir assumir atingir competir consistir consumir cumprir decidir definir demitir desistir dirigir
 discutir dividir dormir emitir exigir existir garantir imprimir insistir interagir investir omitir partir permitir
 persistir presidir presumir proibir punir reagir redigir refletir repartir residir resistir resumir reunir subsistir
-suprimir surgir transmitir unir inserir corrigir aplaudir progredir
+suprimir surgir transmitir unir inserir corrigir aplaudir progredir conferir
 concluir constituir construir contribuir diminuir distribuir excluir incluir influir instituir obstruir possuir
 restituir substituir usufruir atribuir
 conduzir deduzir induzir introduzir produzir reduzir traduzir reproduzir

@@ -12,8 +12,9 @@ import { useI18n } from "@/lib/i18n/useI18n";
 import type { CommandResult, ProjectCommand } from "@/lib/projects/commands";
 import { digest } from "@/lib/projects/feedback";
 import { computeMetrics, type LinkedDecision, type ProjectMetrics, type WorkspaceTab } from "@/lib/projects/metrics";
-import type { CanvasRef, ProjectModel } from "@/lib/projects/types";
+import type { CanvasRef, ProjectModel, ProjectSnapshot } from "@/lib/projects/types";
 import { versionSummary } from "./common";
+import { VersionHistory } from "./desk/VersionHistory";
 import { FeedbackPanel } from "./FeedbackPanel";
 import { ClosurePanel } from "./panels/ClosurePanel";
 import { ControlPanel } from "./panels/ControlPanel";
@@ -65,9 +66,11 @@ export interface ProjectWorkspaceProps {
   /** metade direita aberta ao entrar (`null` = janela inteira) */
   initialPane?: PaneView | null;
   onViewChange?: (tab: WorkspaceTab, pane: PaneView | null) => void;
+  /** retrato guardado de uma versão (RF22.CA02): habilita "voltar a esta versão" no histórico */
+  versionSnapshot?: (n: number) => ProjectSnapshot | undefined;
 }
 
-export function ProjectWorkspace({ model, dispatch, people, readOnly, canEdit = !readOnly, decia, decisions = NO_DECISIONS, source = "DEMO", initialTab = "quadro", initialPane = "feedback", onViewChange }: ProjectWorkspaceProps) {
+export function ProjectWorkspace({ model, dispatch, people, readOnly, canEdit = !readOnly, decia, decisions = NO_DECISIONS, source = "DEMO", initialTab = "quadro", initialPane = "feedback", onViewChange, versionSnapshot }: ProjectWorkspaceProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const [tab, setTab] = useState<WorkspaceTab>(initialTab);
@@ -130,6 +133,18 @@ export function ProjectWorkspace({ model, dispatch, people, readOnly, canEdit = 
           <Tag>{t(`pm.approach.${model.approach}`)}</Tag>
           <Tag tone="blue">{t(`tasks.area.${model.area ?? "SOFTWARE"}`)}</Tag>
           <Tag>{t("pm.ws.version", { n: model.version })}</Tag>
+          {model.origin?.kind === "AUTOPILOTO" ? <Badge tone="spark" title={model.origin.label}><span aria-hidden>✦ </span>{t("deskHome.card.fromAutopilot")}</Badge> : null}
+          <VersionHistory
+            model={model}
+            people={people}
+            canRestore={!readOnly && !model.closure.archived}
+            snapshotOf={versionSnapshot}
+            onRestore={(n, snapshot) => {
+              const r = run({ type: "VERSION_RESTORE", number: n, snapshot });
+              if (r.ok) toast({ title: t("projectPage.history.restored", { n, next: model.version + 1 }), tone: "sucesso" });
+              return r.ok;
+            }}
+          />
           {last ? <span className="min-w-0 max-w-full truncate text-ws-text-muted" aria-live="polite">{t("pm.ws.lastChange", { what: versionSummary(t, last), who: nameOf(people, last.actorId) })}</span> : null}
         </div>
         {readOnly ? <p role="status" className="rounded-[var(--ws-radius-md)] border border-ws-warning bg-ws-warning-soft px-3 py-2 text-[length:var(--ws-text-body-sm)]">{t("pm.ui.readOnly")}</p> : null}

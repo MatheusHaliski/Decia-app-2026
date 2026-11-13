@@ -129,6 +129,7 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | RF46 mensagens diretas (31/10/2026) | — | — | V59 |
 | Conectores de fontes externas (RF4, RF20, RF23; 09/11/2026): tipos e `SourceKind` por aplicativo, contas e pedidos OAuth | — | Q-267 | V60–V61 |
 | Profissão de interesse (RF75 E1–E5, RF78 M1–M3, RF81) — planejada, renumerada depois dos conectores (Q-255) | D-147–D-152 | Q-244–Q-267 | V62–V68 |
+| Acervo RF41 (12/11/2026): regras padrão do catálogo de prazos legais (`legal_deadline_rules`, só dados; anexos e evidências usam as tabelas da V11) | — | — | V69 |
 
 Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
 de mais de uma migration, pede uma faixa nova neste quadro antes de criar).

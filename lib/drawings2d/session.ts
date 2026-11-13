@@ -165,6 +165,8 @@ export class CollabSession {
     });
     this.me = participant;
     this.presence = { ...this.presence, name: participant.name, color: participant.color };
+    // desmontada antes de terminar de entrar (StrictMode, troca de aba): não liga relógio nem canal
+    if (this.stopped) return;
     this.lastLive = this.liveMap(this.clock());
     this.unlisten = this.env.channel?.listen((m) => this.onMessage(m)) ?? null;
     this.env.channel?.post({ t: "hello", from: this.me.id });
@@ -493,6 +495,7 @@ export class CollabSession {
   }
 
   private async beat(): Promise<void> {
+    if (this.stopped) return;
     const now = this.clock();
     await this.tx((s) => ({ state: [this.me.id, ...this.hosted.keys()].reduce((acc, id) => heartbeat(acc, id, now), s), result: null }));
     this.postPresence();

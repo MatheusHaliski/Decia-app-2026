@@ -129,7 +129,7 @@ public final class ImageMetadata {
         while (i + 8 <= b.length) {
             long len = ((long) (b[i] & 0xFF) << 24) | ((b[i + 1] & 0xFF) << 16) | ((b[i + 2] & 0xFF) << 8) | (b[i + 3] & 0xFF);
             long total = 12 + len;
-            if (len < 0 || i + total > b.length) {
+            if (i + total > b.length) {
                 return null;
             }
             String chunk = new String(b, i + 4, 4, StandardCharsets.ISO_8859_1);

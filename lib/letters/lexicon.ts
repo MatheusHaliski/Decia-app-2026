@@ -157,7 +157,8 @@ export const NOUN_HOMOGRAPHS: ReadonlySet<string> = new Set(
     "desempenho emprego encontro ensino fundamento ganho impacto incentivo manifesto marco motivo passo preparo protocolo reforço " +
     "regulamento relato resto voto consumo parto começo conto fecho gosto jogo olho trato arquivo avanço respaldo sustento " +
     "comunicado resultado pedido sentido partido cuidado contratado interessado convidado empregado encarregado delegado " +
-    "significado aprovado convocado indicado"
+    "significado aprovado convocado indicado falta falha sobra teste troca volta casa desenho gasto elogio argumento visita " +
+    "debate agenda atraso pergunta procura custo cumprimento"
   ).split(" "),
 );
 
