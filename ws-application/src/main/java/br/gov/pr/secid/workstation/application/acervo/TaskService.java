@@ -90,14 +90,16 @@ public class TaskService {
 
     /**
      * Projeção da tarefa para a API; {@code editable} diz se o viewer pode editar agora (estado e permissão). {@code sourceKind}, {@code linkMode}
-     * e {@code sourceRef} dizem de onde a tarefa veio (conectores: a URL web do item externo; nulos/MANUAL na tarefa digitada).
+     * e {@code sourceRef} dizem de onde a tarefa veio (conectores: a URL web do item externo; nulos/MANUAL na tarefa digitada). O prazo legal
+     * (RF20.CA11, RF41.CA04) vem como regra do catálogo, data de início e vencimento calculado; todos nulos quando não há.
      */
     public record TaskView(UUID id, long version, UUID ownerId, UUID departmentId, String title, String descriptionMd, TaskType type,
                            TaskCategory category, Priority priority, TaskState state, LocalDate dueAt, UUID responsibleId,
                            AccessClassification accessClass, Visibility visibility, SourceKind sourceKind, LinkMode linkMode, String sourceRef,
                            UUID blockedByTaskId, UUID blockedByUserId, String blockReason,
                            String objective, WorkArea area, List<Deliverable> deliverables, List<Criterion> acceptanceCriteria,
-                           List<Reference> references, Map<String, String> extensions, boolean editable, Instant createdAt, Instant updatedAt) {
+                           List<Reference> references, Map<String, String> extensions, boolean editable, Instant createdAt, Instant updatedAt,
+                           UUID legalDeadlineRuleId, LocalDate legalDeadlineBaseDate, LocalDate legalDueAt) {
     }
 
     /**
@@ -200,9 +202,7 @@ public class TaskService {
         StoredTask stored = load(id);
         TaskItem current = stored.task();
         authorizer.require(viewer, scoped(current), ResourceAction.EDIT);
-        if (current.state().isReadOnly()) {
-            throw ApiException.conflict("TAREFA_BLOQUEADA", "Tarefa concluída ou arquivada: reabra para editar.");
-        }
+        requireWritable(current);
         Validated v = validate(viewer, in);
         if (current.state().locksVisibility() && (v.visibility != current.visibility() || v.accessClass != current.accessClass())) {
             throw ApiException.conflict("OFERTA_ATIVA", "Modelo público ou oferecido: visibilidade e classificação ficam travadas.");
@@ -279,6 +279,32 @@ public class TaskService {
         return tasks.findById(id).orElseThrow(() -> ResourceAuthorizer.notFound(ScopedResource.Kind.TASK));
     }
 
+    /**
+     * Carrega a tarefa e exige a ação (BOLA, D-65): inexistente ou invisível → o MESMO 404; visível sem permissão → 403. Usado pelos
+     * serviços irmãos do Acervo (prazo legal, anexos e evidências) para que toda rota com id de tarefa passe pela mesma regra.
+     */
+    StoredTask authorized(Viewer viewer, UUID id, ResourceAction action) {
+        StoredTask stored = load(id);
+        authorizer.require(viewer, scoped(stored.task()), action);
+        return stored;
+    }
+
+    /** O viewer pode fazer a ação na tarefa? (sem marcar a trilha; para decidir o que mostrar) */
+    boolean allows(Viewer viewer, TaskItem t, ResourceAction action) {
+        return AccessPolicy.decide(viewer, scoped(t), action).allowed();
+    }
+
+    /** Concluída ou arquivada só lê (RF12.CA05): toda escrita responde 409 TAREFA_BLOQUEADA. */
+    static void requireWritable(TaskItem t) {
+        if (t.state().isReadOnly()) {
+            throw ApiException.conflict("TAREFA_BLOQUEADA", "Tarefa concluída ou arquivada: reabra para editar.");
+        }
+    }
+
+    TaskView toView(Viewer viewer, StoredTask s) {
+        return view(viewer, s);
+    }
+
     private ScopedResource scoped(TaskItem t) {
         UUID ownerCompany = users.findById(t.ownerId()).map(User::getCompanyId).orElse(null);
         return ScopedResource.of(t, ownerCompany);
@@ -294,7 +320,7 @@ public class TaskService {
                 t.blockedByTaskId(), t.blockedByUserId(), t.blockReason(),
                 b.objective(), b.area(), TaskBriefJson.readDeliverables(b.deliverablesJson()), TaskBriefJson.readCriteria(b.acceptanceCriteriaJson()),
                 TaskBriefJson.readReferences(b.referencesJson()), TaskBriefJson.readExtensions(b.extensionsJson()), canEdit, s.createdAt(),
-                s.updatedAt());
+                s.updatedAt(), t.legalDeadlineRuleId(), t.legalDeadlineBaseDate(), t.legalDueAt());
     }
 
     /** Valores normalizados e briefing serializado; erros de campo juntos num único 422 VALIDACAO. */

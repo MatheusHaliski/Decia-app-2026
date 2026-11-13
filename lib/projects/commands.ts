@@ -5,8 +5,10 @@
  * a entrega da EAP, o risco ou o item do TAP correspondente.
  *
  * Alteração ESTRUTURAL gera `ProjectVersion` (RF22.CA02) com resumo legível traduzível; mover/redimensionar no canvas não gera
- * (RF22.CA03). Projeto arquivado recusa alteração estrutural (`PROJETO_BLOQUEADO`, RF22.CA06). Funções puras: devolvem um
- * modelo novo e nunca mutam o anterior.
+ * (RF22.CA03) — o ajuste confirmado (ao soltar o arraste ou por teclado) entra no modelo e é contado na versão vigente
+ * (`layoutMoves`), para o histórico e as posições andarem juntos. `VERSION_RESTORE` reaplica o retrato de uma versão anterior
+ * (estrutura, prazos e posições) como uma versão NOVA. Projeto arquivado recusa alteração estrutural (`PROJETO_BLOQUEADO`,
+ * RF22.CA06). Funções puras: devolvem um modelo novo e nunca mutam o anterior.
  */
 import { ITEM_SIZE, makeRef, refId, refKind, zoneAt } from "./canvas";
 import { canvasZones, effectiveDuration, scheduleOf, wbsRoot } from "./derive";
@@ -16,12 +18,12 @@ import { PROJECT_AREAS, PROJECT_PHASES } from "./types";
 import type {
   Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
   Charter, Closure, CommItem, Dependency, ProjectArea, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
-  Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
+  ProjectSnapshot, Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
 } from "./types";
 
 type TaskPatch = Partial<Pick<Task,
   "title" | "status" | "durationDays" | "pert" | "percentComplete" | "budget" | "actualCost" | "responsibleId" | "reviewerId" | "moscow"
-  | "sprint" | "wbsId" | "milestone" | "changeId">>;
+  | "sprint" | "wbsId" | "milestone" | "changeId" | "dueAt">>;
 type CharterList = "justification" | "highLevelRequirements" | "premises" | "constraints" | "highLevelRisks" | "teamRoles" | "objectives" | "milestones";
 
 export type ProjectCommand =
@@ -78,7 +80,9 @@ export type ProjectCommand =
   | { type: "SET_CURRENT_SPRINT"; sprint: number }
   | { type: "SPRINT_SET"; number: number; start: string; end: string; goal?: string }
   | { type: "SET_STATUS_DATE"; date: string }
-  | { type: "LINK_DECISION"; decisionId: string };
+  | { type: "LINK_DECISION"; decisionId: string }
+  /** volta ao retrato da versão `number` (fornecido pelo repositório, `ProjectRepository.versionSnapshot`) gerando uma versão nova */
+  | { type: "VERSION_RESTORE"; number: number; snapshot: ProjectSnapshot };
 
 export type CommandError =
   | "NAO_ENCONTRADO" | "TEXTO_VAZIO" | "CICLO" | "LIGACAO_INVALIDA" | "JA_EXISTE" | "PROJETO_BLOQUEADO" | "TRANSICAO_INVALIDA"
@@ -116,13 +120,35 @@ const CHANGE_FLOW: Record<ChangeStatus, readonly ChangeStatus[]> = {
   IMPLEMENTADA: [],
 };
 
+/** Retrato do projeto para o histórico (RF22.CA02 `snapshotJson`): tudo menos a lista de versões e o número da versão. */
+export function snapshotOf(model: ProjectModel): ProjectSnapshot {
+  const snap: Partial<ProjectModel> = { ...model };
+  delete snap.versions;
+  delete snap.version;
+  return snap as ProjectSnapshot;
+}
+
+/** Conta, na versão vigente, um ajuste de posição confirmado no canvas (sem gerar versão — RF22.CA03). */
+function withLayoutMove(model: ProjectModel, ctx: CommandContext): ProjectModel {
+  const last = model.versions.at(-1);
+  if (!last) return model;
+  return { ...model, versions: [...model.versions.slice(0, -1), { ...last, layoutMoves: (last.layoutMoves ?? 0) + 1, layoutAt: ctx.now.toISOString() }] };
+}
+
 /** Aplica o comando; alteração estrutural incrementa a versão e registra `ProjectVersion`. */
 export function applyCommand(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): CommandResult {
   const structural = !STRUCTURAL_FREE.has(cmd.type);
   if (structural && model.closure.archived && cmd.type !== "CLOSURE_UPDATE") return fail("PROJETO_BLOQUEADO");
   const r = reduce(model, cmd, ctx);
   if (!r.ok) return r;
-  if (!r.structural) return r;
+  if (!r.structural) {
+    if (cmd.type !== "CANVAS_MOVE") return r;
+    const before = model.canvas.positions[cmd.ref];
+    const after = r.model.canvas.positions[cmd.ref];
+    // soltar no mesmo lugar não muda nada (nem conta ajuste)
+    if (before && after && before.x === after.x && before.y === after.y) return { ...r, model };
+    return { ...r, model: withLayoutMove(r.model, ctx) };
+  }
   const number = model.version + 1;
   return {
     ...r,
@@ -186,6 +212,7 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       }
       if (patch.percentComplete !== undefined) patch.percentComplete = clamp(Math.round(patch.percentComplete), 0, 100);
       if (patch.durationDays !== undefined && !(patch.durationDays >= 0)) return fail("VALOR_INVALIDO", "durationDays");
+      if (patch.dueAt !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(patch.dueAt)) return fail("VALOR_INVALIDO", "dueAt");
       if (patch.budget !== undefined && !(patch.budget >= 0)) return fail("VALOR_INVALIDO", "budget");
       if (patch.actualCost !== undefined && !(patch.actualCost >= 0)) return fail("VALOR_INVALIDO", "actualCost");
       if (patch.wbsId && !model.wbs.some((n) => n.id === patch.wbsId)) return fail("NAO_ENCONTRADO", patch.wbsId);
@@ -648,6 +675,15 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
     case "LINK_DECISION":
       if (model.decisionIds.includes(cmd.decisionId)) return ok(model, false);
       return ok({ ...model, decisionIds: [...model.decisionIds, cmd.decisionId] }, true, "decisionLinked");
+
+    // ---------------- histórico (RF22.CA02) ----------------
+    case "VERSION_RESTORE": {
+      const n = Math.round(cmd.number);
+      if (!(n >= 1) || n >= model.version) return fail("VALOR_INVALIDO", "version");
+      if (!model.versions.some((v) => v.number === n) || !cmd.snapshot || cmd.snapshot.id !== model.id) return fail("NAO_ENCONTRADO", `v${n}`);
+      // estrutura, prazos e posições do canvas voltam juntos; o histórico continua (a volta vira a próxima versão)
+      return ok({ ...cmd.snapshot, id: model.id, versions: model.versions, version: model.version }, true, "versionRestored", { n });
+    }
   }
 }
 

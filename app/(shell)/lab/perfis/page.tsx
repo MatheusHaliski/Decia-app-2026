@@ -1,48 +1,64 @@
 "use client";
-// /lab/perfis: visibilidade das abas por perfil (ABAS_POR_PERFIL.md Matrizes A–E) com o perfil de VISUALIZAÇÃO do shell
-// (D-35). A tabela lê a mesma matriz que a sidebar usa; o wireframe docs/lab/perfis.html vem embaixo como referência.
+// /lab/perfis — Simulador de Perfis e Governança (D-35): troque o perfil de visualização do app (Empregado, Empresa, Chefe, Curador,
+// Admin, Visitante), compare dois perfis lado a lado com o porquê de cada permissão e siga os cenários guiados. Tudo lido da MESMA
+// matriz do registro (lib/pages/registry.ts) que alimenta a sidebar, o middleware e o 403 das páginas. A matriz completa e a Matriz B
+// (sub-abas do perfil) vêm embaixo; o wireframe docs/lab/perfis.html fica como referência.
 import { Fragment } from "react";
-import { Badge, Card, Glyph, Link, cn } from "@/components/ui";
+import { Badge, Card, Link, cn } from "@/components/ui";
 import { LabEmbed } from "@/components/shell/LabEmbed";
 import { PageHeader } from "@/components/shell/PageHeader";
 import { ViewerProfileSelect } from "@/components/shell/UserPanel";
+import { CellTag, ProfileSimulator } from "@/components/lab/ProfileSimulator";
+import { concreteHref, navGroupOf } from "@/components/lab/simulator";
 import { useI18n } from "@/lib/i18n/useI18n";
-import { NAV_GROUPS, resolveHref } from "@/lib/nav/matrix";
+import { NAV_GROUPS } from "@/lib/nav/matrix";
 import { PAGES, PROFILE_TABS } from "@/lib/pages/registry";
-import { VIEWER_PROFILES, type Access } from "@/lib/viewer/profiles";
+import { VIEWER_PROFILES } from "@/lib/viewer/profiles";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
-const CELL: Record<Access, string> = { E: "bg-ws-success-soft text-ws-success-ink", V: "bg-ws-info-soft text-ws-info-ink", O: "bg-ws-surface-2 text-ws-text-faint" };
+const GROUPS = [...NAV_GROUPS.map((g) => ({ id: g.id as string, labelKey: g.labelKey })), { id: "outras", labelKey: "labSim.group.outras" }];
 
 export default function PerfisLab() {
   const { t } = useI18n();
   const { profile, user } = useViewer();
   return (
     <div className="grid gap-[var(--ws-space-5)]">
-      <PageHeader title={t("lab.perfis")} glyph="perfil" rfs={["RF14", "RF15", "RF16"]} description={t("lab.perfisDescription")} eyebrow={t("common.lab")} actions={<ViewerProfileSelect />} />
-      <Card title={t("lab.matrixA")} eyebrow="ABAS_POR_PERFIL.md §2" padding="sm">
+      <PageHeader title={t("lab.perfis")} glyph="perfil" rfs={["RF14", "RF15", "RF16"]} description={t("labSim.pageDescription")} eyebrow={t("common.lab")} actions={<ViewerProfileSelect />} />
+      <ProfileSimulator />
+      <Card title={t("labSim.matrix.title")} eyebrow="lib/pages/registry.ts · ABAS_POR_PERFIL.md §2" padding="sm">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[length:var(--ws-text-caption)]">
+          <table className="w-full border-collapse text-[length:var(--ws-text-caption)]" data-testid="sim-matrix">
+            <caption className="sr-only">{t("labSim.matrix.caption")}</caption>
             <thead>
               <tr className="text-left">
-                <th className="p-2">{t("lab.item")}</th>
-                <th className="p-2">RF</th>
-                {VIEWER_PROFILES.map((p) => <th key={p} className={cn("p-2 text-center", p === profile && "bg-ws-accent-soft")}>{t(`profile.${p}`)}</th>)}
+                <th scope="col" className="p-2">{t("lab.item")}</th>
+                <th scope="col" className="p-2">RF</th>
+                {VIEWER_PROFILES.map((p) => <th key={p} scope="col" className={cn("p-2 text-center", p === profile && "bg-ws-accent-soft")}>{t(`profile.${p}`)}</th>)}
               </tr>
             </thead>
             <tbody>
-              {NAV_GROUPS.map((g) => (
-                <Fragment key={g.id}>
-                  <tr><td colSpan={2 + VIEWER_PROFILES.length} className="p-2 pt-3 font-[family-name:var(--ws-font-mono)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{t(g.labelKey)}</td></tr>
-                  {g.items.map((item) => (
-                    <tr key={item.id} className="border-t border-ws-border">
-                      <td className="p-2"><Link href={resolveHref(item, user)} variant="plain" className="inline-flex items-center gap-1.5 hover:underline"><Glyph name={item.glyph} size={16} decorative />{t(item.labelKey)}{item.proposal ? <Badge tone="spark">{t("common.proposal")}</Badge> : null}</Link></td>
-                      <td className="p-2 font-[family-name:var(--ws-font-mono)]">{item.rfs.join(" ")}</td>
-                      {VIEWER_PROFILES.map((p) => <td key={p} className={cn("p-2 text-center font-bold", CELL[item.access[p]], p === profile && "outline outline-1 outline-ws-accent")}>{item.access[p]}</td>)}
-                    </tr>
-                  ))}
-                </Fragment>
-              ))}
+              {GROUPS.map((g) => {
+                const pages = PAGES.filter((p) => (navGroupOf(p.route) ?? "outras") === g.id);
+                if (!pages.length) return null;
+                return (
+                  <Fragment key={g.id}>
+                    <tr><th scope="colgroup" colSpan={2 + VIEWER_PROFILES.length} className="p-2 pt-3 text-left font-[family-name:var(--ws-font-mono)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{t(g.labelKey)}</th></tr>
+                    {pages.map((pg) => (
+                      <tr key={pg.route} className="border-t border-ws-border">
+                        <th scope="row" className="p-2 text-left font-normal">
+                          <Link href={concreteHref(pg.route, user)} variant="plain" className="hover:underline">{t(pg.titleKey)}</Link>
+                          {pg.note === "proposal" ? <Badge tone="spark" className="ml-1">{t("common.proposal")}</Badge> : null}
+                          <span className="block font-[family-name:var(--ws-font-mono)] text-ws-text-muted">{pg.route}</span>
+                        </th>
+                        <td className="p-2 font-[family-name:var(--ws-font-mono)]">{pg.rfs.slice(0, 3).join(" ")}</td>
+                        {VIEWER_PROFILES.map((p) => (
+                          <td key={p} className={cn("p-2 text-center", p === profile && "outline outline-1 outline-ws-accent")}><CellTag cell={pg.access[p]} /></td>
+                        ))}
+                      </tr>
+                    ))}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -53,20 +69,11 @@ export default function PerfisLab() {
             <li key={tb.slug} className="flex items-center gap-2 rounded-[var(--ws-radius-sm)] p-1">
               <Badge tone={tb.thirdParty ? "info" : "neutral"}>{tb.n}</Badge>
               <span className={cn(tb.hiddenFor?.includes(profile) && "line-through text-ws-text-faint")}>{t(tb.labelKey)}</span>
+              {tb.hiddenFor?.includes(profile) ? <span className="sr-only">{t("labSim.cell.O")}</span> : null}
               {tb.thirdParty ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("lab.public")}</span> : null}
             </li>
           ))}
         </ol>
-      </Card>
-      <Card title={t("lab.pagesByProfile")} eyebrow="lib/pages/registry.ts" padding="sm">
-        <ul className="grid gap-1 text-[length:var(--ws-text-caption)] sm:grid-cols-2 md:grid-cols-3">
-          {PAGES.map((pg) => (
-            <li key={pg.route} className={cn("flex items-center justify-between gap-2 rounded-[var(--ws-radius-sm)] px-2 py-1", CELL[pg.access[profile]])}>
-              <Link href={pg.route.replace("[slug]", user.companySlug ?? "secretaria-exemplo").replace("[username]", "pessoa.exemplo").replace("[id]", "exemplo").replace("[sessionId]", "exemplo").replace("[conversationId]", "exemplo")} variant="plain" className="truncate font-[family-name:var(--ws-font-mono)] hover:underline">{pg.route}</Link>
-              <span className="font-bold">{pg.access[profile]}</span>
-            </li>
-          ))}
-        </ul>
       </Card>
       <LabEmbed file="perfis.html" title={t("lab.perfis")} source="docs/lab/perfis.html" />
     </div>

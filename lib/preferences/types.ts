@@ -5,6 +5,7 @@
  */
 import { AUTONOMY_MODES, type AutonomyMode } from "@/lib/ai/autonomy";
 import { DEFAULT_LOCALE, fromServerLanguage, isLocale, toServerLanguage, type Locale } from "@/lib/i18n/state";
+import { FIELD_INDEX } from "@/lib/tasks/fieldIndex.gen";
 
 export const THEMES = ["auto", "claro", "escuro", "contraste", "terminal"] as const;
 export type Theme = (typeof THEMES)[number];
@@ -48,6 +49,13 @@ export interface UserPreferences {
    * proprietário. Viaja dentro de `notificationPrefsJson` (mesmo caminho do `backgroundId`, Q-100) até haver coluna própria.
    */
   aiAutonomyDefault: AutonomyMode;
+  /**
+   * Profissão preferida (RF81, D-148): código de um dos 79 ramos do catálogo `contracts/career/academic-fields.json` (validado pelo
+   * índice gerado dele, `lib/tasks/fieldIndex.gen.ts`), ou `null` ("ainda não sei"). Privada (D-147): só o dono vê e usa — pré-seleciona
+   * o campo de estudo no criador de tarefas e monta o plano de desenvolvimento; nunca aparece no perfil, para a empresa, em busca ou em
+   * agregado. Viaja dentro de `notificationPrefsJson` (como `aiAutonomyDefault`) e, sem sessão, só na aba (nunca no `localStorage`).
+   */
+  preferredOccupation: string | null;
 }
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -64,9 +72,15 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   aiModeDefault: "economia",
   // conservador: a IA só responde quando acionada (RF51; nenhuma intervenção espontânea sem escolha da pessoa)
   aiAutonomyDefault: "SOB_SOLICITACAO",
+  // opcional: sem profissão vale o genérico e a pessoa escolhe quando quiser (RF81.CA07)
+  preferredOccupation: null,
 };
 
 const inList = <T extends readonly unknown[]>(list: T, v: unknown): v is T[number] => list.includes(v);
+
+const OCCUPATION_CODES: ReadonlySet<string> = new Set(FIELD_INDEX.map((f) => f.code));
+/** Código de ramo do catálogo versionado (RF81.CA02: código fora do catálogo não é aceito). */
+export const isOccupationCode = (v: unknown): v is string => typeof v === "string" && OCCUPATION_CODES.has(v);
 
 /**
  * Fuso válido: `UTC` ou um nome IANA `Area/Cidade` (ex.: `America/Sao_Paulo`) que o runtime conheça. O backend aceita
@@ -107,6 +121,7 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
     wipLimit: Number.isInteger(wip) && wip >= 1 && wip <= 20 ? wip : DEFAULT_PREFERENCES.wipLimit,
     aiModeDefault: inList(AI_MODES, r.aiModeDefault) ? r.aiModeDefault : DEFAULT_PREFERENCES.aiModeDefault,
     aiAutonomyDefault: inList(AUTONOMY_MODES, r.aiAutonomyDefault) ? r.aiAutonomyDefault : DEFAULT_PREFERENCES.aiAutonomyDefault,
+    preferredOccupation: isOccupationCode(r.preferredOccupation) ? r.preferredOccupation : null,
   };
 }
 
@@ -124,7 +139,7 @@ export function toServer(p: UserPreferences) {
     fontScale: Number((p.fontScale / 100).toFixed(2)),
     reduceMotion: p.reduceMotion,
     deskSkin: p.deskSkin.toUpperCase().replace("-", "_"),
-    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId, aiAutonomyDefault: p.aiAutonomyDefault }),
+    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId, aiAutonomyDefault: p.aiAutonomyDefault, preferredOccupation: p.preferredOccupation }),
     timezone: p.timezone,
     wipLimit: p.wipLimit,
     aiModeDefault: p.aiModeDefault.toUpperCase(),
@@ -141,6 +156,7 @@ export function fromServer(raw: unknown): UserPreferences {
   const fontScale = Number.isFinite(fs) ? (fs <= 2 ? Math.round(fs * 100) : fs) : undefined;
   const nb = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).backgroundId : undefined);
   const autonomy = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).aiAutonomyDefault : undefined);
+  const occupation = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).preferredOccupation : undefined);
   return sanitizePreferences({
     ...r,
     theme,
@@ -152,5 +168,6 @@ export function fromServer(raw: unknown): UserPreferences {
     backgroundId: typeof nb === "string" ? nb : undefined,
     aiModeDefault: typeof r.aiModeDefault === "string" ? r.aiModeDefault.toLowerCase() : undefined,
     aiAutonomyDefault: autonomy,
+    preferredOccupation: occupation,
   });
 }

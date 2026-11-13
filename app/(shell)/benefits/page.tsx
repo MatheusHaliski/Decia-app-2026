@@ -1,10 +1,10 @@
 "use client";
-// Página-esqueleto gerada para a rota /benefits (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { RfPage } from "@/components/shell/RfPage";
+// Benefícios (RF39.CA09, CA10): liberados pelas chancelas aprovadas, resgate com confirmação e publicação pelo emissor (DEMO).
+import { BenefitsPage } from "@/components/seals/BenefitsPage";
 import { pageByRoute } from "@/lib/pages/registry";
 
 const PAGE = pageByRoute("/benefits")!;
 
 export default function Page() {
-  return <RfPage page={PAGE} />;
+  return <BenefitsPage page={PAGE} />;
 }

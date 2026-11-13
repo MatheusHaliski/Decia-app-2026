@@ -1,18 +1,23 @@
 // @vitest-environment jsdom
 /**
  * Acervo por área (RF4 + RF81): escolher a área configura o formulário, os modelos da área e do campo de estudo preenchem a
- * tarefa, e o feedback de qualidade se atualiza e corrige com um clique.
+ * tarefa, e o feedback de qualidade se atualiza e corrige com um clique. Profissão preferida (D-147): o campo vem pré-selecionado
+ * só no criador do dono, marcado e trocável, e só fica gravado na tarefa com confirmação. Rascunho de outra tela (`?rascunho=`):
+ * preenche, mostra a origem, descarta e some depois de salvar. D-153: pacote em pesquisa sem status nem versão na tela.
  */
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AREA_TEMPLATES } from "@/lib/tasks/areaTemplates";
+import { loadTaskDraft, saveTaskDraft } from "@/lib/tasks/drafts";
+import type { TaskView } from "@/lib/tasks/client";
 import { renderWithProviders } from "@/test-utils/render";
 import { TaskForm } from "./TaskForm";
 
+const nav = vi.hoisted(() => ({ search: new URLSearchParams() }));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), refresh: vi.fn() }),
   usePathname: () => "/tasks/new",
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => nav.search,
   useParams: () => ({}),
 }));
 
@@ -36,6 +41,8 @@ beforeEach(() => {
     return json(404, { code: "NAO_ENCONTRADO" });
   });
   window.localStorage.clear();
+  window.sessionStorage.clear();
+  nav.search = new URLSearchParams();
 });
 afterEach(() => vi.unstubAllGlobals());
 
@@ -107,5 +114,137 @@ describe("assistente da área no criador de tarefas", () => {
     renderWithProviders(<TaskForm mode="create" templateId={tpl.id} onSaved={vi.fn()} />);
     expect((screen.getByLabelText(/Título/) as HTMLInputElement).value).toBe(tpl.title);
     expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("ENGENHARIA");
+  });
+});
+
+describe("profissão preferida no criador (RF81, D-147): só para o dono, marcada e trocável", () => {
+  const field = () => within(assist()).getByLabelText(/Campo de estudo/) as HTMLSelectElement;
+
+  it("o campo vem da profissão; área, extensões, modelos e checagem se adaptam; o plano aparece; trocar tira a marca", { timeout: 20_000 }, async () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />, { prefs: { preferredOccupation: "engenharia-civil" } });
+    await waitFor(() => expect(field().value).toBe("engenharia-civil"));
+    expect(screen.getByTestId("lens-from-profession").textContent).toContain("A partir da sua profissão — só você vê");
+    expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("ENGENHARIA");
+    expect(within(screen.getByTestId("area-fields")).getByLabelText("Norma técnica")).toBeTruthy();
+    expect(check("engNorma")!.getAttribute("data-status")).toBe("AVISO");
+    // D-153: o pacote (em pesquisa) aparece "em revisão por especialistas", sem status nem versão
+    await waitFor(() => expect(screen.getByTestId("pack-info").textContent).toContain("em revisão por especialistas"), { timeout: 8000 });
+    expect(screen.getByTestId("pack-info").textContent).not.toMatch(/\(pesquisa\)|v\d{4}\./);
+    expect(await within(assist()).findByText(/Do campo · Engenharia Civil/, {}, { timeout: 8000 })).toBeTruthy();
+    expect(screen.getByTestId("development-plan").textContent).toContain("Seu plano de desenvolvimento · Engenharia Civil");
+    fireEvent.change(field(), { target: { value: "arquitetura-e-urbanismo" } });
+    expect(field().value).toBe("arquitetura-e-urbanismo");
+    expect(screen.queryByTestId("lens-from-profession")).toBeNull();
+  });
+
+  it("a lente sugerida só vai para a tarefa depois de confirmada", { timeout: 20_000 }, async () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />, { prefs: { preferredOccupation: "direito" } });
+    await waitFor(() => expect(field().value).toBe("direito"));
+    fireEvent.change(screen.getByLabelText(/Título/), { target: { value: "Parecer sobre o contrato de suporte" } });
+    fireEvent.click(screen.getByTestId("task-submit"));
+    await waitFor(() => expect(bodies.length).toBe(1), { timeout: 8000 });
+    expect(bodies[0]).toMatchObject({ area: "JURIDICO", type: "DOCUMENTO" });
+    expect((bodies[0]!.extensions as Record<string, string>).studyField).toBeUndefined();
+    // sem lembrar a profissão como "campo usado" sem confirmação
+    expect(window.localStorage.getItem(`ws.tasks.studyField:${ME}`)).toBeNull();
+    fireEvent.click(screen.getByTestId("lens-confirm"));
+    expect(screen.getByTestId("lens-from-profession").getAttribute("data-confirmed")).toBe("true");
+    fireEvent.click(screen.getByTestId("task-submit"));
+    await waitFor(() => expect(bodies.length).toBe(2), { timeout: 8000 });
+    expect((bodies[1]!.extensions as Record<string, string>).studyField).toBe("direito");
+  });
+
+  it("usar um modelo do plano da profissão confirma a lente e grava a tarefa-guia de origem", { timeout: 20_000 }, async () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />, { prefs: { preferredOccupation: "direito" } });
+    await waitFor(() => expect(field().value).toBe("direito"));
+    const plan = screen.getByTestId("development-plan");
+    fireEvent.click(within(plan).getByText(/Seu plano de desenvolvimento/));
+    const create = await within(plan).findAllByRole("button", { name: /^Criar a tarefa / }, { timeout: 8000 });
+    // sem códigos internos (L/D/X) no plano
+    expect(plan.textContent).not.toMatch(/\b[LDX](10|[1-9])\b/);
+    fireEvent.click(create[0]!);
+    await waitFor(() => expect(screen.getByTestId("lens-from-profession").getAttribute("data-confirmed")).toBe("true"));
+    fireEvent.click(screen.getByTestId("task-submit"));
+    await waitFor(() => expect(bodies.length).toBe(1), { timeout: 8000 });
+    const ext = bodies[0]!.extensions as Record<string, string>;
+    expect(ext.studyField).toBe("direito");
+    expect(ext.guidedTask).toMatch(/^[LDX]\d{1,2}$/);
+  });
+
+  it("na edição de uma tarefa existente e para o visitante não há pré-seleção nem plano", async () => {
+    const existing: TaskView = { id: "33333333-3333-4333-8333-333333333333", version: 2, ownerId: ME, title: "Relatório", type: "DOCUMENTO", priority: "MEDIA", state: "DISPONIVEL", accessClass: "INTERNO", visibility: "PRIVADA", extensions: {}, editable: true };
+    const { unmount } = renderWithProviders(<TaskForm mode="edit" initial={existing} onSaved={vi.fn()} />, { prefs: { preferredOccupation: "direito" } });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(field().value).toBe("");
+    expect(screen.queryByTestId("lens-from-profession")).toBeNull();
+    expect(screen.queryByTestId("development-plan")).toBeNull();
+    unmount();
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />, { prefs: { preferredOccupation: "direito" }, profile: "VISITANTE" });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(field().value).toBe("");
+    expect(screen.queryByTestId("development-plan")).toBeNull();
+  });
+
+  it("modelo de outra área pedido pela URL não ganha a lente da profissão", async () => {
+    const tpl = AREA_TEMPLATES.find((t) => t.area === "SOFTWARE")!;
+    renderWithProviders(<TaskForm mode="create" templateId={tpl.id} onSaved={vi.fn()} />, { prefs: { preferredOccupation: "direito" } });
+    expect((screen.getByLabelText(/Título/) as HTMLInputElement).value).toBe(tpl.title);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("SOFTWARE");
+    expect(field().value).toBe("");
+    expect(screen.queryByTestId("lens-from-profession")).toBeNull();
+  });
+});
+
+describe("rascunho entregue por outra tela (?rascunho=<id>)", () => {
+  it("preenche o formulário, mostra de onde veio e apaga o rascunho depois de salvar", async () => {
+    const id = saveTaskDraft({
+      draft: { title: "Quantitativo da planta baixa", type: "DESENHO_TECNICO", area: "ENGENHARIA", objective: "Levantar 120 m² de alvenaria até sexta", deliverables: ["Planilha de quantitativos"], criteria: ["Áreas conferem com a planta"], extensions: { standard: "NBR 12721" } },
+      origin: { kind: "CAD", label: "planta-terreo.dxf", ref: "Projeto Sede" },
+    });
+    nav.search = new URLSearchParams({ rascunho: id });
+    const onSaved = vi.fn();
+    renderWithProviders(<TaskForm mode="create" onSaved={onSaved} />);
+    const banner = await screen.findByTestId("task-draft-origin");
+    expect(banner.textContent).toContain("Rascunho vindo de planta-terreo.dxf");
+    expect(banner.textContent).toContain("Projeto Sede");
+    expect(banner.getAttribute("data-origin")).toBe("CAD");
+    expect((screen.getByLabelText(/Título/) as HTMLInputElement).value).toBe("Quantitativo da planta baixa");
+    expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("ENGENHARIA");
+    expect((screen.getByLabelText("Norma técnica") as HTMLInputElement).value).toBe("NBR 12721");
+    expect(screen.getByTestId("criteria").querySelectorAll("li").length).toBe(1);
+    expect(screen.getByTestId("task-dirty").textContent).toBe("Alterações não salvas");
+    fireEvent.click(screen.getByTestId("task-submit"));
+    await waitFor(() => expect(onSaved).toHaveBeenCalled());
+    expect(bodies[0]).toMatchObject({ title: "Quantitativo da planta baixa", type: "DESENHO_TECNICO", area: "ENGENHARIA", extensions: { standard: "NBR 12721" } });
+    expect(loadTaskDraft(id)).toBeNull();
+    expect(screen.queryByTestId("task-draft-origin")).toBeNull();
+  });
+
+  it("descartar limpa o formulário e o rascunho; rascunho vencido ou inexistente só avisa", async () => {
+    const id = saveTaskDraft({ draft: { title: "Ação da ata de 10/11", criteria: ["Responsável definido"] }, origin: { kind: "ATA", label: "Reunião do comitê" } });
+    const { unmount } = renderWithProviders(<TaskForm mode="create" draftId={id} onSaved={vi.fn()} />);
+    expect((await screen.findByTestId("task-draft-origin")).textContent).toContain("Reunião do comitê");
+    expect((screen.getByLabelText(/Título/) as HTMLInputElement).value).toBe("Ação da ata de 10/11");
+    fireEvent.click(screen.getByTestId("task-draft-discard"));
+    expect(screen.queryByTestId("task-draft-origin")).toBeNull();
+    expect((screen.getByLabelText(/Título/) as HTMLInputElement).value).toBe("");
+    expect(loadTaskDraft(id)).toBeNull();
+    unmount();
+    renderWithProviders(<TaskForm mode="create" draftId="abcdefgh99" onSaved={vi.fn()} />);
+    expect((await screen.findByTestId("task-draft-missing")).textContent).toContain("não está mais disponível");
+  });
+
+  it("conteúdo inválido no rascunho não entra (tipo, área e acesso fora da lista, campos que não são texto)", async () => {
+    const id = saveTaskDraft({
+      draft: { title: "Ok", type: "HACK" as never, area: "MARTE" as never, accessClass: "TOTAL" as never, criteria: ["válido", 3 as never], extensions: { "bad key": "x", note: "fica" } },
+      origin: { kind: "OUTRO", label: "Outra tela" },
+    });
+    renderWithProviders(<TaskForm mode="create" draftId={id} onSaved={vi.fn()} />);
+    await screen.findByTestId("task-draft-origin");
+    expect((screen.getByLabelText(/^Tipo/) as HTMLSelectElement).value).toBe("");
+    expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("");
+    expect((screen.getByLabelText(/^Classificação/) as HTMLSelectElement).value).toBe("INTERNO");
+    expect(screen.getByTestId("criteria").querySelectorAll("li").length).toBe(1);
   });
 });

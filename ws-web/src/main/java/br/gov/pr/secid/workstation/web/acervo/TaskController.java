@@ -1,5 +1,13 @@
 package br.gov.pr.secid.workstation.web.acervo;
 
+import br.gov.pr.secid.workstation.application.acervo.AcervoQuery;
+import br.gov.pr.secid.workstation.application.acervo.AcervoQuery.DeadlineFilter;
+import br.gov.pr.secid.workstation.application.acervo.AcervoQuery.SortOrder;
+import br.gov.pr.secid.workstation.application.acervo.AcervoQuery.WorkFilter;
+import br.gov.pr.secid.workstation.application.acervo.AcervoService;
+import br.gov.pr.secid.workstation.application.acervo.AcervoSummary;
+import br.gov.pr.secid.workstation.application.acervo.LegalDeadlineService;
+import br.gov.pr.secid.workstation.application.acervo.LegalDeadlineService.LegalDeadlineInput;
 import br.gov.pr.secid.workstation.application.acervo.TaskBriefParts.Criterion;
 import br.gov.pr.secid.workstation.application.acervo.TaskBriefParts.Deliverable;
 import br.gov.pr.secid.workstation.application.acervo.TaskBriefParts.Reference;
@@ -39,17 +47,22 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * RF4/RF12/RF41 — criador, edição e estados das tarefas do próprio acervo (auditoria 17/10/2026). Autorização de recurso no serviço
- * ({@code ResourceAuthorizer.require}, VIEW/EDIT); o invisível responde 404 igual a inexistente. Os limites de tamanho e formato das
- * listas do briefing são validados no serviço e voltam juntos em 422 VALIDACAO.
+ * RF4/RF12/RF41 — criador, edição e estados das tarefas do próprio acervo (auditoria 17/10/2026), sub-filtros/ordenação/página e contadores
+ * do Acervo e o prazo legal da tarefa (12/11/2026). Autorização de recurso no serviço ({@code ResourceAuthorizer.require}, VIEW/EDIT); o
+ * invisível responde 404 igual a inexistente. Os limites de tamanho e formato das listas do briefing são validados no serviço e voltam
+ * juntos em 422 VALIDACAO; filtro com valor fora da lista responde 400 PARAMETRO_INVALIDO.
  */
 @RestController
 @Tag(name = "RF4 Tarefas")
 public class TaskController {
     private final TaskService tasks;
+    private final AcervoService acervo;
+    private final LegalDeadlineService legal;
 
-    public TaskController(TaskService tasks) {
+    public TaskController(TaskService tasks, AcervoService acervo, LegalDeadlineService legal) {
         this.tasks = tasks;
+        this.acervo = acervo;
+        this.legal = legal;
     }
 
     /** Corpo do criador/edição; {@code version} só é exigido na edição. */
@@ -67,6 +80,10 @@ public class TaskController {
                                     @NotNull Long version) {
     }
 
+    /** Prazo legal da tarefa: regra do catálogo e data de início (ciência/recebimento); {@code ruleId} nulo limpa. O vencimento é calculado. */
+    public record LegalDeadlineRequest(UUID ruleId, LocalDate startDate, @NotNull Long version) {
+    }
+
     @Operation(summary = "RF4.CA01 Criar tarefa (campos comuns + briefing por área)")
     @PostMapping("/api/tasks")
     @ResponseStatus(HttpStatus.CREATED)
@@ -74,10 +91,41 @@ public class TaskController {
         return tasks.create(user, body.toInput(), ctx);
     }
 
-    @Operation(summary = "RF41.CA01 Minhas tarefas (mais recentes primeiro)")
+    @Operation(summary = "RF41.CA01/CA09 Minhas tarefas com sub-filtros (estado de trabalho, categoria, prioridade, prazo), ordenação e página "
+            + "(sem filtros: mais recentes primeiro; limit = itens sem page; size padrão 20 com page)")
     @GetMapping("/api/tasks")
-    public List<TaskView> mine(CurrentUser user, @RequestParam(defaultValue = "50") int limit) {
-        return tasks.listMine(user, limit);
+    public List<TaskView> mine(CurrentUser user, @RequestParam(defaultValue = "50") int limit,
+                               @RequestParam(required = false) WorkFilter filtro, @RequestParam(required = false) TaskCategory categoria,
+                               @RequestParam(required = false) Priority prioridade, @RequestParam(required = false) DeadlineFilter prazo,
+                               @RequestParam(required = false) SortOrder ordem, @RequestParam(required = false) Integer page,
+                               @RequestParam(required = false) Integer size) {
+        return acervo.list(user, query(limit, filtro, categoria, prioridade, prazo, ordem, page, size));
+    }
+
+    @Operation(summary = "RF41.CA01/CA04 Contadores do Acervo para os mesmos filtros (cada contador ignora o próprio filtro) e alertas de "
+            + "prazo legal (vencidos, hoje e em até 7 dias)")
+    @GetMapping("/api/tasks/summary")
+    public AcervoSummary acervoSummary(CurrentUser user, @RequestParam(required = false) WorkFilter filtro,
+                                             @RequestParam(required = false) TaskCategory categoria, @RequestParam(required = false) Priority prioridade,
+                                       @RequestParam(required = false) DeadlineFilter prazo) {
+        return acervo.summary(user, new AcervoQuery(filtro, categoria, prioridade, prazo, SortOrder.CRIACAO, 1, AcervoQuery.DEFAULT_SIZE));
+    }
+
+    /** Página e tamanho validados (400 PARAMETRO_INVALIDO); sem page, o antigo {@code limit} (1–100) define quantos itens vêm. */
+    static AcervoQuery query(int limit, WorkFilter filtro, TaskCategory categoria, Priority prioridade, DeadlineFilter prazo, SortOrder ordem,
+                             Integer page, Integer size) {
+        if (page != null && page < 1) {
+            throw invalidParam("page");
+        }
+        if (size != null && (size < 1 || size > AcervoQuery.MAX_SIZE)) {
+            throw invalidParam("size");
+        }
+        int pageSize = size != null ? size : page != null ? AcervoQuery.DEFAULT_SIZE : Math.max(1, Math.min(limit, AcervoQuery.MAX_SIZE));
+        return new AcervoQuery(filtro, categoria, prioridade, prazo, ordem, page == null ? 1 : page, pageSize);
+    }
+
+    private static ApiException invalidParam(String name) {
+        return ApiException.badRequest("PARAMETRO_INVALIDO", "Parâmetro ausente ou inválido: " + name + ".", Map.of("parameter", name));
     }
 
     @Operation(summary = "RF12.CA01 Abrir tarefa")
@@ -104,5 +152,14 @@ public class TaskController {
     public TaskView transition(CurrentUser user, @PathVariable UUID id, @Valid @RequestBody TransitionRequest body, RequestContext ctx) {
         return tasks.transition(user, id, new TransitionInput(body.to(), body.reason(), body.blockedByTaskId(), body.blockedByUserId(),
                 body.version()), ctx);
+    }
+
+    @Operation(summary = "RF41.CA04/RF20.CA11 Define ou limpa o prazo legal (regra do catálogo + data de início; o vencimento é calculado em "
+            + "dias corridos ou úteis com os feriados nacionais; 409 TAREFA_BLOQUEADA, 409 EDICAO_CONCORRENTE, 422 VALIDACAO)")
+    @PutMapping("/api/tasks/{id}/legal-deadline")
+    @AuthorizedBy("require")
+    public TaskView setLegalDeadline(CurrentUser user, @PathVariable UUID id, @Valid @RequestBody LegalDeadlineRequest body,
+                                     RequestContext ctx) {
+        return legal.apply(user, id, new LegalDeadlineInput(body.ruleId(), body.startDate(), body.version()), ctx);
     }
 }

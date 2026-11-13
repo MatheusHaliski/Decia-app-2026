@@ -1,6 +1,110 @@
 {
   "components" : {
     "schemas" : {
+      "AcervoSummary" : {
+        "properties" : {
+          "byCategory" : {
+            "additionalProperties" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "object"
+          },
+          "byDeadline" : {
+            "additionalProperties" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "object"
+          },
+          "byPriority" : {
+            "additionalProperties" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "object"
+          },
+          "byWorkStatus" : {
+            "additionalProperties" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "object"
+          },
+          "legalAlertCount" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "legalAlerts" : {
+            "items" : {
+              "$ref" : "#/components/schemas/LegalAlert"
+            },
+            "type" : "array"
+          },
+          "scanned" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "today" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "total" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "truncated" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "AttachmentView" : {
+        "properties" : {
+          "available" : {
+            "type" : "boolean"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "evidence" : {
+            "$ref" : "#/components/schemas/EvidenceView"
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "image" : {
+            "type" : "boolean"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "primary" : {
+            "type" : "boolean"
+          },
+          "scanStatus" : {
+            "enum" : [ "PENDENTE", "LIMPO", "INFECTADO", "NAO_VERIFICADO" ],
+            "type" : "string"
+          },
+          "sizeBytes" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "taskId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "taskTitle" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "Availability" : {
         "properties" : {
           "available" : {
@@ -453,6 +557,71 @@
         "required" : [ "email" ],
         "type" : "object"
       },
+      "EvidenceRequest" : {
+        "properties" : {
+          "caption" : {
+            "maxLength" : 500,
+            "type" : "string"
+          },
+          "latitude" : {
+            "description" : "graus decimais; só com longitude",
+            "example" : "-25.4284",
+            "type" : "string"
+          },
+          "longitude" : {
+            "description" : "graus decimais; só com latitude",
+            "example" : "-49.2733",
+            "type" : "string"
+          },
+          "takenAt" : {
+            "description" : "data e hora da captura, ISO-8601 com fuso",
+            "example" : "2026-11-12T13:30:00Z",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "EvidenceView" : {
+        "properties" : {
+          "attachmentId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "caption" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "hasLocation" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "string"
+          },
+          "longitude" : {
+            "type" : "string"
+          },
+          "ownerId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "takenAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "taskId" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "ExternalItemView" : {
         "properties" : {
           "exportFormats" : {
@@ -546,6 +715,88 @@
           },
           "sentAt" : {
             "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "LegalAlert" : {
+        "properties" : {
+          "daysLeft" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "legalDueAt" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "state" : {
+            "enum" : [ "RASCUNHO", "DISPONIVEL", "EM_USO", "BLOQUEADA", "CONCLUIDA", "ARQUIVADA", "MODELO_PUBLICO", "OFERECIDA" ],
+            "type" : "string"
+          },
+          "taskId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "LegalDeadlineRequest" : {
+        "properties" : {
+          "ruleId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "startDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "version" ],
+        "type" : "object"
+      },
+      "LegalDeadlineRuleView" : {
+        "properties" : {
+          "businessDays" : {
+            "type" : "boolean"
+          },
+          "category" : {
+            "enum" : [ "OFICIO_MEMORANDO", "PARECER_TECNICO", "ETP", "TERMO_REFERENCIA", "PLANILHA_ORCAMENTARIA", "PROJETO_BASICO_EXECUTIVO", "CRONOGRAMA", "ATA", "PORTARIA_RESOLUCAO", "CONTRATO_CONVENIO", "VISTORIA_RELATORIO_FOTOGRAFICO", "LICENCA_ANUENCIA", "MAPA_GEORREFERENCIA", "FORMULARIO", "OUTRO" ],
+            "type" : "string"
+          },
+          "companyRule" : {
+            "type" : "boolean"
+          },
+          "days" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "legalBasis" : {
+            "type" : "string"
+          },
+          "subcategory" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "validTo" : {
+            "format" : "date",
             "type" : "string"
           }
         },
@@ -1455,6 +1706,18 @@
             "format" : "uuid",
             "type" : "string"
           },
+          "legalDeadlineBaseDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "legalDeadlineRuleId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "legalDueAt" : {
+            "format" : "date",
+            "type" : "string"
+          },
           "linkMode" : {
             "enum" : [ "VINCULADO", "COPIADO" ],
             "type" : "string"
@@ -1698,6 +1961,38 @@
   },
   "openapi" : "3.1.0",
   "paths" : {
+    "/api/attachments" : {
+      "get" : {
+        "operationId" : "myAttachments",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 100,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/AttachmentView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA06 Meus anexos e evidências (anexos das minhas tarefas, mais recentes primeiro, com o título da tarefa)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
     "/api/auth/email-verification/confirm" : {
       "post" : {
         "operationId" : "confirm_2",
@@ -3001,6 +3296,28 @@
         "tags" : [ "RF14/RF15 Institucional" ]
       }
     },
+    "/api/legal-deadlines" : {
+      "get" : {
+        "operationId" : "legalDeadlineRules",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/LegalDeadlineRuleView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA04 Regras de prazo legal (categoria/subcategoria, dias corridos ou úteis, base legal)",
+        "tags" : [ "RF41 Prazos legais" ]
+      }
+    },
     "/api/me" : {
       "get" : {
         "operationId" : "me",
@@ -3739,6 +4056,62 @@
             "format" : "int32",
             "type" : "integer"
           }
+        }, {
+          "in" : "query",
+          "name" : "filtro",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "A_REALIZAR", "EM_ANDAMENTO", "BLOQUEADO", "CONCLUIDO", "ARQUIVADO", "PUBLICADO" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "categoria",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "OFICIO_MEMORANDO", "PARECER_TECNICO", "ETP", "TERMO_REFERENCIA", "PLANILHA_ORCAMENTARIA", "PROJETO_BASICO_EXECUTIVO", "CRONOGRAMA", "ATA", "PORTARIA_RESOLUCAO", "CONTRATO_CONVENIO", "VISTORIA_RELATORIO_FOTOGRAFICO", "LICENCA_ANUENCIA", "MAPA_GEORREFERENCIA", "FORMULARIO", "OUTRO" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "prioridade",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "BAIXA", "MEDIA", "ALTA", "CRITICA" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "prazo",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "COM_PRAZO_LEGAL", "VENCE_7_DIAS", "ATRASADAS" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ordem",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "CRIACAO", "ATUALIZACAO", "PRAZO", "PRIORIDADE" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -3755,7 +4128,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "RF41.CA01 Minhas tarefas (mais recentes primeiro)",
+        "summary" : "RF41.CA01/CA09 Minhas tarefas com sub-filtros (estado de trabalho, categoria, prioridade, prazo), ordenação e página (sem filtros: mais recentes primeiro; limit = itens sem page; size padrão 20 com page)",
         "tags" : [ "RF4 Tarefas" ]
       },
       "post" : {
@@ -3783,6 +4156,58 @@
           }
         },
         "summary" : "RF4.CA01 Criar tarefa (campos comuns + briefing por área)",
+        "tags" : [ "RF4 Tarefas" ]
+      }
+    },
+    "/api/tasks/summary" : {
+      "get" : {
+        "operationId" : "acervoSummary",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "filtro",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "A_REALIZAR", "EM_ANDAMENTO", "BLOQUEADO", "CONCLUIDO", "ARQUIVADO", "PUBLICADO" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "categoria",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "OFICIO_MEMORANDO", "PARECER_TECNICO", "ETP", "TERMO_REFERENCIA", "PLANILHA_ORCAMENTARIA", "PROJETO_BASICO_EXECUTIVO", "CRONOGRAMA", "ATA", "PORTARIA_RESOLUCAO", "CONTRATO_CONVENIO", "VISTORIA_RELATORIO_FOTOGRAFICO", "LICENCA_ANUENCIA", "MAPA_GEORREFERENCIA", "FORMULARIO", "OUTRO" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "prioridade",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "BAIXA", "MEDIA", "ALTA", "CRITICA" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "prazo",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "COM_PRAZO_LEGAL", "VENCE_7_DIAS", "ATRASADAS" ],
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AcervoSummary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA01/CA04 Contadores do Acervo para os mesmos filtros (cada contador ignora o próprio filtro) e alertas de prazo legal (vencidos, hoje e em até 7 dias)",
         "tags" : [ "RF4 Tarefas" ]
       }
     },
@@ -3847,6 +4272,358 @@
           }
         },
         "summary" : "RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE)",
+        "tags" : [ "RF4 Tarefas" ]
+      }
+    },
+    "/api/tasks/{id}/attachments" : {
+      "get" : {
+        "operationId" : "listAttachments",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/AttachmentView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA06 Anexos da tarefa (com a marca de evidência, a varredura do antivírus e se já pode ser aberto)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      },
+      "post" : {
+        "operationId" : "uploadAttachment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "properties" : {
+                  "file" : {
+                    "format" : "binary",
+                    "type" : "string"
+                  }
+                },
+                "required" : [ "file" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AttachmentView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF41.CA06 Envia um anexo (multipart, campo file; até 15 MB e 50 por tarefa): tipo real pelo conteúdo (415 TIPO_NAO_PERMITIDO/TIPO_DIVERGENTE), antivírus (422 ARQUIVO_INFECTADO), metadados de imagem removidos; 409 ANEXO_DUPLICADO, 409 LIMITE_ANEXOS, 409 TAREFA_BLOQUEADA",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/attachments/{attachmentId}" : {
+      "delete" : {
+        "operationId" : "removeAttachment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "attachmentId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "RF41.CA06 Remove o anexo (e a marca de evidência dele); o arquivo é apagado quando nada mais aponta para ele",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/attachments/{attachmentId}/content" : {
+      "get" : {
+        "operationId" : "attachmentContent",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "attachmentId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "format" : "byte",
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/attachments/{attachmentId}/evidence" : {
+      "post" : {
+        "operationId" : "markEvidence",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "attachmentId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EvidenceRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EvidenceView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF41.CA06 Marca um anexo como evidência (legenda, data da captura, geolocalização opcional cifrada; 409 EVIDENCIA_EXISTENTE; 422 VALIDACAO)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/evidences" : {
+      "get" : {
+        "operationId" : "listEvidences",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/EvidenceView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA06 Evidências da tarefa (coordenadas só para quem registrou ou pode editar)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      },
+      "post" : {
+        "operationId" : "addEvidence",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "caption",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "takenAt",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "latitude",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "longitude",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "properties" : {
+                  "file" : {
+                    "format" : "binary",
+                    "type" : "string"
+                  }
+                },
+                "required" : [ "file" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EvidenceView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF41.CA06 Envia foto/arquivo já como evidência (multipart: file, caption, takenAt ISO-8601, latitude e longitude opcionais e juntas); mesmo pipeline e limites do anexo",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/evidences/{evidenceId}" : {
+      "delete" : {
+        "operationId" : "removeEvidence",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "evidenceId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "RF41.CA06 Desmarca a evidência (o anexo continua)",
+        "tags" : [ "RF41 Anexos e evidências" ]
+      }
+    },
+    "/api/tasks/{id}/legal-deadline" : {
+      "put" : {
+        "operationId" : "setLegalDeadline",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LegalDeadlineRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA04/RF20.CA11 Define ou limpa o prazo legal (regra do catálogo + data de início; o vencimento é calculado em dias corridos ou úteis com os feriados nacionais; 409 TAREFA_BLOQUEADA, 409 EDICAO_CONCORRENTE, 422 VALIDACAO)",
         "tags" : [ "RF4 Tarefas" ]
       }
     },

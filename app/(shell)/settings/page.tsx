@@ -12,6 +12,7 @@ import { SessionsPanel } from "@/components/settings/SessionsPanel";
 import { AccountPanel } from "@/components/account/AccountPanel";
 import { DataPanel } from "@/components/account/DataPanel";
 import { TermsPanel } from "@/components/account/TermsPanel";
+import { useDeskSkinLock } from "@/components/store/SkinLock";
 import { useI18n } from "@/lib/i18n/useI18n";
 import type { Locale } from "@/lib/i18n/state";
 import { pageByRoute } from "@/lib/pages/registry";
@@ -23,10 +24,13 @@ const PAGE = pageByRoute("/settings")!;
 const TIMEZONES = ["America/Sao_Paulo", "America/Manaus", "America/Rio_Branco", "America/Noronha", "America/Belem", "America/Fortaleza", "America/Recife", "America/Bahia", "America/Cuiaba", "America/Campo_Grande", "America/Boa_Vista", "UTC"];
 const SKELETON_TABS = new Set(["privacidade"]);
 const ConnectorsPanel = dynamic(() => import("@/components/connectors/ConnectorsPanel").then((m) => m.ConnectorsPanel), { loading: () => <LoadingState /> });
+// Profissão preferida (RF81, D-147/D-148): o autocompletar usa o catálogo de ramos, que é grande — carregado só com a aba Trabalho
+const OccupationSettingsCard = dynamic(() => import("@/components/career/OccupationSettingsCard").then((m) => m.OccupationSettingsCard), { loading: () => <LoadingState /> });
 
 function Appearance() {
   const { t, locales } = useI18n();
   const { prefs, update, reset, resolvedTheme } = usePreferences();
+  const skinLock = useDeskSkinLock(); // RF42: skin vendida na Loja fica bloqueada até a compra
   const { toast } = useToast();
   return (
     <div className="grid gap-[var(--ws-space-4)]">
@@ -66,7 +70,7 @@ function Appearance() {
           value={prefs.deskSkin}
           onValueChange={(v) => update({ deskSkin: v as DeskSkin })}
           columns={4}
-          options={DESK_SKINS.map((s) => ({ value: s, label: t(`deskSkin.${s}`), preview: <BackgroundArt skin={s} minHeight="2.5rem" className="rounded-none border-0" /> }))}
+          options={DESK_SKINS.map((s) => ({ value: s, label: t(`deskSkin.${s}`), preview: <BackgroundArt skin={s} minHeight="2.5rem" className="rounded-none border-0" />, ...skinLock(s, prefs.deskSkin) }))}
         />
       </Card>
       <Card title={t("settings.background")} eyebrow={t("settings.backgroundHint")}>
@@ -112,6 +116,7 @@ function Work() {
   const [wip, setWip] = useState(String(prefs.wipLimit));
   return (
     <div className="grid gap-[var(--ws-space-4)] md:grid-cols-2">
+      <OccupationSettingsCard className="md:col-span-2" />
       <Card title={t("settings.timezone")}>
         <Field label={t("settings.timezone")}>
           {({ id }) => <Select id={id} value={prefs.timezone} onChange={(e) => update({ timezone: e.target.value })} options={TIMEZONES.map((tz) => ({ value: tz, label: tz }))} />}

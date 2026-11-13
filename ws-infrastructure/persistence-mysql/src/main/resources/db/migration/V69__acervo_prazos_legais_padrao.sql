@@ -1,0 +1,60 @@
+-- V69 — acervo_prazos_legais_padrao (2 Acervo de Tarefas; RF20.CA11, RF41.CA04). MySQL 8.4, InnoDB, utf8mb4_0900_ai_ci.
+-- Dados de referência (não é DDL gerada): as regras PADRÃO do catálogo de prazos legais (legal_deadline_rules, V11), sem empresa
+-- (company_id NULL), que toda conta vê em GET /api/legal-deadlines. Só dispositivos de lei federal conferidos no texto legal:
+-- Lei nº 12.527/2011 (LAI), arts. 11 e 15, e Lei nº 9.784/1999 (processo administrativo federal), arts. 24, 42, 44, 49, 56, 59 e 62.
+-- Contagem (Lei nº 9.784/1999, art. 66): exclui o dia do começo, inclui o do vencimento; dias corridos (§ 2º), com vencimento em dia
+-- sem expediente prorrogado para o primeiro dia útil (§ 1º); só o art. 62 fala em dias úteis. O cálculo é o LegalDeadlineCalendar.
+-- Estado ou município com lei própria cadastra a regra da empresa (company_id); feriado local também fica na regra da empresa.
+-- Ids fixos: a tarefa guarda legal_deadline_rule_id (FK SET NULL). Reserva no docs/PLANO_EXECUCAO.md §6 (V62–V68 são da profissão).
+
+INSERT INTO legal_deadline_rules (id, company_id, category, subcategory, days, business_days, legal_basis, description, active) VALUES
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000001'), NULL, 'OFICIO_MEMORANDO',
+     'Pedido de acesso à informação (LAI) — resposta', 20, FALSE,
+     'Lei nº 12.527/2011 (Lei de Acesso à Informação), art. 11, § 1º',
+     'Prazo para o órgão responder ao pedido de acesso à informação quando não for possível o acesso imediato. Prorrogável por mais 10 dias, mediante justificativa expressa, da qual o requerente é cientificado (art. 11, § 2º).',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000002'), NULL, 'OFICIO_MEMORANDO',
+     'Recurso contra negativa de acesso (LAI) — decisão', 5, FALSE,
+     'Lei nº 12.527/2011 (Lei de Acesso à Informação), art. 15, parágrafo único',
+     'Prazo para a autoridade hierarquicamente superior à que negou o acesso se manifestar sobre o recurso. O recurso é interposto em até 10 dias da ciência da decisão (art. 15, caput).',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000003'), NULL, 'OUTRO',
+     'Processo administrativo — ato sem prazo específico', 5, FALSE,
+     'Lei nº 9.784/1999, art. 24',
+     'Inexistindo disposição específica, os atos do órgão ou autoridade responsável pelo processo e dos administrados que dele participem são praticados em cinco dias, salvo motivo de força maior. Pode ser dilatado até o dobro, mediante comprovada justificação (parágrafo único).',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000004'), NULL, 'PARECER_TECNICO',
+     'Processo administrativo — parecer obrigatório de órgão consultivo', 15, FALSE,
+     'Lei nº 9.784/1999, art. 42',
+     'Quando deva ser obrigatoriamente ouvido um órgão consultivo, o parecer é emitido em até quinze dias, salvo norma especial ou comprovada necessidade de maior prazo.',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000005'), NULL, 'OUTRO',
+     'Processo administrativo — manifestação após a instrução', 10, FALSE,
+     'Lei nº 9.784/1999, art. 44',
+     'Encerrada a instrução, o interessado tem o direito de manifestar-se em até dez dias, salvo se outro prazo for legalmente fixado.',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000006'), NULL, 'OUTRO',
+     'Processo administrativo — decisão após a instrução', 30, FALSE,
+     'Lei nº 9.784/1999, art. 49',
+     'Concluída a instrução, a Administração tem até trinta dias para decidir, salvo prorrogação por igual período expressamente motivada.',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000007'), NULL, 'OUTRO',
+     'Recurso administrativo — reconsideração pela autoridade', 5, FALSE,
+     'Lei nº 9.784/1999, art. 56, § 1º',
+     'O recurso é dirigido à autoridade que proferiu a decisão, a qual, se não a reconsiderar em cinco dias, o encaminha à autoridade superior.',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000008'), NULL, 'OUTRO',
+     'Recurso administrativo — interposição', 10, FALSE,
+     'Lei nº 9.784/1999, art. 59, caput',
+     'Salvo disposição legal específica, o recurso administrativo é interposto em até dez dias, contados a partir da ciência ou da divulgação oficial da decisão recorrida.',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000009'), NULL, 'OUTRO',
+     'Recurso administrativo — decisão', 30, FALSE,
+     'Lei nº 9.784/1999, art. 59, § 1º',
+     'Quando a lei não fixar prazo diferente, o recurso administrativo é decidido em até trinta dias, a partir do recebimento dos autos pelo órgão competente. Prorrogável por igual período, ante justificativa explícita (§ 2º).',
+     TRUE),
+    (UUID_TO_BIN('6c0e0069-0000-4000-8000-000000000010'), NULL, 'OUTRO',
+     'Recurso administrativo — alegações dos demais interessados', 5, TRUE,
+     'Lei nº 9.784/1999, art. 62',
+     'Interposto o recurso, o órgão competente intima os demais interessados para que, no prazo de cinco dias úteis, apresentem alegações.',
+     TRUE);

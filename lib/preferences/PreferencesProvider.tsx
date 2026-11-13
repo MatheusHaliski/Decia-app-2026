@@ -5,8 +5,9 @@
  * havendo sessão, na API. Também é a fonte do idioma para `tr()`/`useI18n()` (lib/i18n/state.ts).
  */
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { onSessionChange } from "@/lib/api/client";
 import { setCurrentLocale } from "@/lib/i18n/state";
-import { apiAdapter, htmlAttributes, localAdapter, type PreferencesAdapter } from "./storage";
+import { apiAdapter, forgetSessionOccupation, htmlAttributes, localAdapter, type PreferencesAdapter } from "./storage";
 import { DEFAULT_PREFERENCES, sanitizePreferences, type UserPreferences } from "./types";
 
 export interface PreferencesContextValue {
@@ -58,6 +59,16 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
     const l = (e: MediaQueryListEvent) => setSystemDark(e.matches);
     mq.addEventListener("change", l);
     return () => { alive = false; mq.removeEventListener("change", l); };
+  }, []);
+
+  // 1b) sair da conta esquece a profissão preferida (D-147: dado só do dono; quem entrar depois no mesmo navegador não a herda)
+  useEffect(() => {
+    const off = onSessionChange((signedIn) => {
+      if (signedIn) return;
+      forgetSessionOccupation();
+      setPrefs((p) => (p.preferredOccupation ? { ...p, preferredOccupation: null } : p));
+    });
+    return () => { off(); };
   }, []);
 
   // 2) aplica no <html> e no estado do i18n a cada mudança — em layout effect, no mesmo commit do render: o tema/idioma

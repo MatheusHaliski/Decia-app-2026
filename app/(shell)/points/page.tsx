@@ -1,10 +1,10 @@
 "use client";
-// Página-esqueleto gerada para a rota /points (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { RfPage } from "@/components/shell/RfPage";
+// DECIA Points (RF42.CA03, CA09): saldo, extrato, regras, gráfico mensal e doação — razão DEMO compartilhado (lib/points/ledger.ts).
+import { PointsPage } from "@/components/points/PointsPage";
 import { pageByRoute } from "@/lib/pages/registry";
 
 const PAGE = pageByRoute("/points")!;
 
 export default function Page() {
-  return <RfPage page={PAGE} />;
+  return <PointsPage page={PAGE} />;
 }

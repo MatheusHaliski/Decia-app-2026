@@ -6,16 +6,23 @@
  *  3. FEEDBACK DE QUALIDADE: checagem essencial + regras da área + rubrica do campo, que se atualiza a cada tecla e oferece a
  *     correção pronta ("adicionar este critério", "usar esta referência", "restringir o acesso").
  * Números e achados são do sistema (D-12): sem motor de IA conectado, a interface diz que a leitura foi montada a partir deles.
+ *
+ * Profissão preferida (RF81, D-147): quando o campo veio dela, a seção do campo diz "a partir da sua profissão — só você vê" e oferece
+ * confirmar a lente para a tarefa; o plano de desenvolvimento da profissão fica logo abaixo dos modelos (só no criador, só para o
+ * dono). O pacote vem por `packFor(code, "pesquisa")` (D-153): pacote ainda em pesquisa aparece "em revisão por especialistas", sem
+ * status, versão nem códigos de tarefa-guia.
  */
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Field, Select, Tag, cn, type Tone } from "@/components/ui";
+import { DevelopmentPlanPanel } from "@/components/career/DevelopmentPlan";
 import type { OccupationPack } from "@/lib/career/occupationPack";
+import { packFor } from "@/lib/career/packs";
 import { baseLocale } from "@/lib/i18n/state";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { AREA_TEMPLATES } from "@/lib/tasks/areaTemplates";
 import { fieldByCode } from "@/lib/tasks/areas";
 import { WORK_AREAS, type WorkArea } from "@/lib/tasks/client";
-import { FIELD_INDEX, PACK_LOADERS } from "@/lib/tasks/fieldIndex.gen";
+import { FIELD_INDEX } from "@/lib/tasks/fieldIndex.gen";
 import { assessTask, type CheckGroup, type CheckStatus, type QualityCheck, type QuickFix } from "@/lib/tasks/quality";
 import { packTemplates, type TaskDraft, type TaskTemplate } from "@/lib/tasks/templates";
 
@@ -30,32 +37,39 @@ export interface TaskAssistProps {
   hasContent: boolean;
   /** modelo pedido pela URL (`/tasks/new?modelo=`), aplicado uma vez quando disponível */
   templateId?: string | null;
+  /** o campo atual foi sugerido pela profissão preferida (só para o dono): marca na tela e confirmação para gravar na tarefa */
+  lens?: { confirmed: boolean; onConfirm: () => void } | null;
+  /** profissão preferida da pessoa no criador (tela pessoal): mostra o plano de desenvolvimento */
+  professionCode?: string | null;
 }
 
 const STATUS_TONE: Record<CheckStatus, Tone> = { OK: "success", AVISO: "warning", FALTA: "danger" };
 const STATUS_MARK: Record<CheckStatus, string> = { OK: "✓", AVISO: "!", FALTA: "✕" };
 const READY_TONE = { PRONTA: "success", QUASE: "warning", INCOMPLETA: "danger" } as const;
 
-export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onApplyTemplate, onFix, hasContent, templateId }: TaskAssistProps) {
+export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onApplyTemplate, onFix, hasContent, templateId, lens, professionCode }: TaskAssistProps) {
   const { t, locale } = useI18n();
   const lang = baseLocale(locale) as "pt-BR" | "en" | "es";
   const field = fieldByCode(fieldCode);
   const [pack, setPack] = useState<OccupationPack | null>(null);
+  const [inReview, setInReview] = useState(false);
   const [loadingPack, setLoadingPack] = useState(false);
   const [pending, setPending] = useState<TaskTemplate | null>(null);
   const [usedUrlTemplate, setUsedUrlTemplate] = useState(false);
 
-  // pacote do campo, sob demanda
+  // pacote do campo, sob demanda, pela escada de status das telas de produto (D-153): a lente, os modelos e a checagem do Acervo são
+  // conteúdo sugerido e editável, então valem a partir de `pesquisa` — com a marca "em revisão por especialistas"
   useEffect(() => {
     let alive = true;
     if (!field) {
       setPack(null);
+      setInReview(false);
       return;
     }
     setLoadingPack(true);
-    PACK_LOADERS[field.pack]?.()
-      .then((p) => { if (alive) setPack(p); })
-      .catch(() => { if (alive) setPack(null); })
+    packFor(field.code, "pesquisa")
+      .then((p) => { if (alive) { setPack(p?.pack ?? null); setInReview(!!p?.inReview); } })
+      .catch(() => { if (alive) { setPack(null); setInReview(false); } })
       .finally(() => { if (alive) setLoadingPack(false); });
     return () => { alive = false; };
   }, [field]);
@@ -101,9 +115,21 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
               options={[{ value: "", label: t("tasks.assist.noField") }, ...fieldOptions]} />
           )}
         </Field>
+        {field && lens ? (
+          <div className="grid gap-1.5 rounded-[var(--ws-radius-md)] border border-ws-accent bg-ws-accent-soft px-2.5 py-2 text-[length:var(--ws-text-caption)]" data-testid="lens-from-profession" data-confirmed={lens.confirmed}>
+            <p className="flex flex-wrap items-center gap-1.5 font-semibold"><span aria-hidden>🔒</span>{t("career.fromProfession")}</p>
+            <p className="text-ws-text-muted">{t(lens.confirmed ? "career.lens.confirmed" : "career.lens.pending")}</p>
+            {!lens.confirmed ? <div><Button size="sm" variant="ghost" onClick={lens.onConfirm} data-testid="lens-confirm">{t("career.lens.confirm")}</Button></div> : null}
+          </div>
+        ) : null}
         {field ? (
-          <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" aria-live="polite">
-            {loadingPack ? t("tasks.assist.loadingPack") : pack ? t("tasks.assist.packInfo", { field: field.label[lang], status: pack.status, version: pack.version }) : t("tasks.assist.packError")}
+          <p className="flex flex-wrap items-center gap-1.5 text-[length:var(--ws-text-caption)] text-ws-text-muted" aria-live="polite" data-testid="pack-info">
+            {loadingPack ? t("tasks.assist.loadingPack") : pack ? (
+              <>
+                <span>{t("career.pack.of", { field: field.label[lang] })}</span>
+                {inReview ? <Tag tone="warning"><span aria-hidden>!</span>{t("career.inReview")}</Tag> : null}
+              </>
+            ) : t("tasks.assist.packError")}
           </p>
         ) : null}
         {!draft.area ? (
@@ -134,6 +160,17 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
         {areaTemplates.length ? <TemplateList title={t("tasks.assist.fromArea", { area: t(`tasks.area.${area}`) })} items={areaTemplates} onUse={use} /> : null}
         {!fieldTemplates.length && !areaTemplates.length ? <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("tasks.assist.noTemplates")}</p> : null}
       </section>
+
+      {/* plano de desenvolvimento da profissão preferida (só no criador, só para o dono) */}
+      {professionCode && fieldByCode(professionCode) ? (
+        <DevelopmentPlanPanel
+          fieldCode={professionCode}
+          onUse={(tpl) => {
+            if (fieldCode !== professionCode) onFieldChange(professionCode);
+            use(tpl);
+          }}
+        />
+      ) : null}
 
       {/* 3. feedback de qualidade */}
       <Feedback report={report} onFix={onFix} pack={pack} areaLabel={area ? t(`tasks.area.${area}`) : null} fieldLabel={field ? field.label[lang] : null} />

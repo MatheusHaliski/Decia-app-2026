@@ -109,7 +109,7 @@ class ConnectorControllerWebTest {
     private TaskView imported(LinkMode mode) {
         return new TaskView(taskId, 1, userId, null, "Relatório", null, TaskType.DOCUMENTO, null, Priority.MEDIA, TaskState.DISPONIVEL, null, null,
                 AccessClassification.INTERNO, Visibility.PRIVADA, SourceKind.GOOGLE_DOCS, mode, "https://docs.google.com/document/d/1/edit", null,
-                null, null, null, null, List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now());
+                null, null, null, null, List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now(), null, null, null);
     }
 
     private void trail() {

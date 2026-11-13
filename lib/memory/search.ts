@@ -43,6 +43,8 @@ export interface MemorySearchOptions {
   k?: number;
   kinds?: readonly MemoryKind[];
   department?: string | null;
+  /** exercício (ano) do documento; ausente = todos */
+  year?: number | null;
   /** classes que a pessoa pode ler (padrão: PUBLICO e INTERNO) */
   readable?: readonly MemoryDoc["accessClass"][];
   /** similaridade mínima para entrar (padrão 0,05) */

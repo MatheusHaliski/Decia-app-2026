@@ -64,6 +64,19 @@ describe("toTaskCardViewModelFromApi (TaskView → card de tarefa)", () => {
     expect(toTaskCardViewModelFromApi(view({ dueAt: "2026-12-01" }), { now: NOW }).dueKind).toBe("ok");
   });
 
+  it("prazo legal (RF41.CA04): mostra o prazo mais próximo com ⚖ quando é o legal; fechada não cobra prazo", () => {
+    const legal = toTaskCardViewModelFromApi(view({ dueAt: "2026-11-01", legalDueAt: "2026-10-18" }), { now: NOW });
+    expect(legal).toMatchObject({ dueAt: "2026-10-18", legal: true, dueKind: "soon" });
+    expect(legal.variants.has("PRAZO_LEGAL")).toBe(true);
+    const interno = toTaskCardViewModelFromApi(view({ dueAt: "2026-10-16", legalDueAt: "2026-10-30" }), { now: NOW });
+    expect(interno).toMatchObject({ dueAt: "2026-10-16", legal: false, dueKind: "over" });
+    expect(interno.variants.has("PRAZO_LEGAL")).toBe(true);
+    const so = toTaskCardViewModelFromApi(view({ dueAt: undefined, legalDueAt: "2026-12-01" }), { now: NOW });
+    expect(so).toMatchObject({ dueAt: "2026-12-01", legal: true, dueKind: "ok" });
+    expect(toTaskCardViewModelFromApi(view({ state: "CONCLUIDA", dueAt: "2026-10-10" }), { now: NOW }).dueKind).toBeNull();
+    expect(toTaskCardViewModelFromApi(view({ dueAt: "2026-10-10" }), { now: NOW }).variants.has("PRAZO_LEGAL")).toBe(false);
+  });
+
   it("ATRIBUIDA só quando a tarefa de outra pessoa está sob a responsabilidade de quem olha", () => {
     expect(toTaskCardViewModelFromApi(view({ ownerId: OTHER, responsibleId: ME }), { viewerId: ME, now: NOW }).variants.has("ATRIBUIDA")).toBe(true);
     expect(toTaskCardViewModelFromApi(view({ ownerId: ME, responsibleId: ME }), { viewerId: ME, now: NOW }).variants.has("ATRIBUIDA")).toBe(false);

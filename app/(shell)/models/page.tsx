@@ -1,10 +1,10 @@
 "use client";
-// Página-esqueleto gerada para a rota /models (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { RfPage } from "@/components/shell/RfPage";
+// Balcão de Modelos (RF40): prateleiras Chancelados · Comunidade, oferecer e reutilizar modelos com crédito ao autor em DECIA Points (DEMO).
+import { ModelsPage } from "@/components/models/ModelsPage";
 import { pageByRoute } from "@/lib/pages/registry";
 
 const PAGE = pageByRoute("/models")!;
 
 export default function Page() {
-  return <RfPage page={PAGE} />;
+  return <ModelsPage page={PAGE} />;
 }

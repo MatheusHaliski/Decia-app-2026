@@ -294,6 +294,17 @@ class TaskServiceTest {
         }
 
         @Override
+        public List<TaskIndexRow> indexByOwner(UUID ownerId, int cap) {
+            return findByOwner(ownerId, cap).stream().map(s -> new TaskIndexRow(s.task().id(), s.task().title(), s.task().type(), s.task().category(),
+                    s.task().priority(), s.task().state(), s.task().dueAt(), s.task().legalDueAt(), s.createdAt(), s.updatedAt())).toList();
+        }
+
+        @Override
+        public List<StoredTask> findAllById(java.util.Collection<UUID> ids) {
+            return ids.stream().map(rows::get).filter(java.util.Objects::nonNull).toList();
+        }
+
+        @Override
         public StoredTask insert(TaskItem task, TaskBrief brief) {
             UUID id = UUID.randomUUID();
             TaskItem withId = TaskItem.create(task.ownerId(), task.departmentId(), task.title(), task.descriptionMd(), task.type(), task.category(),

@@ -1,18 +1,34 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.acervo;
 
+import br.gov.pr.secid.workstation.application.acervo.EvidenceRepositoryPort;
+import br.gov.pr.secid.workstation.application.acervo.EvidenceRepositoryPort.StoredEvidence;
+import br.gov.pr.secid.workstation.application.acervo.LegalDeadlineRuleRepositoryPort;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentRepositoryPort;
+import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentRepositoryPort.StoredAttachment;
+import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentRepositoryPort.TitledAttachment;
 import br.gov.pr.secid.workstation.application.acervo.TaskRepositoryPort;
 import br.gov.pr.secid.workstation.application.acervo.TaskRepositoryPort.StoredTask;
+import br.gov.pr.secid.workstation.application.acervo.TaskRepositoryPort.TaskIndexRow;
+import br.gov.pr.secid.workstation.domain.acervo.Evidence;
+import br.gov.pr.secid.workstation.domain.acervo.LegalDeadlineRule;
 import br.gov.pr.secid.workstation.domain.acervo.NatureTag;
 import br.gov.pr.secid.workstation.domain.acervo.ProcessTag;
 import br.gov.pr.secid.workstation.domain.acervo.TaskAttachment;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
+import br.gov.pr.secid.workstation.domain.acervo.TaskCategory;
 import br.gov.pr.secid.workstation.domain.acervo.TaskItem;
+import br.gov.pr.secid.workstation.domain.acervo.TaskState;
 import br.gov.pr.secid.workstation.domain.acervo.TaskStateLog;
+import br.gov.pr.secid.workstation.domain.acervo.TaskType;
+import br.gov.pr.secid.workstation.domain.common.Priority;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.EvidenceEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.LegalDeadlineRuleEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskAttachmentEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskBriefEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskItemEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskStateLogEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.EvidenceRepository;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.LegalDeadlineRuleRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskAttachmentRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskBriefRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskItemRepository;
@@ -28,6 +44,9 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +56,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Adaptador JPA da {@link TaskRepositoryPort} (tasks + task_briefs + task_state_log). O id da tarefa é gerado pelo banco
+ * Adaptadores JPA do Acervo: {@link TaskRepositoryPort} (tasks + task_briefs + task_state_log), anexos, evidências e o catálogo de prazos
+ * legais. O id da tarefa é gerado pelo banco
  * ({@code AuditableEntity}); o briefing usa o mesmo id como PK. Toda atualização força o incremento imediato da versão da tarefa
  * ({@code PESSIMISTIC_FORCE_INCREMENT}: o OPTIMISTIC só sobe no commit e a versão devolvida ao cliente ficaria defasada), para que
  * editar só o briefing também invalide uma cópia antiga em outra aba (409 EDICAO_CONCORRENTE).
@@ -60,6 +80,27 @@ public class JpaAcervoAdapters {
                 List<TaskItemEntity> found = em.createQuery(
                                 "select t from TaskItemEntity t where t.ownerId = :owner order by t.createdAt desc", TaskItemEntity.class)
                         .setParameter("owner", ownerId).setMaxResults(limit).getResultList();
+                Map<UUID, TaskBriefEntity> byTask = briefs.findAllById(found.stream().map(TaskItemEntity::getId).toList()).stream()
+                        .collect(Collectors.toMap(TaskBriefEntity::getTaskId, Function.identity()));
+                return found.stream().map(e -> stored(e, byTask.get(e.getId()))).toList();
+            }
+
+            @Override
+            public List<TaskIndexRow> indexByOwner(UUID ownerId, int cap) {
+                return em.createQuery("select t.id, t.title, t.type, t.category, t.priority, t.state, t.dueAt, t.legalDueAt, t.createdAt, "
+                                + "t.updatedAt from TaskItemEntity t where t.ownerId = :owner order by t.createdAt desc, t.id", Object[].class)
+                        .setParameter("owner", ownerId).setMaxResults(Math.max(1, cap)).getResultList().stream()
+                        .map(r -> new TaskIndexRow((UUID) r[0], (String) r[1], (TaskType) r[2], (TaskCategory) r[3], (Priority) r[4],
+                                (TaskState) r[5], (LocalDate) r[6], (LocalDate) r[7], (Instant) r[8], (Instant) r[9]))
+                        .toList();
+            }
+
+            @Override
+            public List<StoredTask> findAllById(Collection<UUID> ids) {
+                if (ids == null || ids.isEmpty()) {
+                    return List.of();
+                }
+                List<TaskItemEntity> found = items.findAllById(ids);
                 Map<UUID, TaskBriefEntity> byTask = briefs.findAllById(found.stream().map(TaskItemEntity::getId).toList()).stream()
                         .collect(Collectors.toMap(TaskBriefEntity::getTaskId, Function.identity()));
                 return found.stream().map(e -> stored(e, byTask.get(e.getId()))).toList();
@@ -143,10 +184,133 @@ public class JpaAcervoAdapters {
 
             @Override
             public List<TaskAttachment> findByTask(UUID taskId) {
+                return listByTask(taskId).stream().map(StoredAttachment::attachment).toList();
+            }
+
+            @Override
+            public List<StoredAttachment> listByTask(UUID taskId) {
                 return em.createQuery("select a from TaskAttachmentEntity a where a.taskId = :task order by a.sortOrder, a.createdAt",
-                        TaskAttachmentEntity.class).setParameter("task", taskId).getResultList().stream().map(JpaAcervoAdapters::toDomain).toList();
+                        TaskAttachmentEntity.class).setParameter("task", taskId).getResultList().stream().map(JpaAcervoAdapters::stored).toList();
+            }
+
+            @Override
+            public Optional<StoredAttachment> findById(UUID id) {
+                return repo.findById(id).map(JpaAcervoAdapters::stored);
+            }
+
+            @Override
+            public List<TitledAttachment> listByTaskOwner(UUID ownerId, int limit) {
+                return em.createQuery("select a, t.title from TaskAttachmentEntity a, TaskItemEntity t where t.id = a.taskId and t.ownerId = :owner "
+                                + "order by a.createdAt desc, a.id", Object[].class)
+                        .setParameter("owner", ownerId).setMaxResults(Math.max(1, limit)).getResultList().stream()
+                        .map(r -> new TitledAttachment(stored((TaskAttachmentEntity) r[0]), (String) r[1])).toList();
+            }
+
+            @Override
+            public long countByMedia(UUID mediaObjectId) {
+                return em.createQuery("select count(a) from TaskAttachmentEntity a where a.mediaObjectId = :media", Long.class)
+                        .setParameter("media", mediaObjectId).getSingleResult();
+            }
+
+            @Override
+            @Transactional
+            public void delete(UUID id) {
+                repo.deleteById(id);
+                repo.flush();
             }
         };
+    }
+
+    /** Evidências (V11; RF41.CA06): latitude/longitude passam pelo {@code AesGcmStringConverter} da entidade (cifradas no banco). */
+    @Bean
+    EvidenceRepositoryPort evidenceRepositoryPort(EvidenceRepository repo, EntityManager em) {
+        return new EvidenceRepositoryPort() {
+            @Override
+            @Transactional
+            public StoredEvidence insert(Evidence ev) {
+                EvidenceEntity e = new EvidenceEntity();
+                e.setOwnerId(ev.ownerId());
+                e.setMediaObjectId(ev.mediaObjectId());
+                e.setTakenAt(ev.takenAt());
+                e.setLatitudeEnc(ev.latitude());
+                e.setLongitudeEnc(ev.longitude());
+                e.setCaption(ev.caption());
+                e.setLinkedTaskId(ev.linkedTaskId());
+                e.setLinkedProjectId(ev.linkedProjectId());
+                e.setStudioStatus(ev.studioStatus());
+                e.setDerivedTaskId(ev.derivedTaskId());
+                return stored(repo.saveAndFlush(e));
+            }
+
+            @Override
+            public Optional<StoredEvidence> findById(UUID id) {
+                return repo.findById(id).map(JpaAcervoAdapters::stored);
+            }
+
+            @Override
+            public List<StoredEvidence> findByTask(UUID taskId) {
+                return em.createQuery("select e from EvidenceEntity e where e.linkedTaskId = :task order by e.createdAt, e.id", EvidenceEntity.class)
+                        .setParameter("task", taskId).getResultList().stream().map(JpaAcervoAdapters::stored).toList();
+            }
+
+            @Override
+            public List<StoredEvidence> findByTasks(Collection<UUID> taskIds) {
+                if (taskIds == null || taskIds.isEmpty()) {
+                    return List.of();
+                }
+                return em.createQuery("select e from EvidenceEntity e where e.linkedTaskId in :tasks order by e.createdAt, e.id", EvidenceEntity.class)
+                        .setParameter("tasks", taskIds).getResultList().stream().map(JpaAcervoAdapters::stored).toList();
+            }
+
+            @Override
+            public long countByMedia(UUID mediaObjectId) {
+                return em.createQuery("select count(e) from EvidenceEntity e where e.mediaObjectId = :media", Long.class)
+                        .setParameter("media", mediaObjectId).getSingleResult();
+            }
+
+            @Override
+            @Transactional
+            public void delete(UUID id) {
+                repo.deleteById(id);
+                repo.flush();
+            }
+        };
+    }
+
+    /** Catálogo de prazos legais (V11; regras padrão semeadas na V69): padrão sem empresa + as da empresa, só ativas. */
+    @Bean
+    LegalDeadlineRuleRepositoryPort legalDeadlineRuleRepositoryPort(LegalDeadlineRuleRepository repo, EntityManager em) {
+        return new LegalDeadlineRuleRepositoryPort() {
+            @Override
+            public List<LegalDeadlineRule> findActive(UUID companyId) {
+                List<LegalDeadlineRuleEntity> found = companyId == null
+                        ? em.createQuery("select r from LegalDeadlineRuleEntity r where r.active = true and r.companyId is null",
+                                LegalDeadlineRuleEntity.class).getResultList()
+                        : em.createQuery("select r from LegalDeadlineRuleEntity r where r.active = true and (r.companyId is null or r.companyId = :c)",
+                                LegalDeadlineRuleEntity.class).setParameter("c", companyId).getResultList();
+                return found.stream().map(JpaAcervoAdapters::toDomain).toList();
+            }
+
+            @Override
+            public Optional<LegalDeadlineRule> findById(UUID id) {
+                return repo.findById(id).map(JpaAcervoAdapters::toDomain);
+            }
+        };
+    }
+
+    static StoredAttachment stored(TaskAttachmentEntity e) {
+        return new StoredAttachment(toDomain(e), e.getCreatedAt());
+    }
+
+    static StoredEvidence stored(EvidenceEntity e) {
+        return new StoredEvidence(new Evidence(e.getId(), e.getOwnerId(), e.getMediaObjectId(), e.getTakenAt(), e.getLatitudeEnc(),
+                e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId()),
+                e.getCreatedAt());
+    }
+
+    static LegalDeadlineRule toDomain(LegalDeadlineRuleEntity e) {
+        return new LegalDeadlineRule(e.getId(), e.getCompanyId(), e.getCategory(), e.getSubcategory(), e.getDays(), e.isBusinessDays(),
+                e.getLegalBasis(), e.getDescription(), e.isActive(), e.getValidFrom(), e.getValidTo());
     }
 
     static TaskAttachment toDomain(TaskAttachmentEntity e) {

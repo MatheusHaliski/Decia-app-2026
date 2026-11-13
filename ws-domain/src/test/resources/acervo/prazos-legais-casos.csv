@@ -1,0 +1,29 @@
+# Casos de prazo legal (RF20.CA11, RF41.CA04) lidos por LegalDeadlineCalendarTest (Java) e lib/tasks/legalDeadline.test.ts (TS):
+# as duas implementações têm de dar o MESMO vencimento. Gerados por uma implementação independente e conferidos à mão.
+# inicio;dias;uteis;vencimento;caso
+2026-11-12;20;false;2026-12-02;LAI art. 11: 20 corridos caem em quarta
+2026-11-12;30;false;2026-12-14;9.784 art. 49: 30 corridos, 12/12 é sábado -> segunda
+2026-11-12;10;false;2026-11-23;9.784 art. 59: 10 corridos = 22/11 domingo -> 23/11
+2026-11-12;5;true;2026-11-19;5 úteis: sexta 13, segunda 16 a quinta 19 (15/11 é domingo)
+2026-11-18;3;true;2026-11-24;3 úteis pulando 20/11 (Consciência Negra, sexta) -> terça 24/11
+2026-11-10;5;false;2026-11-16;5 corridos = 15/11 domingo -> 16/11
+2026-11-14;6;false;2026-11-23;6 corridos = 20/11 feriado sexta -> 23/11 segunda
+2023-11-14;6;false;2023-11-20;antes de 2024 o 20/11 não é feriado nacional
+2026-03-30;4;false;2026-04-06;4 corridos = 03/04 Sexta-feira da Paixão -> 06/04
+2026-03-30;5;true;2026-04-07;5 úteis pulando a Paixão (03/04) -> 07/04
+2025-04-14;4;false;2025-04-22;Paixão 2025 é 18/04 -> 21/04 Tiradentes -> 22/04
+2026-12-21;10;true;2027-01-06;10 úteis pulando Natal e Ano-Novo
+2026-12-24;1;false;2026-12-28;1 corrido = 25/12 Natal (sexta) -> 28/12
+2026-02-13;3;false;2026-02-16;Carnaval é ponto facultativo: 16/02 segunda conta como útil
+2027-03-22;4;false;2027-03-29;Paixão 2027 é 26/03 -> 29/03
+2026-09-04;3;false;2026-09-08;7/9 Independência (segunda) -> 08/09
+2026-10-09;3;false;2026-10-13;12/10 Aparecida (segunda) -> 13/10
+2026-04-30;1;false;2026-05-04;1º de maio (sexta) -> 04/05
+2026-04-17;4;false;2026-04-22;21/04 Tiradentes (terça) -> 22/04
+2026-10-30;3;false;2026-11-03;2/11 Finados (segunda) -> 03/11
+2026-11-12;1;true;2026-11-13;1 útil depois de quinta = sexta
+2026-11-13;1;true;2026-11-16;1 útil depois de sexta = segunda
+2026-11-14;5;true;2026-11-23;início no sábado: conta a partir de segunda
+2028-02-28;1;false;2028-02-29;ano bissexto: 29/02/2028 terça
+2026-12-31;1;false;2027-01-04;1º/1 Confraternização (sexta) -> 04/01/2027
+2026-11-12;15;false;2026-11-27;9.784 art. 42: parecer em 15 corridos = 27/11 sexta

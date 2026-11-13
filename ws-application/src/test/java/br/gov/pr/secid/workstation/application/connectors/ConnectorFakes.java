@@ -283,6 +283,31 @@ final class ConnectorFakes {
         public List<TaskAttachment> findByTask(UUID taskId) {
             return rows.stream().filter(a -> a.taskId().equals(taskId)).toList();
         }
+
+        @Override
+        public List<TaskAttachmentRepositoryPort.StoredAttachment> listByTask(UUID taskId) {
+            return findByTask(taskId).stream().map(a -> new TaskAttachmentRepositoryPort.StoredAttachment(a, Instant.EPOCH)).toList();
+        }
+
+        @Override
+        public Optional<TaskAttachmentRepositoryPort.StoredAttachment> findById(UUID id) {
+            return rows.stream().filter(a -> a.id().equals(id)).findFirst().map(a -> new TaskAttachmentRepositoryPort.StoredAttachment(a, Instant.EPOCH));
+        }
+
+        @Override
+        public List<TaskAttachmentRepositoryPort.TitledAttachment> listByTaskOwner(UUID ownerId, int limit) {
+            return List.of();
+        }
+
+        @Override
+        public long countByMedia(UUID mediaObjectId) {
+            return rows.stream().filter(a -> a.mediaObjectId().equals(mediaObjectId)).count();
+        }
+
+        @Override
+        public void delete(UUID id) {
+            rows.removeIf(a -> a.id().equals(id));
+        }
     }
 
     /** Tarefas em memória preservando TODOS os campos (inclusive a origem), com id e versão. */
@@ -299,6 +324,18 @@ final class ConnectorFakes {
         @Override
         public List<StoredTask> findByOwner(UUID ownerId, int limit) {
             return rows.values().stream().filter(s -> s.task().ownerId().equals(ownerId)).limit(limit).toList();
+        }
+
+        @Override
+        public List<TaskRepositoryPort.TaskIndexRow> indexByOwner(UUID ownerId, int cap) {
+            return findByOwner(ownerId, cap).stream().map(s -> new TaskRepositoryPort.TaskIndexRow(s.task().id(), s.task().title(), s.task().type(),
+                    s.task().category(), s.task().priority(), s.task().state(), s.task().dueAt(), s.task().legalDueAt(), s.createdAt(),
+                    s.updatedAt())).toList();
+        }
+
+        @Override
+        public List<StoredTask> findAllById(java.util.Collection<UUID> ids) {
+            return ids.stream().map(rows::get).filter(java.util.Objects::nonNull).toList();
         }
 
         @Override

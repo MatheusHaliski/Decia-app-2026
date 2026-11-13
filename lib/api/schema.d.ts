@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Meus anexos e evidências (anexos das minhas tarefas, mais recentes primeiro, com o título da tarefa) */
+        get: operations["myAttachments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/email-verification/confirm": {
         parameters: {
             query?: never;
@@ -624,6 +641,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/legal-deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA04 Regras de prazo legal (categoria/subcategoria, dias corridos ou úteis, base legal) */
+        get: operations["legalDeadlineRules"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me": {
         parameters: {
             query?: never;
@@ -995,11 +1029,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
+        /** RF41.CA01/CA09 Minhas tarefas com sub-filtros (estado de trabalho, categoria, prioridade, prazo), ordenação e página (sem filtros: mais recentes primeiro; limit = itens sem page; size padrão 20 com page) */
         get: operations["mine_1"];
         put?: never;
         /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
         post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA01/CA04 Contadores do Acervo para os mesmos filtros (cada contador ignora o próprio filtro) e alertas de prazo legal (vencidos, hoje e em até 7 dias) */
+        get: operations["acervoSummary"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1017,6 +1068,127 @@ export interface paths {
         get: operations["get"];
         /** RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE) */
         put: operations["update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Anexos da tarefa (com a marca de evidência, a varredura do antivírus e se já pode ser aberto) */
+        get: operations["listAttachments"];
+        put?: never;
+        /** RF41.CA06 Envia um anexo (multipart, campo file; até 15 MB e 50 por tarefa): tipo real pelo conteúdo (415 TIPO_NAO_PERMITIDO/TIPO_DIVERGENTE), antivírus (422 ARQUIVO_INFECTADO), metadados de imagem removidos; 409 ANEXO_DUPLICADO, 409 LIMITE_ANEXOS, 409 TAREFA_BLOQUEADA */
+        post: operations["uploadAttachment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF41.CA06 Remove o anexo (e a marca de evidência dele); o arquivo é apagado quando nada mais aponta para ele */
+        delete: operations["removeAttachment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono) */
+        get: operations["attachmentContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF41.CA06 Marca um anexo como evidência (legenda, data da captura, geolocalização opcional cifrada; 409 EVIDENCIA_EXISTENTE; 422 VALIDACAO) */
+        post: operations["markEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/evidences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Evidências da tarefa (coordenadas só para quem registrou ou pode editar) */
+        get: operations["listEvidences"];
+        put?: never;
+        /** RF41.CA06 Envia foto/arquivo já como evidência (multipart: file, caption, takenAt ISO-8601, latitude e longitude opcionais e juntas); mesmo pipeline e limites do anexo */
+        post: operations["addEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/evidences/{evidenceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF41.CA06 Desmarca a evidência (o anexo continua) */
+        delete: operations["removeEvidence"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/legal-deadline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** RF41.CA04/RF20.CA11 Define ou limpa o prazo legal (regra do catálogo + data de início; o vencimento é calculado em dias corridos ou úteis com os feriados nacionais; 409 TAREFA_BLOQUEADA, 409 EDICAO_CONCORRENTE, 422 VALIDACAO) */
+        put: operations["setLegalDeadline"];
         post?: never;
         delete?: never;
         options?: never;
@@ -1079,6 +1251,49 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AcervoSummary: {
+            byCategory?: {
+                [key: string]: number;
+            };
+            byDeadline?: {
+                [key: string]: number;
+            };
+            byPriority?: {
+                [key: string]: number;
+            };
+            byWorkStatus?: {
+                [key: string]: number;
+            };
+            /** Format: int32 */
+            legalAlertCount?: number;
+            legalAlerts?: components["schemas"]["LegalAlert"][];
+            /** Format: int32 */
+            scanned?: number;
+            /** Format: date */
+            today?: string;
+            /** Format: int32 */
+            total?: number;
+            truncated?: boolean;
+        };
+        AttachmentView: {
+            available?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            evidence?: components["schemas"]["EvidenceView"];
+            fileName?: string;
+            /** Format: uuid */
+            id?: string;
+            image?: boolean;
+            mimeType?: string;
+            primary?: boolean;
+            /** @enum {string} */
+            scanStatus?: "PENDENTE" | "LIMPO" | "INFECTADO" | "NAO_VERIFICADO";
+            /** Format: int64 */
+            sizeBytes?: number;
+            /** Format: uuid */
+            taskId?: string;
+            taskTitle?: string;
+        };
         Availability: {
             available?: boolean;
             reason?: string;
@@ -1239,6 +1454,42 @@ export interface components {
         EmailRequest: {
             email: string;
         };
+        EvidenceRequest: {
+            caption?: string;
+            /**
+             * @description graus decimais; só com longitude
+             * @example -25.4284
+             */
+            latitude?: string;
+            /**
+             * @description graus decimais; só com latitude
+             * @example -49.2733
+             */
+            longitude?: string;
+            /**
+             * @description data e hora da captura, ISO-8601 com fuso
+             * @example 2026-11-12T13:30:00Z
+             */
+            takenAt?: string;
+        };
+        EvidenceView: {
+            /** Format: uuid */
+            attachmentId?: string;
+            caption?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            hasLocation?: boolean;
+            /** Format: uuid */
+            id?: string;
+            latitude?: string;
+            longitude?: string;
+            /** Format: uuid */
+            ownerId?: string;
+            /** Format: date-time */
+            takenAt?: string;
+            /** Format: uuid */
+            taskId?: string;
+        };
         ExternalItemView: {
             exportFormats?: string[];
             externalId?: string;
@@ -1276,6 +1527,42 @@ export interface components {
             preview?: string;
             /** Format: date-time */
             sentAt?: string;
+        };
+        LegalAlert: {
+            /** Format: int64 */
+            daysLeft?: number;
+            /** Format: date */
+            legalDueAt?: string;
+            /** @enum {string} */
+            state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            /** Format: uuid */
+            taskId?: string;
+            title?: string;
+        };
+        LegalDeadlineRequest: {
+            /** Format: uuid */
+            ruleId?: string;
+            /** Format: date */
+            startDate?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        LegalDeadlineRuleView: {
+            businessDays?: boolean;
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            companyRule?: boolean;
+            /** Format: int32 */
+            days?: number;
+            description?: string;
+            /** Format: uuid */
+            id?: string;
+            legalBasis?: string;
+            subcategory?: string;
+            /** Format: date */
+            validFrom?: string;
+            /** Format: date */
+            validTo?: string;
         };
         LinkImportRequest: {
             title?: string;
@@ -1586,6 +1873,12 @@ export interface components {
             };
             /** Format: uuid */
             id?: string;
+            /** Format: date */
+            legalDeadlineBaseDate?: string;
+            /** Format: uuid */
+            legalDeadlineRuleId?: string;
+            /** Format: date */
+            legalDueAt?: string;
             /** @enum {string} */
             linkMode?: "VINCULADO" | "COPIADO";
             objective?: string;
@@ -1689,6 +1982,28 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    myAttachments: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"][];
+                };
+            };
+        };
+    };
     confirm_2: {
         parameters: {
             query?: never;
@@ -2706,6 +3021,26 @@ export interface operations {
             };
         };
     };
+    legalDeadlineRules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LegalDeadlineRuleView"][];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -3332,6 +3667,13 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                filtro?: "A_REALIZAR" | "EM_ANDAMENTO" | "BLOQUEADO" | "CONCLUIDO" | "ARQUIVADO" | "PUBLICADO";
+                categoria?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+                prioridade?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+                prazo?: "COM_PRAZO_LEGAL" | "VENCE_7_DIAS" | "ATRASADAS";
+                ordem?: "CRIACAO" | "ATUALIZACAO" | "PRAZO" | "PRIORIDADE";
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -3374,6 +3716,31 @@ export interface operations {
             };
         };
     };
+    acervoSummary: {
+        parameters: {
+            query?: {
+                filtro?: "A_REALIZAR" | "EM_ANDAMENTO" | "BLOQUEADO" | "CONCLUIDO" | "ARQUIVADO" | "PUBLICADO";
+                categoria?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+                prioridade?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+                prazo?: "COM_PRAZO_LEGAL" | "VENCE_7_DIAS" | "ATRASADAS";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AcervoSummary"];
+                };
+            };
+        };
+    };
     get: {
         parameters: {
             query?: never;
@@ -3408,6 +3775,231 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    listAttachments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"][];
+                };
+            };
+        };
+    };
+    uploadAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"];
+                };
+            };
+        };
+    };
+    removeAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    attachmentContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
+    };
+    markEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["EvidenceRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"];
+                };
+            };
+        };
+    };
+    listEvidences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"][];
+                };
+            };
+        };
+    };
+    addEvidence: {
+        parameters: {
+            query?: {
+                caption?: string;
+                takenAt?: string;
+                latitude?: string;
+                longitude?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"];
+                };
+            };
+        };
+    };
+    removeEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                evidenceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    setLegalDeadline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegalDeadlineRequest"];
             };
         };
         responses: {

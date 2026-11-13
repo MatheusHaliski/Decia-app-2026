@@ -187,6 +187,26 @@ public record TaskItem(
                 sharesCount, remixesCount, viewsCount, sealIdsJson);
     }
 
+    /**
+     * Prazo legal (RF20.CA11, RF41.CA04): regra do catálogo, data de início (ciência/recebimento) e vencimento calculado pelo
+     * {@link LegalDeadlineCalendar}. Tudo nulo limpa o prazo legal; a justificativa de sobrescrita volta a nulo (o vencimento é sempre o da
+     * regra). O resto da tarefa é preservado.
+     */
+    public TaskItem withLegalDeadline(UUID ruleId, LocalDate baseDate, LocalDate due) {
+        if ((ruleId == null) != (baseDate == null) || (ruleId == null) != (due == null)) {
+            throw new IllegalArgumentException("VALIDACAO: prazo legal exige regra, início e vencimento juntos");
+        }
+        if (due != null && due.isBefore(baseDate)) {
+            throw new IllegalArgumentException("VALIDACAO: vencimento antes do início");
+        }
+        return new TaskItem(id, ownerId, departmentId, title, summary, descriptionMd, type, category, subcategory, processTags, natureTags,
+                accessClass, format, effortSize, estimatedHours, amountInvolved, origin, sourceKind, sourceRef, linkMode, orgEntityId, responsibleId,
+                dueAt, ruleId, baseDate, due, null, priority, state, blockedByTaskId, blockedByUserId, blockReason, docSituation, receivedAt,
+                senderOrigin, protocolNumber, retentionPolicyJson, visibility, favorite, offeredInCounter, aiGenerated, aiInferenceId,
+                aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin, tags, notes, originalTaskId, sourceProjectId, checklistItemId,
+                reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount, sealIdsJson);
+    }
+
     private TaskItem withState(TaskState next, UUID byTask, UUID byUser, String reason) {
         return new TaskItem(id, ownerId, departmentId, title, summary, descriptionMd, type, category, subcategory, processTags, natureTags,
                 accessClass, format, effortSize, estimatedHours, amountInvolved, origin, sourceKind, sourceRef, linkMode, orgEntityId, responsibleId,
