@@ -91,6 +91,14 @@ describe("coleta (RF36.CA01): o que a pessoa deixa, por seção", () => {
     expect(taskPendency({ ...base, dueAt: "2026-11-11" }, TODAY)).toBe("VENCIDA");
     expect(taskPendency({ ...base, state: "BLOQUEADA", dueAt: null }, TODAY)).toBe("BLOQUEADA");
     expect(taskPendency({ ...base, state: "CONCLUIDA", dueAt: "2026-01-01" }, TODAY)).toBeUndefined();
+    // o vencimento legal calculado pelo servidor (regra + data de início, RF41.CA04) vale mesmo fora da área jurídica
+    expect(taskPendency({ ...base, dueAt: "2027-01-10", legalDueAt: "2026-11-25" }, TODAY)).toBe("PRAZO_LEGAL");
+    expect(taskPendency({ ...base, dueAt: null, legalDueAt: "2026-11-01" }, TODAY)).toBe("PRAZO_LEGAL");
+    expect(taskPendency({ ...base, dueAt: null, legalDueAt: "2027-03-01" }, TODAY)).toBeUndefined();
+    const api = collectDossier(input({ taskSource: "API", tasks: [{ id: "66666666-6666-4666-8666-666666666666", title: "Resposta ao ofício", state: "DISPONIVEL", dueAt: "2027-01-10", legalDueAt: "2026-11-20", ownerId: "u-pessoa" }] }));
+    const legal = api.items.find((i) => i.id === "tarefa:66666666-6666-4666-8666-666666666666")!;
+    expect(legal).toMatchObject({ pendency: "PRAZO_LEGAL", due: "2026-11-20" });
+    expect(legal.facts.map((f) => renderFact(t, f)).join(" · ")).toContain("Vencimento legal:");
     expect(daysBetween("2026-11-12", "2026-11-20")).toBe(8);
     expect(daysBetween("2026-11-12", "2026-11-10")).toBe(-2);
   });

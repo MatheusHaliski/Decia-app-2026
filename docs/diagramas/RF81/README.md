@@ -371,3 +371,32 @@ Mensagens = números do `autonumber` da §3. Passos = nós da §2. Componentes =
 | RF81.CA08 | `OccupationService.update` | A10 → P8 → P3 | — | — | `ACC`, `OS` |
 | RF81.CA09 | `Evidence`, `CompetencyEvidence` | A8 → A9 → P6 → P7 | — | `EM_ANDAMENTO → AGUARDANDO_VALIDACAO → CONCLUIDA` | `GUI`, `EVS` |
 | RF81.CA10 | `User` (exportação, anonimização) | A1 | — | — | `REG`, `ACC` |
+
+## Estado da implementação (12/11/2026)
+
+- **Profissão preferida nas preferências:** `preferredOccupation` em `lib/preferences/types.ts`, validada contra os 79 ramos do índice
+  gerado do catálogo (`lib/tasks/fieldIndex.gen.ts`), viaja dentro de `notificationPrefsJson` (sem backend novo, como
+  `aiAutonomyDefault`). Privada (D-147): nunca vai para o `ws.prefs` do `localStorage` (sem sessão, fica só no `sessionStorage` da aba) e
+  é esquecida ao sair da conta.
+- **Conta/Configurações › Trabalho (CA01 e CA10, parcial):** campo "Qual profissão você quer desenvolver?" com combobox acessível
+  (`aria-activedescendant`, ↓ ↑ Enter Esc), autocompletar a partir de 2 letras por rótulo e aliases sem caixa nem acento (até 8
+  sugestões, também pelo rótulo em en/es), lista agrupada pelas categorias do criador (TI = "Desenvolvimento de software", Engenharia,
+  Design, Pesquisa, Administração e depois Marketing, Planejamento, Jurídico — `lib/career/categories.ts`, sem vocabulário novo), "ainda
+  não sei" e o aviso "só você vê; não aparece no seu perfil nem para a empresa". A pergunta no cadastro (`/register`) ainda não existe.
+- **Criador de tarefas (CA04 e CA07, parcial):** só no criador e só para o dono, o campo de estudo vem pré-selecionado pela profissão,
+  marcado "a partir da sua profissão — só você vê" e trocável; com ele a área, os modelos, as extensões e a checagem da profissão se
+  adaptam. A lente sugerida só é gravada na tarefa (`extensions.studyField`) se a pessoa confirmar ou usar um modelo do campo. Edição de
+  tarefa existente e visitante não recebem a sugestão.
+- **Plano de desenvolvimento:** as tarefas-guia da profissão na ordem de `guidedTasks.priority` (sem as excluídas; as próprias do campo no
+  fim), cada uma com "criar esta tarefa" e o progresso pelas tarefas da pessoa com `extensions.guidedTask` ("k de n", sem percentual).
+  Fica no criador de tarefas porque a aba Carreira do perfil (RF75, n.16) não está no registro (Matriz B tem 15 sub-abas);
+  `components/career/DevelopmentPlan.tsx` está pronto para ser montado nela.
+- **D-153:** `packFor(code, minStatus)` em `lib/career/packs.ts`; o Acervo usa `pesquisa` como mínimo para lente, modelos e plano e mostra
+  "em revisão por especialistas" no lugar de "(pesquisa)", sem status, versão nem códigos L/D/X.
+- **Rascunho de outras telas:** `/tasks/new?rascunho=<id>` preenche o formulário, mostra a origem, permite descartar e apaga o rascunho
+  depois de salvar.
+- **Ainda planejado:** validação no servidor (CA02), visibilidade `PERFIL` por opt-in (CA03), origem `PROFISSAO` com `Idempotency-Key`
+  e variação paramétrica (CA05), modelos no criador de projetos (CA06), `AuditLog` da troca (CA08), evidência (CA09), exportação e
+  anonimização da conta (CA10).
+- **Testes:** `lib/preferences/occupation.test.tsx`, `lib/career/packs.test.ts`, `components/career/career.test.tsx` e
+  `components/tasks/assist.test.tsx`.

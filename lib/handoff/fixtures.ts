@@ -17,7 +17,7 @@ export function buildDemoHandoffTasks(now: Date): HandoffTaskInput[] {
       references: [{ label: "Guia de gestão de projetos (exemplo)", url: "https://www.gov.br/governodigital/pt-br" }],
     },
     {
-      id: "t-dossie-parecer-aditivo", title: "Parecer sobre o aditivo do contrato de nuvem", state: "EM_USO", dueAt: day(now, 6), priority: "ALTA", area: "JURIDICO",
+      id: "t-dossie-parecer-aditivo", title: "Parecer sobre o aditivo do contrato de nuvem", state: "EM_USO", dueAt: day(now, 6), legalDueAt: day(now, 8), priority: "ALTA", area: "JURIDICO",
       category: "PARECER_TECNICO", visibility: "DEPARTAMENTO", accessClass: "RESTRITO", ownerId: "u-pessoa", responsibleId: "u-pessoa",
       extensions: { caseNumber: "0001234-56.2026.8.16.0001", legalBasis: "Lei 14.133/2021, art. 125" },
       references: [{ label: "Lei 14.133/2021 (licitações e contratos)", url: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm" }],

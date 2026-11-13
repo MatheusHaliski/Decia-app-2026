@@ -6,9 +6,10 @@
  *    as partes interessadas e a equipe, em Contatos; as lições que ela registrou, em Fontes.
  *  • Tarefas do Acervo: as abertas de que ela é dona ou responsável. PRIVADA só com o consentimento do titular (RF36.CA05) — sem ele,
  *    fica de fora e só a contagem aparece. SIGILOSO entra só por referência (sem título, conteúdo nem referências).
- *  • Pendências: tarefa com prazo legal nos próximos `legalWindowDays` dias ou vencido (área Jurídica, nº de processo, base legal ou
- *    categoria contratual/regulatória), tarefa vencida, tarefa bloqueada, decisão atrasada (data-alvo passada sem decisão), revisão
- *    programada de decisão próxima, pedido de mudança aguardando o comitê.
+ *  • Pendências: tarefa com prazo legal nos próximos `legalWindowDays` dias ou vencido — o vencimento legal que o servidor calcula
+ *    pela regra cadastrada (`legalDueAt`, RF41.CA04) ou, sem ele, o prazo de uma tarefa de natureza legal (área Jurídica, nº de
+ *    processo, base legal ou categoria contratual/regulatória) —, tarefa vencida, tarefa bloqueada, decisão atrasada (data-alvo
+ *    passada sem decisão), revisão programada de decisão próxima, pedido de mudança aguardando o comitê.
  *  • Decisões: as não encerradas em que ela é dona ou participante; as evidências delas entram em Fontes.
  *  • Fontes: referências das tarefas, evidências das decisões, lições do projeto e trechos EXATOS da Memória Institucional
  *    (`searchMemory`), com a citação.
@@ -25,6 +26,8 @@ export interface HandoffTaskInput {
   title?: string;
   state?: string;
   dueAt?: string | null;
+  /** vencimento legal calculado pelo servidor a partir da regra de prazo (RF41.CA04) */
+  legalDueAt?: string | null;
   priority?: string | null;
   area?: string | null;
   category?: string | null;
@@ -79,6 +82,8 @@ export const isLegalTask = (t: HandoffTaskInput) =>
 /** Pendência de uma tarefa do Acervo (a mais grave; `undefined` = sem pendência). */
 export function taskPendency(t: HandoffTaskInput, today: string, windowDays = LEGAL_WINDOW_DAYS): PendencyKind | undefined {
   if (!OPEN_TASK_STATES.has(t.state ?? "")) return undefined;
+  const legal = t.legalDueAt ? isoDay(t.legalDueAt) : null;
+  if (legal && daysBetween(today, legal) <= windowDays) return "PRAZO_LEGAL";
   const due = t.dueAt ? isoDay(t.dueAt) : null;
   if (due && isLegalTask(t) && daysBetween(today, due) <= windowDays) return "PRAZO_LEGAL";
   if (due && due < today) return "VENCIDA";
@@ -245,13 +250,14 @@ export function collectDossier(input: CollectInput): Collected {
     const pendency = taskPendency(t, today, legalWindow);
     const facts: Fact[] = [k("handoff.fact.taskState", { state: `@social.taskState.${t.state}` })];
     if (t.dueAt) facts.push(k("handoff.fact.due", { date: isoDay(t.dueAt) }));
+    if (t.legalDueAt) facts.push(k("handoff.fact.legalDue", { date: isoDay(t.legalDueAt) }));
     if (t.priority === "ALTA" || t.priority === "CRITICA") facts.push(k("handoff.fact.priority", { priority: `@tasks.priority.${t.priority}` }));
     if (t.state === "BLOQUEADA" && t.blockReason && !restricted) facts.push(k("handoff.fact.blocked", { reason: t.blockReason }));
     if (pendency === "PRAZO_LEGAL" && !restricted && t.extensions?.caseNumber) facts.push(k("handoff.fact.caseNumber", { n: t.extensions.caseNumber }));
     add({
       // só a tarefa real (API) tem página; a do exemplo do laboratório não
       id: `tarefa:${id}`, section: "TAREFAS", title: restricted ? "" : t.title ?? "", href: input.taskSource === "API" ? `/tasks/${encodeURIComponent(id)}` : null, source: input.taskSource, transferable: true,
-      pendency, due: t.dueAt ? isoDay(t.dueAt) : null, restricted, facts,
+      pendency, due: pendency === "PRAZO_LEGAL" && t.legalDueAt ? isoDay(t.legalDueAt) : t.dueAt ? isoDay(t.dueAt) : null, restricted, facts,
     });
   }
 

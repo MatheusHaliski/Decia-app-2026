@@ -19,7 +19,8 @@ import { demoHandoffRepository, useHandoffs, type HandoffRepository } from "@/li
 import { HANDOFF_REASONS, type HandoffDossier, type HandoffReason } from "@/lib/handoff/types";
 import { createDossier } from "@/lib/handoff/workflow";
 import { useI18n } from "@/lib/i18n/useI18n";
-import { searchMemory, type MemorySearch } from "@/lib/memory/search";
+// importar a Memória daqui liga a busca real ao contrato `searchMemory` (lib/memory/index.ts)
+import { searchMemory, type MemorySearch } from "@/lib/memory";
 import { DEMO_PROJECT_ID } from "@/lib/projects/fixtures";
 import { demoProjectRepository } from "@/lib/projects/repository";
 import { useOptionalCurrentUser } from "@/lib/session/CurrentUserProvider";

@@ -117,11 +117,11 @@ describe("empregado, admin e as regras de acesso", () => {
     const repo = createMemoryHandoffRepository(buildDemoDossiers(NOW));
     renderWithProviders(<HandoffWorkspace repo={repo} memory={() => []} now={now} />, { profile: "EMPREGADO" });
     expect(screen.getByTestId("handoff-self").textContent).toBe("Você (Pessoa Exemplo)");
-    expect(screen.getByLabelText("Incluir os meus itens privados")).toBeTruthy();
+    expect(screen.getByRole("switch", { name: /Incluir os meus itens privados/ })).toBeTruthy();
     // o dossiê de Diego aparece porque ela é a sucessora
     fireEvent.click(screen.getByRole("button", { name: "Abrir o dossiê de Diego Exemplo" }));
     fireEvent.click(screen.getByTestId("handoff-ack-u-pessoa"));
-    expect(screen.getByTestId("handoff-ack-u-pessoa")).toBeFalsy;
+    expect(screen.queryByTestId("handoff-ack-u-pessoa")).toBeNull();
     expect(detail().getAttribute("data-status")).toBe("TRANSFERIDO");
     // e gera o próprio, com os itens privados por consentimento dela
     fireEvent.click(screen.getByRole("switch", { name: /Incluir os meus itens privados/ }));
