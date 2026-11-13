@@ -6132,7 +6132,7 @@
   "cad.qty.m3": "m³",
   "cad.qty.un": "ud.",
   "cad.unitOrigin.ARQUIVO": "declarada en el archivo",
-  "cad.unitOrigin.SUPOSTA": "supuesta por la extensión del dibujo — confírmela",
+  "cad.unitOrigin.SUPOSTA": "supuesta por el lector — confírmela",
   "cad.unitOrigin.ESCOLHIDA": "elegida por usted",
   "cad.unitOrigin.PADRAO": "predeterminada del formato",
   "cad.kind.FUNDACAO": "Cimentación",
@@ -7844,5 +7844,6 @@
   "projectPage.gantt.due": "plazo {date}",
   "projectPage.gantt.late": "{n} d después del plazo",
   "projectPage.gantt.legendDue": "Plazo de la actividad",
-  "cad.alert.UNIDADE_AUSENTE_TEXTO": "El archivo no declara la unidad ($INSUNITS). Por la altura de los textos (mediana de {height} unidades), supuse {unit} — confírmelo en «Cambiar la unidad»."
+  "cad.alert.UNIDADE_AUSENTE_TEXTO": "El archivo no declara la unidad ($INSUNITS). Por la altura de los textos (mediana de {height} unidades), supuse {unit} — confírmelo en «Cambiar la unidad».",
+  "aiPolicy.orgLink": "editar la política de la organización"
 }

@@ -6132,7 +6132,7 @@
   "cad.qty.m3": "m³",
   "cad.qty.un": "pcs",
   "cad.unitOrigin.ARQUIVO": "declared in the file",
-  "cad.unitOrigin.SUPOSTA": "assumed from the drawing size — please confirm",
+  "cad.unitOrigin.SUPOSTA": "assumed by the reader — please confirm",
   "cad.unitOrigin.ESCOLHIDA": "chosen by you",
   "cad.unitOrigin.PADRAO": "format default",
   "cad.kind.FUNDACAO": "Foundation",
@@ -7844,5 +7844,6 @@
   "projectPage.gantt.due": "due {date}",
   "projectPage.gantt.late": "{n} d past due",
   "projectPage.gantt.legendDue": "Activity due date",
-  "cad.alert.UNIDADE_AUSENTE_TEXTO": "The file doesn't declare its unit ($INSUNITS). From the text height (median of {height} units), I assumed {unit} — confirm it in “Change the unit”."
+  "cad.alert.UNIDADE_AUSENTE_TEXTO": "The file doesn't declare its unit ($INSUNITS). From the text height (median of {height} units), I assumed {unit} — confirm it in “Change the unit”.",
+  "aiPolicy.orgLink": "edit the organization policy"
 }

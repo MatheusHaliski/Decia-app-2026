@@ -8,7 +8,8 @@ import { useState } from "react";
 import { Badge, Button, Card, Checkbox, Dialog, Field, Input, Link, RadioCards, Tag, Textarea } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { AGENT_LIMITS, AUTONOMY_MODES, MODE_CAPABILITIES, type AgentCharter, type AutonomyMode } from "@/lib/ai/autonomy";
-import { MINUTA_TARGET, exceeds, pendingValid } from "@/lib/decia/session/policy";
+import { MINUTA_TARGET, canEditOrgPolicy, exceeds, pendingValid } from "@/lib/decia/session/policy";
+import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { can } from "@/lib/decia/session/roles";
 import { formatWhen, useDenial, useSessionCtx } from "./context";
 import { useByLabel } from "./Chat";
@@ -121,6 +122,7 @@ function ChangeModeDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 export function AutonomyPanel() {
   const { t, intl } = useI18n();
   const { session, org, me, viewer, personal } = useSessionCtx();
+  const { profile } = useViewer();
   const byLabel = useByLabel();
   const [open, setOpen] = useState(false);
   const owner = can(session, me, "TROCAR_MODO");
@@ -133,7 +135,8 @@ export function AutonomyPanel() {
       </div>
       <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-[length:var(--ws-text-body-sm)]">
         <dt className="text-ws-text-muted">{t("aiPolicy.sessionMode")}</dt><dd className="font-semibold" data-testid="session-mode">{t(`aiAutonomy.${session.policy.mode}`)}</dd>
-        <dt className="text-ws-text-muted">{t("aiPolicy.orgCeiling")}</dt><dd>{t(`aiAutonomy.${org.ceiling}`)}</dd>
+        <dt className="text-ws-text-muted">{t("aiPolicy.orgCeiling")}</dt>
+        <dd>{t(`aiAutonomy.${org.ceiling}`)}{canEditOrgPolicy(profile) ? <> <Link href="/admin?tab=ia" className="text-[length:var(--ws-text-caption)]">{t("aiPolicy.orgLink")}</Link></> : null}</dd>
         <dt className="text-ws-text-muted">{t("aiPolicy.personal")}</dt><dd>{t(`aiAutonomy.${personal}`)} <Link href="/settings?tab=trabalho" className="text-[length:var(--ws-text-caption)]">{t("aiPolicy.changePersonal")}</Link></dd>
         <dt className="text-ws-text-muted">{t("aiPolicy.effective")}</dt>
         <dd><Tag tone="spark">{t(`aiAutonomy.${viewer.mode}`)}</Tag> <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("aiPolicy.limitedBy", { layers: viewer.limitedBy.map((l) => t(`aiPolicy.layer.${l}`)).join(", ") })}</span></dd>

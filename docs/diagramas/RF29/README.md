@@ -808,3 +808,19 @@ flowchart LR
   VEC -.testes.-> DOM
   REPO -.fase 7.-> API
 ```
+
+## Estado da implementação (12/11/2026)
+
+Front DEMO, sem API: sessões, política de IA e trilha de auditoria vivem num repositório em memória (`SessionRepository`, selo DEMO; `lib/decia/session/repository.ts`). A sessão em si segue `docs/produto/DECIA_SESSAO_E_MESA.md`: 12 estados com transições testadas (só a pessoa PROPRIETARIA muda o estado; motivo obrigatório para cancelar, devolver e encerrar sem decisão), papéis PROPRIETARIO · EDITOR · COMENTADOR · LEITOR, chat classificado (mensagem, evidência com referência, pergunta, resposta, proposta da IA ✦, aviso do sistema, ata) com reações de qualidade que nunca pontuam, e a "IA do DECIA" simulada que responde só com fatos da sessão e trechos exatos e numerados da Memória Institucional (`searchMemory`) — sem fonte, diz que não encontrou. DECIA Points (`deciaPoints.award`, idempotente) só em argumento com evidência confirmada, pergunta respondida, ata ratificada e encaminhamento cumprido, mostrados com discrição a quem recebe. Três sessões de exemplo ligadas às decisões DEMO (`lib/decia/session/fixtures.ts`).
+
+| CA | Situação | Onde |
+|---|---|---|
+| RF29.CA01 | Parcial: a sessão guarda `decisionId`/`projectId` e mostra a decisão ligada; o botão "Abrir sessão DECIA" no projeto não foi feito | `components/decia/session/StatePanel.tsx` |
+| RF29.CA02 | Não feito (criar projeto a partir da sessão) | — |
+| RF29.CA03 | DEMO: evidência com uma referência (link, arquivo, tarefa ou documento; endereço só https ou caminho do app); seletor do Acervo e até 5 anexos com `snapshotJson` não feitos | `lib/decia/session/chat.ts`, `components/decia/session/Chat.tsx` |
+| RF29.CA04 | Parcial: encaminhamentos da ata viram rascunho de tarefa ("Criar no Acervo", `saveTaskDraft` origem ATA); "Transformar em tarefa" para qualquer mensagem não feito | `components/decia/session/AtaViva.tsx` |
+| RF29.CA05 | Parcial: EM_REVISAO → VALIDADA/DEVOLVIDA na máquina de estados e "Registrar a ata no Acervo" (rascunho ATA_REGISTRO); `FinalDecision`, carimbo e fase APROVACAO dependem da API | `lib/decia/session/machine.ts`, `lib/decia/session/meeting.ts` |
+| RF29.CA06 | Parcial: painel de auditoria em `/decia/review` com toda intervenção humana sobre o que a IA produziu (aceitou, editou e aceitou, rejeitou, reverteu — quem, quando, política vigente, motivo) e comparação ANTES × DEPOIS por palavra, inclusive as revisões das decisões estruturadas (eventos e snapshots de lib/decia); o fio `DecisionThread` não foi feito | `components/decia/audit/AuditPanel.tsx`, `lib/decia/audit/decisions.ts` |
+| RF29.CA07 | DEMO: livro somente-acréscimo (sem update/delete, registros congelados, cadeia de SHA-256 verificada na tela) e exportação CSV/JSON do que está filtrado; exportação em PDF não feita | `lib/decia/audit/log.ts`, `lib/decia/audit/export.ts` |
+| RF29.CA08 | Não feito (as propostas ✦ para a minuta montam o texto só com o que a sessão registrou) | `lib/decia/session/minuta.ts` |
+| RF29.CA09 | Não feito | — |

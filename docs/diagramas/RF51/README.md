@@ -439,3 +439,17 @@ flowchart LR
 | **RF51.CA07** | `AiGateway`, `AiBudget`, `AiInferenceLog` (inputTokens, outputTokens, estimatedCostUsd), cancelamento | W2 → A3 → I1 → E429/E422, I2 sem repetição | 10–19 e 21 | `GERANDO → CANCELADA` | `GW`, `RD`, `AIP` |
 
 Regras transversais refletidas: autorização no servidor (`ResourceAuthorizer`, 404 uniforme D-141); SIGILOSO só dono e colaboradores explícitos, sem ADMIN implícito (D-139); troca de modo invalida propostas e encerra execuções (D-136); nenhuma publicação automática (nota em `PUBLICADA`); conteúdo RESTRITO/SIGILOSO não vai a provedor externo (`AiGateway`).
+
+## Estado da implementação (12/11/2026)
+
+Na sessão do DECIA (DEMO, `/decia/[sessionId]`) e em `/admin` › IA do sistema, sobre as funções de `lib/ai/autonomy.ts` (sem alterá-las). O modo efetivo é sempre o mais restritivo entre o TETO da organização (ADMIN e EMPRESA editam), o modo da sessão (só a pessoa proprietária troca, com `changeMode`) e a preferência pessoal de quem vê (D-136, D-156). A IA da sessão é simulada e local (sem inferência paga).
+
+| CA | Situação | Onde |
+|---|---|---|
+| RF51.CA01 | DEMO: cinco modos com o que a IA faz em cada um (de "só lê" a "agente com mandato e limites"); Manual oculta o conteúdo da IA, Sob solicitação mostra só o que a pessoa pediu (o resto sob pedido); a IA responde só com fatos da sessão e trechos da Memória | `lib/decia/session/policy.ts`, `components/decia/session/AutonomyPanel.tsx` |
+| RF51.CA02 | DEMO: propostas da IA ✦ para a minuta com diff por palavra; aceitar, editar e aceitar, rejeitar (com motivo, original preservado) | `lib/decia/session/minuta.ts`, `components/decia/session/MinutaPanel.tsx` |
+| RF51.CA03 | Parcial: aplicar cria revisão nova e "Reverter" volta ao texto anterior (ponto de restauração, nada apagado, só se ninguém mudou depois); seleção por objeto/bloco é dos editores Letters/Drawings | `lib/decia/session/minuta.ts` |
+| RF51.CA04 | Parcial: trocar para Agente exige mandato válido do próprio proprietário (objetivo, ferramentas, passos ≤ 50, tokens ≤ 200 000, prazo ≤ 8 h) e o resumo do mandato fica visível; a execução de passos do agente na sessão não foi feita | `components/decia/session/AutonomyPanel.tsx` |
+| RF51.CA05 | DEMO: trocar o modo ou o teto da organização sobe a versão da política, gera aviso do sistema a todos os membros (com selo de não lido) e deixa as propostas antigas OBSOLETAS, não aplicáveis, com o motivo (`proposalValidity`); editar a minuta também as invalida (revisão) | `lib/decia/session/policy.ts`, `components/decia/session/OrgAiPolicyPanel.tsx` |
+| RF51.CA06 | DEMO: trechos da Memória e transcrições entram como dados citados; nada do conteúdo muda permissões, ferramentas ou a política | `lib/decia/session/assistant.ts` |
+| RF51.CA07 | Não se aplica à sessão DEMO (IA simulada local, sem provedor nem custo) | — |

@@ -100,6 +100,15 @@ describe("sessão: casca, chat e pontos", () => {
 });
 
 describe("autonomia da IA: troca de modo pela pessoa proprietária", () => {
+  it("ADMIN e EMPRESA veem o atalho para a política da organização; os demais não", () => {
+    nav.search = new URLSearchParams("");
+    const { unmount } = renderWithProviders(<SessionView sessionId={S} repo={makeRepo()} />, { profile: "EMPRESA" });
+    expect(screen.getByRole("link", { name: "editar a política da organização" }).getAttribute("href")).toBe("/admin?tab=ia");
+    unmount();
+    renderWithProviders(<SessionView sessionId={S} repo={makeRepo()} />, { profile: "EMPREGADO" });
+    expect(screen.queryByRole("link", { name: "editar a política da organização" })).toBeNull();
+  });
+
   it("aviso do sistema para todos, selo de não lido para os outros membros e proposta antiga OBSOLETA", () => {
     const repo = open(null, makeRepo(), { aiAutonomyDefault: "ASSISTIDO" });
     fireEvent.click(screen.getByTestId("change-mode"));

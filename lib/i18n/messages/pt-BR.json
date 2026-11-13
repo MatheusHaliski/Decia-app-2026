@@ -6132,7 +6132,7 @@
   "cad.qty.m3": "m³",
   "cad.qty.un": "un",
   "cad.unitOrigin.ARQUIVO": "declarada no arquivo",
-  "cad.unitOrigin.SUPOSTA": "suposta pela extensão do desenho — confirme",
+  "cad.unitOrigin.SUPOSTA": "suposta pelo leitor — confirme",
   "cad.unitOrigin.ESCOLHIDA": "escolhida por você",
   "cad.unitOrigin.PADRAO": "padrão do formato",
   "cad.kind.FUNDACAO": "Fundação",
@@ -7844,5 +7844,6 @@
   "projectPage.gantt.due": "prazo {date}",
   "projectPage.gantt.late": "passa {n} d do prazo",
   "projectPage.gantt.legendDue": "Prazo da atividade",
-  "cad.alert.UNIDADE_AUSENTE_TEXTO": "O arquivo não declara a unidade ($INSUNITS). Pela altura dos textos (mediana de {height} unidades), supus {unit} — confirme em “Trocar a unidade”."
+  "cad.alert.UNIDADE_AUSENTE_TEXTO": "O arquivo não declara a unidade ($INSUNITS). Pela altura dos textos (mediana de {height} unidades), supus {unit} — confirme em “Trocar a unidade”.",
+  "aiPolicy.orgLink": "editar a política da organização"
 }
