@@ -97,6 +97,8 @@ export const PAGES: readonly PageEntry[] = [
   // visitante lê só tarefas PUBLICA (perfis públicos, Mural, Buscar — RF16/RF17.CA04/RF27); o resto 403 no TaskDetail (D-93)
   p("/tasks/[id]", "app/(shell)/tasks/[id]/page.tsx", "page.task", ["RF41", "RF19", "RF18", "RF7", "RF34", "RF13", "RF10"], everyone("V"), "acervo", "A"),
   p("/tasks/[id]/edit", "app/(shell)/tasks/[id]/edit/page.tsx", "page.taskEdit", ["RF8", "RF11", "RF12"], logged("E"), "criar-tarefa", "A"),
+  p("/tasks/extrair", "app/(shell)/tasks/extrair/page.tsx", "cad.page.extract", ["RF34", "RF70"], logged("E"), "insights-ia", "A"),
+  p("/tasks/[id]/extrair", "app/(shell)/tasks/[id]/extrair/page.tsx", "cad.page.extractFromTask", ["RF34", "RF70"], logged("E"), "insights-ia", "A"),
   p("/attachments", "app/(shell)/attachments/page.tsx", "nav.attachments", ["RF41"], logged("E"), "acervo", "A"),
   p("/desk", "app/(shell)/desk/page.tsx", "nav.desk", ["RF21", "RF22", "RF44"], logged("E"), "mesa", "A", { tabs: DESK_TABS }),
   p("/projects/[id]", "app/(shell)/projects/[id]/page.tsx", "page.project", ["RF7", "RF29", "RF13", "RF10"], logged("V"), "criar-projeto", "A"),
@@ -115,6 +117,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26", "RF50", "RF75"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
   // Editores de peças (PLANO_ONDAS 17/10/2026, Ondas 4 e 5): páginas-esqueleto com os CAs até o editor existir; RF51/RF69–RF72 são transversais às duas
   p("/letters", "app/(shell)/letters/page.tsx", "nav.letters", ["RF52", "RF53", "RF54", "RF55", "RF56", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "criar-tarefa", "A"),
+  p("/letters/[pieceId]", "app/(shell)/letters/[pieceId]/page.tsx", "letters.page.piece", ["RF52", "RF53", "RF54", "RF51", "RF55", "RF73"], logged("E"), "criar-tarefa", "A"),
   p("/drawings", "app/(shell)/drawings/page.tsx", "nav.drawings", ["RF57", "RF58", "RF59", "RF60", "RF61", "RF62", "RF63", "RF64", "RF65", "RF66", "RF67", "RF68", "RF73", "RF74", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "mesa", "A"),
   // Jogar e ganhar (§2.4 / Matriz E)
   p("/goals", "app/(shell)/goals/page.tsx", "nav.goals", ["RF35", "RF24", "RF49"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V" }), "hype", "E"),

@@ -5,23 +5,25 @@
  * a entrega da EAP, o risco ou o item do TAP correspondente.
  *
  * Alteração ESTRUTURAL gera `ProjectVersion` (RF22.CA02) com resumo legível traduzível; mover/redimensionar no canvas não gera
- * (RF22.CA03). Projeto arquivado recusa alteração estrutural (`PROJETO_BLOQUEADO`, RF22.CA06). Funções puras: devolvem um
- * modelo novo e nunca mutam o anterior.
+ * (RF22.CA03) — o ajuste confirmado (ao soltar o arraste ou por teclado) entra no modelo e é contado na versão vigente
+ * (`layoutMoves`), para o histórico e as posições andarem juntos. `VERSION_RESTORE` reaplica o retrato de uma versão anterior
+ * (estrutura, prazos e posições) como uma versão NOVA. Projeto arquivado recusa alteração estrutural (`PROJETO_BLOQUEADO`,
+ * RF22.CA06). Funções puras: devolvem um modelo novo e nunca mutam o anterior.
  */
 import { ITEM_SIZE, makeRef, refId, refKind, zoneAt } from "./canvas";
 import { canvasZones, effectiveDuration, scheduleOf, wbsRoot } from "./derive";
 import { wouldCreateCycle } from "./engine/schedule";
 import { PMC_TARGET, type PmcBlock } from "./lifecycle";
-import { PROJECT_PHASES } from "./types";
+import { PROJECT_AREAS, PROJECT_PHASES } from "./types";
 import type {
   Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
-  Charter, Closure, Dependency, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
-  Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
+  Charter, Closure, CommItem, Dependency, ProjectArea, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
+  ProjectSnapshot, Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
 } from "./types";
 
 type TaskPatch = Partial<Pick<Task,
   "title" | "status" | "durationDays" | "pert" | "percentComplete" | "budget" | "actualCost" | "responsibleId" | "reviewerId" | "moscow"
-  | "sprint" | "wbsId" | "milestone">>;
+  | "sprint" | "wbsId" | "milestone" | "changeId" | "dueAt">>;
 type CharterList = "justification" | "highLevelRequirements" | "premises" | "constraints" | "highLevelRisks" | "teamRoles" | "objectives" | "milestones";
 
 export type ProjectCommand =
@@ -48,6 +50,9 @@ export type ProjectCommand =
   | { type: "STK_ADD"; name: string; power?: number; interest?: number; role?: string }
   | { type: "STK_UPDATE"; id: string; patch: Partial<Pick<Stakeholder, "name" | "role" | "power" | "interest">> }
   | { type: "STK_REMOVE"; id: string }
+  | { type: "COMM_ADD"; info: string; audienceIds: string[]; channel: CommItem["channel"]; frequency: CommItem["frequency"]; ownerId?: string }
+  | { type: "COMM_UPDATE"; id: string; patch: Partial<Omit<CommItem, "id">> }
+  | { type: "COMM_REMOVE"; id: string }
   | { type: "RISK_ADD"; title: string; kind?: RiskKind; probability?: number; impact?: number; impactLevel?: number }
   | { type: "RISK_UPDATE"; id: string; patch: Partial<Pick<Risk, "title" | "kind" | "probability" | "impact" | "impactLevel" | "response" | "ownerId" | "status" | "taskIds">> }
   | { type: "RISK_REMOVE"; id: string }
@@ -70,10 +75,14 @@ export type ProjectCommand =
   | { type: "CLOSURE_UPDATE"; patch: Partial<Closure> }
   | { type: "BASELINE_SET" }
   | { type: "SET_APPROACH"; approach: Approach }
+  | { type: "SET_PROJECT_AREA"; area: ProjectArea }
   | { type: "SET_BOARD_MODEL"; model: BoardModel }
   | { type: "SET_CURRENT_SPRINT"; sprint: number }
+  | { type: "SPRINT_SET"; number: number; start: string; end: string; goal?: string }
   | { type: "SET_STATUS_DATE"; date: string }
-  | { type: "LINK_DECISION"; decisionId: string };
+  | { type: "LINK_DECISION"; decisionId: string }
+  /** volta ao retrato da versão `number` (fornecido pelo repositório, `ProjectRepository.versionSnapshot`) gerando uma versão nova */
+  | { type: "VERSION_RESTORE"; number: number; snapshot: ProjectSnapshot };
 
 export type CommandError =
   | "NAO_ENCONTRADO" | "TEXTO_VAZIO" | "CICLO" | "LIGACAO_INVALIDA" | "JA_EXISTE" | "PROJETO_BLOQUEADO" | "TRANSICAO_INVALIDA"
@@ -111,13 +120,35 @@ const CHANGE_FLOW: Record<ChangeStatus, readonly ChangeStatus[]> = {
   IMPLEMENTADA: [],
 };
 
+/** Retrato do projeto para o histórico (RF22.CA02 `snapshotJson`): tudo menos a lista de versões e o número da versão. */
+export function snapshotOf(model: ProjectModel): ProjectSnapshot {
+  const snap: Partial<ProjectModel> = { ...model };
+  delete snap.versions;
+  delete snap.version;
+  return snap as ProjectSnapshot;
+}
+
+/** Conta, na versão vigente, um ajuste de posição confirmado no canvas (sem gerar versão — RF22.CA03). */
+function withLayoutMove(model: ProjectModel, ctx: CommandContext): ProjectModel {
+  const last = model.versions.at(-1);
+  if (!last) return model;
+  return { ...model, versions: [...model.versions.slice(0, -1), { ...last, layoutMoves: (last.layoutMoves ?? 0) + 1, layoutAt: ctx.now.toISOString() }] };
+}
+
 /** Aplica o comando; alteração estrutural incrementa a versão e registra `ProjectVersion`. */
 export function applyCommand(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): CommandResult {
   const structural = !STRUCTURAL_FREE.has(cmd.type);
   if (structural && model.closure.archived && cmd.type !== "CLOSURE_UPDATE") return fail("PROJETO_BLOQUEADO");
   const r = reduce(model, cmd, ctx);
   if (!r.ok) return r;
-  if (!r.structural) return r;
+  if (!r.structural) {
+    if (cmd.type !== "CANVAS_MOVE") return r;
+    const before = model.canvas.positions[cmd.ref];
+    const after = r.model.canvas.positions[cmd.ref];
+    // soltar no mesmo lugar não muda nada (nem conta ajuste)
+    if (before && after && before.x === after.x && before.y === after.y) return { ...r, model };
+    return { ...r, model: withLayoutMove(r.model, ctx) };
+  }
   const number = model.version + 1;
   return {
     ...r,
@@ -164,7 +195,8 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       const task: Task = {
         id: newId("t"), code: nextCode("T", model.tasks.map((t) => t.code)), title, phase: cmd.phase, status: cmd.status ?? "A_FAZER",
         durationDays: Math.max(0, cmd.durationDays ?? 1), percentComplete: 0, budget: 0, actualCost: 0, createdBy: ctx.actorId,
-        sprint: cmd.sprint, changeId: cmd.changeId, addedAfterBaseline: model.baseline ? true : undefined,
+        sprint: cmd.sprint, changeId: cmd.changeId, addedAfterBaseline: model.baseline ? true : undefined, createdAt: nowIso,
+        startedAt: cmd.status && cmd.status !== "A_FAZER" ? nowIso : undefined,
       };
       const ref = makeRef("TASK", task.id);
       const next = setPosition({ ...model, tasks: [...model.tasks, task] }, ref, cmd.at);
@@ -180,12 +212,21 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       }
       if (patch.percentComplete !== undefined) patch.percentComplete = clamp(Math.round(patch.percentComplete), 0, 100);
       if (patch.durationDays !== undefined && !(patch.durationDays >= 0)) return fail("VALOR_INVALIDO", "durationDays");
+      if (patch.dueAt !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(patch.dueAt)) return fail("VALOR_INVALIDO", "dueAt");
       if (patch.budget !== undefined && !(patch.budget >= 0)) return fail("VALOR_INVALIDO", "budget");
       if (patch.actualCost !== undefined && !(patch.actualCost >= 0)) return fail("VALOR_INVALIDO", "actualCost");
       if (patch.wbsId && !model.wbs.some((n) => n.id === patch.wbsId)) return fail("NAO_ENCONTRADO", patch.wbsId);
+      if (patch.changeId) {
+        // ligar a atividade a uma mudança só vale com a mudança aprovada pelo comitê (regulariza o scope creep)
+        const ch = model.changes.find((c) => c.id === patch.changeId);
+        if (!ch) return fail("NAO_ENCONTRADO", patch.changeId);
+        if (ch.status !== "APROVADA" && ch.status !== "IMPLEMENTADA") return fail("MUDANCA_NAO_APROVADA", ch.code);
+      }
       const done = patch.status === "CONCLUIDA" && t.status !== "CONCLUIDA";
+      const started = patch.status && patch.status !== "A_FAZER" && !t.startedAt;
       const next: Task = {
         ...t, ...patch,
+        ...(started ? { startedAt: nowIso } : {}),
         ...(done ? { doneAt: nowIso, percentComplete: 100 } : {}),
         ...(patch.status && patch.status !== "CONCLUIDA" && t.status === "CONCLUIDA" ? { doneAt: undefined } : {}),
       };
@@ -422,7 +463,37 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
         ...model,
         stakeholders: model.stakeholders.filter((x) => x.id !== s.id),
         requirements: model.requirements.map((r) => (r.originStakeholderId === s.id ? { ...r, originStakeholderId: undefined } : r)),
+        communications: (model.communications ?? []).map((c) => ({ ...c, audienceIds: c.audienceIds.filter((id) => id !== s.id) })).filter((c) => c.audienceIds.length),
       }, makeRef("STK", s.id)), true, "stkRemoved", { name: s.name });
+    }
+
+    // ---------------- plano de comunicação ----------------
+    case "COMM_ADD": {
+      const info = clean(cmd.info);
+      if (!info) return fail("TEXTO_VAZIO");
+      const audienceIds = [...new Set(cmd.audienceIds)].filter((id) => model.stakeholders.some((s) => s.id === id));
+      if (!audienceIds.length) return fail("VALOR_INVALIDO", "audience");
+      const item: CommItem = { id: newId("cm"), info, audienceIds, channel: cmd.channel, frequency: cmd.frequency, ownerId: cmd.ownerId };
+      return ok({ ...model, communications: [...(model.communications ?? []), item] }, true, "commAdded", { info: info.slice(0, 60) });
+    }
+    case "COMM_UPDATE": {
+      const c = (model.communications ?? []).find((x) => x.id === cmd.id);
+      if (!c) return fail("NAO_ENCONTRADO", cmd.id);
+      const patch = { ...cmd.patch };
+      if (patch.info !== undefined) {
+        patch.info = clean(patch.info);
+        if (!patch.info) return fail("TEXTO_VAZIO");
+      }
+      if (patch.audienceIds) {
+        patch.audienceIds = [...new Set(patch.audienceIds)].filter((id) => model.stakeholders.some((s) => s.id === id));
+        if (!patch.audienceIds.length) return fail("VALOR_INVALIDO", "audience");
+      }
+      return ok({ ...model, communications: (model.communications ?? []).map((x) => (x.id === c.id ? { ...x, ...patch } : x)) }, true, "commUpdated", { info: (patch.info ?? c.info).slice(0, 60) });
+    }
+    case "COMM_REMOVE": {
+      const c = (model.communications ?? []).find((x) => x.id === cmd.id);
+      if (!c) return fail("NAO_ENCONTRADO", cmd.id);
+      return ok({ ...model, communications: (model.communications ?? []).filter((x) => x.id !== c.id) }, true, "commRemoved", { info: c.info.slice(0, 60) });
     }
 
     // ---------------- riscos e RACI ----------------
@@ -521,8 +592,11 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
     }
 
     // ---------------- iniciação: TAP, business case, orçamento ----------------
-    case "CHARTER_UPDATE":
-      return ok({ ...model, charter: { ...model.charter, ...cmd.patch } }, true, "charterUpdated");
+    case "CHARTER_UPDATE": {
+      // aprovar registra quem aprovou; desfazer a aprovação apaga o registro
+      const approval = "approvedBySponsorAt" in cmd.patch ? { approvedBy: cmd.patch.approvedBySponsorAt ? ctx.actorId : undefined } : {};
+      return ok({ ...model, charter: { ...model.charter, ...cmd.patch, ...approval } }, true, "charterUpdated");
+    }
     case "CHARTER_LIST_ADD": {
       const text = clean(cmd.text);
       if (!text) return fail("TEXTO_VAZIO");
@@ -577,6 +651,10 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       if (!baseline) return fail("CICLO");
       return ok({ ...model, baseline, tasks: model.tasks.map((t) => ({ ...t, addedAfterBaseline: undefined })) }, true, "baselineSet", { finish: baseline.finish });
     }
+    case "SET_PROJECT_AREA":
+      if (!PROJECT_AREAS.includes(cmd.area)) return fail("VALOR_INVALIDO", "area");
+      if ((model.area ?? "SOFTWARE") === cmd.area) return ok(model, false);
+      return ok({ ...model, area: cmd.area }, true, "areaSet", { area: cmd.area });
     case "SET_APPROACH":
       return ok({ ...model, approach: cmd.approach }, true, "approachSet", { approach: cmd.approach });
     case "SET_BOARD_MODEL":
@@ -584,12 +662,28 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
     case "SET_CURRENT_SPRINT":
       if (!(cmd.sprint >= 1)) return fail("VALOR_INVALIDO", "sprint");
       return ok({ ...model, currentSprint: Math.round(cmd.sprint) }, false);
+    case "SPRINT_SET": {
+      const n = Math.round(cmd.number);
+      if (!(n >= 1) || !/^\d{4}-\d{2}-\d{2}/.test(cmd.start) || !/^\d{4}-\d{2}-\d{2}/.test(cmd.end) || cmd.end.slice(0, 10) < cmd.start.slice(0, 10)) return fail("VALOR_INVALIDO", "sprint");
+      const sprint = { number: n, start: cmd.start.slice(0, 10), end: cmd.end.slice(0, 10), goal: cmd.goal ? clean(cmd.goal) : undefined };
+      const sprints = [...(model.sprints ?? []).filter((x) => x.number !== n), sprint].sort((a, b) => a.number - b.number);
+      return ok({ ...model, sprints }, true, "sprintSet", { n });
+    }
     case "SET_STATUS_DATE":
       if (!/^\d{4}-\d{2}-\d{2}/.test(cmd.date)) return fail("VALOR_INVALIDO", "date");
       return ok({ ...model, statusDate: cmd.date.slice(0, 10) }, false);
     case "LINK_DECISION":
       if (model.decisionIds.includes(cmd.decisionId)) return ok(model, false);
       return ok({ ...model, decisionIds: [...model.decisionIds, cmd.decisionId] }, true, "decisionLinked");
+
+    // ---------------- histórico (RF22.CA02) ----------------
+    case "VERSION_RESTORE": {
+      const n = Math.round(cmd.number);
+      if (!(n >= 1) || n >= model.version) return fail("VALOR_INVALIDO", "version");
+      if (!model.versions.some((v) => v.number === n) || !cmd.snapshot || cmd.snapshot.id !== model.id) return fail("NAO_ENCONTRADO", `v${n}`);
+      // estrutura, prazos e posições do canvas voltam juntos; o histórico continua (a volta vira a próxima versão)
+      return ok({ ...cmd.snapshot, id: model.id, versions: model.versions, version: model.version }, true, "versionRestored", { n });
+    }
   }
 }
 

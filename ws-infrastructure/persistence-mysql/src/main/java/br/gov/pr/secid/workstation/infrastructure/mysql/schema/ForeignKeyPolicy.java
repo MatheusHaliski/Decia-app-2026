@@ -527,7 +527,12 @@ public final class ForeignKeyPolicy {
             // V59 — rf46_mensagens_diretas
             new Fk("direct_messages", "conversation_id", "direct_conversations", "CASCADE"),
             new Fk("direct_messages", "author_id", "users", "CASCADE"),
-            new Fk("direct_conversation_pairs", "conversation_id", "direct_conversations", "CASCADE")
+            new Fk("direct_conversation_pairs", "conversation_id", "direct_conversations", "CASCADE"),
+            // V61 — rf20_conectores_fontes_externas
+            new Fk("connector_accounts", "owner_id", "users", "CASCADE"),
+            new Fk("connector_oauth_states", "owner_id", "users", "CASCADE"),
+            new Fk("task_external_links", "task_id", "tasks", "CASCADE"),
+            new Fk("task_external_links", "account_id", "connector_accounts", "SET NULL")
     );
     // <<< gerado
 

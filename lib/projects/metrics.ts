@@ -8,10 +8,10 @@
  */
 import { scheduleOf } from "./derive";
 import { businessCase } from "./engine/finance";
-import { agreementProblems, gut, PM_AUTHORITY, riskExposure } from "./engine/methods";
-import { PHASE_META, type GateCriterionId } from "./lifecycle";
+import { agreementProblems, gut, mendelow, PM_AUTHORITY, riskExposure } from "./engine/methods";
+import { IT_ONLY_CRITERIA, PHASE_META, type GateCriterionId } from "./lifecycle";
 import type { ProjectModel, ProjectPhase } from "./types";
-import { PROJECT_PHASES } from "./types";
+import { isItProject, PROJECT_PHASES } from "./types";
 import { evmView, raciMatrix, riskRows, timelineView, traceabilityView, wbsView } from "./views";
 
 export type MetricStatus = "OK" | "ATENCAO" | "CRITICO" | "SEM_DADOS";
@@ -21,7 +21,7 @@ export type WorkspaceTab = "quadro" | "canvas" | "cronograma" | "iniciacao" | "e
 
 export type MetricId =
   | "Q_PORTAO" | "Q_EAP_100" | "Q_EAP_SUBSTANTIVOS" | "Q_RACI" | "Q_RASTREABILIDADE" | "Q_GOLD_PLATING" | "Q_CRONOGRAMA" | "Q_PERT"
-  | "Q_IDC" | "Q_IDP" | "Q_RESERVA" | "Q_RISCOS_RESPOSTA" | "Q_SCOPE_CREEP" | "Q_MUDANCAS_ANALISE" | "Q_LICOES"
+  | "Q_IDC" | "Q_IDP" | "Q_RESERVA" | "Q_RISCOS_RESPOSTA" | "Q_SCOPE_CREEP" | "Q_MUDANCAS_ANALISE" | "Q_LICOES" | "Q_COMUNICACAO"
   | "G_ALINHAMENTO" | "G_SMART" | "G_TAP_PATROCINADOR" | "G_GUT" | "G_DECISOES_PORTAO" | "G_DECISOES_MUDANCA" | "G_ISO38500"
   | "G_RUN_GROW_TRANSFORM" | "G_ACORDOS_SERVICO" | "G_AUTORIDADE_GP"
   | "W_CARGA" | "W_CRITICO_CONCENTRADO" | "W_QUATRO_OLHOS" | "W_SEM_RESPONSAVEL" | "W_PARTICIPACAO_EDICOES" | "W_PARTICIPACAO_DECISOES";
@@ -55,7 +55,8 @@ const band = (v: number, ok: number, warn: number, higherIsBetter = true): Metri
 export interface GateCheck { id: GateCriterionId; ok: boolean }
 
 export function evaluateGate(model: ProjectModel, phase: ProjectPhase): GateCheck[] {
-  return PHASE_META[phase].gate.map((id) => ({ id, ok: criterion(model, id) }));
+  const it = isItProject(model);
+  return PHASE_META[phase].gate.filter((id) => it || !IT_ONLY_CRITERIA.has(id)).map((id) => ({ id, ok: criterion(model, id) }));
 }
 
 function criterion(model: ProjectModel, id: GateCriterionId): boolean {
@@ -178,6 +179,20 @@ export function computeMetrics(model: ProjectModel, decisions: readonly LinkedDe
   quality.push(m("Q_LICOES", "QUALIDADE", elapsed <= 1 ? (phasesWithLessons ? "OK" : "SEM_DADOS") : band(pct(phasesWithLessons, elapsed), 50, 20), `${phasesWithLessons}/${elapsed}`,
     { phases: phasesWithLessons, elapsed, total: model.lessons.length }, "encerramento", "LICOES_AO_LONGO"));
 
+  // plano de comunicação × mapa poder × interesse: quem se gerencia de perto precisa de comunicação frequente; quem se mantém
+  // satisfeito, ao menos periódica
+  const comms = model.communications ?? [];
+  const needs = model.stakeholders.filter((st) => { const k = mendelow(st.power, st.interest); return k === "GERENCIAR_DE_PERTO" || k === "MANTER_SATISFEITO"; });
+  const frequentEnough = (st: (typeof model.stakeholders)[number]) => {
+    const own = comms.filter((c) => c.audienceIds.includes(st.id));
+    if (!own.length) return false;
+    if (mendelow(st.power, st.interest) !== "GERENCIAR_DE_PERTO") return true;
+    return own.some((c) => c.frequency === "DIARIA" || c.frequency === "SEMANAL" || c.frequency === "QUINZENAL");
+  };
+  const uncovered = needs.filter((st) => !frequentEnough(st));
+  quality.push(m("Q_COMUNICACAO", "QUALIDADE", !model.stakeholders.length ? "SEM_DADOS" : uncovered.length ? (uncovered.length > 1 ? "CRITICO" : "ATENCAO") : "OK", `${needs.length - uncovered.length}/${needs.length}`,
+    { covered: needs.length - uncovered.length, total: needs.length, names: uncovered.map((st) => st.name).join(", ") || "—" }, "riscos", "PLANO_COMUNICACAO"));
+
   // --- governança
   const objs = model.charter.objectives;
   const aligned = objs.filter((o) => o.goalId && model.governance.goals.some((g) => g.id === o.goalId)).length;
@@ -200,15 +215,17 @@ export function computeMetrics(model: ProjectModel, decisions: readonly LinkedDe
   governance.push(m("G_DECISOES_MUDANCA", "GOVERNANCA", decidedChanges.length ? band(pct(changesInDecia, decidedChanges.length), 100, 50) : "SEM_DADOS", `${changesInDecia}/${decidedChanges.length}`,
     { inDecia: changesInDecia, total: decidedChanges.length }, "controle", "CCB_CAB"));
   const iso = Object.values(model.governance.iso38500).filter(Boolean).length;
-  governance.push(m("G_ISO38500", "GOVERNANCA", band(iso, 6, 3), `${iso}/6`, { n: iso }, "governanca", "ISO_38500"));
+  // governança específica de TI só cobra projetos de TI (a Mesa atende outras áreas: Direito, Engenharia, Saúde…)
+  const it = isItProject(model);
+  if (it) governance.push(m("G_ISO38500", "GOVERNANCA", band(iso, 6, 3), `${iso}/6`, { n: iso }, "governanca", "ISO_38500"));
   const spend = { RUN: 0, GROW: 0, TRANSFORM: 0 };
   for (const b of model.budgetLines) spend[b.spend] += b.amount;
   const spendTotal = spend.RUN + spend.GROW + spend.TRANSFORM;
-  governance.push(m("G_RUN_GROW_TRANSFORM", "GOVERNANCA", spendTotal ? "OK" : "SEM_DADOS", model.governance.spend,
+  if (it) governance.push(m("G_RUN_GROW_TRANSFORM", "GOVERNANCA", spendTotal ? "OK" : "SEM_DADOS", model.governance.spend,
     { run: pct(spend.RUN, spendTotal), grow: pct(spend.GROW, spendTotal), transform: pct(spend.TRANSFORM, spendTotal) }, "governanca", "RUN_GROW_TRANSFORM"));
   const sv = model.closure.service;
   const agr = sv ? agreementProblems(sv.slaHours, sv.olaHours, sv.ucHours) : [];
-  governance.push(m("G_ACORDOS_SERVICO", "GOVERNANCA", sv?.slaHours === undefined ? "SEM_DADOS" : agr.length ? "CRITICO" : "OK", agr.length,
+  if (it) governance.push(m("G_ACORDOS_SERVICO", "GOVERNANCA", sv?.slaHours === undefined ? "SEM_DADOS" : agr.length ? "CRITICO" : "OK", agr.length,
     { sla: sv?.slaHours ?? 0, ola: sv?.olaHours ?? 0, uc: sv?.ucHours ?? 0, problems: agr.length }, "encerramento", "SLA_OLA_UC"));
   const auth = PM_AUTHORITY[model.governance.orgStructure];
   governance.push(m("G_AUTORIDADE_GP", "GOVERNANCA", auth.authority === "NENHUMA" || auth.authority === "BAIXA" ? "ATENCAO" : "OK", model.governance.orgStructure,

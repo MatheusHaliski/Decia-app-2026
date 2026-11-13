@@ -1,6 +1,6 @@
 "use client";
 import { useState, type ReactNode } from "react";
-import { Badge, Button, Card, EmptyState, Tag, cn } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, Link, Tag, cn } from "@/components/ui";
 import { evaluateAiAction, personalPolicy } from "@/lib/ai/autonomy";
 import { track } from "@/lib/decia/analytics";
 import { addCriteria, DECISION_TEMPLATES, setRecommendationStatus, setScore, setWeight } from "@/lib/decia/commands";
@@ -549,7 +549,7 @@ export function ExecutionSection(props: SectionProps) {
         <Block title={t("decia.execution.plan")} actions={fresh ? <FreshnessBadge value={fresh} /> : undefined}>
           {aggregate.workLinks.length ? (
             <ul className="grid gap-1.5 text-[length:var(--ws-text-body-sm)]">
-              {aggregate.workLinks.map((w) => <li key={w.id} className="flex flex-wrap items-center gap-2"><Tag tone="neutral">{t(`decia.workLink.${w.targetType}`)}</Tag><span className="min-w-0 flex-1">{w.label}</span><Tag tone={w.done ? "success" : "warning"}>{t(w.done ? "decia.execution.done" : "decia.execution.pending")}</Tag></li>)}
+              {aggregate.workLinks.map((w) => <li key={w.id} className="flex flex-wrap items-center gap-2"><Tag tone="neutral">{t(`decia.workLink.${w.targetType}`)}</Tag><span className="min-w-0 flex-1">{w.targetType === "PROJETO" ? <Link href={`/projects/${w.targetId}/edit`}>{w.label}</Link> : w.label}</span><Tag tone={w.done ? "success" : "warning"}>{t(w.done ? "decia.execution.done" : "decia.execution.pending")}</Tag></li>)}
             </ul>
           ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("decia.execution.noPlan")}</p>}
         </Block>

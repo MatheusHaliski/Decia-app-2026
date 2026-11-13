@@ -176,7 +176,7 @@ export function traceabilityView(model: ProjectModel): TraceView {
   const codeOf = new Map(nodes.map((n) => [n.node.id, n.code]));
   const rows = model.requirements.map((r): TraceRow => {
     const deliverables = r.deliverableIds.map((id) => ({ id, code: codeOf.get(id) ?? "?", title: model.wbs.find((w) => w.id === id)?.title ?? "?" }));
-    const origin = r.origin ?? model.stakeholders.find((s) => s.id === r.originStakeholderId)?.name;
+    const origin = r.origin || model.stakeholders.find((s) => s.id === r.originStakeholderId)?.name;
     return { requirementId: r.id, code: r.code, text: r.text, origin, deliverables, test: r.test, complete: Boolean(origin && deliverables.length && r.test) };
   });
   const linked = new Set(model.requirements.flatMap((r) => r.deliverableIds));

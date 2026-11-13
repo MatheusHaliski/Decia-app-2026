@@ -4,9 +4,36 @@
  * sem flash) e sincroniza com a API quando houver sessão. Mesma chave lida pelo script inline do <head> (bootScript).
  */
 import { api, hasSession } from "@/lib/api/client";
-import { DEFAULT_PREFERENCES, fromServer, sanitizePreferences, toServer, type UserPreferences } from "./types";
+import { DEFAULT_PREFERENCES, fromServer, isOccupationCode, sanitizePreferences, toServer, type UserPreferences } from "./types";
 
 export const PREFS_STORAGE_KEY = "ws.prefs";
+/**
+ * Profissão preferida fora do `ws.prefs` (D-147): o `localStorage` é do navegador inteiro (e o script do <head> o lê), então a
+ * profissão — dado só do dono — fica no `sessionStorage` desta aba, que some ao fechá-la. Com sessão, a fonte é a API.
+ */
+export const OCCUPATION_SESSION_KEY = "ws.prefs.occupation";
+
+function readSessionOccupation(): string | null {
+  try {
+    const v = typeof sessionStorage !== "undefined" ? sessionStorage.getItem(OCCUPATION_SESSION_KEY) : null;
+    return isOccupationCode(v) ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSessionOccupation(code: string | null): void {
+  try {
+    if (typeof sessionStorage === "undefined") return;
+    if (code) sessionStorage.setItem(OCCUPATION_SESSION_KEY, code);
+    else sessionStorage.removeItem(OCCUPATION_SESSION_KEY);
+  } catch {
+    /* armazenamento indisponível: vale só na memória da página */
+  }
+}
+
+/** Esquece a profissão guardada nesta aba (ao sair da conta: a próxima pessoa no mesmo navegador não a herda). */
+export const forgetSessionOccupation = () => writeSessionOccupation(null);
 
 export interface PreferencesAdapter {
   load(): Promise<UserPreferences | null>;
@@ -15,16 +42,22 @@ export interface PreferencesAdapter {
 
 export const localAdapter: PreferencesAdapter = {
   async load() {
+    const occupation = readSessionOccupation();
     try {
       const raw = typeof localStorage !== "undefined" ? localStorage.getItem(PREFS_STORAGE_KEY) : null;
-      return raw ? sanitizePreferences(JSON.parse(raw)) : null;
+      if (!raw) return occupation ? sanitizePreferences({ ...DEFAULT_PREFERENCES, preferredOccupation: occupation }) : null;
+      // a profissão nunca é lida do armazenamento compartilhado do navegador, só da aba
+      return sanitizePreferences({ ...JSON.parse(raw), preferredOccupation: occupation });
     } catch {
       return null;
     }
   },
   async save(p) {
+    writeSessionOccupation(isOccupationCode(p.preferredOccupation) ? p.preferredOccupation : null);
     try {
-      localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(p));
+      const shared: Partial<UserPreferences> = { ...p };
+      delete shared.preferredOccupation;
+      localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(shared));
     } catch {
       /* armazenamento indisponível: a preferência vale só nesta sessão */
     }

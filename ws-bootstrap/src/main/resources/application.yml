@@ -191,6 +191,25 @@ ws:
     client-id: ${WS_OIDC_CLIENT_ID:}
     client-secret: ${WS_OIDC_CLIENT_SECRET:}
     provider-name: ${WS_OIDC_PROVIDER_NAME:institucional}
+  connectors:
+    # Conectores de fontes externas (RF4, RF20.CA07, RF23, RF34; docs/arquitetura/CONECTORES.md). DESLIGADOS por padrão: cada provedor
+    # OAuth só liga com a chave geral + WS_CONNECTORS_TOKEN_KEY (base64 de 32 bytes; sem ela 503 CONECTOR_DESABILITADO, nunca token em
+    # claro) + client id/segredo/redirect próprios. A importação por link não depende disso (não chama nenhum provedor).
+    enabled: ${WS_CONNECTORS_ENABLED:false}
+    token-key: ${WS_CONNECTORS_TOKEN_KEY:}                # segredo (openssl rand -base64 32); nunca tem valor padrão
+    frontend-base-url: ${WS_CONNECTORS_FRONTEND_BASE_URL:${WS_FRONTEND_URL:http://localhost:3000}}   # destino do 302 do callback
+    http-timeout: ${WS_CONNECTORS_HTTP_TIMEOUT:20s}
+    max-import-bytes: ${WS_CONNECTORS_MAX_IMPORT_BYTES:52428800}   # teto do download de um item COPIADO (50 MiB)
+    google:
+      client-id: ${WS_CONNECTORS_GOOGLE_CLIENT_ID:}
+      client-secret: ${WS_CONNECTORS_GOOGLE_CLIENT_SECRET:}      # segredo
+      redirect-uri: ${WS_CONNECTORS_GOOGLE_REDIRECT_URI:${WS_APP_BASE_URL:http://localhost:8080}/api/connectors/oauth/callback}
+    microsoft:
+      client-id: ${WS_CONNECTORS_MICROSOFT_CLIENT_ID:}
+      client-secret: ${WS_CONNECTORS_MICROSOFT_CLIENT_SECRET:}   # segredo
+      redirect-uri: ${WS_CONNECTORS_MICROSOFT_REDIRECT_URI:${WS_APP_BASE_URL:http://localhost:8080}/api/connectors/oauth/callback}
+      tenant: ${WS_CONNECTORS_MICROSOFT_TENANT:common}          # common | organizations | id do tenant do órgão
+      pdf-conversion-max-bytes: ${WS_CONNECTORS_MICROSOFT_PDF_MAX_BYTES:2097152}   # ?format=pdf do Graph só até aqui (doc: 2 MB)
   storage:
     type: ${WS_STORAGE_TYPE:local}                       # local | s3
     local-dir: ${WS_STORAGE_LOCAL_DIR:./data/media}

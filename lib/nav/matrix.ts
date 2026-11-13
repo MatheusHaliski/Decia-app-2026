@@ -104,6 +104,8 @@ export const SETTINGS_TABS: readonly SubTab[] = [
   { slug: "notificacoes", labelKey: "tabs.settings.notificacoes" },
   { slug: "trabalho", labelKey: "tabs.settings.trabalho" },
   { slug: "conta", labelKey: "tabs.settings.conta" },
+  // RF4/RF20.CA07/RF23/RF34: contas do Google e da Microsoft, Apple iCloud por link, catálogo de fontes (contrato de 09/11/2026)
+  { slug: "conectores", labelKey: "tabs.settings.conectores" },
   { slug: "privacidade", labelKey: "tabs.settings.privacidade" },
   { slug: "dados", labelKey: "tabs.settings.dados" },
   { slug: "sessoes", labelKey: "tabs.settings.sessoes" },
@@ -165,9 +167,9 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { id: "profile", labelKey: "nav.profile", glyph: "perfil", href: "/profile", activeOn: ["/profile", "/u/"], rfs: ["RF6", "RF19"], access: logged("E") },
       { id: "tasks", labelKey: "nav.tasks", glyph: "acervo", href: "/tasks", rfs: ["RF41"], access: logged("E") },
       { id: "attachments", labelKey: "nav.attachments", glyph: "acervo", href: "/attachments", rfs: ["RF41"], access: logged("E") },
-      { id: "desk", labelKey: "nav.desk", glyph: "mesa", href: "/desk", rfs: ["RF21", "RF22"], access: logged("E"), subTabs: DESK_TABS },
+      { id: "desk", labelKey: "nav.desk", glyph: "mesa", href: "/desk", activeOn: ["/projects/*/edit"], rfs: ["RF21", "RF22"], access: logged("E"), subTabs: DESK_TABS },
       // Espelho e Simulador exigem um projeto (Q-101): o atalho abre o projeto de exemplo até existir o seletor
-      { id: "mirror", labelKey: "nav.mirror", glyph: "insights-ia", href: "/projects/exemplo/mirror", activeOn: ["/projects/"], rfs: ["RF32"], access: logged("E") },
+      { id: "mirror", labelKey: "nav.mirror", glyph: "insights-ia", href: "/projects/exemplo/mirror", activeOn: ["/projects/*/mirror"], rfs: ["RF32"], access: logged("E") },
       { id: "simulate", labelKey: "nav.simulate", glyph: "hype", href: "/projects/exemplo/simulate", rfs: ["RF31"], access: logged("E") },
       // RF48 Agentes — Copilot de testes sobre o dossiê de uma contratação (D-130: quem vê o projeto roda; ADMIN só vê)
       { id: "agents", labelKey: "nav.agents", glyph: "chancela", href: "/agents", rfs: ["RF48"], access: AGENTS_ACCESS, subTabs: AGENTS_TABS },
@@ -224,9 +226,12 @@ export function visibleGroups(profile: ViewerProfile): NavGroup[] {
   return NAV_GROUPS.map((g) => ({ ...g, items: g.items.filter((i) => i.access[profile] !== "O" && (profile !== "VISITANTE" || g.id === "descobrir")) })).filter((g) => g.items.length > 0);
 }
 
+// Padrão com asterisco = um segmento qualquer: o padrão de edição de projeto casa "/projects/abc/edit" e o que vier abaixo dele.
+const segmentPattern = (p: string) => new RegExp(`^${p.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^/]+")}(/.*)?$`);
+
 export function isActivePath(pathname: string, href: string, activeOn?: readonly string[]): boolean {
   if (pathname === href) return true;
-  if (activeOn?.some((p) => pathname === p || pathname.startsWith(p.endsWith("/") ? p : `${p}/`))) return true;
+  if (activeOn?.some((p) => (p.includes("*") ? segmentPattern(p).test(pathname) : pathname === p || pathname.startsWith(p.endsWith("/") ? p : `${p}/`)))) return true;
   return href !== "/" && pathname.startsWith(`${href}/`);
 }
 

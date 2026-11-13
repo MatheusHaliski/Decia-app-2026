@@ -537,3 +537,18 @@ flowchart LR
 | RF40.CA06 | `ModelOffer.viewsCount/remixCount/pointsEarned`, `ModelCounterService.myOffers/withdraw`, `OfferStatus RETIRADA` | A10 → A11 → F5 → P17 | 41–45 | `ATIVA → RETIRADA` | `MyOffers (Counters)`, `R1 profile` |
 | RF40.CA07 | `ModelCounterService.highlight`, `highlightedBy`, `SealBondService.indicate` (INDICACAO → RF39), `Shelf CHANCELADO`, crédito preservado | A12 → F6 → P18 | 46–50 | `ATIVA → self (destacado → chancelado)` | `SBS`, `GD` |
 | RF40.CA08 | invariante: sem campo monetário, sem gateway; todo movimento é `DeciaPointsLedgerEntry` com `AuditLog`/`correlationId` | P19 | 27–29, 39 | nota de ATIVA | `DPS`, `AUD`, `MY` |
+
+## Estado da implementação (12/11/2026)
+
+Front DEMO, sem API (repositório em memória com o contrato `ModelsRepository`, selo DEMO).
+
+| CA | Situação | Onde |
+|---|---|---|
+| RF40.CA01 | DEMO: "Oferecer como modelo" a partir de um modelo de tarefa do Acervo, do projeto de exemplo ou de um kit (2–5 modelos), com preço 0–50 DP, licença e descrição; função reutilizável `offerAsModel` (perfis EMPREGADO, CHEFE e EMPRESA; conta sem saldo só grátis; sem duplicar oferta ativa). Estado OFERECIDA da tarefa não feito (lib/tasks é de outra frente) | `lib/models/offer.ts`, `components/models/OfferDialog.tsx` |
+| RF40.CA02 | DEMO: prateleiras Chancelados · Comunidade, busca, filtros (tipo, área, departamento, preço) e ordenação; detalhe com prévia, autor, departamento, licença e reutilizações sem expor quem reutilizou | `lib/models/browse.ts`, `components/models/*` |
+| RF40.CA03 | DEMO: modelo pago debita quem usa e credita o autor (idempotente por licença); grátis só conta; SALDO_INSUFICIENTE explicado | `lib/models/repository.ts` |
+| RF40.CA04 | DEMO: tarefa → rascunho do criador (`saveTaskDraft` + `draftHref`), com linha de crédito na licença com atribuição; somente leitura vira consulta; kit → um rascunho por tarefa; projeto → Mesa do projeto e Autopiloto por link | `lib/models/use.ts`, `components/models/ModelDetail.tsx` |
+| RF40.CA05 | Não feito (repasse ao arquivar é do fluxo do Acervo) | — |
+| RF40.CA06 | DEMO: "Meus modelos oferecidos" com visualizações, reutilizações, DP recebidos e retirada | `components/models/ModelsPage.tsx` |
+| RF40.CA07 | Parcial: chancela aprovada num projeto oferecido como modelo o leva à prateleira Chancelados (`markSealed`); o botão "destacar" no Balcão não foi feito | `lib/seals/useSeals.ts` |
+| RF40.CA08 | DEMO: só DECIA Points, sem moeda real nem gateway | — |

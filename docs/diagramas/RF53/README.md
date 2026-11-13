@@ -405,3 +405,36 @@ flowchart LR
 | **RF53.CA07** | `PersonalDictionary` (entries, ignoredFindingKeys), `revert` | A3 → P2 → A4 | 21–25 | `ACHADO_ABERTO → ACHADO_IGNORADO / NO_DICIONARIO` e volta | `LAS`, `MY` |
 
 Regras transversais refletidas: autorização no servidor (404 uniforme); SIGILOSO só dono e colaboradores explícitos (D-139) e nunca enviado a provedor externo; instruções dentro do texto analisado são dados; análise não publica nem marca nada como concluído.
+
+## Estado da implementação (12/11/2026)
+
+Copiloto linguístico local em `/letters/[pieceId]` (painel lateral, abas Gramática · Morfossintaxe · Coerência · Citações). Origem
+de todo achado: **HEURISTICA** (regras determinísticas em `lib/letters/`, D-12); nenhum provedor externo é chamado (`AiGateway`
+segue sem motor) e a "IA" ✦ do painel só reescreve com as correções seguras que as regras apontaram.
+
+- **CA01**: tokenização com posições exatas (frases, acentos, hífen/ênclise, contrações "do/na/pelo/à", números, siglas, URL/DOI —
+  `tokenize.ts`) e etiquetador das dez classes (`morph.ts`: léxico fechado, analisador verbal com irregulares e radicais regulares,
+  sufixos e regras de contexto). Cada token traz classe, probabilidade e subtipo; abaixo de 60% a classe NÃO é afirmada ("ambíguo",
+  com as hipóteses). Tempo/modo/pessoa só quando todas as leituras concordam (ex.: "-aram" fica "perfeito ou mais-que-perfeito").
+  Tela: legenda com cor por token do DS + nome e abreviatura em texto, realce opcional no texto e tabela acessível por bloco.
+- **CA02**: regras com trecho, gravidade, confiança e certeza (demonstrável × hipótese): crase (masculino, verbo, pronome, plural,
+  locuções "à medida que"/"às vezes", "devido à"), concordância nominal (número e gênero), do particípio, verbal (sujeito nominal e
+  pronominal; coletivo partitivo e sujeito composto não são apontados), haver/fazer impessoais, regência (assistir a, obedecer a,
+  preferir … a, implicar sem "em"), "onde" para tempo, "a nível de", pleonasmos, palavra duplicada, repetição próxima, frase longa
+  (> 40 palavras), espaços, registro informal e excesso de voz passiva. **Não feito**: medição por categoria em corpus anotado
+  (`EvaluationReport`) — os testes usam frases reais curtas, um caso positivo e um negativo por regra; sujeito/predicado não são
+  classificados além do necessário à concordância.
+- **CA03**: tratamento tu/você no documento (marca o tratamento minoritário; troca pronomes, possessivos e verbos só quando segura;
+  falas e citações entre aspas ficam fora); tempo verbal destoante por parágrafo (aba Coerência).
+- **CA04**: cada regra mostra explicação didática, exemplo correto e a obra de referência indicada (autor e título); edição e página
+  aparecem como "não conferidas" (`rules.ts`, `verified: false`).
+- **CA05**: idioma do texto selecionável; inglês e espanhol informam "sem recursos" e nenhuma regra portuguesa é aplicada.
+- **CA06**: análise ancorada à revisão e à versão da política; achados de revisão antiga somem até nova análise; nos modos
+  automáticos a análise espera 700 ms de pausa (nunca a cada tecla) e roda no navegador, sem custo.
+- **CA07**: ignorar com motivo (falso positivo, nome próprio/termo técnico, estilo, variedade regional, citação literal, outro) e
+  reabrir; chave estável por regra + bloco + trecho + ocorrência. **Não feito**: dicionário pessoal entre peças.
+- **Autonomia** (`lib/letters/copilot.ts` sobre `lib/ai/autonomy.ts`, os 5 modos D-136): Manual desliga; Sob solicitação analisa
+  quando pedido e propõe ✦ com aceite explícito; Sugestões analisa sozinho e corrige em um clique; Assistido aplica em lote com
+  prévia antes/depois por bloco, numa revisão única que o desfazer reverte; Agente indisponível (exige mandato: `SEM_MANDATO`).
+  Proposta calculada sobre revisão ou política antiga é recusada (`proposalValidity`), com o texto preservado.
+- **Testes**: `tokenize`, `verbs`, `morph`, `grammar`, `analyze`, `rewrite`, `copilot` (`lib/letters/*.test.ts`) e as telas.

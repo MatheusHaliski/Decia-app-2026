@@ -1,12 +1,11 @@
-"use client";
-// Página-esqueleto gerada para a rota /decia/[sessionId] (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { useParams } from "next/navigation";
-import { RfPage } from "@/components/shell/RfPage";
-import { pageByRoute } from "@/lib/pages/registry";
+// /decia/[sessionId] — sessão deliberativa do DECIA (DECIA_SESSAO_E_MESA §B; RF29 ponte, RF37 Ata Viva, RF51 autonomia da IA).
+// Id desconhecido → 404 (notFound). Ids "s-nova-*" são sessões criadas nesta aba (DEMO, lib/decia/session/repository.ts).
+import { notFound } from "next/navigation";
+import { isKnownSessionId } from "@/lib/decia/session/fixtures";
+import { SessionClient } from "./SessionClient";
 
-const PAGE = pageByRoute("/decia/[sessionId]")!;
-
-export default function Page() {
-  const params = useParams<{ sessionId: string }>();
-  return <RfPage page={PAGE} subtitle={params.sessionId} />;
+export default async function Page({ params }: { params: Promise<{ sessionId: string }> }) {
+  const { sessionId } = await params;
+  if (!isKnownSessionId(sessionId)) notFound();
+  return <SessionClient sessionId={sessionId} />;
 }

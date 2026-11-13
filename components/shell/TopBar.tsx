@@ -4,6 +4,8 @@ import { useEffect, useRef, type FormEvent } from "react";
 import { Badge, Glyph, IconButton, Input, Link, Tooltip, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { useMessagesUnread } from "@/lib/messages/unread";
+import { pointsHolderOf } from "@/lib/points/identity";
+import { usePointsBalance } from "@/lib/points/usePoints";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { NotificationsBell } from "./NotificationsBell";
 import { ThemeLanguageMenu } from "./ThemeLanguageMenu";
@@ -41,6 +43,8 @@ export function TopBar({ onToggleMenu, menuExpanded, menuControls }: TopBarProps
   const realUnread = useMessagesUnread();
   const dmUnread = realUnread ?? 2;
   const dmLabel = realUnread ? t("dm.navWithCount", { n: realUnread }) : t("nav.messages");
+  // RF42: a ficha mostra o saldo do razão de DECIA Points (DEMO) de quem tem conta de pontos
+  const balance = usePointsBalance(user.points !== null ? pointsHolderOf(user) : null);
 
   // atalho "/" foca a busca (fora de campos editáveis)
   useEffect(() => {
@@ -76,7 +80,7 @@ export function TopBar({ onToggleMenu, menuExpanded, menuControls }: TopBarProps
         </form>
         <div className="ml-auto flex items-center gap-1">
           <IconButton icon="buscar" label={t("nav.search")} className="sm:hidden" onClick={() => router.push("/search")} />
-          {!visitor && user.points !== null ? <DpChip points={user.points} /> : null}
+          {!visitor && user.points !== null ? <DpChip points={balance ?? user.points} /> : null}
           {!visitor ? (
             <span className="relative hidden sm:inline-flex">
               <IconButton icon="sessao-decia" label={dmLabel} onClick={() => router.push("/messages")} data-testid="messages-button" />

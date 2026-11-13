@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Meus anexos e evidências (anexos das minhas tarefas, mais recentes primeiro, com o título da tarefa) */
+        get: operations["myAttachments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/email-verification/confirm": {
         parameters: {
             query?: never;
@@ -14,7 +31,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** RF1.CA04/CA05/CA11 Confirma o código do e-mail (≤ 5 tentativas por código, 10/h por pessoa → 429 MUITAS_TENTATIVAS); EMPREGADO → ACTIVE, EMPRESA/CHEFE → PENDING_VALIDATION; devolve a sessão */
-        post: operations["confirm_1"];
+        post: operations["confirm_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -116,7 +133,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** RF2.CA08 Confirma com o token (hash, 1 uso, 30 min): troca a senha, tira a conta do bloqueio e encerra as sessões; 422 LINK_INVALIDO */
-        post: operations["confirm"];
+        post: operations["confirm_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -274,6 +291,159 @@ export interface paths {
         post?: never;
         /** RF15.CA05 Deixar de seguir a empresa (idempotente) */
         delete: operations["unfollowCompany"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: minhas contas conectadas (nunca devolve token) */
+        get: operations["accounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/link-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: importa colando um link (Google Docs/Drive/Sites, OneDrive/SharePoint, iCloud) como tarefa VINCULADA */
+        post: operations["linkImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/oauth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: retorno do provedor (rota pública; state de uso único; não troca o code). Sempre 302 para o front com conector=confirmar&pedido=<segredo de uso único, 5 min> ou conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO */
+        get: operations["callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/oauth/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: conclui a conexão na sessão de quem a iniciou (troca o code com PKCE e grava a conta). Sempre 200 com status=ok ou status=erro e reason=ESTADO_INVALIDO|OUTRA_CONTA|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO (OUTRA_CONTA: o pedido foi iniciado por outra conta e foi descartado sem tocar no provedor) */
+        post: operations["confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: provedores, se estão habilitados neste ambiente, o modo (OAUTH ou LINK) e os escopos pedidos */
+        get: operations["providers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Conectores: desconecta (revoga no Google; a Microsoft não revoga por API) e apaga a conta e os tokens */
+        delete: operations["disconnect"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: importa um item como tarefa (COPIADO guarda cópia; VINCULADO guarda a referência; 409 CONECTOR_EXPIRADO) */
+        post: operations["importItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: busca itens da conta conectada (q no nome; pageSize ≤ 50; pageToken da página anterior) */
+        get: operations["items"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{provider}/authorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: começa a conexão OAuth 2.0 + PKCE e devolve a URL de autorização do provedor (400 provedor sem OAuth; 503 CONECTOR_DESABILITADO) */
+        post: operations["authorize"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -463,6 +633,23 @@ export interface paths {
         };
         /** RF14.CA02 Equipe (modo público): pessoas ativas com lotação vigente, sem contato */
         get: operations["members"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal-deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA04 Regras de prazo legal (categoria/subcategoria, dias corridos ou úteis, base legal) */
+        get: operations["legalDeadlineRules"];
         put?: never;
         post?: never;
         delete?: never;
@@ -842,11 +1029,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
+        /** RF41.CA01/CA09 Minhas tarefas com sub-filtros (estado de trabalho, categoria, prioridade, prazo), ordenação e página (sem filtros: mais recentes primeiro; limit = itens sem page; size padrão 20 com page) */
         get: operations["mine_1"];
         put?: never;
         /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
         post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA01/CA04 Contadores do Acervo para os mesmos filtros (cada contador ignora o próprio filtro) e alertas de prazo legal (vencidos, hoje e em até 7 dias) */
+        get: operations["acervoSummary"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -864,6 +1068,127 @@ export interface paths {
         get: operations["get"];
         /** RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE) */
         put: operations["update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Anexos da tarefa (com a marca de evidência, a varredura do antivírus e se já pode ser aberto) */
+        get: operations["listAttachments"];
+        put?: never;
+        /** RF41.CA06 Envia um anexo (multipart, campo file; até 15 MB e 50 por tarefa): tipo real pelo conteúdo (415 TIPO_NAO_PERMITIDO/TIPO_DIVERGENTE), antivírus (422 ARQUIVO_INFECTADO), metadados de imagem removidos; 409 ANEXO_DUPLICADO, 409 LIMITE_ANEXOS, 409 TAREFA_BLOQUEADA */
+        post: operations["uploadAttachment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF41.CA06 Remove o anexo (e a marca de evidência dele); o arquivo é apagado quando nada mais aponta para ele */
+        delete: operations["removeAttachment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono) */
+        get: operations["attachmentContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/attachments/{attachmentId}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF41.CA06 Marca um anexo como evidência (legenda, data da captura, geolocalização opcional cifrada; 409 EVIDENCIA_EXISTENTE; 422 VALIDACAO) */
+        post: operations["markEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/evidences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA06 Evidências da tarefa (coordenadas só para quem registrou ou pode editar) */
+        get: operations["listEvidences"];
+        put?: never;
+        /** RF41.CA06 Envia foto/arquivo já como evidência (multipart: file, caption, takenAt ISO-8601, latitude e longitude opcionais e juntas); mesmo pipeline e limites do anexo */
+        post: operations["addEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/evidences/{evidenceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF41.CA06 Desmarca a evidência (o anexo continua) */
+        delete: operations["removeEvidence"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/legal-deadline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** RF41.CA04/RF20.CA11 Define ou limpa o prazo legal (regra do catálogo + data de início; o vencimento é calculado em dias corridos ou úteis com os feriados nacionais; 409 TAREFA_BLOQUEADA, 409 EDICAO_CONCORRENTE, 422 VALIDACAO) */
+        put: operations["setLegalDeadline"];
         post?: never;
         delete?: never;
         options?: never;
@@ -926,6 +1251,49 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AcervoSummary: {
+            byCategory?: {
+                [key: string]: number;
+            };
+            byDeadline?: {
+                [key: string]: number;
+            };
+            byPriority?: {
+                [key: string]: number;
+            };
+            byWorkStatus?: {
+                [key: string]: number;
+            };
+            /** Format: int32 */
+            legalAlertCount?: number;
+            legalAlerts?: components["schemas"]["LegalAlert"][];
+            /** Format: int32 */
+            scanned?: number;
+            /** Format: date */
+            today?: string;
+            /** Format: int32 */
+            total?: number;
+            truncated?: boolean;
+        };
+        AttachmentView: {
+            available?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            evidence?: components["schemas"]["EvidenceView"];
+            fileName?: string;
+            /** Format: uuid */
+            id?: string;
+            image?: boolean;
+            mimeType?: string;
+            primary?: boolean;
+            /** @enum {string} */
+            scanStatus?: "PENDENTE" | "LIMPO" | "INFECTADO" | "NAO_VERIFICADO";
+            /** Format: int64 */
+            sizeBytes?: number;
+            /** Format: uuid */
+            taskId?: string;
+            taskTitle?: string;
+        };
         Availability: {
             available?: boolean;
             reason?: string;
@@ -973,6 +1341,52 @@ export interface components {
             code: string;
             deviceName?: string;
             email: string;
+        };
+        ConnectorAccountView: {
+            accountEmail?: string;
+            /** Format: date-time */
+            connectedAt?: string;
+            /** Format: uuid */
+            id?: string;
+            lastError?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            scopes?: string[];
+            /** @enum {string} */
+            status?: "ATIVO" | "EXPIRADO" | "REVOGADO" | "ERRO";
+        };
+        ConnectorAuthorizeRequest: {
+            /** @example /tasks/new */
+            returnTo?: string;
+        };
+        ConnectorAuthorizeView: {
+            url?: string;
+        };
+        ConnectorConfirmRequest: {
+            /** @description valor do parâmetro pedido da URL de retorno */
+            confirmation?: string;
+        };
+        ConnectorConfirmView: {
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            reason?: string;
+            status?: string;
+        };
+        ConnectorImportRequest: {
+            externalId?: string;
+            /** @enum {string} */
+            linkMode?: "COPIADO" | "VINCULADO";
+            title?: string;
+        };
+        ConnectorProviderView: {
+            enabled?: boolean;
+            /** @enum {string} */
+            mode?: "OAUTH" | "LINK";
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            scopes?: string[];
         };
         ConversationView: {
             canSend?: boolean;
@@ -1040,6 +1454,62 @@ export interface components {
         EmailRequest: {
             email: string;
         };
+        EvidenceRequest: {
+            caption?: string;
+            /**
+             * @description graus decimais; só com longitude
+             * @example -25.4284
+             */
+            latitude?: string;
+            /**
+             * @description graus decimais; só com latitude
+             * @example -49.2733
+             */
+            longitude?: string;
+            /**
+             * @description data e hora da captura, ISO-8601 com fuso
+             * @example 2026-11-12T13:30:00Z
+             */
+            takenAt?: string;
+        };
+        EvidenceView: {
+            /** Format: uuid */
+            attachmentId?: string;
+            caption?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            hasLocation?: boolean;
+            /** Format: uuid */
+            id?: string;
+            latitude?: string;
+            longitude?: string;
+            /** Format: uuid */
+            ownerId?: string;
+            /** Format: date-time */
+            takenAt?: string;
+            /** Format: uuid */
+            taskId?: string;
+        };
+        ExternalItemView: {
+            exportFormats?: string[];
+            externalId?: string;
+            linkable?: boolean;
+            mimeType?: string;
+            /** Format: date-time */
+            modifiedAt?: string;
+            name?: string;
+            /** Format: int64 */
+            sizeBytes?: number;
+            /** @enum {string} */
+            sourceKind?: "MANUAL" | "ARQUIVO" | "COLAR" | "GOOGLE" | "MICROSOFT" | "EMAIL" | "LINK" | "PROTOCOLO" | "FOTO" | "TEXTO_IA" | "EXTRAIDA_DE_PROJETO" | "REMIX" | "DECIA" | "AUTOPILOT" | "ATA_VIVA" | "DOSSIE" | "EXTRACAO" | "GOOGLE_DOCS" | "GOOGLE_SHEETS" | "GOOGLE_SLIDES" | "GOOGLE_FORMS" | "GOOGLE_DRAWINGS" | "GOOGLE_SITES" | "GOOGLE_DRIVE" | "GOOGLE_KEEP" | "GOOGLE_GMAIL" | "GOOGLE_CALENDAR" | "GOOGLE_TASKS" | "GOOGLE_MEET" | "GOOGLE_CHAT" | "GOOGLE_CLASSROOM" | "GOOGLE_APPS_SCRIPT" | "GOOGLE_LOOKER_STUDIO" | "GOOGLE_YOUTUBE" | "GOOGLE_PHOTOS" | "GOOGLE_VIDS" | "GOOGLE_NOTEBOOKLM" | "GOOGLE_MY_MAPS" | "MS_WORD" | "MS_EXCEL" | "MS_POWERPOINT" | "MS_ONENOTE" | "MS_OUTLOOK_MAIL" | "MS_OUTLOOK_CALENDAR" | "MS_TODO" | "MS_PLANNER" | "MS_TEAMS" | "MS_FORMS" | "MS_VISIO" | "MS_WHITEBOARD" | "MS_LOOP" | "MS_SHAREPOINT_PAGE" | "MS_LISTS" | "MS_ONEDRIVE" | "MS_STREAM" | "MS_POWER_BI" | "MS_CLIPCHAMP" | "MS_PROJECT" | "MS_STICKY_NOTES" | "MS_ASSIGNMENTS" | "APPLE_PAGES" | "APPLE_NUMBERS" | "APPLE_KEYNOTE" | "APPLE_NOTES" | "APPLE_REMINDERS" | "APPLE_CALENDAR" | "APPLE_MAIL" | "APPLE_FREEFORM" | "APPLE_IMOVIE" | "APPLE_FINAL_CUT" | "APPLE_ICLOUD_DRIVE" | "APPLE_PHOTOS" | "APPLE_GARAGEBAND" | "APPLE_LOGIC_PRO" | "APPLE_VOICE_MEMOS";
+            /** @enum {string} */
+            taskType?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
+            webUrl?: string;
+        };
+        ExternalItemsPage: {
+            items?: components["schemas"]["ExternalItemView"][];
+            nextPageToken?: string;
+        };
         FollowView: {
             /** Format: int64 */
             followers?: number;
@@ -1057,6 +1527,47 @@ export interface components {
             preview?: string;
             /** Format: date-time */
             sentAt?: string;
+        };
+        LegalAlert: {
+            /** Format: int64 */
+            daysLeft?: number;
+            /** Format: date */
+            legalDueAt?: string;
+            /** @enum {string} */
+            state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            /** Format: uuid */
+            taskId?: string;
+            title?: string;
+        };
+        LegalDeadlineRequest: {
+            /** Format: uuid */
+            ruleId?: string;
+            /** Format: date */
+            startDate?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        LegalDeadlineRuleView: {
+            businessDays?: boolean;
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            companyRule?: boolean;
+            /** Format: int32 */
+            days?: number;
+            description?: string;
+            /** Format: uuid */
+            id?: string;
+            legalBasis?: string;
+            subcategory?: string;
+            /** Format: date */
+            validFrom?: string;
+            /** Format: date */
+            validTo?: string;
+        };
+        LinkImportRequest: {
+            title?: string;
+            /** @example https://docs.google.com/document/d/ID/edit */
+            url?: string;
         };
         LoginRequest: {
             deviceName?: string;
@@ -1329,7 +1840,7 @@ export interface components {
             responsibleId?: string;
             title?: string;
             /** @enum {string} */
-            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
             /** Format: int64 */
             version?: number;
             /** @enum {string} */
@@ -1362,6 +1873,14 @@ export interface components {
             };
             /** Format: uuid */
             id?: string;
+            /** Format: date */
+            legalDeadlineBaseDate?: string;
+            /** Format: uuid */
+            legalDeadlineRuleId?: string;
+            /** Format: date */
+            legalDueAt?: string;
+            /** @enum {string} */
+            linkMode?: "VINCULADO" | "COPIADO";
             objective?: string;
             /** Format: uuid */
             ownerId?: string;
@@ -1371,10 +1890,13 @@ export interface components {
             /** Format: uuid */
             responsibleId?: string;
             /** @enum {string} */
+            sourceKind?: "MANUAL" | "ARQUIVO" | "COLAR" | "GOOGLE" | "MICROSOFT" | "EMAIL" | "LINK" | "PROTOCOLO" | "FOTO" | "TEXTO_IA" | "EXTRAIDA_DE_PROJETO" | "REMIX" | "DECIA" | "AUTOPILOT" | "ATA_VIVA" | "DOSSIE" | "EXTRACAO" | "GOOGLE_DOCS" | "GOOGLE_SHEETS" | "GOOGLE_SLIDES" | "GOOGLE_FORMS" | "GOOGLE_DRAWINGS" | "GOOGLE_SITES" | "GOOGLE_DRIVE" | "GOOGLE_KEEP" | "GOOGLE_GMAIL" | "GOOGLE_CALENDAR" | "GOOGLE_TASKS" | "GOOGLE_MEET" | "GOOGLE_CHAT" | "GOOGLE_CLASSROOM" | "GOOGLE_APPS_SCRIPT" | "GOOGLE_LOOKER_STUDIO" | "GOOGLE_YOUTUBE" | "GOOGLE_PHOTOS" | "GOOGLE_VIDS" | "GOOGLE_NOTEBOOKLM" | "GOOGLE_MY_MAPS" | "MS_WORD" | "MS_EXCEL" | "MS_POWERPOINT" | "MS_ONENOTE" | "MS_OUTLOOK_MAIL" | "MS_OUTLOOK_CALENDAR" | "MS_TODO" | "MS_PLANNER" | "MS_TEAMS" | "MS_FORMS" | "MS_VISIO" | "MS_WHITEBOARD" | "MS_LOOP" | "MS_SHAREPOINT_PAGE" | "MS_LISTS" | "MS_ONEDRIVE" | "MS_STREAM" | "MS_POWER_BI" | "MS_CLIPCHAMP" | "MS_PROJECT" | "MS_STICKY_NOTES" | "MS_ASSIGNMENTS" | "APPLE_PAGES" | "APPLE_NUMBERS" | "APPLE_KEYNOTE" | "APPLE_NOTES" | "APPLE_REMINDERS" | "APPLE_CALENDAR" | "APPLE_MAIL" | "APPLE_FREEFORM" | "APPLE_IMOVIE" | "APPLE_FINAL_CUT" | "APPLE_ICLOUD_DRIVE" | "APPLE_PHOTOS" | "APPLE_GARAGEBAND" | "APPLE_LOGIC_PRO" | "APPLE_VOICE_MEMOS";
+            sourceRef?: string;
+            /** @enum {string} */
             state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
             title?: string;
             /** @enum {string} */
-            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
             /** Format: date-time */
             updatedAt?: string;
             /** Format: int64 */
@@ -1460,7 +1982,29 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    confirm_1: {
+    myAttachments: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"][];
+                };
+            };
+        };
+    };
+    confirm_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1602,7 +2146,7 @@ export interface operations {
             };
         };
     };
-    confirm: {
+    confirm_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1890,6 +2434,214 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    accounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorAccountView"][];
+                };
+            };
+        };
+    };
+    linkImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    callback: {
+        parameters: {
+            query?: {
+                state?: string;
+                code?: string;
+                error?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Redireciona para {frontendBaseUrl}{returnTo} com o resultado da conexão */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    confirm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConnectorConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorConfirmView"];
+                };
+            };
+        };
+    };
+    providers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorProviderView"][];
+                };
+            };
+        };
+    };
+    disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    importItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectorImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    items: {
+        parameters: {
+            query?: {
+                q?: string;
+                pageToken?: string;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ExternalItemsPage"];
+                };
+            };
+        };
+    };
+    authorize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConnectorAuthorizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorAuthorizeView"];
                 };
             };
         };
@@ -2265,6 +3017,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PersonCard"][];
+                };
+            };
+        };
+    };
+    legalDeadlineRules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LegalDeadlineRuleView"][];
                 };
             };
         };
@@ -2895,6 +3667,13 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                filtro?: "A_REALIZAR" | "EM_ANDAMENTO" | "BLOQUEADO" | "CONCLUIDO" | "ARQUIVADO" | "PUBLICADO";
+                categoria?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+                prioridade?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+                prazo?: "COM_PRAZO_LEGAL" | "VENCE_7_DIAS" | "ATRASADAS";
+                ordem?: "CRIACAO" | "ATUALIZACAO" | "PRAZO" | "PRIORIDADE";
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2937,6 +3716,31 @@ export interface operations {
             };
         };
     };
+    acervoSummary: {
+        parameters: {
+            query?: {
+                filtro?: "A_REALIZAR" | "EM_ANDAMENTO" | "BLOQUEADO" | "CONCLUIDO" | "ARQUIVADO" | "PUBLICADO";
+                categoria?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+                prioridade?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+                prazo?: "COM_PRAZO_LEGAL" | "VENCE_7_DIAS" | "ATRASADAS";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AcervoSummary"];
+                };
+            };
+        };
+    };
     get: {
         parameters: {
             query?: never;
@@ -2971,6 +3775,231 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    listAttachments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"][];
+                };
+            };
+        };
+    };
+    uploadAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AttachmentView"];
+                };
+            };
+        };
+    };
+    removeAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    attachmentContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
+    };
+    markEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                attachmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["EvidenceRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"];
+                };
+            };
+        };
+    };
+    listEvidences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"][];
+                };
+            };
+        };
+    };
+    addEvidence: {
+        parameters: {
+            query?: {
+                caption?: string;
+                takenAt?: string;
+                latitude?: string;
+                longitude?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EvidenceView"];
+                };
+            };
+        };
+    };
+    removeEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                evidenceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    setLegalDeadline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegalDeadlineRequest"];
             };
         };
         responses: {

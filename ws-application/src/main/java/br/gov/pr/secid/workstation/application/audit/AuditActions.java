@@ -37,6 +37,23 @@ public final class AuditActions {
     public static final String TASK_CREATED = "TASK_CREATED";
     public static final String TASK_UPDATED = "TASK_UPDATED";
     public static final String TASK_STATE_CHANGED = "TASK_STATE_CHANGED";
+    /**
+     * Acervo (RF41.CA04/CA06): prazo legal definido ou limpo; anexo enviado ou removido; evidência registrada ou desmarcada. Metadados só com
+     * tipo, tamanho e "tem localização" — nunca nome do arquivo, legenda nem coordenadas.
+     */
+    public static final String TASK_LEGAL_DEADLINE_SET = "TASK_LEGAL_DEADLINE_SET";
+    public static final String TASK_ATTACHMENT_ADDED = "TASK_ATTACHMENT_ADDED";
+    public static final String TASK_ATTACHMENT_REMOVED = "TASK_ATTACHMENT_REMOVED";
+    public static final String TASK_EVIDENCE_ADDED = "TASK_EVIDENCE_ADDED";
+    public static final String TASK_EVIDENCE_REMOVED = "TASK_EVIDENCE_REMOVED";
+    /**
+     * Conectores de fontes externas (RF20.CA07): conta conectada (ou falha no retorno do provedor), desconectada (com ou sem revogação no
+     * provedor) e item importado (por conta conectada ou por link). Metadados só com provedor, modo e fonte — nunca token nem e-mail.
+     */
+    public static final String CONNECTOR_CONNECTED = "CONNECTOR_CONNECTED";
+    public static final String CONNECTOR_CONNECT_FAILED = "CONNECTOR_CONNECT_FAILED";
+    public static final String CONNECTOR_DISCONNECTED = "CONNECTOR_DISCONNECTED";
+    public static final String CONNECTOR_IMPORTED = "CONNECTOR_IMPORTED";
 
     private AuditActions() {
     }

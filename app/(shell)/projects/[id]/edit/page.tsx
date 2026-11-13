@@ -1,12 +1,8 @@
-"use client";
-// Página-esqueleto gerada para a rota /projects/[id]/edit (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { useParams } from "next/navigation";
-import { RfPage } from "@/components/shell/RfPage";
-import { pageByRoute } from "@/lib/pages/registry";
+// /projects/[id]/edit — Mesa de Trabalho do projeto (RF22): quadro por fases, canvas conectado, linha do tempo, abas da
+// disciplina de Gestão de Projetos de TI e janela segmentada com o feedback da IA. Dados DEMO em memória até a API de projetos.
+import { WorkspaceClient } from "./WorkspaceClient";
 
-const PAGE = pageByRoute("/projects/[id]/edit")!;
-
-export default function Page() {
-  const params = useParams<{ id: string }>();
-  return <RfPage page={PAGE} subtitle={params.id} />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <WorkspaceClient projectId={id} />;
 }

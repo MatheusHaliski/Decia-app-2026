@@ -1,6 +1,12 @@
 package br.gov.pr.secid.workstation.domain.acervo;
 
-/** Como a tarefa entrou no acervo (RF20, RF23, RF34, RF36, RF37). */
+/**
+ * Como a tarefa entrou no acervo (RF20, RF23, RF34, RF36, RF37). Os 17 primeiros são os de antes dos conectores ({@code GOOGLE} e
+ * {@code MICROSOFT} ficam como legado genérico); depois vem um valor por aplicativo dos três ecossistemas (conectores, V60), na
+ * mesma grafia da pesquisa de fontes ({@code contracts/connectors/sources.json}). Contatos não viram tarefa e por isso não têm valor.
+ * O provedor e o tipo de tarefa padrão de cada um ficam em {@code connectors.ExternalSources}. Todos com até 20 caracteres
+ * ({@code tasks.source_kind VARCHAR(20)}).
+ */
 public enum SourceKind {
     /** Digitada no criador de tarefas (RF4; Q-235, V37). */
     MANUAL,
@@ -19,5 +25,66 @@ public enum SourceKind {
     AUTOPILOT,
     ATA_VIVA,
     DOSSIE,
-    EXTRACAO
+    EXTRACAO,
+    // Google (conector GOOGLE: OAuth 2.0 + Drive API v3; os demais entram por link)
+    GOOGLE_DOCS,
+    GOOGLE_SHEETS,
+    GOOGLE_SLIDES,
+    GOOGLE_FORMS,
+    GOOGLE_DRAWINGS,
+    GOOGLE_SITES,
+    GOOGLE_DRIVE,
+    GOOGLE_KEEP,
+    GOOGLE_GMAIL,
+    GOOGLE_CALENDAR,
+    GOOGLE_TASKS,
+    GOOGLE_MEET,
+    GOOGLE_CHAT,
+    GOOGLE_CLASSROOM,
+    GOOGLE_APPS_SCRIPT,
+    GOOGLE_LOOKER_STUDIO,
+    GOOGLE_YOUTUBE,
+    GOOGLE_PHOTOS,
+    GOOGLE_VIDS,
+    GOOGLE_NOTEBOOKLM,
+    GOOGLE_MY_MAPS,
+    // Microsoft (conector MICROSOFT: OAuth 2.0 v2.0 + Graph v1.0 OneDrive/SharePoint)
+    MS_WORD,
+    MS_EXCEL,
+    MS_POWERPOINT,
+    MS_ONENOTE,
+    MS_OUTLOOK_MAIL,
+    MS_OUTLOOK_CALENDAR,
+    MS_TODO,
+    MS_PLANNER,
+    MS_TEAMS,
+    MS_FORMS,
+    MS_VISIO,
+    MS_WHITEBOARD,
+    MS_LOOP,
+    MS_SHAREPOINT_PAGE,
+    MS_LISTS,
+    MS_ONEDRIVE,
+    MS_STREAM,
+    MS_POWER_BI,
+    MS_CLIPCHAMP,
+    MS_PROJECT,
+    MS_STICKY_NOTES,
+    MS_ASSIGNMENTS,
+    // Apple (APPLE_ICLOUD: sem API pública; link de compartilhamento do iCloud ou arquivo exportado)
+    APPLE_PAGES,
+    APPLE_NUMBERS,
+    APPLE_KEYNOTE,
+    APPLE_NOTES,
+    APPLE_REMINDERS,
+    APPLE_CALENDAR,
+    APPLE_MAIL,
+    APPLE_FREEFORM,
+    APPLE_IMOVIE,
+    APPLE_FINAL_CUT,
+    APPLE_ICLOUD_DRIVE,
+    APPLE_PHOTOS,
+    APPLE_GARAGEBAND,
+    APPLE_LOGIC_PRO,
+    APPLE_VOICE_MEMOS
 }

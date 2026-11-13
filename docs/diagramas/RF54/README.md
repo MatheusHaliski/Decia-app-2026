@@ -376,3 +376,32 @@ flowchart LR
 | **RF54.CA07** | `ContextSegmenter`, `CoverageReport` (analyzedBlockIds, skippedBlockIds, limits) | S2 → P1 → W3 | 7–9 e 15 | `ACHADO_ABERTO → ACHADO_DESCARTADO` quando a revisão muda | `DAS`, `MY` |
 
 Regras transversais refletidas: autorização no servidor (404 uniforme, fonte invisível sem revelar existência); SIGILOSO só dono e colaboradores explícitos (D-139) e fora do provedor externo; texto analisado é dado, nunca comando; a análise não reescreve, não publica e não marca revisão como concluída.
+
+## Estado da implementação (12/11/2026)
+
+Leitura de coerência, narrativa, gênero e fontes no painel do Copiloto de `/letters/[pieceId]` (abas Coerência e Citações), toda
+**heurística** e local (`lib/letters/coherence.ts`, `citations.ts`, `score.ts`); nada reescreve o texto sem aceite.
+
+- **CA01**: o gênero escolhido (técnico, acadêmico, jornalístico, narrativo) muda os critérios: impessoalidade (1ª pessoa do
+  singular) e registro informal no técnico/acadêmico, subjetividade no jornalístico, continuidade no narrativo, citação exigida no
+  acadêmico. Seções esperadas por modelo: relatório técnico (introdução, objetivo, metodologia/desenvolvimento, resultados,
+  conclusão, referências — NBR 10719), parecer (convenção do modelo do Letters), ofício (elementos do padrão ofício) e ADR (Nygard),
+  com ausente, vazia e fora de ordem, e o botão "Inserir seção". Mudança de tom: só por registro informal e pessoa do discurso.
+- **CA02**: primeira pessoa em notícia neutra vira hipótese de subjetividade (sugestão, nunca erro obrigatório); falas entre aspas
+  ficam de fora.
+- **CA03/CA04**: ledger mínimo de personagens (nome próprio) com morte → reaparição: aponta as duas passagens; "voltou a agir" é
+  HIPÓTESE, "está viva" é contradição DEMONSTRÁVEL, lembrança/sonho/flashback não é apontado. **Não feito**: cronologia completa e
+  entidades por capítulo.
+- **Coesão e progressão**: conectivos por relação (adição, oposição, concessão, causa, consequência, conclusão, finalidade,
+  condição, tempo, explicação, comparação, conformidade), conectivo repetido com alternativas da mesma relação, parágrafo sem
+  conectivo, coesão entre parágrafos por sobreposição lexical com lematização leve, progressão temática por frase (constante,
+  linear, anáfora, conectivo, ruptura) e tempo verbal destoante.
+- **CA05**: placar por bloco (mapa de calor) em quatro dimensões (gramática, estilo, coerência, citações): contagem ponderada por
+  100 palavras com a rubrica `letters-calor-1` declarada na tela e níveis com nome em texto — heurística, não nota calibrada.
+- **CA06**: chamadas autor-data (NBR 10520: parentética, narrativa, vários autores, apud, página) e numéricas (Vancouver); lista
+  de referências NBR 6023/Vancouver; cruzamento (citação sem referência, ano divergente com as duas âncoras, referência nunca
+  citada, número inexistente, ordem de numeração, sistema misto, citação direta sem página, citação longa sem fonte) e formato
+  (autoria, título, ano, local/editora, DOI 10.xxxx/…, URL com "Acesso em", sobrenome em maiúsculas) — sem preencher dado. Toda
+  fonte aparece como "não verificada": **não feito** o `SourceVerifier` (acessível/indisponível) nem a busca na memória (RF33).
+- **CA07**: cobertura com limite de 20 000 palavras; blocos de fora são listados; achados ficam ancorados a bloco e trecho.
+- **Testes**: `lib/letters/coherence.test.ts`, `citations.test.ts`, `analyze.test.ts` e as telas.

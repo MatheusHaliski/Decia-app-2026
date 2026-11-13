@@ -2,8 +2,9 @@
  * Tarefas persistidas (RF4, RF12, RF41; auditoria 17/10/2026): cliente da API `/api/tasks` tipado pelo contrato OpenAPI gerado
  * (`lib/api/schema.d.ts`), extensões opcionais por área profissional e o cálculo explícito de progresso pelos critérios.
  */
-import { api } from "@/lib/api/client";
+import { api, qs } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
+import { listQuery, summaryQuery, type AcervoParams } from "./acervo";
 
 export type TaskView = components["schemas"]["TaskView"];
 export type TaskRequest = components["schemas"]["TaskRequest"];
@@ -13,14 +14,27 @@ export type PriorityName = NonNullable<TaskRequest["priority"]>;
 export type AccessClassName = NonNullable<TaskRequest["accessClass"]>;
 export type VisibilityName = NonNullable<TaskRequest["visibility"]>;
 export type TaskStateName = NonNullable<TaskView["state"]>;
+export type TaskCategoryName = NonNullable<TaskRequest["category"]>;
+/** Contadores e alertas de prazo legal do Acervo (RF41.CA01/CA04). */
+export type AcervoSummary = components["schemas"]["AcervoSummary"];
+export type LegalAlert = components["schemas"]["LegalAlert"];
+/** Regra do catálogo de prazos legais (RF20.CA11, RF41.CA04). */
+export type LegalDeadlineRuleView = components["schemas"]["LegalDeadlineRuleView"];
+/** Anexo e evidência da tarefa (RF41.CA06). */
+export type AttachmentView = components["schemas"]["AttachmentView"];
+export type EvidenceView = components["schemas"]["EvidenceView"];
+export type EvidenceRequest = components["schemas"]["EvidenceRequest"];
 export interface Criterion { text: string; done: boolean }
 export interface Deliverable { text: string }
 export interface Reference { label: string; url: string }
 
 export const WORK_AREAS: readonly WorkArea[] = ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"];
+/** Tipos oferecidos no criador (todos os do enum Java TaskType; os 16 de "APRESENTACAO" em diante chegaram com os conectores, V60). */
 export const TASK_TYPE_NAMES: readonly TaskTypeName[] = [
   "DOCUMENTO", "TEXTO_MANUAL", "PLANILHA", "IMAGEM_EDITADA", "DESENHO_TECNICO", "CRONOGRAMA", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "LINK",
-  "PASTA", "PROTOCOLO", "ESTUDO_TECNICO_PRELIMINAR", "IMAGEM_WEB", "TEXTO_IA",
+  "PASTA", "PROTOCOLO", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS",
+  "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO",
+  "IMAGEM_WEB", "TEXTO_IA",
 ];
 export const PRIORITIES: readonly PriorityName[] = ["BAIXA", "MEDIA", "ALTA", "CRITICA"];
 export const ACCESS_CLASSES: readonly AccessClassName[] = ["PUBLICO", "INTERNO", "RESTRITO", "SIGILOSO"];
@@ -71,4 +85,46 @@ export const tasksApi = {
   update: (id: string, body: TaskRequest) => api.put<TaskView>(`/api/tasks/${encodeURIComponent(id)}`, body),
   transition: (id: string, body: { to: TaskStateName; reason?: string; blockedByTaskId?: string; blockedByUserId?: string; version: number }) =>
     api.post<TaskView>(`/api/tasks/${encodeURIComponent(id)}/transitions`, body),
+  /** Acervo com sub-filtros, ordenação e página (RF41.CA09). */
+  list: (p: AcervoParams) => api.get<TaskView[]>(`/api/tasks${qs(listQuery(p))}`),
+  /** Total, contadores por opção e alertas de prazo legal para os mesmos filtros. */
+  summary: (p: AcervoParams) => api.get<AcervoSummary>(`/api/tasks/summary${qs(summaryQuery(p))}`),
+  /** Prazo legal: regra + data de início (o servidor calcula o vencimento); sem `ruleId` limpa. */
+  setLegalDeadline: (id: string, body: { ruleId?: string | null; startDate?: string | null; version: number }) =>
+    api.put<TaskView>(`/api/tasks/${encodeURIComponent(id)}/legal-deadline`, body),
+};
+
+export const legalDeadlinesApi = {
+  rules: () => api.get<LegalDeadlineRuleView[]>("/api/legal-deadlines"),
+};
+
+const taskPath = (taskId: string) => `/api/tasks/${encodeURIComponent(taskId)}`;
+
+/** Dados de evidência no formulário (todos opcionais; coordenadas só juntas). */
+export interface EvidenceMeta { caption?: string; takenAt?: string; latitude?: string; longitude?: string }
+
+/** Anexos e evidências da tarefa (RF41.CA06): o arquivo vai por multipart; o tipo é conferido no servidor pelo conteúdo. */
+export const attachmentsApi = {
+  list: (taskId: string) => api.get<AttachmentView[]>(`${taskPath(taskId)}/attachments`),
+  upload: (taskId: string, file: Blob, name: string) => {
+    const form = new FormData();
+    form.append("file", file, name);
+    return api.post<AttachmentView>(`${taskPath(taskId)}/attachments`, form);
+  },
+  remove: (taskId: string, attachmentId: string) => api.delete<void>(`${taskPath(taskId)}/attachments/${encodeURIComponent(attachmentId)}`),
+  /** Bytes do anexo (com o token), para abrir por `URL.createObjectURL`. */
+  content: (taskId: string, attachmentId: string) =>
+    api.get<Blob>(`${taskPath(taskId)}/attachments/${encodeURIComponent(attachmentId)}/content`, { headers: { Accept: "*/*" } }),
+  evidences: (taskId: string) => api.get<EvidenceView[]>(`${taskPath(taskId)}/evidences`),
+  addEvidence: (taskId: string, file: Blob, name: string, meta: EvidenceMeta) => {
+    const form = new FormData();
+    form.append("file", file, name);
+    (Object.entries(meta) as [keyof EvidenceMeta, string | undefined][]).forEach(([k, v]) => { if (v) form.append(k, v); });
+    return api.post<EvidenceView>(`${taskPath(taskId)}/evidences`, form);
+  },
+  markEvidence: (taskId: string, attachmentId: string, meta: EvidenceMeta) =>
+    api.post<EvidenceView>(`${taskPath(taskId)}/attachments/${encodeURIComponent(attachmentId)}/evidence`, meta),
+  removeEvidence: (taskId: string, evidenceId: string) => api.delete<void>(`${taskPath(taskId)}/evidences/${encodeURIComponent(evidenceId)}`),
+  /** Anexos das minhas tarefas (página /attachments). */
+  mine: (limit = 100) => api.get<AttachmentView[]>(`/api/attachments?limit=${limit}`),
 };

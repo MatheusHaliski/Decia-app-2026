@@ -4,8 +4,9 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { AttentionInbox, DecisionsBoard, NewDecisionDialog, ReviewsView, useMounted, useNow, workspaceHref } from "@/components/decia";
+import { SessionList } from "@/components/decia/session";
 import { RfPage } from "@/components/shell/RfPage";
-import { Badge, Button, EmptyState, LoadingState, Tabs } from "@/components/ui";
+import { Badge, Button, LoadingState, Tabs } from "@/components/ui";
 import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
 import { demoRepository, useDecisions } from "@/lib/decia/repository";
 import { useI18n } from "@/lib/i18n/useI18n";
@@ -18,12 +19,13 @@ const PAGE = pageByRoute("/decia")!;
 function SessionsTab() {
   const { t } = useI18n();
   const { profile } = useViewer();
+  const mounted = useMounted();
   const tabs = visibleTabs(DECIA_SESSION_TABS, profile).map((tb) => ({ slug: tb.slug, label: t(tb.labelKey) }));
   return (
     <div className="grid gap-3">
       <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("rf.sessionCardsNote")}</p>
       <Tabs tabs={tabs} label={t("tabs.decia.sessoes")} param="sessoes" look="pills">
-        {(active) => <EmptyState moji="vazio" title={t("rf.emptyTitle", { tab: String(tabs.find((x) => x.slug === active)?.label ?? active) })} description={t("rf.emptyDescription")} />}
+        {(active) => (mounted ? <SessionList filter={active} /> : <LoadingState />)}
       </Tabs>
     </div>
   );

@@ -478,7 +478,7 @@ flowchart LR
     SE["ShowcaseEntry · ShowcaseCuration"]
   end
   subgraph INFRA["ws-infrastructure"]
-    MYSQL["persistence-mysql (V63 occupation_packs, V65 pack_reviews, V66 showcase_entries)"]
+    MYSQL["persistence-mysql (V65 occupation_packs, V67 pack_reviews, V68 showcase_entries)"]
     AIG["ai-providers / AiGateway (RF43): MEMORIA_PROFISSAO"]
     JOB["platform: agendador de vencimento"]
   end

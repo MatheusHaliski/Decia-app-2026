@@ -743,3 +743,51 @@ flowchart LR
 | RF41.CA07 | `AcervoService.quickAction` (FAVORITAR · DUPLICAR · LEVAR_AO_PROJETO · COMPARTILHAR_SESSAO · PEDIR_CHANCELA · OFERECER_BALCAO · ARQUIVAR/REPASSAR), `AcervoService.archive` | A5 → A6 → A7..A12 → F4 → P10 → P4/P15 | 12–17 | `→ ARQUIVADA / OFERECIDA / EM_USO` | `F4 menu do card`, `TSM` | planejado (favoritar, duplicar, levar ao projeto, sessão, chancela, Balcão); o real oferece só as transições do detalhe |
 | RF41.CA08 | `VisibilityFilter.allowedFor`, `Guard.requireOwner` (403), ação Levar ao meu acervo (RF23) | A17 → F1 → P2 → P3 | 39–46 | — | `VF`, `GD`, `R1 u/[username]` | **parcial**: `AccessPolicy` real (SIGILOSO = PRIVADA, ADMIN sem acesso implícito, D-139; 404 igual a inexistente — `TaskServiceTest.sigilosoNaoEhVistoPorColegaNemAdminSemVinculo`, `colegaDaEmpresaVeMasNaoEdita`); `TaskService.listOf` e `GET /api/people/{id}/tasks` publicados em 381b452 (Onda 1); tela de terceiros e Levar ao meu acervo planejados |
 | RF41.CA09 | querystring (filtro, filtros, ordem, page), 20 por página, i18n, `AcervoQuery` | A2 → F1 | 1–3; real: 52 | — | `R1 /tasks`, `lib/i18n` | **parcial**: filtro por estado no cliente e i18n pt-BR/en/es reais; querystring, ordenação e paginação (20 por página) planejadas — a API real só aceita `limit` |
+
+## Estado da implementação (12/11/2026)
+
+Pedido do dono do produto: «Expandir o inventário pessoal do usuário com sub-filtros de prioridade, alertas para prazos legais de processos
+e vinculação direta de evidências e anexos por tarefa». O que passou de **(planejado)** a **(real)** nesta frente (API Java + tela):
+
+- **CA01/CA09 — sub-filtros, contagem, ordenação e página (real).** `GET /api/tasks?filtro=&categoria=&prioridade=&prazo=&ordem=&page=&size=`
+  (`TaskController.mine` → `AcervoService.list`; enums validados, valor fora da lista → `400 PARAMETRO_INVALIDO`; sem filtros a lista é a
+  de antes, mais recentes primeiro) e `GET /api/tasks/summary` (total para a paginação; contadores por estado de trabalho, prioridade,
+  categoria e prazo — cada contador ignora o PRÓPRIO filtro e respeita os demais). Estados de trabalho: A realizar · Em andamento ·
+  Bloqueado · Concluído · Arquivado · Publicado (modelo público/oferecida); prazo: «com prazo legal», «vencendo em 7 dias», «atrasadas»
+  (prazo efetivo = o mais próximo entre `dueAt` e `legalDueAt`; só tarefas abertas vencem ou atrasam); ordem: atualização, prazo
+  (abertas com prazo primeiro), prioridade, criação. Regras puras em `AcervoQueries` (Java) espelhadas em `lib/tasks/acervo.ts`; o filtro
+  roda sobre o índice leve das tarefas do dono (`TaskRepositoryPort.indexByOwner`, até 5 000, `truncated` acima disso) e só a página
+  (20 itens) é lida inteira. Tela `/tasks` (`components/tasks/Acervo.tsx`, `TaskAcervo`) com a URL compartilhável
+  `?filtro=em-andamento&prioridade=alta&prazo=atrasadas&ordem=prazo&page=2`. **(planejado)** Favoritas, Chanceladas, Oferecidas como
+  sub-filtros próprios, tipo/processo/natureza/departamento/origem, busca e contadores em OpenSearch/Redis.
+- **CA04 — prazos legais (real, exceto notificação diária).** Catálogo `GET /api/legal-deadlines` (`LegalDeadlineService.rules`: regras
+  padrão + as da empresa de quem pede, ativas e vigentes) com 10 regras padrão na **V69** — Lei nº 12.527/2011 arts. 11 § 1º (20 dias,
+  prorrogáveis por 10) e 15 parágrafo único; Lei nº 9.784/1999 arts. 24, 42, 44, 49, 56 § 1º, 59 caput e § 1º e 62 (único em dias
+  úteis). `PUT /api/tasks/{id}/legal-deadline` grava regra, data de início e vencimento nas colunas da V11 (`legal_deadline_rule_id`,
+  `legal_deadline_base_date`, `legal_due_at`) — o vencimento é sempre calculado no servidor (`LegalDeadlineCalendar`, ws-domain), com
+  `EDIT` na tarefa, tarefa aberta (`409 TAREFA_BLOQUEADA`) e versão (`409 EDICAO_CONCORRENTE`); audita `TASK_LEGAL_DEADLINE_SET`. Contagem
+  da Lei nº 9.784/1999, art. 66 (exclui o início, inclui o vencimento; dias corridos prorrogam para o primeiro dia útil); feriados
+  nacionais fixos (1º/1, 21/4, 1º/5, 7/9, 12/10, 2/11, 15/11, 25/12; 20/11 desde 2024) e móvel (Paixão, pela Páscoa); Carnaval e Corpus
+  Christi são ponto facultativo; feriado local fica para a regra da empresa. O mesmo cálculo em `lib/tasks/legalDeadline.ts`, conferido
+  pelos MESMOS casos (`ws-domain/src/test/resources/acervo/prazos-legais-casos.csv` e `feriados-nacionais.csv`). Tela: faixa de alertas
+  no topo do Acervo (vencidas, hoje e até 7 dias; independe dos filtros), estado em texto e marca («Vence em X dias», «Vence hoje»,
+  «Vencida há X dias»), painel no detalhe (regra, início, prévia calculada, salvar/remover) e o aviso de que a data é calculada pela regra
+  cadastrada e deve ser conferida. Card: prazo efetivo com ⚖ quando é o legal, variação PRAZO_LEGAL, sem âmbar/vermelho em tarefa fechada.
+  **(planejado)** job diário `PRAZO_PROXIMO/PRAZO_VENCIDO` (RF27) e sugestão na Tarefa do Dia (RF44); cadastro de regras da empresa pela tela.
+- **CA06 — anexos e evidências (real).** `GET/POST /api/tasks/{id}/attachments` (multipart), `DELETE /api/tasks/{id}/attachments/{attachmentId}`,
+  `GET …/attachments/{attachmentId}/content`, `POST …/attachments/{attachmentId}/evidence`, `GET/POST /api/tasks/{id}/evidences`,
+  `DELETE /api/tasks/{id}/evidences/{evidenceId}` e `GET /api/attachments` (meus anexos), em `TaskAttachmentService`. BOLA: toda rota
+  com id passa por `ResourceAuthorizer.require` (ver = `VIEW`; enviar, marcar e remover = `EDIT` e tarefa aberta); invisível responde o
+  mesmo 404 de inexistente, anexo/evidência de outra tarefa também. Arquivo pelo `MediaUploadService` (tipo real por magic bytes — nome e
+  `Content-Type` do cliente só conferidos —, 15 MB, 50 por tarefa, zip-bomb, teto de pixels, antivírus/quarentena `423`, chave
+  `restricted/` para RESTRITO/SIGILOSO; binário do dono da tarefa, dedupe por dono, apagado quando nenhum anexo/evidência aponta mais).
+  Fotos perdem EXIF/GPS, XMP, IPTC e imagens do MPF sem reprocessar os pixels (`ImageMetadata`: JPEG, PNG, WEBP). Evidência = anexo
+  marcado como prova (legenda, data da captura, localização opcional — só se a pessoa enviar, cifrada AES-GCM em `latitude_enc/longitude_enc`,
+  coordenadas só para quem registrou ou pode editar). Download com `nosniff` e CSP `sandbox`; só imagem abre numa aba. Auditoria
+  `TASK_ATTACHMENT_ADDED/REMOVED`, `TASK_EVIDENCE_ADDED/REMOVED` sem nome de arquivo, legenda nem coordenadas. Tela: seção «Anexos &
+  Evidências» no detalhe (enviar, enviar como evidência, abrir/baixar, marcar/desmarcar, remover com confirmação) e `/attachments`
+  (`MyAttachments`) com o link para a tarefa. **(planejado)** Estúdio (`toStudio` → IMAGEM_EDITADA), vínculo da evidência a projeto, OCR.
+- **RF34** — no detalhe de DESENHO_TECNICO e DOCUMENTO, o botão «Extrair quantitativos (RF34)» leva a `/tasks/{id}/extrair` (página da frente RF34).
+- **Testes:** `LegalDeadlineCalendarTest`, `AcervoQueriesTest`, `AcervoServiceTest`, `LegalDeadlineServiceTest`, `TaskAttachmentServiceTest`,
+  `ImageMetadataTest`, `TaskControllerWebTest`, `TaskAttachmentControllerWebTest`, `AcervoAdaptersIT` (MySQL real: V69, cifra das coordenadas),
+  `lib/tasks/{legalDeadline,acervo,card}.test.ts`, `components/tasks/{acervo,attachments}.test.tsx`.

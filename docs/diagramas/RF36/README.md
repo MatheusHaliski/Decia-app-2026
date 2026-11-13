@@ -501,3 +501,32 @@ flowchart LR
 | RF36.CA03 | `HandoffDossier.successorUserId/successorAcceptedAt`, `HandoffService.accept/refuse`, `TransferService`, `HandoffItem.previousResponsibleId/newResponsibleId`, `TaskStateLog` | A6 → A7 → A8 → F3 → P9 (403) → P10 → P12 · A9 → P13 | 22–33 | `AGUARDANDO_SUCESSOR → TRANSFERIDO / RECUSADO` | `TRS`, `AUD`, `HandoffView` |
 | RF36.CA04 | `DeciaSessionService.replaceParticipant`, `SessionParticipant.leftAt/removeReason`, `Notification PARTICIPANTE_*` (RF9), histórico intacto | P11 | 30, 34 | nota de TRANSFERIDO | `DSS`, `CASA` |
 | RF36.CA05 | `HandoffDossier.consentForPrivateItems`, `Visibility PRIVADA`, `ProjectTask.snapshotJson` (RF23), nunca DELETE de tarefas usadas por outros | A5 → P4 → P5/P6 · P14 | 8–9, 35 | nota de GERADO + nota de TRANSFERIDO | `Switch (consentimento)`, `HS` |
+
+## Estado da implementação (12/11/2026)
+
+Frontend funcional em `/handoffs` sobre um repositório DEMO da aba (`lib/handoff/repository.ts`, selo DEMO na página): a API do
+RF36 (`HandoffService`, `HandoffController`, migração, notificações) continua planejada e não é presumida.
+
+- **Gerar (CA01):** EMPRESA e CHEFE escolhem qualquer pessoa da equipe; EMPREGADO gera o próprio dossiê; ADMIN só consulta; CURADOR e
+  VISITANTE recebem o 403 da matriz. Motivo (`TRANSFERENCIA` = mudança de setor, `SAIDA`, `FIM_GESTAO`, `TROCA_CHEFE`) e data. A coleta é
+  pura e determinística (`lib/handoff/collect.ts`): projetos abertos da Mesa (DEMO, só leitura) com fase, papel e atividades;
+  tarefas do Acervo (API real `/api/tasks` quando há sessão e o dossiê é da própria pessoa; exemplo do laboratório nos demais casos);
+  decisões do DECIA não encerradas (DEMO, só leitura); pendências (vencimento legal calculado pelo servidor `legalDueAt` ou prazo de
+  tarefa de natureza legal na janela de 30 dias, vencida, bloqueada, decisão atrasada, revisão programada próxima, mudança aguardando
+  o comitê); riscos abertos de que a pessoa é dona; contatos e partes interessadas (só nome e papel no trabalho) e as comunicações que
+  ela conduz; fontes de conhecimento (referências das tarefas, evidências das decisões, lições registradas e trechos exatos da Memória
+  Institucional via `searchMemory`, com a citação). O resumo ✦ é montado só com as contagens do dossiê (D-12); a redação por IA sobre
+  esses fatos ainda não existe.
+- **Exportar (CA02, parcial):** Markdown, JSON (`ws.handoff/1`) e versão para impressão (HTML numa janela própria, escapado). A
+  materialização em `TaskItem` DOCUMENTO e em projeto "Transição de …" depende do backend.
+- **Sucessor e ciência (CA03, parcial):** sucessor por item transferível, sucessor padrão para os vazios, nota por item, checklist
+  (itens calculados e marcados à mão), envio, ciência de cada sucessor (TRANSFERIDO quando todos deram), recusa com motivo
+  obrigatório (itens voltam sem sucessor) e cancelamento com motivo — a máquina de estados do §4 em `lib/handoff/workflow.ts`. No
+  laboratório a ciência de outra pessoa pode ser simulada. A troca de `responsibleId` nas tarefas e projetos espera a API.
+- **CA04:** pendente (troca de participante nas sessões ativas é do backend); o checklist lembra de avisar equipe e partes interessadas.
+- **CA05:** itens PRIVADOS só com o consentimento do titular (sem ele, só a contagem); SIGILOSO entra só por referência; nada é apagado.
+- **Atalho para outras telas:** `/handoffs?pessoa=<id>&motivo=SAIDA` abre o formulário preenchido (para a ação "Gerar dossiê de
+  transição" no perfil visto pelo chefe e na equipe do departamento, que ainda não foi ligada nessas telas); `?dossie=<id>` abre um
+  dossiê.
+- **Testes:** `lib/handoff/handoff.test.ts` (coleta, privacidade, prazos, fluxo, checklist, resumo, exportação, repositório) e
+  `components/handoff/handoff.test.tsx` (chefe, empregado, admin, curador/visitante, sessão real com a API do Acervo).

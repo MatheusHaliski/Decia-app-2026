@@ -214,6 +214,22 @@ public class ResourceAuthorizer {
         }
     }
 
+    // ------------------------------------------------------------------------------------------------ conectores (RF20.CA07)
+
+    /**
+     * Conta conectada ({@code /api/connectors/{id}…}, conectores de fontes externas): só o dono vê, lista, importa e desconecta. A conta de
+     * outra pessoa é invisível: responde o MESMO {@code 404} de um id inexistente ({@code accountOwnerId} nulo), nunca 403.
+     */
+    public void requireOwnConnector(CurrentUser actor, UUID accountOwnerId) {
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        AuthorizationTrail.record("CONNECTOR");
+        if (accountOwnerId == null || !accountOwnerId.equals(actor.id())) {
+            throw ApiException.notFound("Conector");
+        }
+    }
+
     // ------------------------------------------------------------------------------------------------ recursos
 
     public void require(Viewer viewer, ScopedResource resource, ResourceAction action) {

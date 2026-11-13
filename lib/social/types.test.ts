@@ -29,6 +29,8 @@ const CASES: [string, readonly string[]][] = [
   ["mensageria/AssignmentOrigin.java", T.ASSIGNMENT_ORIGINS],
   ["mensageria/AssignmentTargetType.java", T.ASSIGNMENT_TARGET_TYPES],
   ["acervo/TaskType.java", T.TASK_TYPES],
+  ["acervo/SourceKind.java", T.SOURCE_KINDS],
+  ["acervo/LinkMode.java", T.LINK_MODES],
   ["acervo/TaskState.java", T.TASK_STATES],
   ["acervo/TaskCategory.java", T.TASK_CATEGORIES],
   ["acervo/CoverMode.java", T.COVER_MODES],

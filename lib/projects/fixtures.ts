@@ -21,9 +21,14 @@ export function buildDemoProject(): ProjectModel {
     startDate: start,
     statusDate: "2026-11-10",
     approach: "HIBRIDO",
+    area: "SOFTWARE",
     boardModel: "INSTITUCIONAL",
     currentPhase: "ELABORACAO",
     currentSprint: 1,
+    sprints: [
+      { number: 1, start: "2026-11-05", end: "2026-11-18", goal: "Protótipo navegável da matriz de critérios validado com o comitê" },
+      { number: 2, start: "2026-11-19", end: "2026-12-02", goal: "Registro de decisão com snapshot verificável em produção" },
+    ],
     team: [
       { userId: "u-ana", role: "PATROCINADOR" },
       { userId: "u-pessoa", role: "GERENTE" },
@@ -49,6 +54,7 @@ export function buildDemoProject(): ProjectModel {
       managerId: "u-pessoa",
       sponsorId: "u-ana",
       approvedBySponsorAt: "2026-11-02T14:00:00Z",
+      approvedBy: "u-ana",
     },
     businessCase: { rate: 0.1, cashflows: [-50_000, 15_000, 25_000, 30_000], benefits: ["Menos retrabalho na redação de atas", "Rastro auditável para o controle interno"] },
     stakeholders: [
@@ -57,6 +63,10 @@ export function buildDemoProject(): ProjectModel {
       { id: "s3", name: "Servidores usuários", role: "Usuários", power: 2, interest: 5 },
       { id: "s4", name: "Controle interno", role: "Auditoria", power: 4, interest: 2 },
       { id: "s5", name: "Fornecedor de nuvem", role: "Fornecedor", power: 2, interest: 2 },
+    ],
+    communications: [
+      { id: "cm1", info: "Status do projeto: valor agregado, riscos e mudanças", audienceIds: ["s2"], channel: "REUNIAO", frequency: "SEMANAL", ownerId: "u-pessoa" },
+      { id: "cm2", info: "Novidades da plataforma para quem vai usar", audienceIds: ["s3"], channel: "EMAIL", frequency: "MENSAL", ownerId: "u-bruno" },
     ],
     requirements: [
       { id: "r1", code: "RF-01", text: "Registrar decisão com critérios e alternativas", origin: "Transparência das decisões", originStakeholderId: "s2", deliverableIds: ["w11"], test: "CT-01" },
@@ -76,13 +86,13 @@ export function buildDemoProject(): ProjectModel {
       { id: "w32", parentId: "w3", title: "Testar integração" },
     ],
     tasks: [
-      { id: "tA", code: "T01", title: "Termo de abertura e requisitos", phase: "DEMANDA", status: "CONCLUIDA", wbsId: "w21", responsibleId: "u-pessoa", reviewerId: "u-ana", durationDays: 3, percentComplete: 100, budget: 6_000, actualCost: 6_500, moscow: "MUST", createdBy: "u-pessoa", doneAt: "2026-11-05T18:00:00Z" },
-      { id: "tP", code: "T02", title: "Plano do projeto (EAP, cronograma, orçamento)", phase: "PLANEJAMENTO", status: "CONCLUIDA", wbsId: "w22", responsibleId: "u-pessoa", reviewerId: "u-pessoa", durationDays: 3, percentComplete: 100, budget: 4_000, actualCost: 3_800, moscow: "MUST", createdBy: "u-pessoa", doneAt: "2026-11-08T18:00:00Z" },
-      { id: "tB", code: "T03", title: "Arquitetura e protótipo", phase: "ELABORACAO", status: "EM_ANDAMENTO", wbsId: "w11", responsibleId: "u-carla", durationDays: 4, percentComplete: 50, budget: 12_000, actualCost: 7_000, moscow: "MUST", sprint: 1, createdBy: "u-carla" },
-      { id: "tC", code: "T04", title: "Análise de riscos e LGPD", phase: "ANALISE", status: "A_FAZER", responsibleId: "u-diego", durationDays: 2, percentComplete: 0, budget: 3_000, actualCost: 0, moscow: "SHOULD", createdBy: "u-diego" },
-      { id: "tM", code: "T05", title: "Aprovação do comitê (portão)", phase: "APROVACAO", status: "A_FAZER", durationDays: 0, milestone: true, percentComplete: 0, budget: 0, actualCost: 0, createdBy: "u-pessoa" },
-      { id: "tD", code: "T06", title: "Desenvolvimento do módulo de decisões", phase: "EXECUCAO", status: "A_FAZER", wbsId: "w12", responsibleId: "u-carla", durationDays: 5, pert: { o: 3, m: 5, p: 7 }, percentComplete: 0, budget: 20_000, actualCost: 0, moscow: "MUST", sprint: 2, createdBy: "u-carla" },
-      { id: "tE", code: "T07", title: "Implantação, aceite e treinamento", phase: "ENCERRAMENTO", status: "A_FAZER", wbsId: "w31", responsibleId: "u-elisa", durationDays: 2, percentComplete: 0, budget: 5_000, actualCost: 0, moscow: "MUST", createdBy: "u-elisa" },
+      { id: "tA", code: "T01", title: "Termo de abertura e requisitos", phase: "DEMANDA", status: "CONCLUIDA", wbsId: "w21", responsibleId: "u-pessoa", reviewerId: "u-ana", durationDays: 3, percentComplete: 100, budget: 6_000, actualCost: 6_500, moscow: "MUST", createdBy: "u-pessoa", createdAt: "2026-11-02T12:00:00Z", startedAt: "2026-11-02T13:00:00Z", doneAt: "2026-11-05T18:00:00Z" },
+      { id: "tP", code: "T02", title: "Plano do projeto (EAP, cronograma, orçamento)", phase: "PLANEJAMENTO", status: "CONCLUIDA", wbsId: "w22", responsibleId: "u-pessoa", reviewerId: "u-pessoa", durationDays: 3, percentComplete: 100, budget: 4_000, actualCost: 3_800, moscow: "MUST", createdBy: "u-pessoa", createdAt: "2026-11-02T12:00:00Z", startedAt: "2026-11-05T09:00:00Z", doneAt: "2026-11-08T18:00:00Z" },
+      { id: "tB", code: "T03", title: "Arquitetura e protótipo", phase: "ELABORACAO", status: "EM_ANDAMENTO", wbsId: "w11", responsibleId: "u-carla", durationDays: 4, percentComplete: 50, budget: 12_000, actualCost: 7_000, moscow: "MUST", sprint: 1, createdBy: "u-carla", createdAt: "2026-11-03T12:00:00Z", startedAt: "2026-11-06T09:00:00Z" },
+      { id: "tC", code: "T04", title: "Análise de riscos e LGPD", phase: "ANALISE", status: "A_FAZER", responsibleId: "u-diego", durationDays: 2, percentComplete: 0, budget: 3_000, actualCost: 0, moscow: "SHOULD", createdBy: "u-diego", createdAt: "2026-11-03T12:00:00Z" },
+      { id: "tM", code: "T05", title: "Aprovação do comitê (portão)", phase: "APROVACAO", status: "A_FAZER", durationDays: 0, milestone: true, percentComplete: 0, budget: 0, actualCost: 0, createdBy: "u-pessoa", createdAt: "2026-11-02T12:00:00Z" },
+      { id: "tD", code: "T06", title: "Desenvolvimento do módulo de decisões", phase: "EXECUCAO", status: "A_FAZER", wbsId: "w12", responsibleId: "u-carla", durationDays: 5, pert: { o: 3, m: 5, p: 7 }, percentComplete: 0, budget: 20_000, actualCost: 0, moscow: "MUST", sprint: 2, createdBy: "u-carla", createdAt: "2026-11-04T12:00:00Z" },
+      { id: "tE", code: "T07", title: "Implantação, aceite e treinamento", phase: "ENCERRAMENTO", status: "A_FAZER", wbsId: "w31", responsibleId: "u-elisa", durationDays: 2, percentComplete: 0, budget: 5_000, actualCost: 0, moscow: "MUST", createdBy: "u-elisa", createdAt: "2026-11-04T12:00:00Z" },
     ],
     dependencies: [
       { id: "d1", from: "tA", to: "tB", type: "FS", lagDays: 0 },
@@ -158,7 +168,7 @@ export function buildDemoProject(): ProjectModel {
     baseline,
     tasks: [
       ...base.tasks,
-      { id: "tX", code: "T08", title: "Ajuste visual pedido por mensagem", phase: "EXECUCAO", status: "EM_ANDAMENTO", responsibleId: "u-carla", durationDays: 1, percentComplete: 30, budget: 0, actualCost: 600, addedAfterBaseline: true, createdBy: "u-carla" },
+      { id: "tX", code: "T08", title: "Ajuste visual pedido por mensagem", phase: "EXECUCAO", status: "EM_ANDAMENTO", responsibleId: "u-carla", durationDays: 1, percentComplete: 30, budget: 0, actualCost: 600, addedAfterBaseline: true, createdBy: "u-carla", createdAt: "2026-11-09T11:00:00Z", startedAt: "2026-11-09T14:00:00Z" },
     ],
   };
 }

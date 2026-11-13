@@ -100,6 +100,19 @@ public class MediaUploadService {
         return new ReadGrant(media, storage.signedReadUrl(media.objectKey(), ttl), ttl);
     }
 
+    /**
+     * Situação da varredura do objeto (sem registro = PENDENTE), sem autorização: para o chamador que já autorizou o recurso-pai mostrar
+     * "em verificação"/"não verificado" na lista (ex.: anexos de uma tarefa visível, RF41.CA06).
+     */
+    public MediaScanStatus scanStatus(UUID mediaId) {
+        return mediaId == null ? MediaScanStatus.PENDENTE : repository.findScan(mediaId).map(MediaScan::status).orElse(MediaScanStatus.PENDENTE);
+    }
+
+    /** O objeto com esta varredura pode ser servido agora? (mesma regra de {@link #authorizeRead}) */
+    public boolean servable(MediaScanStatus status) {
+        return status != null && status.servable(props.requireAntivirus());
+    }
+
     /** Metadados por id, sem autorização: só para o chamador que já conferiu o vínculo (ex.: a foto atual de uma conta). */
     public Optional<MediaObject> find(UUID mediaId) {
         return mediaId == null ? Optional.empty() : repository.findById(mediaId);

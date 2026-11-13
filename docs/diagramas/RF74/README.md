@@ -400,3 +400,17 @@ flowchart LR
 | **RF74.CA10** | `GhostPreview.agencyLevel`, `MODE_CAPABILITIES` e `AGENT_LIMITS` (real), mapeamento desta página | A2 → P3 | `agencyLevel 2` no pedido | nota de GERANDO | `R3`, `MPS` | teste por nível: nível 1 não aplica, nível 4 grava checkpoint; nenhum nível publica ou amplia escopo |
 | **RF74.CA11** | `AiBudget` (429), `AiGateway` (503), `AiInferenceLog` sem base64 | I1 → E7 → F5 | `alt 503 IA_INDISPONIVEL` | `GERANDO → DESCARTADA` | `AG`, `MY` | teste: timeout não repete chamada; inspeção de logs sem PNG, base64 ou chave |
 | **RF74.CA12** | `ImageOrigin`, `CaEvidence` do RF72 | todo o fluxo | toda a sequência | toda a máquina | `R2`, `MPS`, `AIP` | relatório separando mock, captura local, PNG de modelo e integração real, com alpha, alinhamento, revisão obsoleta, aceite, rejeição, acessibilidade e orçamento |
+
+## Estado da implementação (12/11/2026)
+
+**Prévia fantasma DEMO (heurística local) e "Capturar PNG" no Drawings 2D; geração multimodal continua planejada.** Origem exibida: heurística determinística — nenhum modelo é chamado e nada é rotulado como gerado por modelo (equivale ao `RASTER_LOCAL`/heurística da tabela acima, não a `MODELO_MULTIMODAL`).
+
+- **Sugestões determinísticas** (`lib/drawings2d/suggest.ts`): fechar lacuna entre pontas próximas, alinhar topo/coluna ao valor mais comum, encaixar na grade (`snapPoint`), completar simetria no eixo do contorno e propor cotas de altura (valor medido). Cada sugestão é um patch pronto com revisão esperada, o que leu (`dependsOn`) e as formas "depois"; todo número do texto vem do cálculo (D-12).
+- **Prévia na prancheta**: formas sugeridas em transparência (opacidade ajustável, padrão 50%), contorno tracejado, rótulo ✦ n e `pointer-events: none` (não intercepta o desenho, CA05). Lista das mudanças com aceitar/rejeitar uma a uma ou todas; Enter aceita e Escape rejeita a sugestão em foco; Enter na prancheta aceita a sugestão do objeto selecionado (CA08).
+- **Recusa automática** (`ghost.ts`, `proposalValidity`): política de autonomia mudou (versão), revisão do escopo mudou, camada oculta/travada ou região-alvo reservada por outra pessoa → "Recusada automaticamente" com o motivo, estado terminal (CA09). Aceitar grava patch de origem IA, escopo limitado às regiões da proposta, sob as mesmas reservas e a mesma porta `authorizePatch`; sugestão que dependia de outra do mesmo lote fica de fora.
+- **Modos (RF51, CA10)**: Manual não sugere; Sob solicitação só ao pedir; Sugestões mostra o fantasma sozinha após pausa de 1,5 s (respeita o que a pessoa rejeitou); Assistido aplica o lote revisado só na seleção, numa transação, com um desfazer; Agente exige mandato e fica indisponível. Trocar o modo usa `changeMode` e invalida o pendente.
+- **Capturar PNG**: SVG só do desenho visível (sem grade, divisórias, cursores, seleção nem prévia) → canvas → PNG, com fundo do tema ou transparente e escala 1×, 2× ou 3× (`lib/drawings2d/export.ts`, `components/drawings2d/capture.ts`). É captura local: nada é enviado.
+
+**Verificação:** testes de cada sugestão, validade, lote, modos e da tela (pedir, aceitar com Enter, rejeitar com Escape, recusa por reserva e por troca de modo, Assistido, PNG); conferido em Chrome real.
+
+**Fora desta entrega:** prévia fantasma no editor 3D (exige uma API pública de sobreposição em `lib/drawings3d/engine/Viewport3D.ts`), captura automática na pausa com metadados, backend multimodal, validação de PNG com alpha, variantes "objeto"/"cena", vetorização e orçamento (CA01–CA04, CA06, CA07, CA11, CA12).

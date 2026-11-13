@@ -1,5 +1,9 @@
 package br.gov.pr.secid.workstation.web.acervo;
 
+import br.gov.pr.secid.workstation.application.acervo.AcervoQuery;
+import br.gov.pr.secid.workstation.application.acervo.AcervoService;
+import br.gov.pr.secid.workstation.application.acervo.AcervoSummary;
+import br.gov.pr.secid.workstation.application.acervo.LegalDeadlineService;
 import br.gov.pr.secid.workstation.application.acervo.TaskService;
 import br.gov.pr.secid.workstation.application.acervo.TaskService.TaskView;
 import br.gov.pr.secid.workstation.application.common.ApiException;
@@ -8,6 +12,7 @@ import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
 import br.gov.pr.secid.workstation.application.identity.InMemorySessionStore;
 import br.gov.pr.secid.workstation.application.identity.RefreshRecord;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
+import br.gov.pr.secid.workstation.domain.acervo.SourceKind;
 import br.gov.pr.secid.workstation.domain.acervo.TaskState;
 import br.gov.pr.secid.workstation.domain.acervo.TaskType;
 import br.gov.pr.secid.workstation.domain.acervo.WorkArea;
@@ -45,7 +50,6 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -70,6 +74,10 @@ class TaskControllerWebTest {
     InMemorySessionStore sessions;
     @MockitoBean
     TaskService tasks;
+    @MockitoBean
+    AcervoService acervo;
+    @MockitoBean
+    LegalDeadlineService legal;
 
     final UUID userId = UUID.randomUUID();
     final UUID sid = UUID.randomUUID();
@@ -91,8 +99,9 @@ class TaskControllerWebTest {
 
     private TaskView view(long version) {
         return new TaskView(taskId, version, userId, null, "Relatório", null, TaskType.DOCUMENTO, null, Priority.MEDIA, TaskState.DISPONIVEL,
-                LocalDate.of(2026, 11, 1), null, AccessClassification.INTERNO, Visibility.PRIVADA, null, null, null, "Objetivo", WorkArea.PESQUISA,
-                List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now());
+                LocalDate.of(2026, 11, 1), null, AccessClassification.INTERNO, Visibility.PRIVADA, SourceKind.MANUAL, null, null, null, null, null,
+                "Objetivo", WorkArea.PESQUISA,
+                List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now(), null, null, null);
     }
 
     private List<MockHttpServletRequestBuilder> allEndpoints() {
@@ -102,7 +111,9 @@ class TaskControllerWebTest {
                 post("/api/tasks").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("title", "T", "type", "DOCUMENTO"))),
                 put("/api/tasks/" + taskId).contentType(MediaType.APPLICATION_JSON).content(json(Map.of("title", "T", "version", 0))),
                 post("/api/tasks/" + taskId + "/transitions").contentType(MediaType.APPLICATION_JSON)
-                        .content(json(Map.of("to", "EM_USO", "version", 0))));
+                        .content(json(Map.of("to", "EM_USO", "version", 0))),
+                get("/api/tasks/summary"),
+                put("/api/tasks/" + taskId + "/legal-deadline").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("version", 0))));
     }
 
     @Test
@@ -120,9 +131,12 @@ class TaskControllerWebTest {
                 "deliverables", List.of(Map.of("text", "PDF")), "acceptanceCriteria", List.of(Map.of("text", "Revisado", "done", false)),
                 "references", List.of(Map.of("label", "W3C", "url", "https://www.w3.org/")), "extensions", Map.of("method", "Survey")));
         mvc.perform(authed(post("/api/tasks"), "USER").contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(taskId.toString())).andExpect(jsonPath("$.area").value("PESQUISA"));
-        when(tasks.listMine(any(), anyInt())).thenReturn(List.of(view(1)));
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(taskId.toString())).andExpect(jsonPath("$.area").value("PESQUISA"))
+                .andExpect(jsonPath("$.sourceKind").value("MANUAL")).andExpect(jsonPath("$.linkMode").doesNotExist())
+                .andExpect(jsonPath("$.sourceRef").doesNotExist());
+        when(acervo.list(any(), any())).thenReturn(List.of(view(1)));
         mvc.perform(authed(get("/api/tasks?limit=10"), "USER")).andExpect(status().isOk()).andExpect(jsonPath("$[0].title").value("Relatório"));
+        verify(acervo).list(any(), eq(AcervoQuery.firstPage(10)));
     }
 
     @Test
@@ -156,6 +170,45 @@ class TaskControllerWebTest {
         });
         mvc.perform(authed(post("/api/tasks/" + taskId + "/transitions"), "USER").contentType(MediaType.APPLICATION_JSON)
                 .content(json(Map.of("to", "EM_USO", "version", 1)))).andExpect(status().isOk()).andExpect(jsonPath("$.version").value(2));
+    }
+
+    @Test
+    void filtrosDoAcervoChegamAoServicoEValorForaDaListaE400() throws Exception {
+        when(acervo.list(any(), any())).thenReturn(List.of(view(1)));
+        mvc.perform(authed(get("/api/tasks?filtro=EM_ANDAMENTO&categoria=ETP&prioridade=ALTA&prazo=ATRASADAS&ordem=PRAZO&page=2"), "USER"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(taskId.toString()));
+        verify(acervo).list(any(), eq(new AcervoQuery(AcervoQuery.WorkFilter.EM_ANDAMENTO, br.gov.pr.secid.workstation.domain.acervo.TaskCategory.ETP,
+                Priority.ALTA, AcervoQuery.DeadlineFilter.ATRASADAS, AcervoQuery.SortOrder.PRAZO, 2, AcervoQuery.DEFAULT_SIZE)));
+        for (String bad : List.of("filtro=FAVORITAS", "prioridade=URGENTE", "ordem=nome", "prazo=hoje", "page=0", "size=101", "page=x")) {
+            mvc.perform(authed(get("/api/tasks?" + bad), "USER")).andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value("PARAMETRO_INVALIDO"));
+        }
+        AcervoSummary summary = new AcervoSummary(1, 1, false, LocalDate.of(2026, 11, 12), Map.of("A_REALIZAR", 1), Map.of("ALTA", 1),
+                Map.of("ETP", 1), Map.of("ATRASADAS", 0), List.of(new AcervoSummary.LegalAlert(taskId, "Relatório", TaskState.EM_USO,
+                LocalDate.of(2026, 11, 13), 1)), 1);
+        when(acervo.summary(any(), any())).thenReturn(summary);
+        mvc.perform(authed(get("/api/tasks/summary?prioridade=ALTA"), "USER")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(1)).andExpect(jsonPath("$.legalAlerts[0].daysLeft").value(1))
+                .andExpect(jsonPath("$.legalAlerts[0].legalDueAt").value("2026-11-13"));
+    }
+
+    @Test
+    void prazoLegalExigeVersaoEPassaPeloAuthorizer() throws Exception {
+        mvc.perform(authed(put("/api/tasks/" + taskId + "/legal-deadline"), "USER").contentType(MediaType.APPLICATION_JSON)
+                .content(json(Map.of("ruleId", UUID.randomUUID().toString())))).andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.details.fields.version").exists());
+        UUID rule = UUID.randomUUID();
+        when(legal.apply(any(), eq(taskId), any(), any())).thenAnswer(inv -> {
+            AuthorizationTrail.record("TASK:" + taskId);
+            return view(4);
+        });
+        mvc.perform(authed(put("/api/tasks/" + taskId + "/legal-deadline"), "USER").contentType(MediaType.APPLICATION_JSON)
+                .content(json(Map.of("ruleId", rule.toString(), "startDate", "2026-11-12", "version", 3)))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(4));
+        verify(legal).apply(any(), eq(taskId), eq(new LegalDeadlineService.LegalDeadlineInput(rule, LocalDate.of(2026, 11, 12), 3)), any());
+        when(legal.apply(any(), eq(taskId), any(), any())).thenReturn(view(5));
+        mvc.perform(authed(put("/api/tasks/" + taskId + "/legal-deadline"), "USER").contentType(MediaType.APPLICATION_JSON)
+                .content(json(Map.of("version", 3)))).andExpect(status().isInternalServerError());
     }
 
     @Test

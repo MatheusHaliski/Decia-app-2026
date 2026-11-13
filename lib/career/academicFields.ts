@@ -77,3 +77,29 @@ export function neighborsOf(code: string, fields: readonly AcademicField[] = ACA
   const own = fieldByCode(code, fields);
   return own ? own.neighbors.map((n) => fieldByCode(n, fields)).filter((f): f is AcademicField => f !== undefined) : [];
 }
+
+/**
+ * Autocompletar no idioma da tela (RF81.CA01/CA10): a busca de `searchAcademicFields` (rótulo pt-BR e aliases) somada à do rótulo no
+ * idioma escolhido — quem usa o app em inglês acha "Law" e "Software Engineering" —, sem repetir ramo e no máximo `limit` itens.
+ */
+export function searchOccupations(query: string, lang: "pt-BR" | "en" | "es" = "pt-BR", fields: readonly AcademicField[] = ACADEMIC_FIELDS, limit = 8): AcademicField[] {
+  const base = searchAcademicFields(query, fields, limit);
+  if (lang === "pt-BR") return base;
+  const q = fieldKey(query);
+  if (q.length < 2) return [];
+  const score = (f: AcademicField) => {
+    const label = fieldKey(f.label[lang]);
+    if (label === q) return 0;
+    if (label.startsWith(q)) return 1;
+    if (label.split(" ").some((w) => w.startsWith(q))) return 2;
+    if (label.includes(q)) return 3;
+    return -1;
+  };
+  const localized = fields
+    .map((f) => [f, score(f)] as const)
+    .filter(([, s]) => s >= 0)
+    .sort((a, b) => a[1] - b[1] || a[0].label[lang].localeCompare(b[0].label[lang], lang))
+    .map(([f]) => f);
+  const seen = new Set<string>();
+  return [...localized, ...base].filter((f) => (seen.has(f.code) ? false : (seen.add(f.code), true))).slice(0, limit);
+}

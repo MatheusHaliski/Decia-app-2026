@@ -1,12 +1,9 @@
-"use client";
-// Página-esqueleto gerada para a rota /projects/[id]/simulate (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { useParams } from "next/navigation";
-import { RfPage } from "@/components/shell/RfPage";
-import { pageByRoute } from "@/lib/pages/registry";
+// /projects/[id]/simulate — Simulador de Cenários e Riscos do projeto (RF31): alavancas sobre uma cópia do projeto, impacto no
+// prazo (CPM e Monte Carlo com semente fixa) e no custo (valor agregado), comparação de até três cenários (?compare=a,b,c) e envio
+// do escolhido à aprovação como solicitação de mudança no DECIA. Dados DEMO em memória até existir a API de projetos.
+import { SimulateClient } from "./SimulateClient";
 
-const PAGE = pageByRoute("/projects/[id]/simulate")!;
-
-export default function Page() {
-  const params = useParams<{ id: string }>();
-  return <RfPage page={PAGE} subtitle={params.id} />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <SimulateClient projectId={id} />;
 }

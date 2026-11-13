@@ -11,6 +11,29 @@ Três visões do **mesmo** `ProjectScheme`: **Quadro** (kanban por `ProjectPhase
 | Comentar tarefa | não | não | `comments` (PROJECT_TASK) |
 | Reabrir projeto CONCLUÍDO/ARQUIVADO | sim | sim, com `reason` obrigatório (CA06) | `project_versions`, `audit_log` |
 
+## Estado da implementação (frontend DEMO · novembro de 2026)
+
+A Mesa de Trabalho existe em `/projects/[id]/edit` (projeto de exemplo `decia-v1`) com o conteúdo das aulas de **Gestão de
+Projetos de TI** (Temas 1–5) e de **Governança de TI** (foco ENADE). Os dados vivem na memória da aba (DEMO) até existir a API
+de projetos; o contrato `ProjectRepository` (`lib/projects/repository.ts`) é o que o cliente HTTP implementará.
+
+**Um modelo, muitas projeções.** `ProjectModel` (`lib/projects/types.ts`) é o único estado; toda edição — do quadro, da linha do
+tempo, das abas ou do canvas — é um comando (`lib/projects/commands.ts`). Alteração estrutural gera `ProjectVersion` com resumo
+traduzível (CA02); mover no canvas não gera (CA03); projeto arquivado recusa alteração estrutural (CA06).
+
+| Área (aba) | O que a teoria pede | Onde está |
+|---|---|---|
+| Quadro por fases | colunas = **fases** (7 institucionais, 4 clássicas do PMBOK ou fluxo Scrum), não grupos de processos; grupo dominante, áreas de conhecimento, COBIT e entregáveis por fase; **portão** com critérios de saída verificados; **monitoramento e controle transversal** (faixa, não coluna) | `components/projects/PhaseBoard.tsx`, `lib/projects/lifecycle.ts` |
+| Canvas conectado | Project Model Canvas (Finocchio) + faixas de fase: post-it num bloco vira requisito, parte interessada, entrega da EAP, risco ou item do TAP; cartão noutra faixa muda de fase; ligar cartões cria dependência; requisito ↔ entrega, entrega ↔ atividade, risco ↔ atividade, parte interessada ↔ requisito. A faixa "Efeito" mostra o que mudou e onde | `components/projects/ProjectCanvas.tsx`, `lib/projects/canvas.ts` |
+| Linha do tempo | Gantt com caminho crítico, folga, linha de base e data de status; **diagrama de rede (atividade no nó)** com IMC/TMC/IMT/TMT; tabela CPM; **PERT** (TE, σ, probabilidade de cumprir o prazo, P80); **curva S** com VP, VA e CR | `components/projects/Timeline.tsx`, `lib/projects/engine/{schedule,pert,evm}.ts` |
+| Iniciação · Escopo · Riscos e equipe · Controle · Governança · Encerramento | TAP (patrocinador aprova, não o GP), SMART, business case (VPL, TIR, payback, ROI); EAP com regra dos 100 %, rastreabilidade e gold plating; registro de riscos com VME, matriz P × I, reserva de contingência × gerencial, Mendelow, RACI com exatamente um A; valor agregado completo, controle integrado de mudanças (CCB/CAB, 7 Rs, tipos ITIL), scope creep, lições ao longo do projeto, histórico de versões; cascata PEI/PDTIC, GUT, Run/Grow/Transform, estrutura organizacional × autoridade do GP, ISO/IEC 38500, AHP; encerramento formal, SLA/OLA/UC e transição para a operação | `components/projects/panels/*` |
+| **Janela segmentada** | ao lado de qualquer aba, outra visão do mesmo projeto — por padrão o **Feedback da IA** sobre o trabalho do grupo: indicadores **separados** de qualidade do gerenciamento, governança e trabalho em grupo (sem número mágico), o que mudou com a última edição, prioridades com a aula de origem e "corrigir em…" que troca a aba da esquerda; distribuição da carga sem avaliar pessoas | `components/projects/{ProjectWorkspace,SplitView,FeedbackPanel}.tsx`, `lib/projects/{metrics,feedback}.ts` |
+| Governança no DECIA | portão de fase, mudança normal (CCB/CAB) e seleção/priorização viram decisões estruturadas no DECIA, ligadas ao projeto; o resultado volta para a Mesa (`syncFromDecia`); a decisão no DECIA tem o atalho de volta para a Mesa | `lib/projects/decia.ts`, `components/decia/DecisionWorkspace.tsx` |
+
+Regra D-12 no feedback: todo número é calculado pelo sistema; sem motor de IA conectado, a interface diz que a leitura foi
+montada pelo sistema a partir dos indicadores. Ainda planejado: API de projetos, edição simultânea (CA04/CA05), skins da mesa
+(RF38), comentários por tarefa, exportação PDF/ZIP e reabertura com justificativa obrigatória.
+
 ## 0. Diagrama de casos de uso
 
 Quem lê e quem edita um Esquema de Projeto em `/projects/[id]/edit`: editam o dono, o responsável por tarefa do projeto e o chefe do departamento; os demais que veem o projeto ficam em modo leitura. Pílulas cheias existem no código hoje; tracejadas são planejadas.
@@ -27,10 +50,10 @@ flowchart LR
   chefe["«ator» Chefe de departamento"]:::ator
   subgraph SIS["Work Station — RF22 Editar projeto na Mesa"]
     direction TB
-    UC1(["UC1 Abrir o projeto em quadro, linha do tempo ou canvas"]):::ucPlan
+    UC1(["UC1 Abrir o projeto em quadro, linha do tempo ou canvas"]):::uc
     UC2(["UC2 Verificar a permissão de edição"]):::ucPlan
-    UC3(["UC3 Alterar a estrutura do projeto"]):::ucPlan
-    UC4(["UC4 Registrar uma versão do projeto"]):::ucPlan
+    UC3(["UC3 Alterar a estrutura do projeto"]):::uc
+    UC4(["UC4 Registrar uma versão do projeto"]):::uc
     UC5(["UC5 Comparar e restaurar versões"]):::ucPlan
     UC6(["UC6 Arrumar cartões no canvas e trocar a skin"]):::ucPlan
     UC7(["UC7 Resolver conflito de edição simultânea"]):::ucPlan
@@ -717,3 +740,20 @@ flowchart LR
 
 
 Tela/aba: `/desk` (esqueleto em `app/(shell)/desk/page.tsx`) · `/projects/[id]/edit` (esqueleto em `app/(shell)/projects/[id]/edit/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+- **Três visões, um modelo** (CA03): quadro por fases, linha do tempo (Gantt com barras, dependências, caminho crítico e, agora, o
+  prazo de cada atividade, `Task.dueAt`) e canvas livre leem o mesmo `ProjectModel`; o teste de tela move no canvas e vê o efeito
+  no quadro e no Gantt (`components/projects/desk/sync.test.tsx`).
+- **Posição no modelo, sem versão por pixel** (CA03): o arraste só confirma ao soltar (um `CANVAS_MOVE`) e a seta do teclado, a
+  cada passo; a posição entra em `canvas.positions`, não gera versão e é contada na versão vigente (`ProjectVersion.layoutMoves`).
+- **Histórico com "voltar a esta versão"** (CA02): o repositório guarda o retrato de cada versão (`versionSnapshot`), atualizado
+  pelos ajustes de posição; `VERSION_RESTORE` reaplica estrutura, prazos e posições do canvas como uma versão nova (nada se perde;
+  recusado em projeto arquivado). Botão "Histórico · vN" no cabeçalho da Mesa (`components/projects/desk/VersionHistory.tsx`). No
+  DEMO, as versões anteriores à aba não têm retrato e não podem ser restauradas.
+- **Criar, listar e visão geral**: `ProjectRepository.create/list` (opcionais no contrato), `/projects/new` (em branco, modelo ou
+  Autopiloto) e `/projects/[id]` com os indicadores do motor (CPM, PERT, valor agregado) e os atalhos para a Mesa, o Simulador e o
+  Espelho.
+
+Ainda planejado: API de projetos, comparar duas versões (diff), edição simultânea (CA04), comentários por tarefa (CA05) e exportação (CA07).

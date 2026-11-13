@@ -120,3 +120,12 @@ describe("RF47 Encontrar e RF48 Agentes (D-128, D-130)", () => {
     expect(PAGES.find((p) => p.route === "/agents")!.tabs!.map((t) => t.slug)).toEqual(["antes", "execucao", "transversais", "encontrar-no-dossie", "ler-com-mapa", "extrair-do-dossie", "lista-de-termos"]);
   });
 });
+
+describe("rota ativa com curinga de segmento", () => {
+  it("Mesa acende em /projects/*/edit e o Espelho só em /projects/*/mirror", () => {
+    expect(isActivePath("/projects/decia-v1/edit", "/desk", ["/projects/*/edit"])).toBe(true);
+    expect(isActivePath("/projects/decia-v1/edit", "/projects/exemplo/mirror", ["/projects/*/mirror"])).toBe(false);
+    expect(isActivePath("/projects/abc/mirror", "/projects/exemplo/mirror", ["/projects/*/mirror"])).toBe(true);
+    expect(isActivePath("/projects/new", "/desk", ["/projects/*/edit"])).toBe(false);
+  });
+});

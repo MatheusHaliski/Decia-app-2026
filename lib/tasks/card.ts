@@ -3,9 +3,12 @@
  * real usa a mesma anatomia do `TaskSchemeCard` (tipo, arte da família, estado, prazo, classificação), com as mesmas regras do
  * DEMO (`TASK_TYPE_META`, `TASK_STATE_TONE`, `dueKindOf`). O que a API não tem fica de fora, nunca zerado nem inventado:
  * curtidas, comentários, remixes, selos, chancelas, crédito e delegação (sem barra social: `social: false`); nome de autor e
- * responsável (a API só traz ids); nome e cor do departamento (só `departmentId`).
+ * responsável (a API só traz ids); nome e cor do departamento (só `departmentId`). Prazo (RF41.CA04): o card mostra o prazo efetivo — o
+ * mais próximo entre o prazo e o prazo legal — com ⚖ quando é o legal, e a variação PRAZO_LEGAL sempre que há prazo legal; concluída,
+ * arquivada ou publicada não cobra prazo (sem âmbar nem vermelho).
  */
 import { TASK_STATE_TONE, TASK_TYPE_META, dueKindOf, type PlainTaskCardViewModel, type TaskCardVariant } from "@/lib/social/view-model";
+import { effectiveDueOf, isOpenState } from "./acervo";
 import type { TaskView } from "./client";
 import { workStatusOf } from "./status";
 
@@ -22,9 +25,11 @@ export function toTaskCardViewModelFromApi(task: TaskView, { viewerId = null, no
   const type = task.type ?? "DOCUMENTO";
   const state = task.state ?? "RASCUNHO";
   const meta = TASK_TYPE_META[type];
-  const dueAt = task.dueAt ? task.dueAt.slice(0, 10) : null;
+  const legalDueAt = task.legalDueAt ? task.legalDueAt.slice(0, 10) : null;
+  const dueAt = effectiveDueOf(task.dueAt, legalDueAt);
   const variants = new Set<TaskCardVariant>([state]);
   if (viewerId && task.responsibleId === viewerId && task.ownerId !== viewerId) variants.add("ATRIBUIDA");
+  if (legalDueAt) variants.add("PRAZO_LEGAL");
   return {
     kind: "TASK",
     social: false,
@@ -48,8 +53,8 @@ export function toTaskCardViewModelFromApi(task: TaskView, { viewerId = null, no
     department: null,
     responsible: null,
     dueAt,
-    dueKind: dueKindOf(dueAt, now),
-    legal: false,
+    dueKind: isOpenState(state) ? dueKindOf(dueAt, now) : null,
+    legal: !!legalDueAt && dueAt === legalDueAt,
     aiGenerated: false,
     authorship: null,
     seals: [],

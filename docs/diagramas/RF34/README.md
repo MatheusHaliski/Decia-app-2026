@@ -506,3 +506,18 @@ flowchart LR
 | RF34.CA06 | `AiInferenceLog` (modelo, custo, latência), `LocalEngine` (estrutural sem semântica), `ExtractionKind ESTRUTURAL`, aviso | P6 → P7 · I3 | 13–16, 22 | nota de PRONTA | `AIP`, `Toast` |
 
 Tela/aba: `/tasks/[id]` (esqueleto em `app/(shell)/tasks/[id]/page.tsx`) · `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+Frente "Extração automática de dados de desenhos CAD/BIM" (RF34 + RF70), só no frontend: os leitores são funções puras em `lib/cad/**`, rodam no navegador e o arquivo não vai a servidor. A tela é `components/cad/ExtractWorkbench.tsx`, usada em `/tasks/extrair` (arquivo avulso) e `/tasks/[id]/extrair` (tarefa DESENHO_TECNICO ou DOCUMENTO; tarefa persistida oferece os anexos .dxf/.ifc/.glb/.dwg baixados do próprio Work Station; só o dono extrai — 403; outro tipo — 422 VALIDACAO). `ExtractionService`, `ExtractionResult` e `ExtractionCorrection` do backend continuam planejados: nada é persistido e não há os estados PROCESSANDO/PRONTA/REVISADA/CONVERTIDA no servidor.
+
+| CA | Situação | Onde |
+|---|---|---|
+| CA01 | parcial — quantitativos de .dxf ASCII (camadas, comprimentos, áreas de contornos fechados com arcos e de hachuras simples, contagem de blocos, ambientes pelo nome escrito dentro do contorno, conferência de cotas e da área escrita), .ifc STEP (IfcWall … IfcSpace com IfcElementQuantity, pavimento por IfcRelContainedInSpatialStructure, material por IfcRelAssociatesMaterial) e .glb (triângulos, caixa, área e volume por tetraedros assinados em malha fechada); cada linha com item, unidade, quantidade, origem, confiança com o motivo e alertas; .dwg só tem a versão identificada | `lib/cad/dxf.ts`, `ifc.ts`, `glb.ts`, `dwg.ts`, `takeoff.ts` |
+| CA02 | pendente — itens e prazos de PDF/DOCX (OCR) não implementados; a tela diz isso ao receber PDF | — |
+| CA03 | parcial — planilha orçamentária com preços de EXEMPLO editáveis (aviso "use a tabela de referência vigente do órgão, como SINAPI/SICRO"), BDI, subtotais por etapa, total e CSV; cronograma pré-preenchido (canteiro → … → limpeza, fim-início, produtividades de exemplo, dias úteis); "Criar tarefa com isto" grava o rascunho (`saveTaskDraft`, origem CAD) e abre `/tasks/new?rascunho=`, tipo PLANILHA ou CRONOGRAMA, área ENGENHARIA. Ainda sem `sourceKind EXTRACAO`, `originalTaskId` gravado e `ProjectTask` (dependem do criador e da API) | `lib/cad/budget.ts`, `schedule.ts`, `draft.ts` |
+| CA04 | parcial — correção de quantidade e inclusão por linha, com o valor original guardado e "desfazer"; as correções não são persistidas por departamento nem alimentam extrações futuras | `applyEdits` em `lib/cad/takeoff.ts`, `components/cad/QuantitiesTab.tsx` |
+| CA05 | pendente — visualizador 3D e captura não fazem parte desta frente | — |
+| CA06 | parcial — a leitura é sempre estrutural e local; a "IA" é simulada (✦, D-12): sob pedido, só resume e alerta a partir dos números calculados; não há AiEngine nem AiInferenceLog | `lib/cad/assistant.ts`, `components/cad/AiPanel.tsx` |
+
+Testes: `npx vitest run lib/cad components/cad` (DXF montado no teste, inclusive no formato do AutoCAD 2018; IFC mínimo; GLB gerado em bytes; DWG só cabeçalho; planilha, cronograma, rascunho, ✦ e as duas telas).

@@ -26,6 +26,12 @@ export type Moscow = (typeof MOSCOW)[number];
 export const APPROACHES = ["PREDITIVO", "ITERATIVO", "AGIL", "HIBRIDO"] as const;
 export type Approach = (typeof APPROACHES)[number];
 
+/** Área do projeto — os mesmos valores de `WorkArea` do Acervo. A Mesa nasceu da disciplina de Gestão de Projetos de TI; a governança
+ *  ESPECÍFICA de TI (ISO/IEC 38500, ITIL SLA/OLA/UC, Run/Grow/Transform) só se aplica a projetos de TI (SOFTWARE). */
+export const PROJECT_AREAS = ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"] as const;
+export type ProjectArea = (typeof PROJECT_AREAS)[number];
+export const isItProject = (m: { area?: ProjectArea }) => (m.area ?? "SOFTWARE") === "SOFTWARE";
+
 /** Modelo de quadro: as 7 fases institucionais, as fases clássicas do PMBOK ou o fluxo do Scrum. */
 export const BOARD_MODELS = ["INSTITUCIONAL", "PMBOK", "SCRUM"] as const;
 export type BoardModel = (typeof BOARD_MODELS)[number];
@@ -60,8 +66,17 @@ export interface Task {
   /** criada depois da linha de base — sem `changeId` é trabalho fora do escopo aprovado (scope creep) */
   addedAfterBaseline?: boolean;
   createdBy: string;
+  /** quando entrou no projeto (lead time) */
+  createdAt?: IsoDate;
+  /** quando o trabalho começou (cycle time; preenchido ao sair de "A fazer") */
+  startedAt?: IsoDate;
   doneAt?: IsoDate;
+  /** prazo da atividade (`ProjectTask.dueAt`, RF22): vem da demanda, do cálculo de trás para frente do Autopiloto (RF30) ou da pessoa */
+  dueAt?: IsoDate;
 }
+
+/** Sprint do Scrum: timebox com início, fim e a META DA SPRINT (compromisso do backlog da sprint, Scrum Guide). */
+export interface Sprint { number: number; start: IsoDate; end: IsoDate; goal?: string }
 
 export interface Dependency { id: string; from: string; to: string; type: DependencyType; lagDays: number }
 
@@ -90,6 +105,13 @@ export interface Requirement {
 }
 
 export interface Stakeholder { id: string; name: string; role?: string; power: number; interest: number }
+
+/** Plano de comunicação (PMBOK, gerenciamento das comunicações): o quê, para quem, por qual canal, com que frequência, quem envia. */
+export const COMM_CHANNELS = ["REUNIAO", "EMAIL", "RELATORIO", "PAINEL", "MENSAGEM", "APRESENTACAO"] as const;
+export type CommChannel = (typeof COMM_CHANNELS)[number];
+export const COMM_FREQUENCIES = ["DIARIA", "SEMANAL", "QUINZENAL", "MENSAL", "POR_MARCO", "SOB_DEMANDA"] as const;
+export type CommFrequency = (typeof COMM_FREQUENCIES)[number];
+export interface CommItem { id: string; info: string; audienceIds: string[]; channel: CommChannel; frequency: CommFrequency; ownerId?: string }
 
 export interface Risk {
   id: string;
@@ -150,6 +172,8 @@ export interface Charter {
   managerId?: string;
   sponsorId?: string;
   approvedBySponsorAt?: IsoDate;
+  /** quem registrou a aprovação na Mesa (auditoria: o GP pode lançar a aprovação que o patrocinador assinou) */
+  approvedBy?: string;
 }
 
 export interface BusinessCase { rate: number; cashflows: number[]; benefits: string[] }
@@ -184,8 +208,36 @@ export type CanvasRef = `${"TASK" | "WBS" | "REQ" | "RISK" | "STK" | "NOTE"}:${s
 export interface CanvasNote { id: string; text: string; color?: "AMARELO" | "AZUL" | "VERDE" | "ROSA" }
 export interface ProjectCanvas { positions: Partial<Record<CanvasRef, { x: number; y: number }>>; notes: CanvasNote[] }
 
-/** Versão gerada por alteração estrutural (RF22.CA02); `key`/`vars` = resumo legível traduzível (`pm.v.<key>`). */
-export interface ProjectVersion { number: number; at: IsoDate; actorId: string; key: string; vars?: Record<string, string | number> }
+/**
+ * Versão gerada por alteração estrutural (RF22.CA02); `key`/`vars` = resumo legível traduzível (`pm.v.<key>`).
+ * Mover cartões no canvas não gera versão (RF22.CA03), mas fica registrado NA versão vigente (`layoutMoves`, `layoutAt`): o
+ * histórico e as posições andam juntos — o retrato de cada versão guarda o arranjo do canvas de quando ela foi substituída.
+ */
+export interface ProjectVersion {
+  number: number;
+  at: IsoDate;
+  actorId: string;
+  key: string;
+  vars?: Record<string, string | number>;
+  /** quantos ajustes de posição no canvas foram confirmados enquanto esta versão era a vigente */
+  layoutMoves?: number;
+  /** quando foi o último desses ajustes */
+  layoutAt?: IsoDate;
+}
+
+/** Origem do Esquema de Projeto — cópia do enum Java `SchemeOrigin` (RF30). */
+export const SCHEME_ORIGINS = ["CRIAR_PROJETO", "DECIA", "REMIX", "AUTOPILOTO", "MODELO", "CENARIO", "DOSSIE", "ATA_VIVA"] as const;
+export type SchemeOrigin = (typeof SCHEME_ORIGINS)[number];
+/** De onde o projeto nasceu: em branco, de um modelo ou gerado pelo Autopiloto a partir de uma demanda (com crédito aos modelos). */
+export interface ProjectOrigin {
+  kind: SchemeOrigin;
+  /** rótulo da fonte (nº do ofício, assunto do e-mail, nome do arquivo ou do modelo) — dado, como foi escrito */
+  label?: string;
+  /** referência da demanda (nº do ofício/processo), quando houver */
+  ref?: string;
+  /** modelos reaproveitados (RF30.CA02: crédito a cada modelo) */
+  credits?: readonly { id: string; title: string }[];
+}
 
 export interface ProjectModel {
   id: string;
@@ -195,13 +247,19 @@ export interface ProjectModel {
   /** data de status para o valor agregado */
   statusDate: IsoDate;
   approach: Approach;
+  /** área do projeto (padrão: SOFTWARE, isto é, TI) — escolhida para o projeto, nunca deduzida da profissão da pessoa (D-147) */
+  area?: ProjectArea;
   boardModel: BoardModel;
   currentPhase: ProjectPhase;
   currentSprint?: number;
+  /** calendário das sprints (abordagens ágil, iterativa e híbrida) */
+  sprints?: Sprint[];
   team: TeamMember[];
   charter: Charter;
   businessCase: BusinessCase;
   stakeholders: Stakeholder[];
+  /** plano de comunicação ligado às partes interessadas */
+  communications?: CommItem[];
   requirements: Requirement[];
   wbs: WbsNode[];
   tasks: Task[];
@@ -220,6 +278,14 @@ export interface ProjectModel {
   canvas: ProjectCanvas;
   /** decisões do DECIA ligadas a este projeto (portões, mudanças, seleção) */
   decisionIds: string[];
+  /** origem do esquema (RF30: `origin AUTOPILOTO`, modelo ou em branco); ausente nos projetos anteriores a este campo */
+  origin?: ProjectOrigin;
   versions: ProjectVersion[];
   version: number;
 }
+
+/**
+ * Retrato de uma versão (`ProjectVersion.snapshotJson`, RF22.CA02): o projeto inteiro — estrutura, prazos e as posições do canvas —
+ * sem o histórico. "Voltar a esta versão" reaplica o retrato e gera uma versão nova (nada se perde).
+ */
+export type ProjectSnapshot = Omit<ProjectModel, "versions" | "version">;

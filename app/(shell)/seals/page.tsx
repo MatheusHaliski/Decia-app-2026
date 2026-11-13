@@ -1,10 +1,10 @@
 "use client";
-// Página-esqueleto gerada para a rota /seals (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { RfPage } from "@/components/shell/RfPage";
+// Chancelas & políticas (RF39): minhas chancelas, conceder por vínculo sugerido ✦, política ou premiação, e recusadas (DEMO).
+import { SealsPage } from "@/components/seals/SealsPage";
 import { pageByRoute } from "@/lib/pages/registry";
 
 const PAGE = pageByRoute("/seals")!;
 
 export default function Page() {
-  return <RfPage page={PAGE} />;
+  return <SealsPage page={PAGE} />;
 }
