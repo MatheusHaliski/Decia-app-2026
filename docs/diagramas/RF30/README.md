@@ -533,3 +533,22 @@ flowchart LR
 | RF30.CA06 | `AutopilotService.openSessionOnDraft`, `DeciaBridgeService.openSessionFromDraft` | A10 → F6 → P9 → P11 | 39–44 | `PROPOSTA_EM_RASCUNHO → EM_DECISAO_DECIA` | `BS`, `Button abrir-decia` |
 
 Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+Frontend DEMO funcional em `/autopilot` — sem backend: `AutopilotService`, `ProjectDraft` em Redis e `AiEngine` continuam
+planejados. A "IA" é simulada e determinística (D-12): regras sobre o texto, receitas por tipo de demanda e o CPM do motor;
+tudo que é proposta leva ✦ e o que a pessoa muda vira ✎. Nada é enviado a servidor.
+
+| CA | O que existe | Onde |
+|---|---|---|
+| RF30.CA01 | Entrada por texto colado ou arquivo .txt/.eml/.md/.pdf lido no navegador (limite de 5 MB e de 100 mil caracteres). PDF sem biblioteca: fluxos `FlateDecode` por `DecompressionStream("deflate")`, operadores `Tj`/`TJ`/`'`/`"`, CMap `ToUnicode` e fluxos de objetos; PDF cifrado ou sem camada de texto → "não consegui ler o texto; cole o conteúdo". Leitura de remetente/órgão, assinatura, departamento provável (destinatário), assunto, objetivo, nº do ofício/processo, data do documento, prazo ("até 30/11/2026", "em 45 dias", "no prazo de 60 dias corridos/úteis", com feriados nacionais), valores em R$, entregas (listas e verbos/nominalizações), partes interessadas, restrições, riscos por palavra-chave e a classificação (TI, obra, serviço, aquisição, normativo, capacitação). Cada fato guarda o trecho de origem (início/fim) e a tela o realça no texto | `lib/projects/autopilot/{text,dates,extract,eml,pdf,sources}.ts`, `components/projects/autopilot/{DemandInput,FactsEditor,SourceText}.tsx` |
+| RF30.CA02 | Esquema com as 7 fases canônicas: entregas da demanda + receitas por tipo que reaproveitam os modelos de área do Acervo (`lib/tasks/areaTemplates.ts`) com crédito, ciclo de vida (TAP, plano, análise, portão, encerramento), EAP com substantivos, três pontos do PERT por tipo de entrega, rede série-paralela, prazos de trás para frente a partir do prazo da demanda com o CPM de `engine/schedule.ts`, aviso explícito de quantos dias o caminho crítico estoura, riscos, partes interessadas (Mendelow), plano de comunicação e linhas de orçamento quando há valor | `lib/projects/autopilot/{recipes,proposal}.ts`, `components/projects/autopilot/ProposalEditor.tsx` |
+| RF30.CA03 | Proposta editável ANTES de salvar — renomear, durações O/M/P, prazo, responsável, incluir/excluir/reordenar atividades e fases — com o cronograma recalculado na hora; fica num rascunho não persistido (`sessionStorage` da aba, 24 h). `/desk?draft=<id>` abre a Mesa em modo rascunho | `lib/projects/autopilot/drafts.ts`, `components/projects/desk/DraftDesk.tsx` |
+| RF30.CA04 | Salvar cria o projeto no repositório DEMO (`origin AUTOPILOTO`, crédito aos modelos) e abre `/projects/[id]/edit` com a versão 1 "Gerado pelo Autopiloto a partir de …" | `components/projects/autopilot/{AutopilotWizard.tsx,save.ts}`, `ProjectRepository.create` |
+| RF30.CA05 | Sem provedor externo, tudo roda no motor local por definição (a tela diz que são regras, sem modelo externo); o modo Manual de autonomia (RF51) desliga o Autopiloto | `AutopilotWizard.tsx` |
+| RF30.CA06 | Planejado: abrir sessão DECIA sobre a proposta | — |
+
+Testes: `lib/projects/autopilot/*.test.ts` (datas pt-BR e dias úteis, extração com trechos de origem, PDF com fluxo comprimido gerado
+no próprio teste, e-mail MIME, esquema e edições, prazo inviável, rascunho) e `components/projects/autopilot/autopilot.test.tsx`
+(do colar ao salvar, .txt, PDF cifrado, arquivo grande e modo Manual).

@@ -721,3 +721,18 @@ flowchart LR
 
 
 Tela/aba: `/desk` (esqueleto em `app/(shell)/desk/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+`/desk` deixou de ser só a prévia da skin (frontend DEMO; dados na memória da aba até a API de projetos):
+
+- **Minha mesa** (RF21.CA01, parcial): prévia da skin e da arte de fundo das preferências; cartões dos projetos da aba com fase,
+  % concluído (ponderado pela duração), próximo marco, versão, última alteração e estouro de prazo; rascunhos do Autopiloto ainda não
+  salvos; criar projeto em branco, a partir de modelo ou pelo Autopiloto (`components/projects/desk/{MyDesk,ProjectCard,CreateProject}.tsx`,
+  `lib/projects/autopilot/overview.ts`).
+- **Mesa da equipe** (RF21.CA03, visão Quadro): os projetos da aba agrupados pela fase atual, em leitura (`TeamBoard`).
+- **RF21.CA06**: cada cartão abre a Mesa do projeto (`/projects/[id]/edit`, RF22) e a visão geral (`/projects/[id]`).
+- `/desk?draft=<id>` abre a proposta do Autopiloto em modo rascunho (RF30.CA03), numa sub-aba própria.
+
+Planejado: widgets diário, semanal e mensal (CA02), lotação e Mesa da equipe por departamento com edição em tempo real (CA01,
+CA05), post-its `DeskNote` com layout próprio (CA04), fixar nota, skin padrão e exportação (CA07).

@@ -740,3 +740,20 @@ flowchart LR
 
 
 Tela/aba: `/desk` (esqueleto em `app/(shell)/desk/page.tsx`) · `/projects/[id]/edit` (esqueleto em `app/(shell)/projects/[id]/edit/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+- **Três visões, um modelo** (CA03): quadro por fases, linha do tempo (Gantt com barras, dependências, caminho crítico e, agora, o
+  prazo de cada atividade, `Task.dueAt`) e canvas livre leem o mesmo `ProjectModel`; o teste de tela move no canvas e vê o efeito
+  no quadro e no Gantt (`components/projects/desk/sync.test.tsx`).
+- **Posição no modelo, sem versão por pixel** (CA03): o arraste só confirma ao soltar (um `CANVAS_MOVE`) e a seta do teclado, a
+  cada passo; a posição entra em `canvas.positions`, não gera versão e é contada na versão vigente (`ProjectVersion.layoutMoves`).
+- **Histórico com "voltar a esta versão"** (CA02): o repositório guarda o retrato de cada versão (`versionSnapshot`), atualizado
+  pelos ajustes de posição; `VERSION_RESTORE` reaplica estrutura, prazos e posições do canvas como uma versão nova (nada se perde;
+  recusado em projeto arquivado). Botão "Histórico · vN" no cabeçalho da Mesa (`components/projects/desk/VersionHistory.tsx`). No
+  DEMO, as versões anteriores à aba não têm retrato e não podem ser restauradas.
+- **Criar, listar e visão geral**: `ProjectRepository.create/list` (opcionais no contrato), `/projects/new` (em branco, modelo ou
+  Autopiloto) e `/projects/[id]` com os indicadores do motor (CPM, PERT, valor agregado) e os atalhos para a Mesa, o Simulador e o
+  Espelho.
+
+Ainda planejado: API de projetos, comparar duas versões (diff), edição simultânea (CA04), comentários por tarefa (CA05) e exportação (CA07).
