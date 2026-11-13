@@ -344,6 +344,7 @@ function ItemRow({ r, model, people, canEditProject, canEditItem, editingThis, e
         {canEditProject && r.canSuggest ? <Button size="sm" variant="primary" icon="criar-tarefa" onClick={onSuggest}>{t("mirror.item.suggest")}</Button> : null}
         {canEditProject && moveTask ? <Button size="sm" onClick={onMove}>{t("mirror.item.move", { code: moveTask.code, phase: t(`pm.phase.${r.item.phase}`) })}</Button> : null}
         {fixTab && r.status !== "ATENDIDO" && r.status !== "NAO_SE_APLICA" ? <Link href={`/projects/${model.id}/edit?aba=${fixTab}`}>{t("mirror.item.fixIn", { tab: t(`pm.tab.${fixTab}`) })}</Link> : null}
+        {r.reason.code === "SEM_RESPONSAVEL" ? <Link href={`/projects/${model.id}/edit`}>{t("mirror.item.assign")}</Link> : null}
         {canWaive ? <Button size="sm" variant="ghost" onClick={onWaive}>{t("mirror.item.waive")}</Button> : null}
         {r.waiver && canEditProject ? <Button size="sm" variant="ghost" onClick={onUnwaive}>{t("mirror.item.unwaive")}</Button> : null}
         {canEditItem && !editingThis ? (

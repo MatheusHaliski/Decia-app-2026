@@ -487,3 +487,37 @@ flowchart LR
 | RF31.CA05 | `AiInferenceLog` (faísca ✦), `LocalEngine` (prazo/caminho crítico sem IA externa) | I2 → I3 | 11–14 | — | `AIP`, `Spark ✦` |
 
 Tela/aba: `/projects/[id]/simulate` (esqueleto em `app/(shell)/projects/[id]/simulate/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+Frontend funcional com dados DEMO (sem API de cenários; `ScenarioService`/`ScenarioController` seguem planejados). A página
+`/projects/[id]/simulate` deixou de ser esqueleto (o bloco de CAs fica recolhido embaixo).
+
+- **Motor determinístico** (`lib/projects/simulation/`, D-12): um cenário é uma lista de alavancas aplicada a uma CÓPIA do
+  `ProjectModel` (o projeto nunca muda). Alavancas: corte de orçamento (% do orçamento total ou valor; tirado da reserva gerencial e
+  depois da contingência, das linhas do trabalho sem cortar escopo, ou do escopo não iniciado Won't → Could → Should, Must nunca),
+  atraso de fornecedor (entrega atrasada = "não começa antes de", ou duração maior; por atividades escolhidas, palavra no título ou
+  risco ligado), mudança de escopo (retirar entregas/atividades não iniciadas religando as dependências, incluir entrega com
+  "depois de/antes de", % de esforço só no que falta), indisponibilidade de pessoa (ausência pausa/adia; capacidade reduzida estica)
+  e reajuste de preço (linha de orçamento = custo certo; atividade = no que falta). Ordem canônica: escopo → pessoas → fornecedor →
+  preço → corte. Resultado frente à LINHA DE BASE (o projeto sem alavancas, pelo mesmo motor): término e caminho crítico pelo CPM
+  (`engine/schedule.ts`, o que entrou/saiu e o que ficou comandado pela restrição), P50/P80 e chance de cumprir o prazo-alvo por
+  Monte Carlo Beta-PERT com semente fixa 31 e a mesma em todos os cenários (`engine/montecarlo.ts`), ENT/VNT/IDPT pelo valor
+  agregado (`engine/evm.ts`), uso da reserva de contingência e falta além dela, riscos que disparam (prazo, chance < 50 %, reserva
+  estourada, reserva < VME, IDPT > 1,1, corte descoberto, Must retirado, risco registrado ligado a atividade atingida, caminho
+  crítico, conformidade) marcados "novo"/"já existia", e o porquê de cada número. Cruza com o Espelho (RF32): itens de conformidade
+  que o cenário perde ou ganha.
+- **Tela** (`components/projects/simulate/`): linha de base e premissas (prazo-alvo, sorteios, custo indireto por dia de atraso);
+  até 3 cenários em abas, cada um com editor de alavancas (erro de validação visível) e relatório de impacto; comparação lado a lado
+  em tabela acessível e dois gráficos SVG (prazo com faixa P50–P80 e prazo-alvo; ENT com orçamento aprovado e contingência);
+  `?compare=a,b,c` (até 3; id desconhecido ou excedente é avisado); cenários salvos em repositório DEMO (`store.ts`, com retrato dos
+  números e versão do projeto). Leitura ✦ da IA simulada montada só com os números do motor (`narrative.ts`), respeitando a
+  autonomia pessoal (padrão "sob solicitação", D-136).
+- **Enviar à aprovação** (CA03): o cenário vira `CHANGE_REQUEST` normal (impacto nas seis restrições calculado; 7 Rs preenchidos)
+  e é levado ao comitê pelo `openChangeDecision` do DECIA (`lib/projects/decia.ts`); atividades, orçamento e linha de base não
+  mudam antes da decisão. O cenário salvo guarda a mudança e a decisão abertas.
+- **Fora desta entrega**: aplicar o cenário gerando `ProjectVersion.sourceScenarioId` (hoje a aprovação segue o fluxo normal de
+  mudança da Mesa: Controle › Implementar), compartilhar na sessão DECIA (CA04: `MessageAttachment SCENARIO`), `AiInferenceLog`
+  (CA05) e a API (`/api/projects/{id}/scenarios`).
+- **Testes**: `lib/projects/simulation/simulation.test.ts` (cada alavanca, determinismo da semente, projeto pequeno e DEMO, envio à
+  aprovação sem mudar o plano) e `components/projects/simulate/simulate.test.tsx` (tela e página).

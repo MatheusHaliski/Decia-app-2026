@@ -159,7 +159,9 @@ export function SimulatorView(props: SimulatorViewProps) {
   const b = sim.baseline;
   const defaultTarget = b.mc ? b.mc.targetDate : offsetToDate(model.startDate, b.schedule.finish);
   const days = (v: number) => t("pm.ui.daysShort", { n: fmtDays(intl, v) });
+  // a prévia usa o resultado do mesmo rascunho (pela chave), e o envio recalcula na hora com o rascunho atual
   const sendingIdx = sending ? slots.findIndex((d) => d.key === sending) : -1;
+  const sendingResult = sending ? resultOf(sending) : undefined;
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-5)]" data-simulator={model.id}>
@@ -331,12 +333,12 @@ export function SimulatorView(props: SimulatorViewProps) {
         ) : <p className={cn(BODY_SM, "text-ws-text-muted")}>{t("sim.saved.empty")}</p>}
       </section>
 
-      {sendingIdx >= 0 && sim.results[sendingIdx] ? (
+      {sendingIdx >= 0 && sendingResult ? (
         <ApprovalDialog
           key={sending!}
           open
           onOpenChange={(o) => !o && setSending(null)}
-          result={sim.results[sendingIdx]!}
+          result={sendingResult}
           baseline={sim.baseline}
           model={model}
           people={people}

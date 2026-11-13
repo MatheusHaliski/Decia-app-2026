@@ -24,7 +24,7 @@ const EPS = 0.005;
 /** Prefixo dos nós de restrição "não começa antes de" na rede do cenário. */
 export const SNET_PREFIX = "~snet:";
 
-export type LeverError = "VALOR_INVALIDO" | "SEM_ALVO" | "NAO_ENCONTRADO" | "TEXTO_VAZIO";
+export type LeverError = "VALOR_INVALIDO" | "SEM_ALVO" | "NAO_ENCONTRADO" | "TEXTO_VAZIO" | "CICLO";
 
 export interface CutOutcome {
   /** base do percentual: custo planejado + reserva de contingência + reserva gerencial (projeto original) */
@@ -313,7 +313,7 @@ export function applyLevers(original: ProjectModel, levers: readonly Lever[]): A
         }
         const p = plan();
         if (!p.ok) {
-          st.invalid.push({ lever: index, error: "VALOR_INVALIDO" });
+          st.invalid.push({ lever: index, error: "CICLO" });
           fx(index, "invalid", { error: "CICLO" });
           break;
         }

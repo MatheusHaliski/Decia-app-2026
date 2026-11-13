@@ -462,3 +462,33 @@ flowchart LR
 | RF32.CA06 | `Guard` (chefe revisor lê, não edita), `ComplianceService.createMissingTask` 403 para revisor | P4 → P8 (403) | 12, 27–28 | — | `GD` |
 
 Tela/aba: `/projects/[id]/mirror` (esqueleto em `app/(shell)/projects/[id]/mirror/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+Frontend funcional com dados DEMO (sem API de checklists; `ChecklistService`, `ComplianceService` e os controllers seguem
+planejados). A página `/projects/[id]/mirror` deixou de ser esqueleto (o bloco de CAs fica recolhido embaixo).
+
+- **Catálogo versionado** (`lib/projects/compliance/catalog.ts`, versão `2026.11.12`): checklists federais — Lei 14.133/2021 (ETP,
+  termo de referência, pesquisa de preços, análise/matriz de riscos, parecer jurídico, gestor e fiscal do contrato, recebimento),
+  LGPD (Lei 13.709/2018: base legal, segurança, encarregado, RIPD com dado sensível), LAI (Lei 12.527/2011: transparência ativa) e
+  acessibilidade (Lei 13.146/2015, Decreto 5.296/2004, eMAG 3.1, ABNT NBR 9050:2020) —, diretrizes estaduais e municipais de
+  EXEMPLO (marcadas, sem norma real, o órgão substitui) e o checklist do departamento (semente DEMO que o chefe cria e edita; cada
+  edição sobe a versão). Cada item tem id, código, base legal com número e ano, fase, tipo de projeto em que vale (sinais detectados
+  no próprio projeto: contratação, dados pessoais, dado sensível, sistema digital, obra/espaço) e uma regra determinística de lista
+  fechada (atividade com palavras-chave na fase e com responsável, marco, risco com resposta e dono, linha de orçamento, portões no
+  DECIA, lições em N fases, revisão por quatro olhos, objetivo ligado a meta). A tela pede para conferir a vigência.
+- **Verificação** (`evaluate.ts`, CA02): por item ATENDIDO (com o que atende), PARCIAL (fase errada, sem responsável ou só
+  mencionado na EAP/requisito/TAP), FALTANDO (obrigatório bloqueia) ou NÃO SE APLICA (motivo; a equipe pode marcar com
+  justificativa). Placar geral, por fonte e por fase. `mirrorSummary(model)` é a leitura pura para o Feedback da Mesa e outros
+  módulos; `approvalGate` dá o portão da Aprovação (CA04), liberável só pelo chefe com justificativa registrada.
+- **Sugerir tarefa** (`suggest.ts`, CA03): prévia (título, fase, duração, responsável) e criação uma a uma ou em lote pelos comandos
+  EXISTENTES da Mesa (`TASK_CREATE` na fase do item + `TASK_UPDATE` do responsável/marco), com o código do item entre colchetes no
+  título e o vínculo tarefa → item guardado no Espelho (`TaskLink`, no lugar do `TaskItem.checklistItemId`). Atividade na fase
+  errada pode ser movida (`TASK_MOVE_PHASE`).
+- **Perfis** (CA01, CA06): o chefe abre como revisor — lê, mantém o checklist do departamento e libera a Aprovação com
+  justificativa; não cria tarefas. Leitura ✦ da IA simulada só com os números calculados, respeitando a autonomia pessoal.
+- **Fora desta entrega**: gestão de checklists em `/companies/[slug]/manage/checklists` e `/departments/[slug]/checklists`, selo de
+  conformidade no `ProjectCard` e o critério `CONFORMIDADE_AVALIADA` do portão da Análise lendo o Espelho (dependem de arquivos de
+  outros donos), `mustPrecedeItemId`, registro no resumo analítico e no rastro (CA05) e a API.
+- **Testes**: `lib/projects/compliance/compliance.test.ts` (regras no projeto DEMO e num projeto mínimo, sugestão gera o comando
+  certo, portão e justificativa, checklist do departamento) e `components/projects/mirror/mirror.test.tsx` (tela e página).
