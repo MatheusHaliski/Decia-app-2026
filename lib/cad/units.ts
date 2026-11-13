@@ -34,14 +34,28 @@ export function unitFromInsunits(code: number | null | undefined): LengthUnitId 
 }
 
 /**
- * Suposição para desenho de edificação sem unidade: a maior dimensão do desenho em unidades. Prédios medem de poucos metros a
- * algumas centenas: ≥ 8 000 unidades sugere milímetros; ≥ 300, centímetros; abaixo, metros. É hipótese, nunca medição.
+ * Suposição para desenho de edificação sem unidade — hipótese, nunca medição:
+ *  1. altura dos textos (melhor pista): em planta impressa de 1:50 a 1:200 o texto tem perto de 0,2 m de altura real, então
+ *     vence a unidade que leva a altura mediana dos textos mais perto disso (até 10× de diferença);
+ *  2. sem textos, a maior dimensão do desenho: ≥ 8 000 unidades sugere milímetros; ≥ 300, centímetros; abaixo, metros.
  */
-export function guessUnit(maxExtent: number): LengthUnitId {
-  if (!Number.isFinite(maxExtent) || maxExtent <= 0) return "m";
-  if (maxExtent >= 8000) return "mm";
-  if (maxExtent >= 300) return "cm";
-  return "m";
+export function guessUnit(maxExtent: number, textHeight: number | null = null): { unit: LengthUnitId; basis: "TEXTO" | "EXTENSAO" } {
+  if (textHeight !== null && Number.isFinite(textHeight) && textHeight > 0) {
+    let best: LengthUnitId = "m";
+    let err = Infinity;
+    for (const u of ["mm", "cm", "m"] as const) {
+      const e = Math.abs(Math.log10((textHeight * LENGTH_UNITS[u]) / 0.2));
+      if (e < err) {
+        err = e;
+        best = u;
+      }
+    }
+    if (err <= 1) return { unit: best, basis: "TEXTO" };
+  }
+  if (!Number.isFinite(maxExtent) || maxExtent <= 0) return { unit: "m", basis: "EXTENSAO" };
+  if (maxExtent >= 8000) return { unit: "mm", basis: "EXTENSAO" };
+  if (maxExtent >= 300) return { unit: "cm", basis: "EXTENSAO" };
+  return { unit: "m", basis: "EXTENSAO" };
 }
 
 /** Arredonda para `digits` casas sem o erro binário de meio-termo (1,005 → 1,01, não 1,00). */

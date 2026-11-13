@@ -49,11 +49,13 @@ function dxfTakeoff(a: DxfAnalysis, opts: TakeoffOptions): Takeoff {
   const ext = a.extents;
   const maxExtent = ext ? Math.max(ext.maxX - ext.minX, ext.maxY - ext.minY) : 0;
   let unit: UnitInfo;
+  let guessBasis: "TEXTO" | "EXTENSAO" = "EXTENSAO";
   if (opts.unit) unit = { id: opts.unit, toMeters: LENGTH_UNITS[opts.unit], origin: "ESCOLHIDA" };
   else if (declared) unit = { id: declared, toMeters: LENGTH_UNITS[declared], origin: "ARQUIVO" };
   else {
-    const g = guessUnit(maxExtent);
-    unit = { id: g, toMeters: LENGTH_UNITS[g], origin: "SUPOSTA" };
+    const g = guessUnit(maxExtent, a.textHeight);
+    unit = { id: g.unit, toMeters: LENGTH_UNITS[g.unit], origin: "SUPOSTA" };
+    guessBasis = g.basis;
   }
   const k = unit.toMeters;
   const k2 = k * k;
@@ -63,7 +65,9 @@ function dxfTakeoff(a: DxfAnalysis, opts: TakeoffOptions): Takeoff {
   if (guessed) {
     alerts.push(a.insUnits && a.insUnits !== 0
       ? { code: "UNIDADE_NAO_SUPORTADA", vars: { code: a.insUnits, unit: unit.id } }
-      : { code: "UNIDADE_AUSENTE", vars: { unit: unit.id, extent: round(maxExtent, 0) } });
+      : guessBasis === "TEXTO"
+        ? { code: "UNIDADE_AUSENTE_TEXTO", vars: { unit: unit.id, height: round(a.textHeight ?? 0, 3) } }
+        : { code: "UNIDADE_AUSENTE", vars: { unit: unit.id, extent: round(maxExtent, 0) } });
   }
 
   const layerRow = (layer: string, kind: ItemKind, extra: { reasons: CadAlert[]; approx?: number }) => {

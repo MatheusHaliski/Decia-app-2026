@@ -225,8 +225,13 @@ export function applyPactCommand(state: PactsState, cmd: PactCommand, ctx: Comma
       const problem = validateCommitments(cmd.commitments, today);
       if (problem) return fail("VALIDACAO", { commitments: problem });
       if (reneg && len(cmd.reason) < LIMITS.textMin) return fail("VALIDACAO", { reason: "OBRIGATORIO" });
-      const executorId = cmd.executorId ?? (reneg ? executor : null);
+      let executorId = cmd.executorId ?? (reneg ? executor : null);
       if (executorId && !validExecutors(ctx.org, pact).includes(executorId)) return fail("VALIDACAO", { executorId: "INVALIDO" });
+      // quem entrega e propõe sem nomear executor: executa quem propôs (se puder); senão precisa nomear alguém da unidade
+      if (!executorId && cmd.side === "DESTINATARIO") {
+        if (!validExecutors(ctx.org, pact).includes(actor)) return fail("VALIDACAO", { executorId: "OBRIGATORIO" });
+        executorId = actor;
+      }
       const round = pact.proposals.length + 1;
       const id = `${pact.id}-r${round}`;
       const last = pact.proposals.at(-1);

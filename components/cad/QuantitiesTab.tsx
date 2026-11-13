@@ -72,7 +72,8 @@ export function QuantitiesTab(p: QuantitiesTabProps) {
   const origin = (r: TakeoffRow) => {
     const base = t(`cad.source.${r.source.what}`, { ref: r.source.ref });
     if (!r.source.measure) return base;
-    return `${base} · ${r.source.format === "IFC" ? r.source.measure : t(`cad.measure.${r.source.measure}`)}`;
+    // códigos do leitor (LENGTH, COUNT…) são traduzidos; nomes de quantidade do IFC (NetSideArea) aparecem como estão
+    return `${base} · ${/^[A-Z_]+$/.test(r.source.measure) ? t(`cad.measure.${r.source.measure}`) : r.source.measure}`;
   };
 
   if (!p.rows.length) {

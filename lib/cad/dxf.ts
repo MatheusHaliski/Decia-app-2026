@@ -65,6 +65,8 @@ export interface DxfText {
   layer: string;
   x: number;
   y: number;
+  /** altura do texto (código 40), unidades do desenho; 0 = não informada */
+  height: number;
 }
 
 export interface DxfRoom {
@@ -115,6 +117,8 @@ export interface DxfAnalysis {
   /** entidades fora do plano XY (achatadas na área) */
   offPlane: number;
   texts: number;
+  /** altura mediana dos textos (pista da unidade quando o arquivo não a declara) */
+  textHeight: number | null;
 }
 
 type Pair = [number, string];
@@ -550,7 +554,7 @@ function readText(acc: Acc, pairs: Pair[], mtext: boolean): void {
     if (extrusionOf(pairs) === "-Z") x = -x;
   }
   acc.bounds.add(x, y);
-  if (text) acc.texts.push({ text, layer, x, y });
+  if (text) acc.texts.push({ text, layer, x, y, height: Math.abs(num(first(pairs, 40))) });
 }
 
 function readInsert(acc: Acc, pairs: Pair[]): void {
@@ -830,7 +834,15 @@ export function parseDxf(text: string): DxfAnalysis {
     approximated: acc.approximated,
     offPlane: acc.offPlane,
     texts: acc.texts.length,
+    textHeight: median(acc.texts.map((x) => x.height).filter((h) => h > 0)),
   };
+}
+
+function median(values: number[]): number | null {
+  if (!values.length) return null;
+  const v = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(v.length / 2);
+  return v.length % 2 ? v[mid]! : (v[mid - 1]! + v[mid]!) / 2;
 }
 
 /* ───────────────────────────── ambientes ───────────────────────────── */

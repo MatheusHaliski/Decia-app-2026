@@ -184,7 +184,10 @@ export function applyChanges(p: LetterPiece, changes: readonly ProposalChange[],
 export function undo(p: LetterPiece, now: Date): PieceResult {
   const stack = [...p.undoStack];
   let target: PieceVersion | undefined;
-  while (stack.length && !target) target = p.history.find((h) => h.revision === stack.pop());
+  while (stack.length && !target) {
+    const rev = stack.pop();
+    target = p.history.find((h) => h.revision === rev);
+  }
   if (!target) return fail("NADA_PARA_DESFAZER");
   const next = commit(p, target.blocks, now, { origin: "RESTAURACAO", summary: "undo", vars: { revision: target.revision } });
   return ok({ ...next, undoStack: stack });

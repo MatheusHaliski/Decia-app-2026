@@ -134,6 +134,18 @@ describe("mediação em rodadas e aceite bilateral (CA02, CA03)", () => {
     expect(r.run("u-orcamento", { type: "PROPOR", pactId: id, side: "DESTINATARIO", commitments: PACKAGE(), executorId: "u-pessoa", note: "" })).toMatchObject({ fields: { executorId: "INVALIDO" } });
   });
 
+  it("quem entrega e propõe sem nomear executor executa; a chefia de uma PESSOA destinatária precisa nomear a pessoa", () => {
+    const r = runner(empty());
+    const a = r.must("u-pessoa", { type: "ABRIR", draft: DRAFT });
+    r.must("u-orcamento", { type: "PROPOR", pactId: a, side: "DESTINATARIO", commitments: PACKAGE(), executorId: null, note: "" });
+    expect(r.pact(a).proposals[0]).toMatchObject({ executorId: "u-orcamento", acceptances: { DESTINATARIO: { userId: "u-orcamento" }, EXECUTOR: { userId: "u-orcamento" } } });
+    // pedido a uma pessoa da GOF: a chefia dela negocia, mas só a própria pessoa executa
+    const b = r.must("u-pessoa", { type: "ABRIR", draft: { ...DRAFT, target: { kind: "PESSOA", departmentId: "d-gof", userId: "u-rui" } } });
+    expect(r.run("u-orcamento", { type: "PROPOR", pactId: b, side: "DESTINATARIO", commitments: PACKAGE(), executorId: null, note: "" })).toMatchObject({ error: "VALIDACAO", fields: { executorId: "OBRIGATORIO" } });
+    r.must("u-orcamento", { type: "PROPOR", pactId: b, side: "DESTINATARIO", commitments: PACKAGE(), executorId: "u-rui", note: "" });
+    expect(r.pact(b).proposals[0]!.acceptances.EXECUTOR).toBeNull();
+  });
+
   it("esclarecimento: só o destinatário pergunta e só o solicitante responde", () => {
     const r = runner(empty());
     const id = r.must("u-pessoa", { type: "ABRIR", draft: DRAFT });
