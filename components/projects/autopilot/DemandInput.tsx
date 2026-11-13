@@ -58,7 +58,7 @@ export function DemandInput({ value, onChange, onRead, disabled }: { value: Dema
       </Field>
       <div className="flex flex-wrap items-center gap-2">
         <Button icon="acervo" onClick={() => fileRef.current?.click()} busy={busy} disabled={disabled}>{t("autopilot.input.file")}</Button>
-        <Input ref={fileRef} type="file" accept={ACCEPTED_FILES} className="sr-only" tabIndex={-1} aria-label={t("autopilot.input.fileLabel")} onChange={onFile} data-testid="autopilot-file" />
+        <span className="sr-only"><Input ref={fileRef} type="file" accept={ACCEPTED_FILES} tabIndex={-1} aria-label={t("autopilot.input.fileLabel")} onChange={onFile} data-testid="autopilot-file" /></span>
         <Button variant="ghost" onClick={() => { setError(null); onChange({ text: EXAMPLE_OFICIO, kind: "COLAR" }); }} disabled={disabled}>{t("autopilot.input.example")}</Button>
         {value.text ? <Button variant="ghost" onClick={() => { setError(null); onChange({ text: "", kind: "COLAR" }); }}>{t("autopilot.input.clear")}</Button> : null}
       </div>

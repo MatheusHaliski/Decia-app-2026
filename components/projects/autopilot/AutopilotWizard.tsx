@@ -86,7 +86,7 @@ export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = ()
   };
 
   return (
-    <div className="grid gap-[var(--ws-space-4)]" data-autopilot>
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-4)]" data-autopilot>
       <ol aria-label={t("autopilot.steps.label")} className="flex flex-wrap gap-2 text-[length:var(--ws-text-body-sm)]">
         {STEPS.map((s, i) => (
           <li key={s} aria-current={i === step ? "step" : undefined}
@@ -111,7 +111,7 @@ export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = ()
       ) : null}
 
       {step === 1 && facts ? (
-        <section aria-labelledby="ap-facts-title" className="grid gap-[var(--ws-space-3)]">
+        <section aria-labelledby="ap-facts-title" className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-3)]">
           <h2 id="ap-facts-title" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("autopilot.facts.title")}</h2>
           <FactsEditor facts={facts} onChange={setFacts} />
           <div className="flex flex-wrap gap-2">
@@ -122,7 +122,7 @@ export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = ()
       ) : null}
 
       {step === 2 && proposal ? (
-        <section aria-labelledby="ap-scheme-title" className="grid gap-[var(--ws-space-3)]">
+        <section aria-labelledby="ap-scheme-title" className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-3)]">
           <h2 id="ap-scheme-title" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("autopilot.scheme.title")}</h2>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("autopilot.scheme.intro")}</p>
           <ProposalEditor proposal={proposal} onChange={change} people={DEMO_PEOPLE} />

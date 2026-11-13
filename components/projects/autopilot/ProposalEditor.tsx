@@ -41,8 +41,8 @@ export function ProposalEditor({ proposal, onChange, people }: ProposalEditorPro
   const date = (iso?: string) => fmt.date(intl, iso);
 
   return (
-    <div className="grid gap-[var(--ws-space-4)] xl:grid-cols-[minmax(0,1fr)_20rem]" data-proposal>
-      <div className="grid min-w-0 content-start gap-[var(--ws-space-4)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-4)] xl:grid-cols-[minmax(0,1fr)_20rem]" data-proposal>
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-[var(--ws-space-4)]">
         <Card padding="sm" className="grid gap-3">
           <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
             <ProposalMark edited={proposal.edited} />
