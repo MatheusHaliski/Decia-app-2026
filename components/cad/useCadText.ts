@@ -23,7 +23,7 @@ export function useCadText() {
     const date = (iso: string | null) => (iso ? dateFmt.format(new Date(`${iso}T00:00:00Z`)) : "—");
     const measure = new Intl.NumberFormat(intl, { minimumFractionDigits: 2, maximumFractionDigits: 3 });
     /** contagens ficam inteiras; medidas (m, m², m³) com 2 a 3 casas; `unit` é traduzida */
-    const COUNTS = new Set(["n", "total", "code", "extent", "pct"]);
+    const COUNTS = new Set(["n", "total", "code", "extent", "pct", "height"]);
     const vars = (v: Record<string, string | number> | undefined) => {
       if (!v) return undefined;
       const out: Record<string, string | number> = { ...v };

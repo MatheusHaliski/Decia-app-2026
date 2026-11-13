@@ -44,7 +44,8 @@ export function summarizeProject(model: ProjectModel, today: IsoDate): ProjectSu
   const candidates: NonNullable<ProjectSummary["nextMilestone"]>[] = [];
   for (const t of model.tasks) {
     if (!t.milestone || t.status === "CONCLUIDA") continue;
-    const date = t.dueAt ?? rowOf.get(t.id)?.startDate;
+    // a data prevista no cronograma; o prazo (dueAt) só quando não há cronograma
+    const date = rowOf.get(t.id)?.startDate ?? t.dueAt;
     if (date) candidates.push({ title: t.title, date, source: "MARCO" });
   }
   for (const m of model.charter.milestones) if (m.date) candidates.push({ title: m.title, date: m.date.slice(0, 10), source: "TAP" });

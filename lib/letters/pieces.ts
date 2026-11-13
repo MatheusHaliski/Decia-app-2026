@@ -189,7 +189,7 @@ export function undo(p: LetterPiece, now: Date): PieceResult {
     target = p.history.find((h) => h.revision === rev);
   }
   if (!target) return fail("NADA_PARA_DESFAZER");
-  const next = commit(p, target.blocks, now, { origin: "RESTAURACAO", summary: "undo", vars: { revision: target.revision } });
+  const next = commit(p, target.blocks, now, { origin: "RESTAURACAO", summary: "undone", vars: { revision: target.revision } });
   return ok({ ...next, undoStack: stack });
 }
 
@@ -197,7 +197,7 @@ export function restoreVersion(p: LetterPiece, revision: number, now: Date): Pie
   const v = p.history.find((h) => h.revision === revision);
   if (!v) return fail("VERSAO_INEXISTENTE");
   if (revision === p.revision) return fail("SEM_ALTERACAO");
-  return ok(commit(p, v.blocks, now, { origin: "RESTAURACAO", summary: "restore", vars: { revision } }));
+  return ok(commit(p, v.blocks, now, { origin: "RESTAURACAO", summary: "restored", vars: { revision } }));
 }
 
 export const canUndo = (p: LetterPiece) => p.undoStack.some((r) => p.history.some((h) => h.revision === r));

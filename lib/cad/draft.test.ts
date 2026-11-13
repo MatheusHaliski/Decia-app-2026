@@ -70,13 +70,13 @@ describe("rascunho da tarefa (Criar tarefa com isto)", () => {
     }, t, "pt-BR");
     expect(draft.title).toBe("Planilha orçamentária de sede.dxf");
     expect(draft.objective).toMatch(/^Fechar a planilha orçamentária das \d+ linhas extraídas de sede\.dxf, .* \(total de exemplo: R\$\s[\d.,]+\)\.$/);
-    const md = draft.descriptionMd!;
-    expect(md).toContain("- Arquivo: sede.dxf (DXF) · unidade: milímetros (suposta pela extensão do desenho — confirme)");
+    const md = draft.descriptionMd!.replace(/\u00a0/g, " "); // Intl separa "R$" do valor com espaço sem quebra
+    expect(md).toContain("- Arquivo: sede.dxf (DXF) · unidade: milímetros (suposta pelo leitor — confirme)");
     expect(md).toContain("- Tarefa de origem: [Planta baixa](/tasks/t-chefe-planta)");
     expect(md).toContain("| Paredes (alvenaria) — ARQ\\|PAREDE |");
     expect(md).toContain("| EX-15 | Janela — JANELA 120 | un | 2 | R$ 1.300,00 | R$ 2.600,00 |");
     expect(md).toContain("| — | **Total com BDI** |");
-    expect(md).toContain("O arquivo não declara a unidade ($INSUNITS)");
+    expect(md).toContain("O arquivo não declara a unidade ($INSUNITS). Pela altura dos textos (mediana de 200 unidades), supus mm");
     expect(md).toContain("✦ O texto foi montado pelo sistema");
     expect(draft.deliverables!.some(looksLikeActivity)).toBe(false);
     expect(draft.criteria).toContain("Nenhum preço de exemplo (código EX-) permanece na planilha final");

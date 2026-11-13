@@ -6,12 +6,11 @@
  */
 import { Badge, Button, Checkbox, Field, Input } from "@/components/ui";
 import type { RowEdit } from "@/lib/cad/takeoff";
-import type { CadFormat, Confidence, TakeoffRow } from "@/lib/cad/types";
+import type { Confidence, TakeoffRow } from "@/lib/cad/types";
 import { round } from "@/lib/cad/units";
 import type { CadText } from "./useCadText";
 
 export interface QuantitiesTabProps {
-  format: CadFormat;
   fileName: string;
   rows: readonly TakeoffRow[];
   onEdit: (rowId: string, edit: RowEdit) => void;

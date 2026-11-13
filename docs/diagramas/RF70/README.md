@@ -410,3 +410,15 @@ flowchart LR
 | **RF70.CA05** | `PieceImport` REJEITADO, parser isolado, original em quarentena | P3 → E4; P6 → E6 | 413 `ARQUIVO_GRANDE` e ramo REJEITADO | `RECEBIDO → REJEITADO` | `MUS`, `PAR` | teste: arquivo truncado, bomba de descompressão e dependência ausente; hash da peça existente inalterado |
 | **RF70.CA06** | `PieceImport.lossReportJson`, `FidelityReport` | P6 → F2 → A2 | 202 relatório e `accept` | `VALIDADO → IMPORTADO` ou `VALIDADO → REJEITADO` | `R2`, `PIS` | teste: nada é aplicado antes do aceite; relatório lista itens achatados, aproximados e descartados |
 | **RF70.CA07** | `GlbValidatorAdapter`, `PieceExportService` | A4 → P10 | — (`POST /api/pieces/{id}/exports`) | — | `PAR`, `S3A` | validador glTF oficial sem erros; unidades, normais e materiais conferidos; texto da tela não fala em certificação |
+
+## Estado da implementação (12/11/2026)
+
+A bancada de extração de quantitativos (`/tasks/extrair` e `/tasks/[id]/extrair`, RF34) passou a LER no navegador DXF ASCII, IFC (STEP) e GLB 2.0, com leitores próprios em `lib/cad/**`. Não é importador de peças: nada é convertido para `ws-studio`, nenhuma `PieceRevision` é criada e a matriz acima continua valendo para Letters/Drawings. Textos e nomes de dentro dos arquivos são exibidos como dados, nunca executados.
+
+| CA | Situação | Onde |
+|---|---|---|
+| CA02 | parcial — formato reconhecido pelo conteúdo e conferido com a extensão (`TIPO_DIVERGENTE`, `TIPO_NAO_PERMITIDO`), teto por formato conferido antes de ler (DXF 50 MB, IFC 80 MB, GLB 100 MB) e mensagem clara para o que não é suportado: DXF binário, glTF em JSON, IFC compactado ou XML, malhas Draco/meshopt, acessores esparsos e buffers externos; DWG só identifica a versão ("AC1032" → AutoCAD 2018 ou posterior) e explica como exportar para DXF ou IFC | `lib/cad/read.ts`, `dxf.ts`, `ifc.ts`, `glb.ts`, `dwg.ts` |
+| CA05 | parcial — arquivo malformado, truncado ou excessivo (teto de entidades, registros STEP e triângulos) é recusado com código estável, sem alterar nada | `lib/cad/read.ts`; testes `lib/cad/*.test.ts` |
+| CA06 | parcial — antes de criar a tarefa a tela lista o que foi descartado (entidades sem suporte, espaço do papel, geometria interna de blocos, hachuras complexas, geometria 3D do IFC, tipos IFC sem tratamento, texturas e animações do GLB), aproximado (elipses e splines) e achatado (fora do plano XY) | `CadLoss` em `lib/cad/takeoff.ts`, `components/cad/ReadSummary.tsx` |
+| CA07 | pendente — a estrutura do GLB lido é validada (cabeçalho, pedaços, limites de acessores e índices), mas não há exportação de GLB | — |
+| CA01, CA03, CA04 | fora desta frente | — |

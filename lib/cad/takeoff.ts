@@ -306,7 +306,7 @@ function ifcTakeoff(a: IfcAnalysis): Takeoff {
 
   const groups = new Map<string, IfcElement[]>();
   for (const e of roots) {
-    const key = e.kind === "AMBIENTE" ? `space:${e.id}` : `${e.kind}\u0000${e.material ?? ""}`;
+    const key = e.kind === "AMBIENTE" ? `space:${e.id}` : `${e.kind}|${e.material ?? ""}`;
     groups.set(key, [...(groups.get(key) ?? []), e]);
   }
 

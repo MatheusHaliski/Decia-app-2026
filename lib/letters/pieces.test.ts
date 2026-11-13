@@ -70,7 +70,7 @@ describe("peça estruturada (RF52 mínimo)", () => {
     expect(undo(p, at(4000))).toEqual({ ok: false, error: "NADA_PARA_DESFAZER" });
     p = okp(restoreVersion(p, r3, at(5000)));
     expect(p.blocks.find((b) => b.id === "b5")!.text).toBe("Objetivo.");
-    expect(p.history.at(-1)).toMatchObject({ origin: "RESTAURACAO", summary: "restore", vars: { revision: r3 } });
+    expect(p.history.at(-1)).toMatchObject({ origin: "RESTAURACAO", summary: "restored", vars: { revision: r3 } });
   });
 
   it("trocas exatas são atômicas: trecho alterado → nada muda", () => {

@@ -237,7 +237,7 @@ export function ExtractWorkbench({ sourceTask = null, attachments, fetchAttachme
               ) : active === "cronograma" ? (
                 schedule ? <ScheduleTab schedule={schedule} fileName={parsed.fileName} text={text} onStart={setStart} onTeams={(stage, n) => setTeams((cur) => ({ ...cur, [stage]: n }))} /> : null
               ) : (
-                <QuantitiesTab format={parsed.format} fileName={parsed.fileName} rows={rows} onEdit={edit} onUndo={undo} wallHeightM={wallHeightM} wallDoubleLine={wallDoubleLine}
+                <QuantitiesTab fileName={parsed.fileName} rows={rows} onEdit={edit} onUndo={undo} wallHeightM={wallHeightM} wallDoubleLine={wallDoubleLine}
                   onWallHeight={setWallHeightM} onWallDoubleLine={setWallDoubleLine} onCsv={exportQuantities} text={text} />
               )
             }

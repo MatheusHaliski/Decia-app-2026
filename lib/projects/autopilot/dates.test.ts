@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  addBusinessDays, addMonths, easter, findDates, findDeadlines, findReferenceDate, isBusinessDay, isoOf, nationalHolidays, parseNumberWords, parseRfc2822Date,
+  addBusinessDays, addMonths, easter, findDates, findDeadlines, findReferenceDate, isBusinessDay, isoOf, nationalHolidays, parseNumberWords, parseRfc2822Date, relativeDeadline,
 } from "./dates";
 
 const REF = "2026-11-10";
@@ -74,8 +74,12 @@ describe("prazos com deixa", () => {
     expect(isBusinessDay(d.date)).toBe(true);
   });
 
-  it("meses somados respeitam o último dia do mês", () => {
+  it("meses somados respeitam o último dia do mês; prazo relativo refeito a partir de outra data do documento", () => {
     expect(addMonths("2027-01-31", 1)).toBe("2027-02-28");
+    expect(relativeDeadline("DIAS_CORRIDOS", 45, "2026-11-01")).toBe("2026-12-16");
+    expect(relativeDeadline("DIAS_UTEIS", 1, "2026-11-19")).toBe("2026-11-23");
+    expect(relativeDeadline("SEMANAS", 2, "2026-11-10")).toBe("2026-11-24");
+    expect(relativeDeadline("MESES", 3, "2026-11-30")).toBe("2027-02-28");
   });
 });
 

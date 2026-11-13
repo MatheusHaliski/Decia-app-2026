@@ -204,6 +204,61 @@ describe("DXF: leitura e quantitativo", () => {
   });
 });
 
+describe("DXF no formato que o AutoCAD 2018 grava", () => {
+  // marcadores de subclasse (100), handles (5), dono (330), atributo com objeto embutido (101), dados de padrão e sementes
+  // depois dos contornos da hachura, cota alinhada com a marca 32 (bloco só da cota) e CRLF no fim das linhas
+  const R2018 = [
+    "999\r\nexportado por teste",
+    g([0, "SECTION"], [2, "HEADER"], [9, "$ACADVER"], [1, "AC1032"], [9, "$DWGCODEPAGE"], [3, "ANSI_1252"], [9, "$INSUNITS"], [70, 4], [9, "$MEASUREMENT"], [70, 1], [0, "ENDSEC"]),
+    g([0, "SECTION"], [2, "TABLES"], [0, "TABLE"], [2, "LAYER"], [5, "2"], [330, "0"], [100, "AcDbSymbolTable"], [70, 2],
+      [0, "LAYER"], [5, "10"], [330, "2"], [100, "AcDbSymbolTableRecord"], [100, "AcDbLayerTableRecord"], [2, "ARQ-PISO"], [70, 0], [62, 7], [6, "Continuous"], [370, -3], [390, "F"],
+      [0, "LAYER"], [5, "11"], [330, "2"], [100, "AcDbSymbolTableRecord"], [100, "AcDbLayerTableRecord"], [2, "ELE-LUMINARIA"], [70, 1], [62, -2], [6, "Continuous"],
+      [0, "ENDTAB"], [0, "ENDSEC"]),
+    g([0, "SECTION"], [2, "BLOCKS"],
+      [0, "BLOCK"], [5, "20"], [330, "1F"], [100, "AcDbEntity"], [8, "0"], [100, "AcDbBlockBegin"], [2, "LUM-SOBREPOR"], [70, 2], [10, 0], [20, 0], [30, 0], [3, "LUM-SOBREPOR"], [1, ""],
+      [0, "ATTDEF"], [5, "21"], [330, "1F"], [100, "AcDbEntity"], [8, "0"], [100, "AcDbText"], [10, 0], [20, 0], [30, 0], [40, 100], [1, ""], [100, "AcDbAttributeDefinition"], [3, "POT"], [2, "POTENCIA"], [70, 0],
+      [0, "ENDBLK"], [5, "22"], [330, "1F"], [100, "AcDbEntity"], [8, "0"], [100, "AcDbBlockEnd"],
+      [0, "ENDSEC"]),
+    g([0, "SECTION"], [2, "ENTITIES"],
+      // hachura de 4 × 3 m com contorno de arestas (3 retas + 1 arco de 180° para fora no lado de cima)
+      [0, "HATCH"], [5, "30"], [330, "1F"], [100, "AcDbEntity"], [8, "ARQ-PISO"], [100, "AcDbHatch"], [10, 0], [20, 0], [30, 0], [210, 0], [220, 0], [230, 1],
+      [2, "SOLID"], [70, 1], [71, 0], [91, 1],
+      [92, 1], [93, 4],
+      [72, 1], [10, 0], [20, 0], [11, 4000], [21, 0],
+      [72, 1], [10, 4000], [20, 0], [11, 4000], [21, 3000],
+      [72, 2], [10, 2000], [20, 3000], [40, 2000], [50, 0], [51, 180], [73, 1],
+      [72, 1], [10, 0], [20, 3000], [11, 0], [21, 0],
+      [97, 0], [75, 1], [76, 1], [47, 0.04], [98, 1], [10, 2000], [20, 1500], [450, 0], [451, 0], [460, 0], [461, 0], [452, 0], [462, 0], [453, 0], [470, "LINEAR"],
+      // luminárias com atributos (um deles com objeto embutido) e SEQEND
+      [0, "INSERT"], [5, "40"], [330, "1F"], [100, "AcDbEntity"], [8, "ELE-LUMINARIA"], [100, "AcDbBlockReference"], [66, 1], [2, "LUM-SOBREPOR"], [10, 1000], [20, 1000], [30, 0],
+      [0, "ATTRIB"], [5, "41"], [330, "40"], [100, "AcDbEntity"], [8, "ELE-LUMINARIA"], [100, "AcDbText"], [10, 1000], [20, 1000], [30, 0], [40, 100], [1, "2x18W"], [100, "AcDbAttribute"], [2, "POTENCIA"], [70, 0],
+      [101, "Embedded Object"], [10, 1000], [20, 1000], [1, "2x18W"],
+      [0, "SEQEND"], [5, "42"], [330, "40"], [100, "AcDbEntity"], [8, "ELE-LUMINARIA"],
+      [0, "INSERT"], [5, "43"], [330, "1F"], [100, "AcDbEntity"], [8, "ELE-LUMINARIA"], [100, "AcDbBlockReference"], [2, "LUM-SOBREPOR"], [10, 3000], [20, 1000], [30, 0],
+      // cota alinhada de 4 m, tipo 33 (1 + 32), sem texto sobrescrito
+      [0, "DIMENSION"], [5, "50"], [330, "1F"], [100, "AcDbEntity"], [8, "COTAS"], [100, "AcDbDimension"], [280, 0], [2, "*D5"], [10, 4000], [20, -500], [30, 0], [11, 2000], [21, -500], [31, 0],
+      [70, 33], [71, 5], [42, 4000], [3, "ISO-25"], [100, "AcDbAlignedDimension"], [13, 0], [23, 0], [33, 0], [14, 4000], [24, 0], [34, 0],
+      [0, "ENDSEC"]),
+    g([0, "SECTION"], [2, "OBJECTS"], [0, "DICTIONARY"], [5, "C"], [330, "0"], [100, "AcDbDictionary"], [3, "ACAD_GROUP"], [350, "D"], [0, "ENDSEC"], [0, "EOF"]),
+  ].join("\n").replace(/\n/g, "\r\n");
+
+  it("lê camadas congeladas/desligadas, hachura com arco, blocos com atributos e cota sem alerta", () => {
+    const a = parse(R2018);
+    expect(a.version).toBe("AC1032");
+    expect(a.layers.find((l) => l.name === "ELE-LUMINARIA")).toEqual({ name: "ELE-LUMINARIA", off: true, frozen: true });
+    // 4 × 3 m + semicírculo de raio 2 m para fora: 12 + 2π m²
+    expect(a.layerStats["ARQ-PISO"]!.hatchArea).toBeCloseTo(12_000_000 + 2 * Math.PI * 1_000_000, 0);
+    expect(a.inserts).toEqual([{ block: "LUM-SOBREPOR", layer: "ELE-LUMINARIA", count: 2, anonymous: false }]);
+    expect(a.blockDefs).toBe(1);
+    expect(a.dimensions).toMatchObject({ count: 1, overrides: [], measured: [4000] });
+    expect(a.unsupported).toEqual({});
+    const t = takeoffOf({ format: "DXF", fileName: "r2018.dxf", sizeBytes: 1, dxf: a });
+    expect(byId(t.rows, "dxf:block:LUM-SOBREPOR")).toMatchObject({ kind: "LUMINARIA", quantity: 2, included: true, confidence: "ALTA" });
+    expect(byId(t.rows, "dxf:hatch:ARQ-PISO")!.quantity).toBeCloseTo(12 + 2 * Math.PI, 6);
+    expect(t.alerts.map((x) => x.code)).toEqual(["BLOCOS_NAO_EXPLODIDOS"]);
+  });
+});
+
 describe("DXF: arquivos recusados (RF70.CA05)", () => {
   const enc = (s: string) => new TextEncoder().encode(s);
   it("linha de código inválida é arquivo malformado; DXF binário pede o ASCII", () => {

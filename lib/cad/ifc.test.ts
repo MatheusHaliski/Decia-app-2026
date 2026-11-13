@@ -86,19 +86,19 @@ describe("IFC: elementos, quantidades, pavimento e material", () => {
 
     const t = takeoffOf({ format: "IFC", fileName: "obra.ifc", sizeBytes: 1, ifc: a });
     expect(t.unit).toEqual({ id: "mm", toMeters: 0.001, origin: "ARQUIVO" });
-    const walls = "ifc:PAREDE\u0000Alvenaria de bloco cerâmico";
+    const walls = "ifc:PAREDE|Alvenaria de bloco cerâmico";
     expect(byId(t.rows, `${walls}:un`)).toMatchObject({ unit: "un", quantity: 2, confidence: "ALTA", source: { ref: "IfcWallStandardCase, IfcWall" } });
     const wallArea = byId(t.rows, `${walls}:m2`)!;
     expect(wallArea).toMatchObject({ unit: "m2", quantity: 22.5, confidence: "ALTA", included: true, source: { measure: "NetSideArea" } });
     expect(wallArea.breakdown).toEqual([{ label: "Térreo", quantity: 12.5 }, { label: "Superior", quantity: 10 }]);
     // volume só na parede 1: parcial (1 de 2), fora da planilha (alvenaria vai por m²)
     expect(byId(t.rows, `${walls}:m3`)).toMatchObject({ quantity: 1.75, confidence: "MEDIA", included: false, alerts: [{ code: "LINHA_IFC_PARCIAL", vars: { n: 1, total: 2 } }] });
-    const slab = "ifc:LAJE\u0000Concreto";
+    const slab = "ifc:LAJE|Concreto";
     expect(byId(t.rows, `${slab}:m2`)).toMatchObject({ quantity: 20, included: true });
     expect(byId(t.rows, `${slab}:m3`)).toMatchObject({ quantity: 3, included: true });
-    const door2 = byId(t.rows, "ifc:PORTA\u0000:un")!;
+    const door2 = byId(t.rows, "ifc:PORTA|:un")!;
     expect(door2).toMatchObject({ quantity: 1, included: true, sizes: [{ w: 0.8, h: 2.1, n: 1 }] });
-    expect(byId(t.rows, "ifc:PORTA\u0000:m2")!.quantity).toBeCloseTo(1.68, 10);
+    expect(byId(t.rows, "ifc:PORTA|:m2")!.quantity).toBeCloseTo(1.68, 10);
     expect(t.alerts.map((x) => x.code)).toEqual(["IFC_SEM_MATERIAL"]);
     expect(t.losses).toEqual([{ kind: "DESCARTADO", code: "GEOMETRIA_IFC", n: 4 }]);
   });
@@ -125,8 +125,8 @@ describe("IFC: elementos, quantidades, pavimento e material", () => {
     expect(a.elements.filter((e) => e.partOf === 10).map((e) => e.id)).toEqual([11, 12]);
     expect(a.elements.find((e) => e.id === 11)!.storey).toBe("Cobertura");
     const t = takeoffOf({ format: "IFC", fileName: "c.ifc", sizeBytes: 1, ifc: a });
-    expect(byId(t.rows, "ifc:COBERTURA\u0000:un")).toMatchObject({ quantity: 1 });
-    expect(byId(t.rows, "ifc:COBERTURA\u0000:m2")).toMatchObject({ quantity: 30, included: true, confidence: "ALTA" });
+    expect(byId(t.rows, "ifc:COBERTURA|:un")).toMatchObject({ quantity: 1 });
+    expect(byId(t.rows, "ifc:COBERTURA|:m2")).toMatchObject({ quantity: 30, included: true, confidence: "ALTA" });
     expect(byId(t.rows, "ifc:space:20:m2")).toMatchObject({ kind: "AMBIENTE", label: "Sala de reunião", quantity: 32.5, confidence: "MEDIA", detail: "Cobertura", alerts: [{ code: "LINHA_IFC_PROPRIEDADE" }] });
     expect(t.alerts.map((x) => x.code)).toEqual(expect.arrayContaining(["IFC_PROXY", "IFC_SEM_MATERIAL"]));
     expect(t.losses).toContainEqual({ kind: "DESCARTADO", code: "TIPOS_NAO_TRATADOS", n: 1, detail: "IFCMEMBER ×1" });
