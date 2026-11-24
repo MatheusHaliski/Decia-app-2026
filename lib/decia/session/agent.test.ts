@@ -135,6 +135,8 @@ describe("passos: um por vez, com checkpoint, motivo e auditoria", () => {
     const p = pauseAgent(session, run, "u-bruno");
     if (!p.ok) throw new Error();
     expect(step(session, p.run)).toEqual({ kind: "NEGADO", reason: "AGENTE_PAUSADO" });
+    // pausado, uma pessoa avança um passo de cada vez ("Próximo passo")
+    expect(runAgentStep(session, ORG, p.run, LABELS, DEMO_PEOPLE, later(1), "m", { search, manual: true }).kind).toBe("APLICADO");
     expect(resumeAgent(session, p.run, "u-bruno")).toEqual({ ok: false, reason: "SEM_PERMISSAO" });
     const r = resumeAgent(session, p.run, "u-pessoa");
     expect(r.ok && r.run.paused).toBe(false);
