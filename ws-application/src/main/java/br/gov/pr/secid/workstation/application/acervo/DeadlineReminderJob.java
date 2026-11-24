@@ -101,7 +101,7 @@ public class DeadlineReminderJob {
      */
     private volatile UUID resumeAfter;
     /** teto de tarefas por rodada (testes reduzem para exercitar a retomada) */
-    private int maxPerRun = MAX_PER_RUN;
+    private volatile int maxPerRun = MAX_PER_RUN;
 
     void maxPerRun(int max) {
         this.maxPerRun = max;
