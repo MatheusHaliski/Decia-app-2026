@@ -249,4 +249,24 @@ class DeadlineReminderJobTest {
         assertThat(r.sent()).isEqualTo(DeadlineReminderJob.PAGE + 3);
         assertThat(windows).hasSize(2);
     }
+
+    @Test
+    void rodadaQueBateOTetoContinuaDeOndeParouNaSeguinte() {
+        User ana = person("Ana Lima", AccountStatus.ACTIVE);
+        for (int i = 0; i < 2 * DeadlineReminderJob.PAGE + 3; i++) {
+            task(ana, null, TaskState.EM_USO, TODAY.plusDays(1), null);
+        }
+        job.maxPerRun(DeadlineReminderJob.PAGE);
+        Run first = job.runOnce();
+        assertThat(first.tasks()).isEqualTo(DeadlineReminderJob.PAGE);
+        assertThat(job.resumeAfter()).isNotNull();
+        Run second = job.runOnce();
+        assertThat(second.tasks()).isEqualTo(DeadlineReminderJob.PAGE);
+        assertThat(second.sent()).as("tarefas novas, não as da primeira rodada").isEqualTo(DeadlineReminderJob.PAGE);
+        Run third = job.runOnce();
+        assertThat(third.tasks()).isEqualTo(3);
+        assertThat(third.sent()).isEqualTo(3);
+        assertThat(job.resumeAfter()).as("chegou ao fim: a próxima volta ao começo").isNull();
+        assertThat(job.runOnce().sent()).as("tudo já avisado hoje").isZero();
+    }
 }

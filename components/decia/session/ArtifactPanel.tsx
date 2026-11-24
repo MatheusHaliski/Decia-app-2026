@@ -47,14 +47,17 @@ function Panel({ artifact: a, projects }: { artifact: SessionArtifact; projects:
       return;
     }
     const r = applyPlanChanges(draft.proposal, changes, a.refs);
+    // tudo ou nada: com alguma decisão recusada, o rascunho e a base de comparação ficam como estavam, e as decisões seguem
+    // pendentes no painel para corrigir na minuta e devolver de novo (avançar a base esconderia a recusada)
+    if (r.failed.length) {
+      setStatus(t("autopilot.decia.artifact.failed", { n: r.failed.length }));
+      return;
+    }
     if (r.applied.length) {
       saveProposalDraft({ proposal: r.proposal }, { id: draft.id });
       repo.markArtifactApplied(session.id, me, r.applied.length);
     }
-    setStatus([
-      r.applied.length ? t("autopilot.decia.artifact.applied.PROPOSTA_AUTOPILOTO", { n: r.applied.length }) : "",
-      r.failed.length ? t("autopilot.decia.artifact.failed", { n: r.failed.length }) : "",
-    ].filter(Boolean).join(" "));
+    setStatus(r.applied.length ? t("autopilot.decia.artifact.applied.PROPOSTA_AUTOPILOTO", { n: r.applied.length }) : "");
   };
   const applyToProject = () => {
     const model = project;
@@ -66,10 +69,15 @@ function Panel({ artifact: a, projects }: { artifact: SessionArtifact; projects:
       ...changes.map((c) => ({ title: describe(c, people), scheduleDays: scheduleImpact(c) })),
       ...ataDecisions.map((text) => ({ title: t("autopilot.decia.change.ATA", { text }) })),
     ];
+    const cmds = planChangeCommands(model, items, raisedBy);
     let n = 0;
-    for (const cmd of planChangeCommands(model, items, raisedBy)) if (projects.dispatch(model.id, cmd, { actorId: me, now: new Date() }).ok) n++;
-    if (changes.length) repo.markArtifactApplied(session.id, me, changes.length);
-    setStatus(t("autopilot.decia.artifact.applied.PROJETO", { n }));
+    for (const cmd of cmds) if (projects.dispatch(model.id, cmd, { actorId: me, now: new Date() }).ok) n++;
+    // a base só avança quando todos os pedidos entraram; os que falharam continuam pendentes
+    if (changes.length && n === cmds.length) repo.markArtifactApplied(session.id, me, changes.length);
+    setStatus([
+      t("autopilot.decia.artifact.applied.PROJETO", { n }),
+      n < cmds.length ? t("autopilot.decia.artifact.failed", { n: cmds.length - n }) : "",
+    ].filter(Boolean).join(" "));
   };
   const pending = changes.length + ataDecisions.length;
 

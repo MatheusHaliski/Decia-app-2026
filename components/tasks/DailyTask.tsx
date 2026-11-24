@@ -1,7 +1,7 @@
 "use client";
 /**
  * Tarefa do Dia (RF44.CA01) no perfil (`/profile?tab=tarefa-do-dia`), com o prazo em primeiro lugar (RF41.CA04): lê o Acervo real em
- * ordem de prazo (`GET /api/tasks?ordem=PRAZO`) e aplica a regra pura `suggestDailyTask` (lib/tasks/dailyTask.ts). Mostra o motivo
+ * ordem de prazo e de prioridade, só as tarefas a realizar e em andamento (`GET /api/tasks?filtro=&ordem=`) e aplica a regra pura `suggestDailyTask` (lib/tasks/dailyTask.ts). Mostra o motivo
  * em texto (vencida, vence hoje, vence em N dias, prazo legal ou só prioridade) e as próximas da fila. Não é IA: sem faísca ✦.
  */
 import { useCallback, useEffect, useState } from "react";
@@ -19,7 +19,23 @@ function useDeadlineOrderedTasks() {
   const load = useCallback(() => {
     setFailed(false);
     setTasks(null);
-    tasksApi.list({ ...EMPTY_PARAMS, ordem: "PRAZO" }).then((v) => setTasks(v ?? []), () => setFailed(true));
+    // só as elegíveis (a realizar e em andamento), cada estado nas duas ordens que a regra usa: o primeiro da fila nunca fica
+    // de fora por uma página cheia de bloqueadas ou de tarefas com prazo que escondem a de maior prioridade sem prazo
+    const queries = (["A_REALIZAR", "EM_ANDAMENTO"] as const).flatMap((filtro) =>
+      (["PRAZO", "PRIORIDADE"] as const).map((ordem) => tasksApi.list({ ...EMPTY_PARAMS, filtro, ordem })));
+    Promise.all(queries).then((pages) => {
+      const seen = new Set<string>();
+      const merged: TaskView[] = [];
+      for (const page of pages) {
+        for (const task of page ?? []) {
+          const key = task.id ?? "";
+          if (key && seen.has(key)) continue;
+          if (key) seen.add(key);
+          merged.push(task);
+        }
+      }
+      setTasks(merged);
+    }, () => setFailed(true));
   }, []);
   useEffect(load, [load]);
   return { tasks, failed, load };

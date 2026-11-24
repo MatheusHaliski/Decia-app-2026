@@ -94,6 +94,23 @@ public class DeadlineReminderJob {
         }
     }
 
+    /**
+     * Onde a varredura parou quando bateu o teto da rodada: a próxima continua dali, e só volta ao começo depois de chegar ao fim
+     * da janela. Sem isso, com mais tarefas na janela do que o teto, toda rodada gastaria o orçamento nas mesmas primeiras e as
+     * seguintes nunca seriam avisadas. Fica nesta instância (a trava faz uma rodada por vez); outra instância começa do início.
+     */
+    private volatile UUID resumeAfter;
+    /** teto de tarefas por rodada (testes reduzem para exercitar a retomada) */
+    private int maxPerRun = MAX_PER_RUN;
+
+    void maxPerRun(int max) {
+        this.maxPerRun = max;
+    }
+
+    UUID resumeAfter() {
+        return resumeAfter;
+    }
+
     private Run sweep(Instant now) {
         // janela em UTC com folga de um dia para os fusos: vencidas até OVERDUE_LOOKBACK_DAYS atrás e próximas até o maior N
         LocalDate utc = now.atZone(ZoneOffset.UTC).toLocalDate();
@@ -103,18 +120,21 @@ public class DeadlineReminderJob {
         Map<UUID, Optional<UUID>> companyCache = new HashMap<>();
         int seen = 0;
         int sent = 0;
-        UUID after = null;
-        while (seen < MAX_PER_RUN) {
+        UUID after = resumeAfter;
+        boolean reachedEnd = false;
+        while (seen < maxPerRun) {
             List<TaskItem> page = scan.openWithDeadlineBetween(from, to, after, PAGE);
             for (TaskItem t : page) {
                 seen++;
                 sent += notify(t, now, prefsCache, companyCache);
             }
             if (page.size() < PAGE) {
+                reachedEnd = true;
                 break;
             }
             after = page.get(page.size() - 1).id();
         }
+        resumeAfter = reachedEnd ? null : after;
         return new Run(true, seen, sent);
     }
 

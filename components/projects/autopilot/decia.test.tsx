@@ -87,6 +87,20 @@ describe("Autopiloto → sessão do DECIA antes de salvar", () => {
     fireEvent.change(screen.getByTestId("act-as"), { target: { value: "u-ana" } });
     expect((screen.getByTestId("artifact-apply") as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText("Só o proprietário da sessão devolve as decisões.")).toBeTruthy();
+
+    // tudo ou nada: com uma decisão recusada (duração acima do limite), nada é aplicado e as duas seguem pendentes
+    fireEvent.change(screen.getByTestId("act-as"), { target: { value: "u-pessoa" } });
+    const base = sessions.get(s.id)!.minuta.text;
+    const etpBad = base.split("\n").find((l) => l.includes("Elaborar o estudo técnico"))!;
+    const bad = base.replace(etpBad, etpBad.replace(/\| [\d.]+ d \|/, "| 4000 d |")).replace("[EXECUCAO]", "[EXECUCAO]\n- [+] Revisar o termo | 2 d");
+    act(() => { expect(sessions.editMinuta(s.id, "u-pessoa", bad).ok).toBe(true); });
+    const before = loadProposalDraft(draftId)!.proposal;
+    const pendingBefore = panel.querySelectorAll("[data-change]").length;
+    fireEvent.click(screen.getByTestId("artifact-apply"));
+    expect(screen.getByTestId("artifact-status").textContent).toMatch(/1/);
+    expect(loadProposalDraft(draftId)!.proposal).toEqual(before);
+    expect(sessions.get(s.id)!.artifact!.applications).toHaveLength(1);
+    expect(panel.querySelectorAll("[data-change]").length).toBe(pendingBefore);
   });
 });
 

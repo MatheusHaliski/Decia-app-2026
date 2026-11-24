@@ -47,14 +47,18 @@ describe("Tarefa do Dia com o prazo mais próximo (RF44 · RF41.CA04)", () => {
     expect(screen.getByText("Nenhuma tarefa aberta para sugerir hoje")).toBeTruthy();
   });
 
-  it("carrega o Acervo em ordem de prazo e mostra erro com nova tentativa", async () => {
-    fetchMock.mockResolvedValueOnce(json(500, { code: "ERRO" }));
+  it("carrega só as elegíveis nas duas ordens (uma página de bloqueadas não esconde a tarefa) e mostra erro com nova tentativa", async () => {
+    fetchMock.mockResolvedValue(json(500, { code: "ERRO" }));
     renderWithProviders(<DailyTask />);
     expect(await screen.findByText("Não foi possível carregar a Tarefa do Dia")).toBeTruthy();
-    const url = String(fetchMock.mock.calls[0]?.[0]);
-    expect(url).toContain("/api/tasks?");
-    expect(url).toContain("ordem=PRAZO");
-    fetchMock.mockResolvedValueOnce(json(200, [task(A, { title: "Sem prazo", priority: "CRITICA" })]));
+    const urls = fetchMock.mock.calls.map((c) => String(c[0]));
+    expect(urls).toHaveLength(4);
+    for (const want of ["filtro=A_REALIZAR", "filtro=EM_ANDAMENTO"]) {
+      expect(urls.filter((u) => u.includes(want)).map((u) => /ordem=(\w+)/.exec(u)?.[1]).sort()).toEqual(["PRAZO", "PRIORIDADE"]);
+    }
+    fetchMock.mockReset();
+    fetchMock.mockImplementation(async (url) => (String(url).includes("ordem=PRIORIDADE") && String(url).includes("filtro=A_REALIZAR")
+      ? json(200, [task(A, { title: "Sem prazo", priority: "CRITICA" })]) : json(200, [])));
     screen.getByRole("button", { name: /tentar/i }).click();
     await waitFor(() => expect(screen.getByTestId("daily-task-reason").getAttribute("data-reason")).toBe("PRIORIDADE"));
     expect(screen.getByTestId("daily-task-reason").textContent).toContain("esta tem a maior prioridade (Crítica)");
