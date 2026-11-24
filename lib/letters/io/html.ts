@@ -101,7 +101,7 @@ const DROP: Readonly<Record<string, Parameters<LossLog["add"]>[0]>> = {
   video: "MIDIA_EMBUTIDA", audio: "MIDIA_EMBUTIDA", canvas: "MIDIA_EMBUTIDA", svg: "IMAGEM", math: "FORMATACAO_CARACTERE", form: "FORMULARIO",
   button: "FORMULARIO", select: "FORMULARIO", textarea: "FORMULARIO", nav: "HTML_EMBUTIDO",
 };
-const BLOCK = new Set(["p", "div", "section", "article", "main", "header", "footer", "aside", "h1", "h2", "h3", "h4", "h5", "h6", "li", "ul", "ol", "dl", "dt", "dd", "blockquote", "pre", "table", "tr", "td", "th", "thead", "tbody", "tfoot", "caption", "figure", "figcaption", "address", "hr", "body", "html"]);
+const BLOCK = new Set(["p", "div", "section", "article", "main", "header", "footer", "aside", "h1", "h2", "h3", "h4", "h5", "h6", "li", "ul", "ol", "dl", "dt", "dd", "blockquote", "pre", "table", "tr", "thead", "tbody", "tfoot", "caption", "figure", "figcaption", "address", "hr", "body", "html"]);
 const INLINE_FORMAT = new Set(["b", "strong", "i", "em", "u", "s", "strike", "del", "ins", "mark", "code", "kbd", "samp", "sup", "sub", "small", "big", "font", "tt", "var", "cite", "q", "abbr", "dfn"]);
 
 interface RawBlock extends DraftBlock {

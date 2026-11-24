@@ -25,7 +25,7 @@ const PREDEFINED: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '
 /** Texto/atributo escapado para XML 1.0; caracteres de controle proibidos são removidos. */
 export function xmlEscape(s: string): string {
   return s
-    // eslint-disable-next-line no-control-regex -- remove controles proibidos no XML 1.0 (exceto tab, LF e CR)
+    // remove controles proibidos no XML 1.0 (exceto tab, LF e CR)
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g, "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

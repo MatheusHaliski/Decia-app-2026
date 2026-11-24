@@ -61,7 +61,6 @@ export function stripInline(s: string, losses: LossLog): string {
   count(/~~(?=\S)([\s\S]*?\S)~~/g, "FORMATACAO_CARACTERE", (_m, a) => a!);
   count(/(^|[^\w*])\*(?=\S)([^*]*?\S)\*(?![\w*])/g, "FORMATACAO_CARACTERE", (_m, pre, a) => `${pre}${a}`);
   count(/(^|[^\w])_(?=\S)([^_]*?\S)_(?!\w)/g, "FORMATACAO_CARACTERE", (_m, pre, a) => `${pre}${a}`);
-  // eslint-disable-next-line no-control-regex -- devolve os caracteres escapados guardados acima
   return out.replace(/\u0000(\d+)\u0000/g, (_, i: string) => escaped[Number(i)] ?? "");
 }
 
@@ -127,9 +126,10 @@ export function parseLines(src: string, mode: "md" | "txt"): ParsedText {
     }
     // título sublinhado: a linha anterior (parágrafo de uma linha só) vira título
     const underline = /^\s*(=+|-+|~+)\s*$/.exec(line);
-    if (underline && open?.kind === "PARAGRAFO" && open.lines.length === 1) {
+    const cur = open as Open;
+    if (underline && cur?.kind === "PARAGRAFO" && cur.lines.length === 1) {
       const level = underline[1]![0] === "=" ? 1 : underline[1]![0] === "-" ? 2 : 3;
-      const text = open.lines[0]!;
+      const text = cur.lines[0]!;
       open = null;
       blocks.push({ kind: "TITULO", level, text });
       continue;

@@ -141,7 +141,11 @@ function paragraphText(p: XmlElement, ctx: Ctx, extra: XmlElement[]): string {
         case "w:object": {
           const boxes: XmlElement[] = [];
           const collect = (x: XmlElement) => {
-            for (const k of x.children) if (isEl(k)) (k.name === "w:txbxContent" ? boxes.push(k) : collect(k));
+            for (const k of x.children) {
+              if (!isEl(k)) continue;
+              if (k.name === "w:txbxContent") boxes.push(k);
+              else collect(k);
+            }
           };
           collect(c);
           if (boxes.length) {

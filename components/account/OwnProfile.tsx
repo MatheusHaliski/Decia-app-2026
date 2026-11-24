@@ -11,6 +11,7 @@ import { Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { FollowCounters, useFollow } from "@/components/people/FollowPerson";
 import { MyTasks, useMyTaskList } from "@/components/tasks/PersistedTasks";
+import { DailyTask } from "@/components/tasks/DailyTask";
 import type { Me } from "@/lib/account/client";
 import { MyInstitution } from "./MyInstitution";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -111,7 +112,7 @@ function SignedInProfile({ page, me }: { page: PageEntry; me: Me }) {
         const pt = PROFILE_TABS.find((x) => x.slug === tab.slug);
         return pt && isCompany(me) && pt.companyLabelKey ? t(pt.companyLabelKey) : t(tab.labelKey);
       }}
-      renderTab={(slug) => (slug === "acervo" ? <MyTasks list={list} /> : undefined)}
+      renderTab={(slug) => (slug === "acervo" ? <MyTasks list={list} /> : slug === "tarefa-do-dia" ? <DailyTask /> : undefined)}
     >
       <OwnProfileHeader me={me} tasks={list.tasks} />
       <MyInstitution isCompany={isCompany(me)} />
