@@ -14,7 +14,7 @@ describe("regras e explicações lidas da matriz do registro", () => {
   it("toda linha da matriz tem uma regra conhecida (uma linha nova sem regra faz este teste falhar)", () => {
     for (const p of PAGES) expect(ruleOf(p), `${p.route} ${signatureOf(p.access)}`).not.toBe("MISTA");
     expect(new Set(PAGES.map(ruleOf)).size).toBeLessThanOrEqual(ACCESS_RULES.length);
-    expect(ruleOf(page("/admin"))).toBe("ADMIN");
+    expect(ruleOf(page("/admin"))).toBe("ADMIN_E_EMPRESA_IA"); // D-157
     expect(ruleOf(page("/curation"))).toBe("CURADORIA");
     expect(ruleOf(page("/handoffs"))).toBe("DOSSIES");
     expect(ruleOf(page("/tasks/new"))).toBe("LOGADOS_EDITAM");

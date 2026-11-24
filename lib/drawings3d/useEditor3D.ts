@@ -4,10 +4,11 @@
  * todos chamam este hook, que executa o comando no histórico (Command), atualiza a seleção e guarda o rascunho local.
  */
 import { useCallback, useEffect, useState } from "react";
-import { AddObject, History, RemoveObject, Rename, SetMaterial, SetTransform, type Command3D } from "./commands";
+import { AddObject, ApplyAiPatch, History, RemoveObject, Rename, SetMaterial, SetTransform, type Command3D } from "./commands";
 import { createObject, objectById, parseScene, starterScene, type PrimitiveKind, type Scene3D, type Transform } from "./model";
 import { suggestedQuality, type QualityId } from "./quality";
 import type { GizmoMode } from "./engine/Viewport3D";
+import type { Op3D } from "./suggest";
 
 export const DRAFT_KEY = "ws.drawings3d.rascunho.v1";
 
@@ -79,6 +80,15 @@ export function useEditor3D(nameOf: (kind: PrimitiveKind) => string) {
   const setMaterial = useCallback((id: string, materialId: string) => run(new SetMaterial(id, materialId)), [run]);
   const rename = useCallback((id: string, name: string) => run(new Rename(id, name)), [run]);
 
+  /** Patch aceito da prévia fantasma (RF74): um comando, um desfazer. `false` se nada mudou. */
+  const applyPatch = useCallback((ops: readonly Op3D[], labelKey?: string) => {
+    const next = history.execute(scene, new ApplyAiPatch(ops, labelKey));
+    if (next === scene) return false;
+    setScene(next);
+    setRevision((r) => r + 1);
+    return true;
+  }, [history, scene]);
+
   const reset = useCallback(() => {
     history.clear();
     setScene(starterScene());
@@ -96,7 +106,7 @@ export function useEditor3D(nameOf: (kind: PrimitiveKind) => string) {
 
   return {
     scene, selected, selectedId, select: setSelectedId, gizmoMode, setGizmoMode, quality, setQuality,
-    add, remove, setTransform, setMaterial, rename, undo, redo, reset, ...status,
+    add, remove, setTransform, setMaterial, rename, applyPatch, undo, redo, reset, ...status,
   };
 }
 

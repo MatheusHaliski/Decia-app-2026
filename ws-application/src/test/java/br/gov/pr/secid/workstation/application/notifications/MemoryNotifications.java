@@ -35,6 +35,11 @@ public class MemoryNotifications implements NotificationRepositoryPort {
     }
 
     @Override
+    public boolean existsByGroupKey(UUID recipientId, String groupKey) {
+        return rows.stream().anyMatch(s -> s.notification().recipientId().equals(recipientId) && groupKey.equals(s.notification().groupKey()));
+    }
+
+    @Override
     public boolean markRead(UUID recipientId, UUID id, Instant at) {
         for (int i = 0; i < rows.size(); i++) {
             Notification n = rows.get(i).notification();

@@ -17,6 +17,8 @@ import { DEMO_CURRENT_USER_ID } from "@/lib/decia/fixtures";
 import { acceptsMeetings } from "@/lib/decia/session/machine";
 import { demoSessionRepository, useOrgPolicy, useSession, type SessionRepository } from "@/lib/decia/session/repository";
 import { can, memberRole, ownerOf } from "@/lib/decia/session/roles";
+import { AgentPanel } from "./AgentPanel";
+import { ArtifactPanel } from "./ArtifactPanel";
 import { AtaVivaPanel } from "./AtaViva";
 import { AutonomyPanel } from "./AutonomyPanel";
 import { Chat, OpenQuestions } from "./Chat";
@@ -131,7 +133,7 @@ function Inner({ sessionId, repo }: { sessionId: string; repo: SessionRepository
         noEmpty
         actions={<Badge tone="neutral" title={t("session.demoHint")}>{t("session.demo")}</Badge>}
         renderTab={(slug) => {
-          if (slug === "minuta") return <MinutaPanel key={me} />;
+          if (slug === "minuta") return <div key={me} className="grid gap-[var(--ws-space-4)]"><MinutaPanel /><AgentPanel /></div>;
           if (slug === "artefatos") return <AtaVivaPanel key={me} newOpen={newMeeting} onNewOpenChange={setNewMeeting} />;
           if (slug === "decisao") return <StatePanel key={me} />;
           if (slug === "participantes") return <Participants />;
@@ -140,6 +142,7 @@ function Inner({ sessionId, repo }: { sessionId: string; repo: SessionRepository
       >
         <ObjectiveBand onNewMeeting={() => { setNewMeeting(true); goTo("artefatos"); }} />
         <ActAs onActAs={setActingId} />
+        {session.artifact ? <ArtifactPanel key={me} /> : null}
       </RfPage>
     </SessionProvider>
   );

@@ -82,7 +82,7 @@ describe("middleware: proteção de rotas e cabeçalhos (Bloco 4)", () => {
     const h = Object.fromEntries(all.headers.map((x) => [x.key.toLowerCase(), x.value]));
     expect(h["strict-transport-security"]).toMatch(/max-age=\d{8,}; includeSubDomains/);
     expect(h["referrer-policy"]).toBe("strict-origin-when-cross-origin");
-    expect(h["permissions-policy"]).toMatch(/camera=\(\).*microphone=\(\).*geolocation=\(\)/);
+    expect(h["permissions-policy"]).toMatch(/camera=\(\).*microphone=\(self\).*geolocation=\(\)/);
     expect(h["x-content-type-options"]).toBe("nosniff");
     expect(h["x-frame-options"]).toBe("DENY");
     expect(h["cross-origin-opener-policy"]).toBe("same-origin");

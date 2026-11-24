@@ -11,11 +11,13 @@ import { AGENT_LIMITS, AUTONOMY_MODES, MODE_CAPABILITIES, type AgentCharter, typ
 import { MINUTA_TARGET, canEditOrgPolicy, exceeds, pendingValid } from "@/lib/decia/session/policy";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { can } from "@/lib/decia/session/roles";
+import { SESSION_AGENT_TOOLS } from "@/lib/decia/session/agent";
+import { AgentScopeField, AgentStatusLine } from "./AgentPanel";
 import { formatWhen, useDenial, useSessionCtx } from "./context";
 import { useByLabel } from "./Chat";
 
-/** Ferramentas que um agente pode receber na sessão (o mandato escolhe um subconjunto). */
-export const AGENT_TOOLS = ["propor_minuta", "organizar_encaminhamentos", "citar_memoria"] as const;
+/** Ferramentas que um agente pode receber na sessão (o mandato escolhe um subconjunto; o executor fica em agent.ts). */
+export const AGENT_TOOLS = SESSION_AGENT_TOOLS;
 
 export function ModeCapabilities({ mode }: { mode: AutonomyMode }) {
   const { t } = useI18n();
@@ -61,6 +63,7 @@ function CharterForm({ value, onChange }: { value: AgentCharter; onChange: (c: A
         ))}
       </fieldset>
       <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("aiPolicy.charter.scope")}</p>
+      <AgentScopeField value={value.scopeTargetIds} onChange={(scopeTargetIds) => onChange({ ...value, scopeTargetIds })} />
       <div className="grid gap-2 sm:grid-cols-3">
         <Field label={t("aiPolicy.charter.maxSteps")}>{({ id }) => <Input id={id} type="number" min={1} max={AGENT_LIMITS.maxSteps} value={value.maxSteps} onChange={(e) => onChange({ ...value, maxSteps: Number(e.target.value) })} />}</Field>
         <Field label={t("aiPolicy.charter.maxTokens")}>{({ id }) => <Input id={id} type="number" min={1} max={AGENT_LIMITS.maxTokens} step={1000} value={value.maxTokens} onChange={(e) => onChange({ ...value, maxTokens: Number(e.target.value) })} />}</Field>
@@ -150,6 +153,7 @@ export function AutonomyPanel() {
           <p>{charter.goal}</p>
           <p className="text-ws-text-muted">{t("aiPolicy.charter.limits", { tools: charter.allowedTools.map((x) => t(`aiPolicy.tool.${x}`)).join(", "), steps: charter.maxSteps, tokens: charter.maxTokens, when: formatWhen(charter.expiresAt, intl) })}</p>
           {viewer.mode !== "AGENTE" ? <p className="text-ws-text-muted">{t("aiPolicy.charter.inactive")}</p> : null}
+          <AgentStatusLine />
         </div>
       ) : null}
       {owner ? (

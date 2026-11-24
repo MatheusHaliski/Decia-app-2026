@@ -418,7 +418,34 @@ continua sem rota de peça). Feito para servir de base ao Copiloto do RF53/RF54.
 - **Tela** (`components/letters/`): editor por blocos com `Textarea` do DS rotulado ("Bloco n · §m Parágrafo"), numeração de
   parágrafos e "ir até o trecho" com seleção (CA03 parcial), comandos com nome acessível, região nomeada e anúncios `aria-live`
   (CA06 parcial).
-- **Fora desta entrega**: formatação do trecho selecionado (CA02), sumário e busca (CA03), importação/exportação com relatório de
-  fidelidade e teste de ida e volta (CA04, CA05, CA07), tabelas e imagens, persistência e autorização no servidor.
+- **Importar e exportar** (`lib/letters/io/**`, tudo no navegador, sem biblioteca nova): importa `.docx`, `.md`, `.txt` e `.html`
+  simples (CA04) e exporta `.md`, `.html` (escapado, com metadados e seção de referências), `.txt` e `.docx` válido, mais
+  "Imprimir / salvar como PDF" pela versão para impressão (CA05). DOCX: ZIP lido com `DecompressionStream("deflate-raw")` e
+  escrito com `CompressionStream` (ou armazenado), CRC-32 conferido, XML de `word/document.xml` lido por um leitor estrito sem
+  DTD/entidades externas; títulos por estilo (Heading/Título n, inclusive ids localizados como `Ttulo1`), Title → título da peça,
+  listas por numeração (agrupadas por lista), Quote/Citação, Bibliography/Bibliografia → referências; tipo, gênero e idioma
+  vão e voltam por `docProps/core.xml`. Antes de confirmar, a tela mostra o relatório: blocos por tipo, prévia e as perdas de
+  fidelidade em três grupos — descartado (imagens, notas, comentários, cabeçalho/rodapé, scripts, mídia, formulários),
+  aproximado (links → "texto (url)", numeração → marcador, níveis 4+, revisões controladas, campos, blocos longos partidos) e
+  achatado (formatação de caractere/parágrafo, tabelas → "a | b", listas aninhadas, caixas de texto). Nada é aplicado antes do
+  aceite; aplicar à peça aberta (substituir ou acrescentar) é uma revisão nova (origem `IMPORT`) e "Desfazer" volta; em
+  `/letters`, "Importar arquivo" cria peça nova. Recusa com motivo e peça intacta (CA07): vazio, acima de 8 MB, extensão
+  desconhecida ou pendente (PDF, ODT, RTF, .doc), tipo real divergente da extensão, binário, `.docm`/pacote com macro,
+  documento criptografado (OLE), ZIP inválido/truncado/ZIP64/CRC divergente, bomba de descompressão (razão e tetos),
+  XML malformado ou com DTD, conteúdo acima de 3.000 blocos/1,5 milhão de caracteres. Conteúdo lido é sempre texto, nunca HTML.
+  Matriz de formatos em `lib/letters/io/formats.ts`: só os habilitados aparecem no menu; PDF só pela impressão do navegador.
+- **Sumário e busca** (CA03): cartão "Navegar no documento" com sumário a partir dos títulos (leva ao bloco) e busca dentro da
+  peça sem diferenciar maiúsculas e acentos, com contagem "Resultado n de m · Bloco k", anterior/próximo (circular; Enter e
+  Shift+Enter no campo sem tirar o foco), lista de resultados com o trecho destacado e blocos com resultado marcados no editor;
+  ir a um resultado seleciona exatamente o trecho no bloco.
+- **Fora desta entrega**: formatação do trecho selecionado (CA02), tabelas e imagens como blocos (hoje achatadas/descartadas com
+  aviso na importação), geração de PDF própria (fica a impressão do navegador) e leitura de PDF/ODT/RTF/.doc, persistência e
+  autorização no servidor (`DocumentTransferService` continua planejado; tudo roda na aba).
 - **Testes**: `lib/letters/pieces.test.ts` (comandos, ids, histórico, desfazer, restaurar, atomicidade, repositório) e
-  `components/letters/editor.test.tsx`, `components/letters/letters.test.tsx` (telas).
+  `components/letters/editor.test.tsx`, `components/letters/letters.test.tsx` (telas). Importação/exportação:
+  `lib/letters/io/roundtrip.test.ts` (ida e volta MD, TXT, HTML e DOCX com a peça de amostra e as quatro peças DEMO),
+  `docx.test.ts` (partes bem formadas, DOCX montado como o Word salva, recusas), `docx.dom.test.ts` (XML conferido por um
+  segundo analisador, o DOMParser), `zip.test.ts` (CRC, deflate/armazenado, criptografia, bomba, truncado), `import.test.ts`
+  (escape HTML, HTML/Markdown/texto de fora, Windows-1252, limites e recusas), `navigate.test.ts` (sumário, busca, aplicar
+  importação com desfazer, matriz de formatos) e `components/letters/io.test.tsx` (telas de importar, exportar, imprimir,
+  sumário, busca e importar como peça nova).

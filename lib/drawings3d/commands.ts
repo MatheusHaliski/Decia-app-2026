@@ -4,6 +4,7 @@
  * originou. Comandos operam sobre o modelo imutável (`Scene3D`) e devolvem uma cena nova.
  */
 import { objectById, sanitizeTransform, subtreeIds, type Scene3D, type SceneObject, type Transform } from "./model";
+import type { Op3D } from "./suggest";
 
 export interface Command3D {
   /** Chave i18n do rótulo ("Desfazer mover…"). */
@@ -88,6 +89,38 @@ export class Rename extends SetField<"name"> {
   readonly labelKey = "d3.cmd.rename";
   constructor(id: string, name: string) {
     super(id, "name", name.trim().slice(0, 80) || "Objeto");
+  }
+}
+
+/**
+ * Patch da IA aceito (RF74 no 3D): várias transformações e objetos novos num comando só — aceitar um lote, ou aplicar o lote do
+ * modo Assistido, se desfaz de uma vez. Objeto alterado que sumiu é ignorado; cópia cujo id já existe não é criada de novo.
+ */
+export class ApplyAiPatch implements Command3D {
+  private before = new Map<string, Transform>();
+  private added: string[] = [];
+  constructor(private readonly ops: readonly Op3D[], readonly labelKey = "d3.ghost.cmd.accept") {}
+  apply(scene: Scene3D): Scene3D {
+    this.before = new Map();
+    this.added = [];
+    let objects = [...scene.objects];
+    for (const op of this.ops) {
+      if (op.op === "transform") {
+        const i = objects.findIndex((o) => o.id === op.id);
+        if (i < 0) continue;
+        const cur = objects[i]!;
+        if (!this.before.has(op.id)) this.before.set(op.id, cur.transform);
+        objects[i] = { ...cur, transform: sanitizeTransform(op.after, cur.transform) };
+      } else if (!objects.some((o) => o.id === op.object.id)) {
+        objects = [...objects, op.object];
+        this.added.push(op.object.id);
+      }
+    }
+    return this.before.size || this.added.length ? { objects } : scene;
+  }
+  revert(scene: Scene3D): Scene3D {
+    const added = new Set(this.added);
+    return { objects: scene.objects.filter((o) => !added.has(o.id)).map((o) => (this.before.has(o.id) ? { ...o, transform: this.before.get(o.id)! } : o)) };
   }
 }
 

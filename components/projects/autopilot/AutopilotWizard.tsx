@@ -16,7 +16,10 @@ import { discardProposalDraft, proposalDraftHref, saveProposalDraft } from "@/li
 import { extractDemand, type DemandFacts } from "@/lib/projects/autopilot/extract";
 import { proposeScheme, type ProjectProposal } from "@/lib/projects/autopilot/proposal";
 import { demoProjectRepository, type ProjectRepository } from "@/lib/projects/repository";
+import type { SessionRepository } from "@/lib/decia/session/repository";
+import { proposalSessionInput } from "@/lib/projects/autopilot/decia";
 import { DemandInput, type DemandInputValue } from "./DemandInput";
+import { DiscussInDeciaButton } from "./DiscussInDecia";
 import { FactsEditor } from "./FactsEditor";
 import { ProposalEditor } from "./ProposalEditor";
 import { saveProposal } from "./save";
@@ -27,11 +30,13 @@ export interface AutopilotWizardProps {
   now?: () => Date;
   /** depois de salvar (padrão: abre a Mesa do projeto novo) */
   onSaved?: (projectId: string) => void;
+  /** sessões do DECIA ("Discutir no DECIA", RF30.CA06; padrão: o repositório DEMO da aba) */
+  sessions?: SessionRepository;
 }
 
 const STEPS = ["input", "facts", "scheme", "save"] as const;
 
-export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = () => new Date(), onSaved }: AutopilotWizardProps) {
+export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = () => new Date(), onSaved, sessions }: AutopilotWizardProps) {
   const { t } = useI18n();
   const { prefs } = usePreferences();
   const { toast } = useToast();
@@ -129,6 +134,7 @@ export function AutopilotWizard({ repo, actorId = DEMO_CURRENT_USER_ID, now = ()
           <div className="flex flex-wrap gap-2 border-t border-ws-border pt-[var(--ws-space-3)]">
             <Button variant="primary" icon="mesa" onClick={save}>{t("autopilot.save.cta")}</Button>
             {draftId ? <Button href={proposalDraftHref(draftId)}>{t("autopilot.save.openDraft")}</Button> : null}
+            {draftId ? <DiscussInDeciaButton kind="PROPOSTA_AUTOPILOTO" sessions={sessions} actorId={actorId} build={(labels) => proposalSessionInput(proposal, { draftId, actorId, people: DEMO_PEOPLE, labels })} /> : null}
             <Button variant="ghost" onClick={() => setStep(1)}>{t("autopilot.scheme.back")}</Button>
             <Button variant="danger" onClick={discard}>{t("autopilot.scheme.discard")}</Button>
           </div>

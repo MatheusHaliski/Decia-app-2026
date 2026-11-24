@@ -13,10 +13,22 @@ export function relativeTime(minutesAgo: number, intl: string): string {
   return rtf.format(-Math.round(minutesAgo / (60 * 24)), "day");
 }
 
+/** Datas AAAA-MM-DD das `vars` (prazos) no formato curto do idioma corrente; valor fora do formato fica como veio. */
+export function withDates(vars: Record<string, string | number>, keys: readonly string[], intl: string): Record<string, string | number> {
+  const out = { ...vars };
+  const fmt = new Intl.DateTimeFormat(intl, { dateStyle: "short", timeZone: "UTC" });
+  for (const k of keys) {
+    const v = out[k];
+    if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v)) out[k] = fmt.format(new Date(`${v}T00:00:00Z`));
+  }
+  return out;
+}
+
 export function NotificationRow({ n, onOpen }: { n: AppNotification; onOpen?: (id: string) => void }) {
   const { t, intl } = useI18n();
   // sem nome de quem agiu (conta removida), a API manda `who` vazio
-  const vars = n.vars && n.vars.who === "" ? { ...n.vars, who: t("notif.someone") } : n.vars;
+  const named = n.vars && n.vars.who === "" ? { ...n.vars, who: t("notif.someone") } : n.vars;
+  const vars = named && n.dateVars?.length ? withDates(named, n.dateVars, intl) : named;
   return (
     <li>
       <Link href={n.href} variant="card" onClick={() => onOpen?.(n.id)} className={cn("flex items-start gap-3 p-2", !n.read && "bg-ws-accent-soft/60")}>

@@ -25,6 +25,7 @@ export function recordHash(input: AuditInput, meta: { id: string; seq: number; p
 const strip = (r: AuditRecord): AuditInput => ({
   at: r.at, actorId: r.actorId, action: r.action, source: r.source, sessionId: r.sessionId, decisionId: r.decisionId, contextTitle: r.contextTitle,
   target: r.target, policy: r.policy, reason: r.reason, before: r.before, proposed: r.proposed, after: r.after,
+  ...(r.agent ? { agent: r.agent } : {}),
 });
 
 /** Refaz a cadeia: cada registro tem de apontar o hash do anterior e o próprio hash tem de bater com o conteúdo. */

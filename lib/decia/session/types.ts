@@ -70,7 +70,9 @@ export type SystemNotice =
   | { kind: "ESTADO_ALTERADO"; from: SessionStatus; to: SessionStatus; by: string; reason: string | null }
   | { kind: "REUNIAO_INICIADA"; meetingId: string; title: string; by: string }
   | { kind: "ATA_CONTESTADA"; meetingId: string; title: string; by: string; reason: string }
-  | { kind: "ENCAMINHAMENTO_CUMPRIDO"; followUpId: string; action: string; by: string; responsibleId: string };
+  | { kind: "ENCAMINHAMENTO_CUMPRIDO"; followUpId: string; action: string; by: string; responsibleId: string }
+  /** execução do agente (RF51.CA04, lib/decia/session/agent.ts): início e encerramento avisados a todos os membros */
+  | { kind: "AGENTE"; event: "INICIADO" | "CONCLUIDO" | "LIMITE_ATINGIDO" | "INTERROMPIDO"; reason: string | null; by: string; steps: number; tokens: number; policyVersion: number };
 
 /** Ganho (ou não) de DECIA Points mostrado com discrição só a quem recebe (sem ranking, sem contador público). */
 export interface PointsNote {
@@ -113,7 +115,7 @@ export interface SessionMessage {
 
 /* ── Minuta e propostas da IA (RF51) ─────────────────────────────────────────────────────────────────────── */
 
-export type MinutaOrigin = "HUMANO" | "PROPOSTA_IA" | "PROPOSTA_IA_EDITADA" | "REVERSAO";
+export type MinutaOrigin = "HUMANO" | "PROPOSTA_IA" | "PROPOSTA_IA_EDITADA" | "REVERSAO" | "AGENTE" | "AGENTE_DESFEITO";
 export interface MinutaRevision { revision: number; text: string; by: string; at: IsoDate; origin: MinutaOrigin; proposalId?: string; revertedFrom?: number }
 /** Texto coletivo da sessão (§D "Minuta Coletiva", versão mínima): cada mudança é uma revisão nova; nada é apagado. */
 export interface Minuta { revision: number; text: string; history: MinutaRevision[] }
@@ -227,6 +229,32 @@ export interface FollowUpTask {
 
 export interface StatusChange { from: SessionStatus; to: SessionStatus; by: string; at: IsoDate; reason: string | null }
 
+/**
+ * Artefato anexado à sessão (RF30.CA06): a proposta do Autopiloto ainda em rascunho, ou o esquema de um projeto já salvo, levada
+ * ao DECIA para decidir em grupo. `text` é o retrato anexado (não muda); `baseText` é a base de comparação — o que a sessão já
+ * devolveu ao rascunho/projeto — e avança a cada aplicação, para a mesma decisão não ser aplicada duas vezes.
+ */
+export type SessionArtifactKind = "PROPOSTA_AUTOPILOTO" | "PROJETO";
+export interface SessionArtifact {
+  kind: SessionArtifactKind;
+  title: string;
+  /** link de volta: a Mesa em modo rascunho (`/desk?draft=`) ou a visão geral do projeto */
+  href: string;
+  draftId: string | null;
+  projectId: string | null;
+  text: string;
+  baseText: string;
+  /** código da linha na minuta (T01…) → chave da atividade no rascunho ou id da atividade no projeto */
+  refs: Record<string, string>;
+  /** números do sistema no momento do anexo (D-12) */
+  summary: { phases: number; tasks: number; deadline: DateOnly | null; finish: DateOnly | null; finishDays: number; overrunDays: number };
+  attachedAt: IsoDate;
+  attachedBy: string;
+  /** revisão da minuta que serviu de base na última aplicação (1 = a minuta inicial) */
+  baseRevision: number;
+  applications: { at: IsoDate; by: string; revision: number; changes: number }[];
+}
+
 export interface DeciaSession {
   id: string;
   title: string;
@@ -251,6 +279,8 @@ export interface DeciaSession {
   /** avisos ainda não lidos por pessoa (ids de mensagens SISTEMA) */
   unread: Record<string, string[]>;
   statusLog: StatusChange[];
+  /** proposta do Autopiloto ou esquema de projeto em discussão (RF30.CA06); ausente nas demais sessões */
+  artifact?: SessionArtifact;
 }
 
 export interface OrgPolicyVersion { ceiling: AutonomyMode; defaultMode: AutonomyMode; version: number; changedBy: string; changedAt: IsoDate }

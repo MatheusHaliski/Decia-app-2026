@@ -3,8 +3,11 @@
  * Autopiloto (RF30), Ata Viva (RF37), Espelho de Conformidade (RF32) etc. O criador abre já preenchido e a pessoa revisa antes de
  * salvar — nada vai ao servidor até lá. Fica no `sessionStorage` desta aba (some ao fechar a aba; outra pessoa no mesmo navegador
  * não o lê depois) com validade de 1 hora; sem `sessionStorage` (bloqueado, modo privado antigo), vale só na memória da página.
- * A origem viaja junto para o criador explicar de onde veio o conteúdo.
+ * A origem viaja junto para o criador explicar de onde veio o conteúdo. Quando a sessão acaba (sair, sessão encerrada em outra
+ * aba, renovação recusada), todos os rascunhos desta aba são apagados: quem entrar depois na mesma aba não abre o conteúdo de
+ * quem saiu (trecho de documento, texto de reunião) pelo histórico do navegador.
  */
+import { onSessionChange } from "@/lib/api/client";
 import type { TaskDraft } from "./templates";
 
 export const DRAFT_TTL_MS = 60 * 60 * 1000;
@@ -79,3 +82,21 @@ export function discardTaskDraft(id: string | null | undefined): void {
 
 /** Endereço do criador com o rascunho. */
 export const draftHref = (id: string) => `/tasks/new?rascunho=${encodeURIComponent(id)}`;
+
+/** Apaga todos os rascunhos desta aba (fim da sessão). */
+export function clearTaskDrafts(): void {
+  memory.forEach((_, k) => { if (k.startsWith(PREFIX)) memory.delete(k); });
+  try {
+    if (typeof sessionStorage === "undefined") return;
+    const keys: string[] = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      if (k?.startsWith(PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => sessionStorage.removeItem(k));
+  } catch {
+    // armazenamento bloqueado: nada a apagar
+  }
+}
+
+if (typeof window !== "undefined") onSessionChange((signedIn) => { if (!signedIn) clearTaskDrafts(); });

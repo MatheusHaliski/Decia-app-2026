@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
  * excluir pelo teclado, rascunho local) funciona com ou sem WebGL 2; com WebGL, a viewport desenha a cena (não fica lisa).
  */
 test("editor 3D: adicionar, editar, desfazer, excluir e manter o rascunho", async ({ page }) => {
-  await page.goto("/drawings");
+  await page.goto("/drawings?vista=3d");
   const editor = page.getByTestId("editor-3d");
   await expect(editor).toBeVisible({ timeout: 30_000 });
   const rows = page.getByTestId("d3-outliner").getByRole("button");
@@ -47,7 +47,7 @@ test("editor 3D: adicionar, editar, desfazer, excluir e manter o rascunho", asyn
 });
 
 test("viewport 3D desenha a cena quando há WebGL 2", async ({ page }) => {
-  await page.goto("/drawings");
+  await page.goto("/drawings?vista=3d");
   await expect(page.getByTestId("editor-3d")).toBeVisible({ timeout: 30_000 });
   const hasWebgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl2"));
   test.skip(!hasWebgl, "navegador sem WebGL 2: o editor mostra o aviso no lugar da viewport");

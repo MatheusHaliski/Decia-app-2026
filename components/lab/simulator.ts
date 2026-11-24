@@ -14,7 +14,7 @@ import { VIEWER_PROFILES, VIEWER_USERS, type Access, type AccessMatrix, type Vie
 /** Regras de acesso que as linhas da matriz expressam hoje (uma por padrão de células, na ordem dos perfis). */
 export const ACCESS_RULES = [
   "PUBLICA", "LOGADOS_EDITAM", "LOGADOS_VEEM", "BALCAO", "AGENTES", "EMISSOR_CRIA", "EMISSOR_E_CURADORIA", "PAINEL_EMISSOR",
-  "EMPRESA_DONA", "CHEFE_EQUIPE", "FILA_CHANCELAS", "REVISAO_DECISOES", "CHANCELAS", "DOSSIES", "CURADORIA", "ADMIN", "MISTA",
+  "EMPRESA_DONA", "CHEFE_EQUIPE", "FILA_CHANCELAS", "REVISAO_DECISOES", "CHANCELAS", "DOSSIES", "CURADORIA", "ADMIN", "ADMIN_E_EMPRESA_IA", "MISTA",
 ] as const;
 export type AccessRule = (typeof ACCESS_RULES)[number];
 
@@ -38,6 +38,7 @@ const BY_SIGNATURE: Readonly<Record<string, AccessRule>> = {
   VEEOVO: "DOSSIES",
   OOOEOO: "CURADORIA",
   OOOOEO: "ADMIN",
+  OEOOEO: "ADMIN_E_EMPRESA_IA",
 };
 
 export const ruleOf = (page: PageEntry): AccessRule => BY_SIGNATURE[signatureOf(page.access)] ?? "MISTA";
@@ -60,6 +61,7 @@ const GUARD: Readonly<Record<AccessRule, string | null>> = {
   DOSSIES: "requireIssuer",
   CURADORIA: "requireCurator",
   ADMIN: "requireAdmin",
+  ADMIN_E_EMPRESA_IA: "requireAdmin · requireRole(EMPRESA) só na aba IA",
   MISTA: null,
 };
 
@@ -75,6 +77,7 @@ const ROUTE_DECISIONS: Readonly<Record<string, readonly string[]>> = {
 };
 const RULE_DECISIONS: Partial<Record<AccessRule, readonly string[]>> = {
   CURADORIA: ["D-09"],
+  ADMIN_E_EMPRESA_IA: ["D-157"],
   EMISSOR_E_CURADORIA: ["D-09"],
   PAINEL_EMISSOR: ["RF28.CA08"],
   CHANCELAS: ["RF28.CA08"],

@@ -36,6 +36,9 @@ export function Recorder({ speakers, defaultSpeaker, consentOk, onLine }: Record
   const recognition = useRef<SpeechRecognitionLike | null>(null);
   const stream = useRef<MediaStream | null>(null);
   const live = useRef(false);
+  /** sobe a cada pedido de microfone e a cada parada: um getUserMedia que volta depois disso é descartado */
+  const attempt = useRef(0);
+  const consentRef = useRef(consentOk);
   const speakerName = speakers.find((s) => s.userId === speaker)?.name ?? speaker;
   const speakerRef = useRef(speakerName);
   useEffect(() => {
@@ -62,7 +65,15 @@ export function Recorder({ speakers, defaultSpeaker, consentOk, onLine }: Record
     setInterim("");
   }, []);
 
-  useEffect(() => () => stopAll(), [stopAll]);
+  useEffect(() => () => { attempt.current++; stopAll(); }, [stopAll]);
+  // consentimento retirado no meio da gravação: para o gravador e o reconhecimento na hora
+  useEffect(() => {
+    consentRef.current = consentOk;
+    if (!consentOk) {
+      attempt.current++;
+      if (live.current || recorder.current || stream.current) stopAll();
+    }
+  }, [consentOk, stopAll]);
   useEffect(() => () => { if (audioUrl) URL.revokeObjectURL(audioUrl); }, [audioUrl]);
   useEffect(() => {
     if (!recording) return;
@@ -102,8 +113,14 @@ export function Recorder({ speakers, defaultSpeaker, consentOk, onLine }: Record
 
   const start = async () => {
     setError(null);
+    const mine = ++attempt.current;
     try {
       const media = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // saiu da tela, parou ou alguém retirou o consentimento enquanto o navegador pedia permissão: não grava
+      if (mine !== attempt.current || !consentRef.current) {
+        media.getTracks().forEach((track) => track.stop());
+        return;
+      }
       stream.current = media;
       const chunks: Blob[] = [];
       const rec = new MediaRecorder(media);

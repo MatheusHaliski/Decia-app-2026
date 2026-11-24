@@ -3,13 +3,17 @@
  * `capture`, `exportGlb` — e não conhece renderer, câmera, pós-processamento, gizmo nem path tracer. Por dentro ela coordena o
  * palco (`stage`), o adaptador do modelo (`scene-adapter`), o pipeline de pós (`post`) e o traçador progressivo (`path-tracing`).
  * O gizmo e a caixa de seleção ficam numa cena de sobreposição desenhada por cima, fora do path tracer e do tone mapping.
+ * Essa sobreposição tem API pública (`overlayLayer`, `requestRender`, `setGhosts`): outras camadas — como a prévia fantasma da
+ * IA (RF74) — desenham por cima sem conhecer câmera nem renderer e sem entrar na captura, no GLB nem na seleção por clique.
  */
-import { Box3, Box3Helper, Color, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, type WebGLRenderer } from "three";
+import { Box3, Box3Helper, Color, Group, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, type WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls.js";
 import type { Scene3D, Transform } from "../model";
 import { QUALITY, type QualityId, type QualityStrategy } from "../quality";
+import type { GhostRender } from "../ghost";
 import { disposeGeometries } from "./geometry-factory";
+import { GhostOverlay } from "./ghost-overlay";
 import { disposeMaterials } from "./material-factory";
 import { ProgressivePathTracer } from "./path-tracing";
 import { PostPipeline } from "./post";
@@ -53,6 +57,8 @@ export class Viewport3D {
   private readonly overlay = new Scene();
   private readonly selectionBox = new Box3Helper(new Box3(), accentColor());
   private readonly adapter: SceneAdapter;
+  private readonly layers = new Map<string, Group>();
+  private ghostOverlay: GhostOverlay | null = null;
   private quality: QualityStrategy = QUALITY.alta;
   private post: PostPipeline;
   private tracer: ProgressivePathTracer | null = null;
@@ -134,6 +140,34 @@ export class Viewport3D {
     this.dirty = true;
   }
 
+  // ——— sobreposição pública ———
+
+  /**
+   * Camada nomeada da sobreposição (criada na primeira chamada): o que for posto nela é desenhado por cima da cena, com a câmera
+   * da viewport, depois do path tracer e sem tone mapping. Fica fora da captura PNG, do GLB e do clique de seleção.
+   */
+  overlayLayer(name: string): Group {
+    let layer = this.layers.get(name);
+    if (!layer) {
+      layer = new Group();
+      layer.name = `overlay:${name}`;
+      this.layers.set(name, layer);
+      this.overlay.add(layer);
+    }
+    return layer;
+  }
+
+  /** Pede um quadro novo (depois de mudar algo numa camada de sobreposição). */
+  requestRender(): void {
+    this.dirty = true;
+  }
+
+  /** Prévia fantasma (RF74): cópias "depois" translúcidas, com contorno e rótulo ✦ n; `opacity` de 0 a 1. */
+  setGhosts(ghosts: readonly GhostRender[], opacity: number): void {
+    this.ghostOverlay ??= new GhostOverlay(this.overlayLayer("ghost"), () => this.requestRender());
+    this.ghostOverlay.set(ghosts, opacity);
+  }
+
   /** Enquadra todos os objetos (ou o selecionado) na câmera, mantendo a direção de vista. */
   frame(onlySelected = false): void {
     const target = onlySelected ? this.adapter.meshOf(this.selectedId) : this.stage.content;
@@ -173,6 +207,8 @@ export class Viewport3D {
     this.orbit.dispose();
     this.gizmo.detach();
     this.gizmo.dispose();
+    this.ghostOverlay?.dispose();
+    this.layers.clear();
     this.tracer?.dispose();
     this.post.dispose();
     this.adapter.dispose();

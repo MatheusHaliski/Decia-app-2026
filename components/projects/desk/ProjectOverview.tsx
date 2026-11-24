@@ -9,14 +9,16 @@ import type { ReactNode } from "react";
 import { Badge, Button, Card, EmptyState, LoadingState, PercentBar, Tag, cn } from "@/components/ui";
 import { useMounted } from "@/components/decia";
 import { RfPage } from "@/components/shell/RfPage";
-import { DEMO_PEOPLE } from "@/lib/decia/fixtures";
+import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 import { todayIso } from "@/lib/projects/autopilot/dates";
+import { projectSessionInput } from "@/lib/projects/autopilot/decia";
 import { summarizeProject } from "@/lib/projects/autopilot/overview";
 import { DEMO_PROJECT_ID } from "@/lib/projects/fixtures";
 import { demoProjectRepository, useProject, type ProjectRepository } from "@/lib/projects/repository";
 import { PROJECT_PHASES, type ProjectModel } from "@/lib/projects/types";
+import { DiscussInDeciaButton } from "../autopilot/DiscussInDecia";
 import { versionSummary } from "../common";
 import { fmt, nameOf } from "../shared";
 
@@ -66,6 +68,8 @@ export function ProjectOverview({ model, today, source = "DEMO" }: { model: Proj
         <div className="flex flex-wrap items-center gap-2">
           <h2 id="po-summary" className="min-w-0 flex-1 font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("projectPage.summary")}</h2>
           {source === "DEMO" ? <Badge tone="warning" title={t("pm.ws.demoHint")}>DEMO</Badge> : null}
+          {/* RF30.CA06: decidir em grupo sobre o projeto salvo; o que a sessão decidir volta como pedido de mudança */}
+          <DiscussInDeciaButton kind="PROJETO" size="sm" build={(labels) => projectSessionInput(model, { actorId: DEMO_CURRENT_USER_ID, people: DEMO_PEOPLE, labels, today })} />
         </div>
         {objective ? <p className="max-w-prose text-[length:var(--ws-text-body)]">{objective}</p> : <p className="text-ws-text-muted">{t("projectPage.noObjective")}</p>}
         <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">

@@ -64,13 +64,13 @@ export const INSIGHTS_TABS: readonly SubTab[] = [
   { slug: "sugeridos", labelKey: "tabs.insights.sugeridos" },
 ];
 export const ADMIN_TABS: readonly SubTab[] = [
-  { slug: "dashboard", labelKey: "tabs.admin.dashboard" },
-  { slug: "aprovacoes", labelKey: "tabs.admin.aprovacoes" },
-  { slug: "usuarios", labelKey: "tabs.admin.usuarios" },
-  { slug: "moderacao", labelKey: "tabs.admin.moderacao" },
+  { slug: "dashboard", labelKey: "tabs.admin.dashboard", hiddenFor: ["EMPRESA"] },
+  { slug: "aprovacoes", labelKey: "tabs.admin.aprovacoes", hiddenFor: ["EMPRESA"] },
+  { slug: "usuarios", labelKey: "tabs.admin.usuarios", hiddenFor: ["EMPRESA"] },
+  { slug: "moderacao", labelKey: "tabs.admin.moderacao", hiddenFor: ["EMPRESA"] },
   { slug: "ia", labelKey: "tabs.admin.ia" },
-  { slug: "auditoria", labelKey: "tabs.admin.auditoria" },
-  { slug: "sistema", labelKey: "tabs.admin.sistema" },
+  { slug: "auditoria", labelKey: "tabs.admin.auditoria", hiddenFor: ["EMPRESA"] },
+  { slug: "sistema", labelKey: "tabs.admin.sistema", hiddenFor: ["EMPRESA"] },
 ];
 export const DESK_TABS: readonly SubTab[] = [
   { slug: "minha-mesa", labelKey: "tabs.desk.minha" },
@@ -214,7 +214,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { id: "seals", labelKey: "nav.seals", glyph: "chancela", href: "/seals", rfs: ["RF39"], access: access({ EMPRESA: "E", CHEFE: "E", ADMIN: "V" }) },
       { id: "handoffs", labelKey: "nav.handoffs", glyph: "acervo", href: "/handoffs", rfs: ["RF36"], access: access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", ADMIN: "V" }) },
       { id: "curation", labelKey: "nav.curation", glyph: "chancela", href: "/curation", rfs: ["RF28", "RF39"], access: access({ CURADOR: "E" }), badge: "curation", proposal: true },
-      { id: "admin", labelKey: "nav.admin", glyph: "configuracoes", href: "/admin", activeOn: ["/admin"], rfs: ["RF18", "RF28", "RF43"], access: access({ ADMIN: "E" }), subTabs: ADMIN_TABS, badge: "approvals" },
+      { id: "admin", labelKey: "nav.admin", glyph: "configuracoes", href: "/admin", activeOn: ["/admin"], rfs: ["RF18", "RF28", "RF43", "RF51"], access: access({ ADMIN: "E", EMPRESA: "E" }), subTabs: ADMIN_TABS, badge: "approvals" },
     ],
   },
 ];
