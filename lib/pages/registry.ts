@@ -135,7 +135,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/seals", "app/(shell)/seals/page.tsx", "nav.seals", ["RF39"], ISSUER, "chancela", "A"),
   p("/handoffs", "app/(shell)/handoffs/page.tsx", "nav.handoffs", ["RF36"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", ADMIN: "V" }), "acervo", "A"),
   p("/curation", "app/(shell)/curation/page.tsx", "nav.curation", ["RF28", "RF39", "RF35"], access({ CURADOR: "E" }), "chancela", "A", { note: "proposal" }),
-  p("/admin", "app/(shell)/admin/page.tsx", "nav.admin", ["RF18", "RF28", "RF43"], access({ ADMIN: "E" }), "configuracoes", "E", { tabs: ADMIN_TABS }),
+  p("/admin", "app/(shell)/admin/page.tsx", "nav.admin", ["RF18", "RF28", "RF43", "RF51"], access({ ADMIN: "E", EMPRESA: "E" }), "configuracoes", "E", { tabs: ADMIN_TABS }),
   // Globais
   p("/settings", "app/(shell)/settings/page.tsx", "nav.settings", ["RF3", "RF38", "RF81"], logged("E"), "configuracoes", "global", { tabs: SETTINGS_TABS }),
   p("/notifications", "app/(shell)/notifications/page.tsx", "nav.notifications", [], logged("V"), "notificacoes", "global"),

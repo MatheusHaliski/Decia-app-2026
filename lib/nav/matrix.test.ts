@@ -16,18 +16,19 @@ describe("Matriz A — sidebar por perfil", () => {
     expect(emp.map((g) => g.id)).toEqual(["descobrir", "meu-trabalho", "criar", "jogar-e-ganhar", "gestao"]);
     expect(emp.find((g) => g.id === "gestao")!.items.map((i) => i.id)).toEqual(["handoffs"]); // Dossiês: V para EMPREGADO (os seus)
     const ids = (p: Parameters<typeof visibleGroups>[0]) => visibleGroups(p).find((g) => g.id === "gestao")!.items.map((i) => i.id);
-    expect(ids("EMPRESA")).toEqual(["issuer-dashboard", "manage-departments", "team", "seals-review", "decia-review", "seals", "handoffs"]);
+    expect(ids("EMPRESA")).toEqual(["issuer-dashboard", "manage-departments", "team", "seals-review", "decia-review", "seals", "handoffs", "admin"]); // admin: só a aba IA (D-157)
     expect(ids("CHEFE")).toEqual(["issuer-dashboard", "team", "seals-review", "decia-review", "seals", "handoffs"]);
     expect(ids("CURADOR")).toEqual(["team", "seals-review", "curation"]);
     expect(ids("ADMIN")).toContain("admin");
     expect(ids("ADMIN")).not.toContain("curation");
   });
 
-  it("células pontuais: Balcão E/E/E/V/V, Metas V/E/E/V/V, Admin só ADMIN, Curadoria só CURADOR", () => {
+  it("células pontuais: Balcão E/E/E/V/V, Metas V/E/E/V/V, Admin ADMIN + EMPRESA (só a aba IA), Curadoria só CURADOR", () => {
     const item = (id: string) => NAV_GROUPS.flatMap((g) => g.items).find((i) => i.id === id)!;
     expect(VIEWER_PROFILES.map((p) => item("models").access[p])).toEqual(["E", "E", "E", "V", "V", "V"]);
     expect(VIEWER_PROFILES.map((p) => item("goals").access[p])).toEqual(["V", "E", "E", "V", "V", "O"]);
-    expect(VIEWER_PROFILES.map((p) => item("admin").access[p])).toEqual(["O", "O", "O", "O", "E", "O"]);
+    expect(VIEWER_PROFILES.map((p) => item("admin").access[p])).toEqual(["O", "E", "O", "O", "E", "O"]);
+    expect(item("admin").subTabs!.filter((tab) => !tab.hiddenFor?.includes("EMPRESA")).map((tab) => tab.slug)).toEqual(["ia"]);
     expect(VIEWER_PROFILES.map((p) => item("curation").access[p])).toEqual(["O", "O", "O", "E", "O", "O"]);
   });
 

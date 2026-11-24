@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
-import { DRAFT_TTL_MS, discardTaskDraft, draftHref, loadTaskDraft, saveTaskDraft } from "./drafts";
+import { tokenStore } from "@/lib/api/client";
+import { DRAFT_TTL_MS, clearTaskDrafts, discardTaskDraft, draftHref, loadTaskDraft, saveTaskDraft } from "./drafts";
 
 beforeEach(() => window.sessionStorage.clear());
 
@@ -26,5 +27,19 @@ describe("rascunho de tarefa entregue ao criador", () => {
     expect(loadTaskDraft("abcdefgh12", 0)).toBeNull();
     window.sessionStorage.setItem("ws.tasks.draft:abcdefgh13", JSON.stringify({ draft: {}, origin: { kind: "HACK", label: "x" }, createdAt: 0 }));
     expect(loadTaskDraft("abcdefgh13", 0)).toBeNull();
+  });
+
+  it("fim da sessão apaga os rascunhos da aba: quem entrar depois não abre o conteúdo de quem saiu", () => {
+    const a = saveTaskDraft({ draft: { title: "Ata da reunião" }, origin: { kind: "ATA", label: "Reunião" } });
+    const b = saveTaskDraft({ draft: { title: "Planta" }, origin: { kind: "CAD", label: "planta.dxf" } });
+    window.sessionStorage.setItem("outra.chave", "fica");
+    tokenStore.set("x.eyJleHAiOjk5OTk5OTk5OTl9.y");
+    tokenStore.clear();
+    expect(loadTaskDraft(a)).toBeNull();
+    expect(loadTaskDraft(b)).toBeNull();
+    expect(window.sessionStorage.getItem("outra.chave")).toBe("fica");
+    const c = saveTaskDraft({ draft: { title: "z" }, origin: { kind: "OUTRO", label: "z" } });
+    clearTaskDrafts();
+    expect(loadTaskDraft(c)).toBeNull();
   });
 });
