@@ -8,7 +8,9 @@ import { useToast } from "@/components/ui";
 import type { ViewportStats } from "@/lib/drawings3d/engine/Viewport3D";
 import type { PrimitiveKind } from "@/lib/drawings3d/model";
 import { useEditor3D } from "@/lib/drawings3d/useEditor3D";
+import { useGhost3D } from "@/lib/drawings3d/useGhost3D";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { GhostPanel3D } from "./GhostPanel3D";
 import { Inspector3D } from "./Inspector3D";
 import { Outliner3D } from "./Outliner3D";
 import { Toolbar3D } from "./Toolbar3D";
@@ -34,7 +36,9 @@ export default function Editor3D() {
   const { toast } = useToast();
   const nameOf = useCallback((kind: PrimitiveKind) => t(`d3.kind.${kind}`), [t]);
   const editor = useEditor3D(nameOf);
+  const ghost = useGhost3D(editor);
   const apiRef = useRef<ViewportApi | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [stats, setStats] = useState<ViewportStats | null>(null);
   const [exporting, setExporting] = useState(false);
 
@@ -64,7 +68,9 @@ export default function Editor3D() {
     const actions: Record<string, () => void> = {
       ...(mod ? { z: e.shiftKey ? editor.redo : editor.undo, y: editor.redo } : {
         w: () => editor.setGizmoMode("translate"), e: () => editor.setGizmoMode("rotate"), r: () => editor.setGizmoMode("scale"),
-        f: () => apiRef.current?.frame(!!editor.selectedId), delete: editor.remove, backspace: editor.remove, escape: () => editor.select(null),
+        f: () => apiRef.current?.frame(!!editor.selectedId), delete: editor.remove,
+        // Enter na viewport aceita a sugestão da IA para o objeto selecionado (RF74.CA08)
+        ...(e.target === viewportRef.current ? { enter: () => void ghost.acceptForSelection() } : {}), backspace: editor.remove, escape: () => editor.select(null),
       }),
     };
     const action = actions[key];
@@ -78,8 +84,8 @@ export default function Editor3D() {
       <Toolbar3D editor={editor} onFrame={() => apiRef.current?.frame(!!editor.selectedId)} onCapture={capture} onExport={exportGlb} exporting={exporting} />
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="grid gap-1">
-          <div tabIndex={0} aria-label={t("d3.viewportRegion")} className="relative aspect-[16/10] min-h-[320px] overflow-hidden rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-2 focus-visible:outline-none focus-visible:[box-shadow:var(--ws-focus-ring)]">
-            <Viewport3DCanvas editor={editor} apiRef={apiRef} onStats={setStats} />
+          <div ref={viewportRef} tabIndex={0} aria-label={t("d3.viewportRegion")} className="relative aspect-[16/10] min-h-[320px] overflow-hidden rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-2 focus-visible:outline-none focus-visible:[box-shadow:var(--ws-focus-ring)]">
+            <Viewport3DCanvas editor={editor} apiRef={apiRef} onStats={setStats} ghost={{ items: ghost.ghosts, opacity: ghost.opacity }} />
             <p className="pointer-events-none absolute bottom-2 left-2 rounded-[var(--ws-radius-sm)] border border-ws-border bg-ws-surface-1/85 px-2 py-1 font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-caption)] text-ws-text" data-testid="d3-status" data-mode={stats?.mode ?? "raster"} data-samples={stats?.samples ?? 0}>
               {statusText(t, stats)}
             </p>
@@ -89,6 +95,7 @@ export default function Editor3D() {
         <aside className="grid content-start gap-3">
           <Outliner3D editor={editor} />
           <Inspector3D editor={editor} />
+          <GhostPanel3D g={ghost} />
         </aside>
       </div>
     </section>
