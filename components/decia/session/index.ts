@@ -1,4 +1,5 @@
 // Sessão do DECIA (DECIA_SESSAO_E_MESA; RF29, RF37 Ata Viva, RF51 autonomia da IA, RF42 pontos).
+export { ArtifactPanel } from "./ArtifactPanel";
 export { AtaVivaPanel, FollowUpList, MeetingStatusTag } from "./AtaViva";
 export { AutonomyPanel, ModeCapabilities } from "./AutonomyPanel";
 export { AiAnswerView, Chat, KindTag, OpenQuestions } from "./Chat";

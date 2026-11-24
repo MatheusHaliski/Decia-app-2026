@@ -16,6 +16,7 @@ import { deciaPoints, type PointsLedger } from "@/lib/points/ledger";
 import { searchMemory as memorySearch } from "@/lib/memory";
 import type { MemorySearch } from "@/lib/memory/search";
 import type { ViewerProfile } from "@/lib/viewer/profiles";
+import { attachArtifact, markArtifactApplied, type NewSessionArtifact } from "./artifact";
 import { askAi as askAiFn, spontaneousAnswer } from "./assistant";
 import { acceptAnswer as acceptAnswerFn, attachPoints, markNoticesRead, postMessage, toggleReaction, type PointsIntent, type PostInput } from "./chat";
 import { buildDemoAudit, buildDemoOrgPolicy, buildDemoSessions, NEW_SESSION_PREFIX, orgActor } from "./fixtures";
@@ -28,7 +29,16 @@ import { composeMinutaProposal, editMinuta as editMinutaFn, requestProposal as r
 import { applyOrgCeiling, changeOrgPolicy, changeSessionMode, effectivePolicy, initialSessionPolicy, viewerMode } from "./policy";
 import type { CommandResult, DeciaSession, MinutesDraft, OrgAiPolicy, PeopleDirectory, PointsNote, QualityReaction, SessionStatus } from "./types";
 
-export interface NewSessionInput { title: string; objective: string; decisionId?: string | null; participants: { userId: string; role: "EDITOR" | "COMENTADOR" | "LEITOR" }[] }
+export interface NewSessionInput {
+  title: string;
+  objective: string;
+  decisionId?: string | null;
+  participants: { userId: string; role: "EDITOR" | "COMENTADOR" | "LEITOR" }[];
+  /** projeto ligado à sessão (RF29/RF30.CA06) */
+  projectId?: string | null;
+  /** proposta do Autopiloto ou esquema de projeto anexado; a minuta nasce com o texto dele (RF30.CA06) */
+  artifact?: NewSessionArtifact;
+}
 
 export interface SessionRepository {
   readonly source: "DEMO" | "API";
@@ -61,7 +71,17 @@ export interface SessionRepository {
   reopenMinutes(sessionId: string, actor: string, meetingId: string): CommandResult<{ session: DeciaSession }>;
   completeFollowUp(sessionId: string, actor: string, followUpId: string, now?: Date): CommandResult<{ session: DeciaSession; note: PointsNote | null }>;
   setOrgPolicy(profile: ViewerProfile, next: { ceiling: AutonomyMode; defaultMode: AutonomyMode }, now?: Date): CommandResult<{ org: OrgAiPolicy; notified: number; invalidated: number }>;
+  /** as decisões da minuta voltaram ao rascunho/projeto do artefato (RF30.CA06) */
+  markArtifactApplied(sessionId: string, actor: string, changes: number, now?: Date): CommandResult<{ session: DeciaSession }>;
+  /**
+   * Execução do agente (RF51.CA04; regras em agent.ts, estado da execução em agentStore.ts): grava a sessão devolvida por um passo,
+   * desfazer ou encerramento e os registros de auditoria. `fn` devolve null quando nada muda.
+   */
+  commitAgent(sessionId: string, fn: (s: DeciaSession, org: OrgAiPolicy) => AgentCommit | null): AgentCommit | null;
 }
+
+/** O que um comando do agente grava: a sessão nova e a trilha (somente-acréscimo). */
+export interface AgentCommit { session: DeciaSession; audit: readonly AuditInput[] }
 
 export interface MemoryRepositoryOptions {
   ledger?: PointsLedger;
@@ -126,13 +146,15 @@ export function createMemorySessionRepository(seed: readonly DeciaSession[], org
       const at = now.toISOString();
       const id = `${NEW_SESSION_PREFIX}${now.getTime().toString(36)}-${(seq++).toString(36)}`;
       const others = input.participants.filter((p) => p.userId !== actor && people[p.userId]);
+      const attached = input.artifact ? attachArtifact(input.artifact, actor, at) : null;
       const session: DeciaSession = {
         id, title: title.slice(0, 160), objective: input.objective.trim().slice(0, 200), status: "RASCUNHO", phase: "CONTEXTO", decisionId: input.decisionId ?? null,
-        projectId: null, accessClass: "INTERNO", createdAt: at, updatedAt: at, scheduledAt: null,
+        projectId: input.projectId ?? null, accessClass: "INTERNO", createdAt: at, updatedAt: at, scheduledAt: null,
         participants: [{ userId: actor, role: "PROPRIETARIO", joinedAt: at }, ...others.map((p) => ({ userId: p.userId, role: p.role, joinedAt: at }))],
         policy: initialSessionPolicy(orgPolicy, actor, now),
-        messages: [], proposals: [], minuta: { revision: 1, text: "", history: [{ revision: 1, text: "", by: actor, at, origin: "HUMANO" }] },
+        messages: [], proposals: [], minuta: attached?.minuta ?? { revision: 1, text: "", history: [{ revision: 1, text: "", by: actor, at, origin: "HUMANO" }] },
         meetings: [], followUps: [], unread: {}, statusLog: [],
+        ...(attached ? { artifact: attached.artifact } : {}),
       };
       save(session);
       return { ok: true, session };
@@ -266,6 +288,17 @@ export function createMemorySessionRepository(seed: readonly DeciaSession[], org
       }
       emit();
       return { ok: true, org: orgPolicy, notified, invalidated };
+    },
+
+    markArtifactApplied: (sessionId, actor, changes, now = new Date()) => run(sessionId, (s) => markArtifactApplied(s, actor, changes, now)),
+
+    commitAgent(sessionId, fn) {
+      const s = get(sessionId);
+      const r = s ? fn(s, orgPolicy) : null;
+      if (!r) return null;
+      save(r.session);
+      record(r.audit);
+      return r;
     },
   };
 }

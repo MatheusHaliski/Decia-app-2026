@@ -63,6 +63,12 @@ public class JpaNotificationAdapter {
             }
 
             @Override
+            public boolean existsByGroupKey(UUID recipientId, String groupKey) {
+                return !em.createQuery("select n.id from NotificationEntity n where n.recipientId = :r and n.groupKey = :k", UUID.class)
+                        .setParameter("r", recipientId).setParameter("k", groupKey).setMaxResults(1).getResultList().isEmpty();
+            }
+
+            @Override
             @Transactional
             public boolean markRead(UUID recipientId, UUID id, Instant at) {
                 return em.createQuery("update NotificationEntity n set n.isRead = true, n.readAt = :at "

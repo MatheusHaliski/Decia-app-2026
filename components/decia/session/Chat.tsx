@@ -91,6 +91,8 @@ function noticeText(n: SystemNotice, t: (k: string, v?: Record<string, string | 
       return t("session.notice.ATA_CONTESTADA", { by: personName(people, n.by), title: n.title, reason: n.reason });
     case "ENCAMINHAMENTO_CUMPRIDO":
       return t("session.notice.ENCAMINHAMENTO_CUMPRIDO", { by: personName(people, n.by), action: n.action, name: personName(people, n.responsibleId) });
+    case "AGENTE":
+      return t(`session.agent.notice.${n.event}`, { by: n.by === "SISTEMA" ? t("session.agent.system") : personName(people, n.by), steps: n.steps, tokens: n.tokens, version: n.policyVersion, reason: n.reason ? t(`session.agent.end.${n.reason}`) : "" });
   }
 }
 

@@ -23,6 +23,7 @@ const ACTION_META: Record<AuditAction, { icon: string; tone: Tone }> = {
   EDITOU_E_ACEITOU: { icon: "✎", tone: "info" },
   REJEITOU: { icon: "✕", tone: "danger" },
   REVERTEU: { icon: "↺", tone: "warning" },
+  AGENTE_APLICOU: { icon: "✦", tone: "spark" },
 };
 
 export function AuditActionTag({ action }: { action: AuditAction }) {
@@ -60,6 +61,11 @@ function Comparison({ record }: { record: AuditRecord }) {
         {t("audit.compare.who", { name: nameOf(record.actorId), when: new Intl.DateTimeFormat(intl, { dateStyle: "medium", timeStyle: "short" }).format(new Date(record.at)) })}
         {record.reason ? ` · ${t("audit.compare.reason", { reason: record.reason })}` : ""}
       </p>
+      {record.agent ? (
+        <p className="text-[length:var(--ws-text-body-sm)] text-ws-ai-spark-ink" data-testid="audit-agent">
+          {t("session.agent.audit.step", { n: record.agent.step, tool: t(`aiPolicy.tool.${record.agent.tool}`), tokens: record.agent.tokens, name: nameOf(record.agent.authorizedBy), checkpoint: record.agent.checkpointId })}
+        </p>
+      ) : null}
       {hasProposal ? (
         <div role="group" aria-label={t("audit.compare.modeLabel")} className="flex flex-wrap gap-1">
           <Button size="sm" variant={mode === "PROPOSTA_APROVADO" ? "primary" : "ghost"} aria-pressed={mode === "PROPOSTA_APROVADO"} onClick={() => setMode("PROPOSTA_APROVADO")}>{t("audit.compare.modeProposal")}</Button>

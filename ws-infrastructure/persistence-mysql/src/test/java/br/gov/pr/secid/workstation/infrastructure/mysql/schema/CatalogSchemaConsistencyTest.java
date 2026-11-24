@@ -100,10 +100,11 @@ class CatalogSchemaConsistencyTest {
     void migrationsGeradasTemUmaTabelaPorEntidadeENadaMais() throws Exception {
         Map<String, List<String>> sql = columnsByTable();
         Set<String> catalog = new java.util.HashSet<>(DomainCatalog.PRE_EXISTING_TABLES);
+        catalog.addAll(DomainCatalog.INFRA_TABLES);   // V70+: trava dos trabalhos agendados, sem entidade de domínio
         DomainCatalog.entries().stream().filter(EntityDescriptor::generatesSql).forEach(e -> catalog.add(e.table()));
         for (String table : sql.keySet()) {
             // tabelas de outros blocos (V1–V9) são conhecidas por PRE_EXISTING_TABLES; as V10+ têm de estar no catálogo
-            assertThat(catalog).as("tabela " + table + " sem entidade no catálogo (registre em DomainCatalog.ENTITIES ou PRE_EXISTING_TABLES)")
+            assertThat(catalog).as("tabela " + table + " sem entidade no catálogo (registre em DomainCatalog.ENTITIES, PRE_EXISTING_TABLES ou INFRA_TABLES)")
                     .contains(table);
         }
     }

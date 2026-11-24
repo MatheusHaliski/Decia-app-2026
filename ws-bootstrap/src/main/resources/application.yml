@@ -176,6 +176,12 @@ ws:
     anonymize:
       every: ${WS_JOBS_ANONYMIZE_EVERY:PT1H}       # D-145: anonimiza contas cujo prazo de 30 dias para reativar terminou
       initial-delay: ${WS_JOBS_ANONYMIZE_DELAY:PT2M}
+    deadlines:
+      # RF41.CA04: aviso diário PRAZO_PROXIMO/PRAZO_VENCIDO no horário (dailyTaskAt) e fuso de cada pessoa; trava entre instâncias (V70)
+      every: ${WS_JOBS_DEADLINES_EVERY:PT15M}
+      initial-delay: ${WS_JOBS_DEADLINES_DELAY:PT3M}
+      near-days: ${WS_JOBS_DEADLINES_NEAR_DAYS:3,1}    # dias antes do prazo efetivo em que sai o aviso (o dia do vencimento sempre avisa)
+      lock-for: ${WS_JOBS_DEADLINES_LOCK_FOR:PT10M}
   legal:
     # versões vigentes gravadas em users.terms_version/privacy_version no cadastro (gancho do bloco LGPD A; PolicyDocument depois)
     current-versions:

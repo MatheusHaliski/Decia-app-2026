@@ -6,10 +6,10 @@
  */
 import type { AutonomyMode } from "@/lib/ai/autonomy";
 
-export const AUDIT_ACTIONS = ["ACEITOU", "EDITOU_E_ACEITOU", "REJEITOU", "REVERTEU"] as const;
+export const AUDIT_ACTIONS = ["ACEITOU", "EDITOU_E_ACEITOU", "REJEITOU", "REVERTEU", "AGENTE_APLICOU"] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
-export const AUDIT_TARGETS = ["PROPOSTA_MINUTA", "ATA", "ENCAMINHAMENTO", "RECOMENDACAO_IA", "RECOMENDACAO_MODELO", "DECISAO"] as const;
+export const AUDIT_TARGETS = ["PROPOSTA_MINUTA", "ATA", "ENCAMINHAMENTO", "RECOMENDACAO_IA", "RECOMENDACAO_MODELO", "DECISAO", "PASSO_AGENTE"] as const;
 export type AuditTargetKind = (typeof AUDIT_TARGETS)[number];
 
 export type AuditSource = "SESSAO" | "DECISAO";
@@ -33,7 +33,14 @@ export interface AuditInput {
   proposed: string | null;
   /** conteúdo depois da intervenção */
   after: string;
+  /**
+   * Passo do agente (RF51.CA04, lib/decia/session/agent.ts): AGENTE_APLICOU (o agente aplicou dentro do mandato; `actorId` = quem
+   * autorizou) ou REVERTEU (uma pessoa desfez até um checkpoint). Ausente nos demais registros (o hash deles não muda).
+   */
+  agent?: AuditAgentStep;
 }
+
+export interface AuditAgentStep { runId: string; step: number; tool: string; authorizedBy: string; checkpointId: string; tokens: number }
 
 export interface AuditRecord extends AuditInput {
   id: string;

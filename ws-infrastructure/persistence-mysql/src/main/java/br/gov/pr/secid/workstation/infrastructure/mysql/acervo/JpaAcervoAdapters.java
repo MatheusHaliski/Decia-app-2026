@@ -1,5 +1,6 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.acervo;
 
+import br.gov.pr.secid.workstation.application.acervo.DeadlineScanPort;
 import br.gov.pr.secid.workstation.application.acervo.EvidenceRepositoryPort;
 import br.gov.pr.secid.workstation.application.acervo.EvidenceRepositoryPort.StoredEvidence;
 import br.gov.pr.secid.workstation.application.acervo.LegalDeadlineRuleRepositoryPort;
@@ -35,6 +36,7 @@ import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskIt
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskStateLogRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -65,6 +67,7 @@ import java.util.stream.Collectors;
 @Configuration
 public class JpaAcervoAdapters {
     private static final ObjectMapper JSON = JsonMapper.builder().build();
+    private static final List<TaskState> OPEN_STATES = List.of(TaskState.RASCUNHO, TaskState.DISPONIVEL, TaskState.EM_USO, TaskState.BLOQUEADA);
 
     @Bean
     TaskRepositoryPort taskRepositoryPort(TaskItemRepository items, TaskBriefRepository briefs, TaskStateLogRepository logs, EntityManager em,
@@ -157,6 +160,24 @@ public class JpaAcervoAdapters {
                 e.setAt(log.at());
                 logs.save(e);
             }
+        };
+    }
+
+    /**
+     * Varredura do aviso diário de prazo (RF41.CA04): tarefas abertas com {@code due_at} ou {@code legal_due_at} na janela, por id (paginação
+     * por chave). Usa os índices {@code legal_due_at} e {@code responsible_id, due_at} da V11.
+     */
+    @Bean
+    DeadlineScanPort deadlineScanPort(EntityManager em) {
+        return (from, to, afterId, limit) -> {
+            TypedQuery<TaskItemEntity> q = em.createQuery("select t from TaskItemEntity t where t.state in :open "
+                            + "and ((t.dueAt between :from and :to) or (t.legalDueAt between :from and :to))"
+                            + (afterId == null ? "" : " and t.id > :after") + " order by t.id", TaskItemEntity.class)
+                    .setParameter("open", OPEN_STATES).setParameter("from", from).setParameter("to", to);
+            if (afterId != null) {
+                q.setParameter("after", afterId);
+            }
+            return q.setMaxResults(Math.max(1, limit)).getResultList().stream().map(JpaAcervoAdapters::toDomain).toList();
         };
     }
 

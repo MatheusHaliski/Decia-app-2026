@@ -23,6 +23,9 @@ public interface NotificationRepositoryPort {
 
     long countUnread(UUID recipientId);
 
+    /** Já existe notificação do destinatário com esta chave de agrupamento? (idempotência dos avisos agendados, RF41.CA04) */
+    boolean existsByGroupKey(UUID recipientId, String groupKey);
+
     /** Marca como lida só se for do destinatário e ainda não lida; devolve se mudou. */
     boolean markRead(UUID recipientId, UUID id, Instant at);
 

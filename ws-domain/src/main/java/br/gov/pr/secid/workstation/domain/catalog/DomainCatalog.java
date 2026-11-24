@@ -167,6 +167,12 @@ public final class DomainCatalog {
     public static final Set<String> PRE_EXISTING_TABLES = Set.of("app_meta", "users", "user_preferences", "refresh_tokens", "audit_log",
             "ai_inference_log", "feature_flags", "domain_events", "media_objects", "verification_codes");
 
+    /**
+     * Tabelas de infraestrutura escritas à mão, sem entidade de domínio nem FK para o resto do schema (não entram no
+     * {@code catalogo-entidades.json}): a trava dos trabalhos agendados (V70, {@code JobLockPort}).
+     */
+    public static final Set<String> INFRA_TABLES = Set.of("scheduled_job_locks");
+
     /** Nome do arquivo de cada migration gerada. */
     public static final Map<Integer, String> MIGRATIONS = Map.ofEntries(
             Map.entry(10, "rf28_institucional_lgpd"),

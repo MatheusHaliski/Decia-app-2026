@@ -19,6 +19,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,6 +41,7 @@ public class NotificationService {
     static final int MAX_TITLE = 200;
     private static final ObjectMapper JSON = JsonMapper.builder().build();
     private static final String TASK = "task";
+    private static final DateTimeFormatter BR_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final NotificationRepositoryPort repo;
     private final UserRepositoryPort users;
@@ -156,6 +159,42 @@ public class NotificationService {
             repo.insert(new Notification(UUID.randomUUID(), recipient, actorId, type, category, resourceType, resourceId, clip(title), null, data,
                     resourceType == null || resourceId == null ? null : resourceType + ":" + resourceId, false, null, null), now);
         }
+    }
+
+    /**
+     * Aviso diário de prazo (RF41.CA04; {@code DeadlineReminderJob}): PRAZO_PROXIMO ou PRAZO_VENCIDO para o dono ou o responsável da tarefa,
+     * só se a pessoa tem conta ativa e pode VER a tarefa agora, e só uma vez por {@code groupKey} (tarefa + tipo + dia). Sem ator (é o
+     * sistema). Payload só com título e datas: {@code taskTitle}, {@code dueAt} (AAAA-MM-DD), {@code days} (dias que faltam, ou há quantos
+     * venceu) e {@code source} (TAREFA ou LEGAL). Devolve se gravou.
+     */
+    public boolean deadlineNotice(UUID recipient, ScopedResource resource, TaskItem task, NotificationType type, LocalDate dueAt, long days,
+                                  boolean legal, String groupKey) {
+        if (recipient == null || (type != NotificationType.PRAZO_PROXIMO && type != NotificationType.PRAZO_VENCIDO)) {
+            return false;
+        }
+        boolean canSee = authorizer.viewerOf(recipient).map(v -> AccessPolicy.visible(v, resource)).orElse(false);
+        if (!canSee || repo.existsByGroupKey(recipient, groupKey)) {
+            return false;
+        }
+        long abs = Math.abs(days);
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("taskTitle", task.title());
+        payload.put("dueAt", dueAt.toString());
+        payload.put("days", Long.toString(abs));
+        payload.put("source", legal ? "LEGAL" : "TAREFA");
+        String date = dueAt.format(BR_DATE);
+        String what = legal ? "Prazo legal" : "Prazo";
+        String title;
+        if (type == NotificationType.PRAZO_VENCIDO) {
+            title = what + " vencido: \"" + task.title() + "\" venceu em " + date;
+        } else if (abs == 0) {
+            title = what + " vence hoje: \"" + task.title() + "\" (" + date + ")";
+        } else {
+            title = what + " próximo: \"" + task.title() + "\" vence em " + abs + (abs == 1 ? " dia" : " dias") + " (" + date + ")";
+        }
+        repo.insert(new Notification(UUID.randomUUID(), recipient, null, type, NotificationCategory.PRAZO, TASK, task.id(), clip(title), null,
+                json(payload), groupKey, false, null, null), clock.instant());
+        return true;
     }
 
     private void sendAboutTask(Set<UUID> recipients, UUID actorId, ScopedResource resource, TaskItem task, NotificationType type, String title,
