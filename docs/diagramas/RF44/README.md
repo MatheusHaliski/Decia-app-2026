@@ -585,3 +585,23 @@ flowchart LR
 | RF44.CA08 | `HseWeights` (companyId, version, weightsJson, validFrom), `HseWeightsController`, `METRICAS_GESTAO.md`, serviços de domínio testáveis, passado não recalcula | A14 → P18 | 53–56 | — | `HSE`, `PIS`, `MY (hse_weights)` |
 | RF44.CA09 | `DailyTask.aiInferenceId`, `AiCapability TAREFA_DO_DIA/HSE`, `LocalEngine` determinístico com redação simplificada, faísca ✦ | P10 → I1 → I2 → I3 | 9–10 | — | `AIE`, `AIP`, `Spark ✦` |
 | RF44.CA10 | `UserPreferences.notificationPrefsJson.dailyTaskAt` (08:00) e `timezone` (RF3), `Notification TAREFA_DO_DIA`, i18n | P19 → F6 | 14 | — | `SCH`, `CASA`, `lib/i18n` |
+
+## Estado da implementação (12/11/2026)
+
+O que passou de **(planejado)** a **(real)** junto com o aviso diário de prazo do RF41.CA04:
+
+- **CA01 (parcial) — Tarefa do Dia pelo prazo mais próximo (real).** Sub-aba `/profile?tab=tarefa-do-dia` da conta real (`OwnProfile` →
+  `components/tasks/DailyTask.tsx`): lê o Acervo em ordem de prazo (`GET /api/tasks?ordem=PRAZO`, RF41.CA09) e aplica a regra PURA
+  `suggestDailyTask` (`lib/tasks/dailyTask.ts`, D-12, sem IA e sem faísca ✦): entre rascunho, a realizar e em andamento (bloqueada fica de
+  fora), primeiro a de prazo efetivo mais próximo — o menor entre o prazo da tarefa e o prazo legal, vencidas antes —; empate → prazo legal,
+  prioridade maior, em andamento, título; sem nenhuma com prazo, a de maior prioridade. A tela diz o **motivo** em texto («Prazo vencido há
+  2 dias (22/11/2026)», «O prazo vence hoje», «É o prazo mais próximo: vence em 2 dias (26/11/2026) · prazo legal», «Nenhuma tarefa aberta
+  tem prazo; esta tem a maior prioridade (Crítica)») com a etiqueta de prazo do Acervo (⚖ + marca + texto), o link para a tarefa e as duas
+  próximas da fila.
+- **CA10 (parcial) — horário e fuso da pessoa (real para os avisos de prazo).** O `DeadlineReminderJob` (RF41.CA04) usa
+  `notificationPrefsJson.dailyTaskAt` e `timezone` de `user_preferences`; interruptor novo `deadlines` em Configurações › Notificações.
+- **(planejado)** `DailyTask` persistida (único por pessoa+dia), índice de prioridade (Eisenhower/WSJF/CPM/MoSCoW/WIP) e HSE previsto ×
+  realizado, troca com motivo, feedback CONCLUI/ADIEI/BLOQUEADA/DELEGUEI, semana planejada, histórico, pesos por empresa, redação ✦ pela IA e
+  a notificação `TAREFA_DO_DIA`; widgets no Acervo e na Mesa.
+- **Testes:** `lib/tasks/dailyTask.test.ts`, `components/tasks/dailyTask.test.tsx`.
+

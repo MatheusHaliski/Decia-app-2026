@@ -773,7 +773,21 @@ e vinculação direta de evidências e anexos por tarefa». O que passou de **(p
   no topo do Acervo (vencidas, hoje e até 7 dias; independe dos filtros), estado em texto e marca («Vence em X dias», «Vence hoje»,
   «Vencida há X dias»), painel no detalhe (regra, início, prévia calculada, salvar/remover) e o aviso de que a data é calculada pela regra
   cadastrada e deve ser conferida. Card: prazo efetivo com ⚖ quando é o legal, variação PRAZO_LEGAL, sem âmbar/vermelho em tarefa fechada.
-  **(planejado)** job diário `PRAZO_PROXIMO/PRAZO_VENCIDO` (RF27) e sugestão na Tarefa do Dia (RF44); cadastro de regras da empresa pela tela.
+  **(planejado)** cadastro de regras da empresa pela tela.
+- **CA04 — aviso diário de prazo próximo e vencido (real).** `DeadlineReminderJob` (ws-application, `@Scheduled` a cada
+  `ws.jobs.deadlines.every`, padrão 15 min; desligado com `ws.jobs.enabled=false`) com trava entre instâncias no estilo do ShedLock
+  (`JobLockPort` → tabela `scheduled_job_locks` da **V70**, `UPDATE` condicional que expira sozinho em `ws.jobs.deadlines.lock-for`). Varre
+  as tarefas ABERTAS (rascunho, disponível, em uso, bloqueada) com `due_at` ou `legal_due_at` numa janela curta (`DeadlineScanPort`,
+  paginação por id) e, para o dono e o responsável, aplica as regras puras de `DeadlineReminders`: prazo efetivo = o mais próximo entre o da
+  tarefa e o legal; **PRAZO_PROXIMO** quando faltam exatamente N dias (`ws.jobs.deadlines.near-days`, padrão `3,1`) ou vence hoje — chave
+  `prazo:<tarefa>:PRAZO_PROXIMO:<dia local>`; **PRAZO_VENCIDO** uma vez por vencimento, nos 7 dias seguintes (rodada perdida é recuperada) —
+  chave `prazo:<tarefa>:PRAZO_VENCIDO:<dia do vencimento>`; idempotência pelo `group_key` da notificação. Preferências da pessoa: interruptor
+  `deadlines` no `notificationPrefsJson` (ausente = ligado; desligado = nenhum aviso de prazo; «Avisos diários de prazo» em Configurações ›
+  Notificações) e o horário `dailyTaskAt` no fuso `timezone` (antes dele, nada naquele dia). Só para conta ativa que pode VER a tarefa
+  (`AccessPolicy`); sem ator; categoria PRAZO; payload só com `taskTitle`, `dueAt`, `days`, `source` (TAREFA/LEGAL); log só com contagens.
+  Central (`lib/notifications/client.ts`): tipo `PRAZO`, texto nos 3 idiomas («O prazo de “…” vence em 3 dias (27/11/2026)», com ⚖ quando é
+  o legal), data no formato do idioma, link para `/tasks/{id}`. Sem rota nova (o contrato OpenAPI não mudou). Sugestão na Tarefa do Dia: ver
+  RF44. **(planejado)** e-mail/push do aviso (hoje só na central), N por pessoa.
 - **CA06 — anexos e evidências (real).** `GET/POST /api/tasks/{id}/attachments` (multipart), `DELETE /api/tasks/{id}/attachments/{attachmentId}`,
   `GET …/attachments/{attachmentId}/content`, `POST …/attachments/{attachmentId}/evidence`, `GET/POST /api/tasks/{id}/evidences`,
   `DELETE /api/tasks/{id}/evidences/{evidenceId}` e `GET /api/attachments` (meus anexos), em `TaskAttachmentService`. BOLA: toda rota
@@ -788,6 +802,9 @@ e vinculação direta de evidências e anexos por tarefa». O que passou de **(p
   Evidências» no detalhe (enviar, enviar como evidência, abrir/baixar, marcar/desmarcar, remover com confirmação) e `/attachments`
   (`MyAttachments`) com o link para a tarefa. **(planejado)** Estúdio (`toStudio` → IMAGEM_EDITADA), vínculo da evidência a projeto, OCR.
 - **RF34** — no detalhe de DESENHO_TECNICO e DOCUMENTO, o botão «Extrair quantitativos (RF34)» leva a `/tasks/{id}/extrair` (página da frente RF34).
+- **Testes do aviso diário:** `DeadlineRemindersTest`, `DeadlineReminderJobTest` (horário/fuso, interruptor, idempotência, conta inativa,
+  trava, paginação), `DeadlineReminderIT` (MySQL real: trava da V70, varredura com paginação por chave, trabalho de ponta a ponta),
+  `lib/notifications/deadlines.test.ts`, `components/tasks/dailyTask.test.tsx`.
 - **Testes:** `LegalDeadlineCalendarTest`, `AcervoQueriesTest`, `AcervoServiceTest`, `LegalDeadlineServiceTest`, `TaskAttachmentServiceTest`,
   `ImageMetadataTest`, `TaskControllerWebTest`, `TaskAttachmentControllerWebTest`, `AcervoAdaptersIT` (MySQL real: V69, cifra das coordenadas),
   `lib/tasks/{legalDeadline,acervo,card}.test.ts`, `components/tasks/{acervo,attachments}.test.tsx`.
