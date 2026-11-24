@@ -422,3 +422,13 @@ A bancada de extração de quantitativos (`/tasks/extrair` e `/tasks/[id]/extrai
 | CA06 | parcial — antes de criar a tarefa a tela lista o que foi descartado (entidades sem suporte, espaço do papel, geometria interna de blocos, hachuras complexas, geometria 3D do IFC, tipos IFC sem tratamento, texturas e animações do GLB), aproximado (elipses e splines) e achatado (fora do plano XY) | `CadLoss` em `lib/cad/takeoff.ts`, `components/cad/ReadSummary.tsx` |
 | CA07 | pendente — a estrutura do GLB lido é validada (cabeçalho, pedaços, limites de acessores e índices), mas não há exportação de GLB | — |
 | CA01, CA03, CA04 | fora desta frente | — |
+
+**Letters (documentos de texto, 12/11/2026).** A linha "DOCX / XLSX" da matriz acima ganhou, só para o Letters e só para
+DOCX, leitura para edição e escrita no navegador (`lib/letters/io/**`), junto com Markdown, texto e HTML simples; XLSX segue
+pendente e PDF sai apenas pela impressão do navegador ("Salvar como PDF"), sem leitura. Detalhes e testes no RF52
+(`docs/diagramas/RF52/README.md`, CA04, CA05, CA07).
+
+| CA | Situação no Letters | Onde |
+|---|---|---|
+| CA05 | parcial — DOCX/MD/TXT/HTML malformado, truncado, criptografado, com macro, com DTD, binário, de tipo divergente da extensão ou excessivo (8 MB, bomba de descompressão por razão e teto, 3.000 blocos) é recusado com motivo estável e a peça atual fica intacta (hash/objeto inalterado no teste de tela) | `lib/letters/io/import.ts`, `zip.ts`, `xml.ts`; testes `docx.test.ts`, `zip.test.ts`, `import.test.ts`, `components/letters/io.test.tsx` |
+| CA06 | parcial — antes do aceite a tela lista, por grupo, o que será descartado, aproximado ou achatado (24 códigos de perda com contagem) e uma prévia; nada é aplicado sem confirmação; aplicar vira revisão nova com desfazer | `FidelityLoss`/`LossLog` em `lib/letters/io/model.ts`, `components/letters/ImportDialog.tsx` |

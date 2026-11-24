@@ -19,13 +19,17 @@ export interface BlockListProps {
   onMove: (blockId: string, dir: -1 | 1) => void;
   onRemove: (blockId: string) => void;
   onKind: (blockId: string, kind: BlockKind) => void;
+  /** resultados da busca por bloco (destaque, RF52.CA03) */
+  hits?: ReadonlyMap<string, number>;
+  /** bloco do resultado atual da busca */
+  activeBlockId?: string | null;
 }
 
 /**
  * Editor estruturado por blocos (RF52 mínimo): título, parágrafo, lista, citação e referências, cada um num Textarea
  * do design system com rótulo, numeração de parágrafo e comandos acessíveis por teclado (mover, inserir, remover).
  */
-export function BlockList({ blocks, label, scores, gloss, refs, onEdit, onInsert, onMove, onRemove, onKind }: BlockListProps) {
+export function BlockList({ blocks, label, scores, gloss, refs, onEdit, onInsert, onMove, onRemove, onKind, hits, activeBlockId }: BlockListProps) {
   const { t } = useI18n();
   return (
     <ol className="grid gap-[var(--ws-space-3)]" aria-label={t("letters.editor.blocks")}>
@@ -33,8 +37,9 @@ export function BlockList({ blocks, label, scores, gloss, refs, onEdit, onInsert
         const name = label(b.id);
         const score = scores.get(b.id);
         const tokens = gloss?.get(b.id);
+        const hitCount = hits?.get(b.id) ?? 0;
         return (
-          <li key={b.id} className="grid gap-1.5 rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]" data-block-id={b.id}>
+          <li key={b.id} className={cn("grid gap-1.5 rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]", hitCount > 0 && "border-ws-accent", activeBlockId === b.id && "[box-shadow:var(--ws-focus-ring)]")} data-block-id={b.id} data-search-hits={hitCount || undefined}>
             <Field label={name} hint={b.kind === "LISTA" || b.kind === "REFERENCIAS" ? t(`letters.block.lineHint.${b.kind}`) : undefined}>
               {({ id, describedBy }) => (
                 <Textarea
@@ -61,6 +66,7 @@ export function BlockList({ blocks, label, scores, gloss, refs, onEdit, onInsert
                   {t("letters.heat.badge", { level: t(`letters.heat.level.${score.level}`), count: score.findings })}
                 </Badge>
               ) : null}
+              {hitCount > 0 ? <Badge tone="accent" className="normal-case tracking-normal">{t("letters.io.nav.hits", { count: hitCount })}</Badge> : null}
               <span className="flex-1" />
               <span className="w-40">
                 <Select

@@ -16,7 +16,12 @@ import type { BlockScore } from "@/lib/letters/score";
 import { EXPECTED_SECTIONS } from "@/lib/letters/coherence";
 import { SECTION_HEADINGS } from "@/lib/letters/templates";
 import { TEXT_GENRES, TEXT_LANGUAGES, type BlockKind, type Finding, type IgnoreReason, type TaggedToken, type TextGenre, type TextLanguage } from "@/lib/letters/types";
+import { importIntoPiece, type ImportMode } from "@/lib/letters/io/apply";
+import type { ImportedDocument } from "@/lib/letters/io/model";
+import type { SearchMatch } from "@/lib/letters/io/navigate";
 import { BlockList } from "./BlockList";
+import { DocumentTools } from "./DocumentTools";
+import { NavigatorCard } from "./NavigatorCard";
 import { CopilotPanel, type BatchState } from "./CopilotPanel";
 import type { FindingActions } from "./FindingCard";
 import { HistoryCard } from "./HistoryCard";
@@ -46,6 +51,7 @@ function Editor({ pieceId, repo }: { pieceId: string; repo: LettersRepository })
   const [status, setStatus] = useState<{ text: string; assertive: boolean } | null>(null);
   const [highlight, setHighlight] = useState(false);
   const [panelOpen, setPanelOpen] = useState(true);
+  const [hits, setHits] = useState<{ counts: Map<string, number>; active: string | null }>({ counts: new Map(), active: null });
   const refs = useRef(new Map<string, HTMLTextAreaElement>());
   const headingRef = useRef<HTMLHeadingElement>(null);
   const focusCard = useRef<string | null>(null);
@@ -71,10 +77,10 @@ function Editor({ pieceId, repo }: { pieceId: string; repo: LettersRepository })
   const announce = useCallback((text: string, assertive = false) => setStatus({ text, assertive }), []);
   const denial = useCallback((reason: AcceptDenial | string, vars: Record<string, string | number> = {}) => t(`letters.denial.${reason}`, vars), [t]);
 
-  const focusText = useCallback((blockId: string, start: number, end: number) => {
+  const focusText = useCallback((blockId: string, start: number, end: number, focus = true) => {
     const el = refs.current.get(blockId);
     if (!el) return;
-    el.focus();
+    if (focus) el.focus();
     el.setSelectionRange(start, end);
     el.scrollIntoView?.({ block: "center", behavior: "smooth" });
   }, []);
@@ -237,6 +243,19 @@ function Editor({ pieceId, repo }: { pieceId: string; repo: LettersRepository })
     if (next) announce(t("letters.status.restored", { from: revision, revision: next.revision }));
   };
 
+  /* ── Importar / navegar (RF52.CA03, CA04) ──────────────────────────────────────────────────────────────── */
+
+  const onImport = (doc: ImportedDocument, mode: ImportMode) => {
+    const next = importIntoPiece(piece, doc, mode, now());
+    repo.save(next);
+    announce(t(mode === "SUBSTITUIR" ? "letters.io.status.replaced" : "letters.io.status.appended", { count: doc.blocks.length, file: doc.fileName, revision: next.revision }));
+  };
+  const onMatches = (matches: readonly SearchMatch[], current: number) => {
+    const counts = new Map<string, number>();
+    for (const m of matches) counts.set(m.blockId, (counts.get(m.blockId) ?? 0) + 1);
+    setHits({ counts, active: matches[current]?.blockId ?? null });
+  };
+
   const togglePanel = () => {
     const open = !panelOpen;
     setPanelOpen(open);
@@ -262,6 +281,7 @@ function Editor({ pieceId, repo }: { pieceId: string; repo: LettersRepository })
           <Badge tone="neutral" className="normal-case tracking-normal">{t(`letters.docType.${piece.docType}`)}</Badge>
           <Badge tone="accent" className="normal-case tracking-normal" title={t("letters.editor.revisionHint")}>{t("letters.history.revision", { revision: piece.revision })}</Badge>
           <Badge tone="warning" title={t("letters.demoHint")}>{t("letters.demo")}</Badge>
+          <DocumentTools piece={piece} onImport={onImport} announce={announce} />
           <Button id="letters-copilot-toggle" size="sm" variant={panelOpen ? "default" : "spark"} aria-expanded={panelOpen} aria-controls="letters-copilot" data-testid="editor-cmd-toggle-ai" onClick={togglePanel}>
             {panelOpen ? t("letters.editor.hideCopilot") : t("letters.editor.showCopilot")}
           </Button>
@@ -270,7 +290,8 @@ function Editor({ pieceId, repo }: { pieceId: string; repo: LettersRepository })
 
       <div className={panelOpen ? "grid items-start gap-[var(--ws-space-4)] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]" : "grid gap-[var(--ws-space-4)]"}>
         <section aria-label={t("letters.editor.region")} className="grid min-w-0 gap-[var(--ws-space-4)]">
-          <BlockList blocks={piece.blocks} label={blockLabel} scores={scores} gloss={gloss} refs={refs} onEdit={onEdit} onInsert={onInsert} onMove={onMove} onRemove={onRemove} onKind={onKind} />
+          <NavigatorCard blocks={piece.blocks} label={blockLabel} onGoTo={focusText} onMatches={onMatches} />
+          <BlockList blocks={piece.blocks} label={blockLabel} scores={scores} gloss={gloss} refs={refs} onEdit={onEdit} onInsert={onInsert} onMove={onMove} onRemove={onRemove} onKind={onKind} hits={hits.counts} activeBlockId={hits.active} />
           <HistoryCard piece={piece} onUndo={onUndo} onRestore={onRestore} />
         </section>
         <aside id="letters-copilot" aria-labelledby="letters-copilot-title" hidden={!panelOpen} className="min-w-0 rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-2 p-[var(--ws-space-3)] lg:sticky lg:top-[calc(var(--ws-shell-header)+var(--ws-space-3))] lg:max-h-[calc(100dvh-var(--ws-shell-header)-var(--ws-space-6))] lg:overflow-y-auto">

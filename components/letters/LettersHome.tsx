@@ -9,6 +9,9 @@ import { EXPECTED_SECTIONS } from "@/lib/letters/coherence";
 import { TEMPLATE_TYPES, type TemplateType } from "@/lib/letters/templates";
 import { wordCount } from "@/lib/letters/text";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
+import { pieceFromImport } from "@/lib/letters/io/apply";
+import type { ImportedDocument } from "@/lib/letters/io/model";
+import { ImportDialog } from "./ImportDialog";
 import { useMounted } from "./useMounted";
 
 const OFICIO_ELEMENTS = ["identificacao", "data", "assunto", "vocativo", "fecho"] as const;
@@ -26,11 +29,18 @@ function Home({ repo }: { repo: LettersRepository }) {
   const router = useRouter();
   const pieces = useLetterPieces(repo);
   const [title, setTitle] = useState("");
+  const [importOpen, setImportOpen] = useState(false);
   const fmt = new Intl.DateTimeFormat(intl, { dateStyle: "medium", timeStyle: "short" });
 
   const create = (template: TemplateType) => {
     const piece = repo.createFromTemplate({ template, title: title.trim() || t(`letters.template.${template}.defaultTitle`), ownerId: LETTERS_DEMO_USER, mode: prefs.aiAutonomyDefault });
     setTitle("");
+    router.push(`/letters/${piece.id}`);
+  };
+
+  const createFromImport = (doc: ImportedDocument) => {
+    const piece = pieceFromImport(doc, { id: `peca-import-${Date.now().toString(36)}`, ownerId: LETTERS_DEMO_USER, mode: prefs.aiAutonomyDefault, now: new Date() });
+    repo.save(piece);
     router.push(`/letters/${piece.id}`);
   };
 
@@ -89,6 +99,11 @@ function Home({ repo }: { repo: LettersRepository }) {
           })}
         </ul>
         <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("letters.home.modeNote", { mode: t(`aiAutonomy.${prefs.aiAutonomyDefault}`) })}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button size="sm" variant="default" icon="acervo" onClick={() => setImportOpen(true)} data-testid="letters-home-import">{t("letters.io.home.import")}</Button>
+          <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("letters.io.home.importHint")}</span>
+        </div>
+        <ImportDialog open={importOpen} onOpenChange={setImportOpen} target="new" onConfirm={createFromImport} />
       </section>
     </div>
   );

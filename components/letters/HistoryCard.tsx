@@ -21,7 +21,7 @@ export function HistoryCard({ piece, onUndo, onRestore }: { piece: LetterPiece; 
             <li key={v.revision} className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
               <Badge tone={current ? "accent" : "neutral"} className="normal-case tracking-normal">{t("letters.history.revision", { revision: v.revision })}</Badge>
               <span className="min-w-0 flex-1">
-                {t(`letters.history.${v.summary}`, { ...(v.vars ?? {}), kind: v.vars?.kind ? t(`letters.blockKind.${v.vars.kind}`) : "", docType: v.vars?.docType ? t(`letters.docType.${v.vars.docType}`) : "" })}
+                {t(v.summary.startsWith("io.") ? `letters.${v.summary}` : `letters.history.${v.summary}`, { ...(v.vars ?? {}), kind: v.vars?.kind ? t(`letters.blockKind.${v.vars.kind}`) : "", docType: v.vars?.docType ? t(`letters.docType.${v.vars.docType}`) : "" })}
                 <span className="text-ws-text-muted"> · {t(`letters.origin.${v.origin}`)} · {fmt.format(new Date(v.at))}</span>
               </span>
               {current ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("letters.history.current")}</span> : <Button size="sm" variant="ghost" onClick={() => onRestore(v.revision)}>{t("letters.history.restore")}</Button>}

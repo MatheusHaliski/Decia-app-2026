@@ -6,6 +6,7 @@
  * PARAGRAFO. O que não cabe no modelo (formatação, imagens, tabelas, notas, comentários, revisões, cabeçalhos,
  * caixas de texto, campos) entra no relatório de fidelidade. Macros nunca são executadas: pacote com macro é recusado.
  */
+import { DOC_TYPES, TEXT_GENRES, TEXT_LANGUAGES, type DocType, type TextGenre, type TextLanguage } from "../types";
 import { clampLevel, LossLog, type DocMeta, type DraftBlock } from "./model";
 import type { ExportablePiece } from "./export";
 import { childEls, findEl, firstEl, isEl, parseXml, textOf, xmlEscape, type XmlElement } from "./xml";
@@ -301,11 +302,16 @@ export async function parseDocx(bytes: Uint8Array): Promise<{ meta: DocMeta; blo
   if (names.some((n) => /^word\/(header|footer)\d*\.xml$/.test(n))) losses.add("CABECALHO_RODAPE");
   const meta: DocMeta = {};
   const blocks = bodyBlocks(body, ctx, meta);
-  if (!meta.title) {
-    const core = await readXml(zip, "docProps/core.xml").catch(() => undefined);
-    const t = core ? findEl(core, "dc:title") : undefined;
-    if (t && textOf(t).trim()) meta.title = textOf(t).trim();
-  }
+  // metadados do pacote: título (se o corpo não tem estilo Title), tipo (categoria), gênero (palavras-chave), idioma
+  const core = await readXml(zip, "docProps/core.xml").catch(() => undefined);
+  const prop = (name: string) => {
+    const el = core ? findEl(core, name) : undefined;
+    return el ? textOf(el).trim() : "";
+  };
+  if (!meta.title && prop("dc:title")) meta.title = prop("dc:title");
+  if ((DOC_TYPES as readonly string[]).includes(prop("cp:category"))) meta.docType = prop("cp:category") as DocType;
+  if ((TEXT_GENRES as readonly string[]).includes(prop("cp:keywords"))) meta.genre = prop("cp:keywords") as TextGenre;
+  if ((TEXT_LANGUAGES as readonly string[]).includes(prop("dc:language"))) meta.language = prop("dc:language") as TextLanguage;
   return { meta, blocks, losses };
 }
 
@@ -415,7 +421,8 @@ export function docxCoreXml(piece: ExportablePiece): string {
     `${XML_DECL}<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">` +
     `<dc:title>${xmlEscape(piece.title)}</dc:title>` +
     `<dc:language>${xmlEscape(piece.language)}</dc:language>` +
-    `<cp:keywords>${xmlEscape(`${piece.docType}; ${piece.genre}`)}</cp:keywords>` +
+    `<cp:category>${xmlEscape(piece.docType)}</cp:category>` +
+    `<cp:keywords>${xmlEscape(piece.genre)}</cp:keywords>` +
     `<cp:revision>${piece.revision}</cp:revision>` +
     `<dcterms:modified xsi:type="dcterms:W3CDTF">${w3c(piece.updatedAt)}</dcterms:modified>` +
     "</cp:coreProperties>"

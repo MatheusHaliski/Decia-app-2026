@@ -45,7 +45,7 @@ describe("ida e volta (importar o que exportou) — RF52.CA05", () => {
     const { file, doc } = await roundTrip(piece, "docx");
     expect(file.mime).toBe("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     expect(shape(doc.blocks)).toEqual(shape(piece.blocks));
-    expect(doc.meta.title).toBe(piece.title);
+    expect(doc.meta).toMatchObject({ title: piece.title, docType: "RELATORIO_TECNICO", genre: "TECNICO", language: "pt-BR" });
     expect(doc.losses).toEqual([]);
   });
 
