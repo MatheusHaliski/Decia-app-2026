@@ -8759,5 +8759,6 @@
   "letters.io.nav.firstOnly": "Mostrando los primeros {count}; usa Siguiente para continuar.",
   "letters.io.nav.hits": "{count} resultado(s)",
   "letters.io.home.import": "Importar archivo",
-  "letters.io.home.importHint": "Word, Markdown, texto o HTML se convierte en una pieza nueva, con el informe de lo que se pierde antes de crearla."
+  "letters.io.home.importHint": "Word, Markdown, texto o HTML se convierte en una pieza nueva, con el informe de lo que se pierde antes de crearla.",
+  "labSim.rule.ADMIN_E_EMPRESA_IA": "Administración: el ADMIN usa todas las pestañas; la EMPRESA solo la pestaña IA del sistema (techo de autonomía)."
 }

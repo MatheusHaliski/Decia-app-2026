@@ -8759,5 +8759,6 @@
   "letters.io.nav.firstOnly": "Showing the first {count}; use Next to continue.",
   "letters.io.nav.hits": "{count} result(s)",
   "letters.io.home.import": "Import file",
-  "letters.io.home.importHint": "Word, Markdown, text or HTML becomes a new piece, with a report of what is lost before creating it."
+  "letters.io.home.importHint": "Word, Markdown, text or HTML becomes a new piece, with a report of what is lost before creating it.",
+  "labSim.rule.ADMIN_E_EMPRESA_IA": "Administration: ADMIN uses every tab; the COMPANY only the System AI tab (autonomy ceiling)."
 }

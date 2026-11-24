@@ -8759,5 +8759,6 @@
   "letters.io.nav.firstOnly": "Mostrando os primeiros {count}; use Próximo para continuar.",
   "letters.io.nav.hits": "{count} resultado(s)",
   "letters.io.home.import": "Importar arquivo",
-  "letters.io.home.importHint": "Word, Markdown, texto ou HTML vira uma peça nova, com o relatório do que se perde antes de criar."
+  "letters.io.home.importHint": "Word, Markdown, texto ou HTML vira uma peça nova, com o relatório do que se perde antes de criar.",
+  "labSim.rule.ADMIN_E_EMPRESA_IA": "Administração: o ADMIN usa todas as abas; a EMPRESA só a aba IA do sistema (teto de autonomia)."
 }
