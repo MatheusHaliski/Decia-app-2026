@@ -28,6 +28,8 @@ export interface NotificationPrefs {
   seals: boolean;
   points: boolean;
   weeklyDigest: boolean;
+  /** avisos diários de prazo próximo e vencido (RF41.CA04; job no servidor, no horário `dailyTaskAt` e no fuso da pessoa) */
+  deadlines: boolean;
 }
 
 export interface UserPreferences {
@@ -66,7 +68,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   reduceMotion: false,
   deskSkin: "papel",
   backgroundId: "sem-arte",
-  notificationPrefs: { dailyTaskAt: "08:00", email: true, push: false, mentions: true, decia: true, seals: true, points: true, weeklyDigest: true },
+  notificationPrefs: { dailyTaskAt: "08:00", email: true, push: false, mentions: true, decia: true, seals: true, points: true, weeklyDigest: true, deadlines: true },
   timezone: "America/Sao_Paulo",
   wipLimit: 3,
   aiModeDefault: "economia",
@@ -116,6 +118,7 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
       dailyTaskAt: typeof n.dailyTaskAt === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(n.dailyTaskAt) ? n.dailyTaskAt : DEFAULT_PREFERENCES.notificationPrefs.dailyTaskAt,
       email: bool(n.email, true), push: bool(n.push, false), mentions: bool(n.mentions, true), decia: bool(n.decia, true),
       seals: bool(n.seals, true), points: bool(n.points, true), weeklyDigest: bool(n.weeklyDigest, true),
+      deadlines: bool(n.deadlines, true),
     },
     timezone: isTimezone(r.timezone) ? r.timezone : DEFAULT_PREFERENCES.timezone,
     wipLimit: Number.isInteger(wip) && wip >= 1 && wip <= 20 ? wip : DEFAULT_PREFERENCES.wipLimit,

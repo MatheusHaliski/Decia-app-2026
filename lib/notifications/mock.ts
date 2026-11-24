@@ -7,7 +7,7 @@
  */
 import type { GlyphName } from "@/components/ui/glyphs/sprite.gen";
 
-export type NotificationKind = "MENCAO" | "DECISAO" | "CHANCELA" | "PONTOS" | "TAREFA_DO_DIA" | "ATRIBUICAO" | "TAREFA" | "SEGURANCA" | "SISTEMA";
+export type NotificationKind = "MENCAO" | "DECISAO" | "CHANCELA" | "PONTOS" | "TAREFA_DO_DIA" | "ATRIBUICAO" | "TAREFA" | "PRAZO" | "SEGURANCA" | "SISTEMA";
 
 export interface AppNotification {
   id: string;
@@ -19,6 +19,8 @@ export interface AppNotification {
   minutesAgo: number;
   read: boolean;
   href: string;
+  /** nomes das `vars` que são datas AAAA-MM-DD: a linha formata no idioma da pessoa (RF41.CA04, prazos) */
+  dateVars?: readonly string[];
 }
 
 export const KIND_GLYPH: Record<NotificationKind, GlyphName> = {
@@ -29,6 +31,7 @@ export const KIND_GLYPH: Record<NotificationKind, GlyphName> = {
   TAREFA_DO_DIA: "tarefa-do-dia",
   ATRIBUICAO: "criar-tarefa",
   TAREFA: "acervo",
+  PRAZO: "tarefa-do-dia",
   SEGURANCA: "configuracoes",
   SISTEMA: "notificacoes",
 };

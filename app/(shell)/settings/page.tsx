@@ -105,6 +105,8 @@ function Notifications() {
         {(["email", "push", "mentions", "decia", "seals", "points", "weeklyDigest"] as const).map((k) => (
           <Switch key={k} checked={n[k]} onCheckedChange={(v) => set({ [k]: v })} label={t(`notifPrefs.${k}`)} />
         ))}
+        {/* RF41.CA04: avisos diários de prazo próximo e vencido (servidor, no horário acima e no fuso da pessoa) */}
+        <Switch checked={n.deadlines} onCheckedChange={(v) => set({ deadlines: v })} label={t("prazosdiarios.settings.deadlines")} />
       </div>
     </Card>
   );

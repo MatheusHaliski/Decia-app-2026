@@ -180,7 +180,7 @@ export function AgentPanel() {
     setStatus(ok);
   };
   const step = () => {
-    const out = store.step(session.id, labels);
+    const out = store.step(session.id, { labels, actor: me });
     if (out.kind === "NEGADO") done({ ok: false, reason: out.reason }, "");
     else if (out.kind === "APLICADO") done({ ok: true }, t("session.agent.done.step", { n: out.step.n, summary: out.step.summary }));
     else done({ ok: true }, t(`session.agent.notice.${out.run.core.status}`, { by: t("session.agent.system"), steps: out.run.steps.length, tokens: out.run.core.tokensUsed, version: out.run.core.policyVersion, reason: t(`session.agent.end.${out.reason}`) }));
@@ -226,7 +226,7 @@ export function AgentPanel() {
       {running && run!.paused ? <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("session.agent.pausedBy", { name: personName(people, run!.pausedBy) })}</p> : null}
 
       <div className="flex flex-wrap gap-2">
-        {!running ? (
+        {!running && charter ? (
           <Button size="sm" variant="spark" disabled={!mayStart} onClick={() => done(store.start(session.id, me, labels), t("session.agent.done.started"))} data-testid="agent-start">
             {t("session.agent.start")}
           </Button>

@@ -10,7 +10,7 @@
 import { useSyncExternalStore } from "react";
 import type { MemorySearch } from "@/lib/memory/search";
 import {
-  isRunning, pauseAgent, reconcileAgent, resumeAgent, runAgentStep, startSessionAgent, stopAgent, undoAgentTo, type AgentDenial, type AgentLabels, type AgentResult,
+  canStartAgent, isRunning, pauseAgent, reconcileAgent, resumeAgent, runAgentStep, startSessionAgent, stopAgent, undoAgentTo, type AgentDenial, type AgentLabels, type AgentResult,
   type AgentStepOutcome, type SessionAgentRun,
 } from "./agent";
 import type { SessionRepository } from "./repository";
@@ -29,8 +29,11 @@ export interface AgentStore {
   runs(sessionId: string): readonly SessionAgentRun[];
   latest(sessionId: string): SessionAgentRun | null;
   start(sessionId: string, actor: string, labels: AgentLabels): AgentResult<{ run: SessionAgentRun }>;
-  /** um passo agora (também usado pelo motor automático) */
-  step(sessionId: string, labels?: AgentLabels): AgentStepOutcome;
+  /**
+   * Um passo agora (também usado pelo motor automático). `actor` = "Próximo passo" de uma pessoa com a execução pausada (quem
+   * autorizou ou a proprietária); sem `actor`, só roda se não estiver pausada.
+   */
+  step(sessionId: string, opts?: { labels?: AgentLabels; actor?: string }): AgentStepOutcome;
   pause(sessionId: string, actor: string): AgentResult<{ run: SessionAgentRun }>;
   resume(sessionId: string, actor: string, labels?: AgentLabels): AgentResult<{ run: SessionAgentRun }>;
   stop(sessionId: string, actor: string): AgentResult<{ run: SessionAgentRun }>;
@@ -138,17 +141,19 @@ export function createAgentStore(repo: SessionRepository, opts: AgentStoreOption
       return res;
     },
 
-    step(sessionId, labels) {
+    step(sessionId, stepOpts = {}) {
       const run = latest(sessionId);
-      if (labels) labelsBySession.set(sessionId, labels);
+      if (stepOpts.labels) labelsBySession.set(sessionId, stepOpts.labels);
       const l = labelsBySession.get(sessionId);
-      if (!run) return { kind: "NEGADO", reason: "SEM_EXECUCAO" };
-      if (!l) return { kind: "NEGADO", reason: "SEM_EXECUCAO" };
+      if (!run || !l) return { kind: "NEGADO", reason: "SEM_EXECUCAO" };
+      const actor = stepOpts.actor;
+      const s0 = repo.get(sessionId);
+      if (actor !== undefined && (!s0 || !canStartAgent(s0, run.charter, actor))) return { kind: "NEGADO", reason: "SEM_PERMISSAO" };
       let out: AgentStepOutcome = { kind: "NEGADO", reason: "NAO_PARTICIPA" };
       reconciling = true;
       try {
         repo.commitAgent(sessionId, (s, org) => {
-          out = runAgentStep(s, org, run, l, repo.people, clock(), nextId("msg"), { search: opts.search });
+          out = runAgentStep(s, org, run, l, repo.people, clock(), nextId("msg"), { search: opts.search, manual: actor !== undefined });
           if (out.kind === "NEGADO") return null;
           return { session: out.session, audit: out.kind === "APLICADO" ? [out.audit] : [] };
         });

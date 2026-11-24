@@ -322,10 +322,11 @@ export function runAgentStep(
   people: PeopleDirectory,
   now: Date,
   messageId: string,
-  opts: { search?: MemorySearch } = {},
+  opts: { search?: MemorySearch; manual?: boolean } = {},
 ): AgentStepOutcome {
   if (!isRunning(run)) return { kind: "NEGADO", reason: "EXECUCAO_ENCERRADA" };
-  if (run.paused) return { kind: "NEGADO", reason: "AGENTE_PAUSADO" };
+  // pausado, só avança pelo "Próximo passo" de uma pessoa (um passo de cada vez); o motor automático espera
+  if (run.paused && !opts.manual) return { kind: "NEGADO", reason: "AGENTE_PAUSADO" };
   const at = now.toISOString();
   const stop = (status: "CONCLUIDO" | "LIMITE_ATINGIDO" | "INTERROMPIDO", reason: AgentEndReason): AgentStepOutcome => {
     const next = ended(run, status, reason, "SISTEMA", at);
