@@ -54,6 +54,14 @@ public final class AuditActions {
     public static final String CONNECTOR_CONNECT_FAILED = "CONNECTOR_CONNECT_FAILED";
     public static final String CONNECTOR_DISCONNECTED = "CONNECTOR_DISCONNECTED";
     public static final String CONNECTOR_IMPORTED = "CONNECTOR_IMPORTED";
+    /**
+     * Decisão estruturada (DECIA fase 7, RF29): criada, alterada por comandos (estrutura, notas, evidência, estado), decidida (snapshot
+     * DECISAO) e reaberta (snapshot REABERTURA). Metadados só com tipos de comando, estados e versão — nunca pergunta, motivo nem nomes.
+     */
+    public static final String DECISION_CREATED = "DECISION_CREATED";
+    public static final String DECISION_CHANGED = "DECISION_CHANGED";
+    public static final String DECISION_DECIDED = "DECISION_DECIDED";
+    public static final String DECISION_REOPENED = "DECISION_REOPENED";
 
     private AuditActions() {
     }
