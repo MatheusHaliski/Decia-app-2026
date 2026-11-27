@@ -620,3 +620,35 @@ flowchart LR
 | RF21.CA14 | `DraftService`, `DraftStorePort`, `ProjectScheme.autosaveDraftJson` | `F6`, `S11` | 15–18, 52 | nota de `RAS` | `RDS` (`draft:project:{userId}`) | planejado |
 
 Tela/aba: `/projects/new` (esqueleto em `app/(shell)/projects/new/page.tsx`)
+
+## Estado da implementação (12/11/2026)
+
+**Criador completo de projetos** em `/projects/new` (`components/projects/wizard/ProjectWizard.tsx`, regras puras em
+`lib/projects/wizard.ts`) — assistente em 10 passos com índice (estado em texto e marca), validação ao avançar com foco no primeiro erro
+e revisão final que leva ao passo com pendência:
+
+1. Identificação e área (nome, área do projeto, resumo, nº do ofício/processo de origem);
+2. TAP: objetivos SMART (texto, indicador, meta, prazo, objetivo estratégico — marca S/M/A/R/T), justificativa, produto, escopo e fora do
+   escopo (conflito entre os dois é erro), premissas, restrições, requisitos de alto nível, critérios de sucesso e entregas (com formato
+   família → variante, `docs/produto/FORMATOS_E_VARIANTES.md`);
+3. Partes interessadas com poder × interesse e a estratégia de Mendelow;
+4. Patrocinador, gerente, equipe, papéis necessários e **RACI básico** por entrega (um único A e ao menos um R, `raciProblems`);
+5. Abordagem (preditiva, iterativa, ágil, híbrida), modelo de quadro e sprints (duração e quantidade → calendário);
+6. Cronograma inicial: início, término previsto, marcos (dentro do período) e duração/prazo/responsável de cada entrega;
+7. Orçamento: linhas (Run/Grow/Transform), reserva de contingência (com o VME das ameaças como referência) e gerencial, totais;
+8. Riscos iniciais (ameaça/oportunidade, probabilidade, impacto 1–5 e em R$, resposta, dono, P × I);
+9. Governança (GUT, necessidade, natureza do gasto, estrutura organizacional, objetivos estratégicos, ISO/IEC 38500 só em TI) e
+   classificação de acesso (SIGILOSO exige justificativa; restrito/sigiloso não podem ser públicos);
+10. Revisão.
+
+`wizardToProject` monta o `ProjectModel` a partir de `blankProject` (EAP com uma entrega por pacote, uma atividade por entrega com RACI,
+marcos como atividades-marco, sprints, reservas, governança) e cria pelo repositório (`ProjectRepository.create`, DEMO desta aba), com a
+versão 1 “Projeto criado”, e abre a Mesa. Acréscimos compatíveis em `lib/projects/types.ts`: `description`, `targetEndDate`, `access`,
+`charter.scopeIn/scopeOut/successCriteria`, `objectives[].indicator/target/deadline` e `format` em `WbsNode`/`Task` (`TASK_UPDATE` e
+`WBS_UPDATE` aceitam `format`, validado pelo catálogo; o inspetor da atividade edita o formato). “Começar de um modelo” preenche o
+assistente (`wizardFromProject`); os atalhos de modelo direto e Autopiloto continuam (`CreateProject hideBlank`; o “Em branco” rápido
+segue na Minha mesa).
+
+Testes: `components/projects/wizard/wizard.test.tsx` (passos, validação com foco, RACI, sigiloso, criação no repositório DEMO, modelo,
+atalhos) e `lib/projects/wizard.test.ts` (validação por passo, SMART, sprints, totais, montagem, formato versionado pelos comandos).
+Os campos novos ainda não aparecem nas abas da Mesa (só ficam no modelo) — próximo passo.

@@ -838,3 +838,34 @@ flowchart LR
 | Evidência | jornada real 17/17 (`docs/auditoria/2026-10-17/evidencias/JORNADA.json`), capturas 01 e 09 | — | `203244a` | RF20.CA04 |
 
 Tela/aba: `/tasks/new` (real desde `013657a`: `app/(shell)/tasks/new/page.tsx` com `TaskForm` modo create; antes, esqueleto)
+
+## Estado da implementação (12/11/2026)
+
+**Criador completo de tarefas** (`/tasks/new`, `components/tasks/TaskForm.tsx`; mesmo componente da edição `/tasks/[id]/edit`), sem quebrar
+o envio real `POST /api/tasks` / `PUT /api/tasks/{id}` nem o assistente da área (campo de estudo, profissão preferida, modelos, rascunho
+`?rascunho=`, checagem de qualidade):
+
+- **Seções com índice e preenchimento** (`TaskFormNav`): Identificação · Objetivo e escopo · Enquadramento (tipo, categoria/subcategoria,
+  natureza ≤ 2, processo ≤ 2, área, campo de estudo) · Responsáveis e participantes · Prazos e esforço (início previsto, prazo, prazo
+  legal com regra do catálogo e data-base e prévia do vencimento, tamanho P/M/G sugerido pelas horas, horas, valor envolvido) ·
+  Entregas, formato e critérios (formato família → variante com campos próprios e critérios sugeridos, `docs/produto/FORMATOS_E_VARIANTES.md`)
+  · Referências e anexos (anexos enviados logo depois de criar, com o formato estimado e aviso se difere do pedido) · Acesso e
+  visibilidade (justificativa) · Origem (interna/órgão externo/fornecedor/cidadão, remetente, documento, nº de protocolo/SEI,
+  recebimento, situação do documento) · Campos da área. Cada atalho mostra o estado em texto e marca (✓ ◐ ○ !).
+- **Validação por campo** (função pura `validateTaskForm`, `lib/tasks/formRules.ts`): obrigatórios marcados, mensagem ligada ao campo
+  (`aria-describedby`, `aria-invalid`), resumo com a contagem e **foco no primeiro erro**; erros 422 do servidor também levam o foco.
+  Regras condicionais: SIGILOSO exige justificativa; restrito/sigiloso não podem ser públicos; origem externa exige remetente e
+  documento; recebimento não pode estar no futuro; subcategoria exige categoria; prazo não antes do início; prazo legal exige regra e
+  data-base; limites do servidor (12 extensões, 500 caracteres). Rascunho só cobra o formato dos campos.
+- **Salvar rascunho** (`draft: true`) e **Salvar e criar outra** (mantém tipo, categoria, área e acesso; foco volta ao título).
+- **Tipo de tarefa e formato com ícone de arquivo** (`components/fileicons/**`): no valor escolhido e nas opções (“Escolher pelo ícone”).
+- **Gravação:** `category` vai na coluna do contrato; subcategoria, natureza, processo, esforço/horas/valor/início, origem/remetente/
+  documento/protocolo/recebimento/situação, participantes, justificativa e formato vão em `extensions` em chaves reservadas
+  (`subcategory`, `taxonomy`, `effort`, `origin`, `participants`, `accessReason`, `fileFormat`) até o `TaskRequest` ter os campos
+  (lacuna de API: `TaskItem` já tem as colunas `subcategory`, `natureTags`, `processTags`, `effortSize`, `estimatedHours`,
+  `amountInvolved`, `origin`, `docSituation`, `receivedAt`, `senderOrigin`, `protocolNumber`, mas o contrato não as recebe). O prazo legal
+  é gravado pela rota própria `PUT /api/tasks/{id}/legal-deadline` logo depois de criar; anexos por `POST /api/tasks/{id}/attachments`.
+- Testes: `components/tasks/taskFormFull.test.tsx` (seções, ícone do tipo, condicionais com foco, envio com fetch simulado, prazo legal,
+  formato, anexos, salvar e criar outra, rascunho), `lib/tasks/formRules.test.ts`, `lib/tasks/formats.test.ts`,
+  `components/fileicons/kinds.test.ts`; os de antes (`tasks.test.tsx`, `assist.test.tsx`) continuam verdes.
+- Fora: escolher outro responsável (busca de pessoas sem API), órgão pela busca `/api/org-entities/search`, detecção por IA e lote.
