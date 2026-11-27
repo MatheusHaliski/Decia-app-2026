@@ -7,6 +7,7 @@ import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.Atta
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.EvidenceInput;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.EvidenceView;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.FileContent;
+import br.gov.pr.secid.workstation.domain.acervo.UploadChannel;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.common.ClockConfig;
 import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
@@ -97,12 +98,13 @@ class TaskAttachmentControllerWebTest {
 
     private AttachmentView attachment(EvidenceView evidence) {
         return new AttachmentView(attachmentId, taskId, "Vistoria", "planta.png", "image/png", 120, true, true, MediaScanStatus.NAO_VERIFICADO, true,
-                Instant.parse("2026-11-12T12:00:00Z"), evidence, null, null, null);
+                Instant.parse("2026-11-12T12:00:00Z"), evidence, null, null, null, "c".repeat(64), "d".repeat(64), userId, UploadChannel.DIRETO,
+                true, null);
     }
 
     private EvidenceView evidence() {
         return new EvidenceView(evidenceId, taskId, attachmentId, "Fissura", Instant.parse("2026-11-12T13:15:00Z"), true, "-25.4284", "-49.2733",
-                userId, Instant.parse("2026-11-12T13:20:00Z"), null, null, null);
+                userId, Instant.parse("2026-11-12T13:20:00Z"), null, null, null, "d".repeat(64), userId, UploadChannel.DIRETO, false, null);
     }
 
     private static MockMultipartFile file() {
@@ -153,7 +155,11 @@ class TaskAttachmentControllerWebTest {
 
         when(attachments.list(any(), eq(taskId))).thenAnswer(authorized(List.of(attachment(evidence()))));
         mvc.perform(authed(get("/api/tasks/" + taskId + "/attachments"), "USER")).andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].evidence.caption").value("Fissura")).andExpect(jsonPath("$[0].evidence.hasLocation").value(true));
+                .andExpect(jsonPath("$[0].evidence.caption").value("Fissura")).andExpect(jsonPath("$[0].evidence.hasLocation").value(true))
+                // proveniência (V73): os dois hashes, quem enviou e por onde
+                .andExpect(jsonPath("$[0].sha256").value("c".repeat(64))).andExpect(jsonPath("$[0].originalSha256").value("d".repeat(64)))
+                .andExpect(jsonPath("$[0].uploadedBy").value(userId.toString())).andExpect(jsonPath("$[0].uploadedVia").value("DIRETO"))
+                .andExpect(jsonPath("$[0].hasCaptureMetadata").value(true)).andExpect(jsonPath("$[0].evidence.originalSha256").value("d".repeat(64)));
 
         doAnswer(authorized(null)).when(attachments).remove(any(), eq(taskId), eq(attachmentId), any());
         mvc.perform(authed(delete("/api/tasks/" + taskId + "/attachments/" + attachmentId), "USER")).andExpect(status().isNoContent());
@@ -174,7 +180,16 @@ class TaskAttachmentControllerWebTest {
                 .andExpect(header().string("Content-Security-Policy", "default-src 'none'; sandbox"))
                 .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.startsWith("attachment;")))
                 .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString("UTF-8''relat%C3%B3rio%20final.pdf")))
-                .andExpect(header().string("Cache-Control", org.hamcrest.Matchers.containsString("no-store")));
+                .andExpect(header().string("Cache-Control", org.hamcrest.Matchers.containsString("no-store")))
+                .andExpect(header().string("Accept-Ranges", "bytes"))
+                .andExpect(content().bytes("%PDF-1.7".getBytes(StandardCharsets.US_ASCII)));
+
+        // Range: só a faixa pedida, 206, com Content-Range — mesmo cabeçalho de segurança
+        mvc.perform(authed(get("/api/tasks/" + taskId + "/attachments/" + attachmentId + "/content").header("Range", "bytes=0-3"), "USER"))
+                .andExpect(status().isPartialContent())
+                .andExpect(header().string("Content-Range", "bytes 0-3/8"))
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(content().bytes("%PDF".getBytes(StandardCharsets.US_ASCII)));
 
         when(attachments.content(any(), eq(taskId), eq(attachmentId))).thenAnswer(inv -> {
             AuthorizationTrail.record("TASK:" + taskId);

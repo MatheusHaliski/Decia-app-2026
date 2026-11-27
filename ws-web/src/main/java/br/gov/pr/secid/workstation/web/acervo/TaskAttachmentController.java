@@ -13,6 +13,8 @@ import br.gov.pr.secid.workstation.web.security.AuthorizedBy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,9 @@ import java.util.UUID;
 /**
  * RF41.CA06 — anexos e evidências da tarefa. Toda regra (BOLA por {@code ResourceAuthorizer.require} na tarefa, pipeline de mídia D-67,
  * metadados de imagem removidos, geolocalização só quando enviada e cifrada, limites) fica no {@link TaskAttachmentService}; aqui só o HTTP.
- * O download não é renderizável como página ({@code nosniff}, CSP {@code sandbox}); só imagem sai {@code inline}.
+ * O download não é renderizável como página ({@code nosniff}, CSP {@code sandbox}); só imagem sai {@code inline}. O conteúdo sai em fluxo
+ * (o binário não é carregado inteiro na memória) e aceita {@code Range: bytes=…} → {@code 206 Partial Content} (retomar download, vídeo/PDF
+ * grande): o corpo é um {@link Resource} com tamanho conhecido e o Spring MVC recorta as faixas.
  */
 @RestController
 @Tag(name = "RF41 Anexos e evidências")
@@ -84,10 +89,11 @@ public class TaskAttachmentController {
         attachments.remove(user, id, attachmentId, ctx);
     }
 
-    @Operation(summary = "RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono)")
+    @Operation(summary = "RF41.CA06 Conteúdo do anexo em fluxo, com Range (206) (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; "
+            + "RESTRITO/SIGILOSO só o dono)")
     @GetMapping("/api/tasks/{id}/attachments/{attachmentId}/content")
     @AuthorizedBy("require")
-    public ResponseEntity<byte[]> attachmentContent(CurrentUser user, @PathVariable UUID id, @PathVariable UUID attachmentId) {
+    public ResponseEntity<Resource> attachmentContent(CurrentUser user, @PathVariable UUID id, @PathVariable UUID attachmentId) {
         FileContent f = attachments.content(user, id, attachmentId);
         ContentDisposition disposition = (f.inline() ? ContentDisposition.inline() : ContentDisposition.attachment())
                 .filename(f.fileName(), StandardCharsets.UTF_8).build();
@@ -97,7 +103,49 @@ public class TaskAttachmentController {
                 .header("X-Content-Type-Options", "nosniff")
                 .header("Content-Security-Policy", "default-src 'none'; sandbox")
                 .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
-                .body(f.content());
+                .body(new StoredFileResource(f));
+    }
+
+    /**
+     * O binário autorizado como {@link Resource} de tamanho conhecido: cada {@link #getInputStream()} abre um fluxo novo no storage (o recorte
+     * de {@code Range} pode abrir mais de um). Não é {@code InputStreamResource} de propósito — esse o Spring não recorta em faixas.
+     */
+    static final class StoredFileResource extends AbstractResource {
+        private final FileContent file;
+
+        StoredFileResource(FileContent file) {
+            this.file = file;
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return file.source().open();
+        }
+
+        @Override
+        public long contentLength() {
+            return file.sizeBytes();
+        }
+
+        @Override
+        public boolean exists() {
+            return true;
+        }
+
+        @Override
+        public String getDescription() {
+            return "anexo autorizado";
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other == this;
+        }
+
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(this);
+        }
     }
 
     @Operation(summary = "RF41.CA06 Marca um anexo como evidência (legenda, data da captura, geolocalização opcional cifrada; 409 "

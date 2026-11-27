@@ -162,6 +162,8 @@ export interface NewDecisionInput {
   kind?: DecisionKind;
   templateKey?: string;
   ownerUserId: string;
+  /** projeto que abriu a decisão (portão, mudança, seleção — lib/projects/decia.ts); na API só vai quando é um UUID do servidor */
+  projectId?: string;
 }
 
 /** Modelos opcionais da criação: critérios sugeridos (o usuário pode editar tudo depois). DESIGN PROPOSAL. */
@@ -185,7 +187,7 @@ export function createDecision(input: NewDecisionInput, now: Date, id = nextId("
       id, version: 1, title: question.replace(/\?$/, "").slice(0, 160), question, stakeholders: [], ownerUserId: input.ownerUserId, createdByUserId: input.ownerUserId,
       companyId: "c-exemplo", status: "RASCUNHO", complexity: input.complexity, kind: input.kind ?? tpl?.kind ?? "OPERACIONAL", impact: input.impact, urgency: "MEDIO",
       visibility: "PRIVADA", accessClass: "INTERNO", weightingEnabled: input.complexity === "PROFUNDA", independentScoring: false, templateKey: input.templateKey,
-      createdAt: iso, updatedAt: iso,
+      projectId: input.projectId, createdAt: iso, updatedAt: iso,
     },
     participants: [{ userId: input.ownerUserId, role: "CONDUTOR", joinedAt: iso }],
     alternatives: [], criteria: [], assessments: [], evidence: [], evidenceLinks: [], assumptions: [], risks: [], scenarios: [], forecasts: [],

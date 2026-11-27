@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -17,7 +18,8 @@ import java.nio.file.StandardCopyOption;
  * {@link MediaStoragePort} em disco ({@code ws.storage.type=local}, padrão; diretório {@code WS_STORAGE_LOCAL_DIR}). Hooks do Bloco 5
  * (D-67): só aceita chave no formato de {@link MediaKeys} (o nome enviado nunca vira caminho), resolve dentro do diretório-base e
  * confere que o caminho normalizado não escapou dele, grava em arquivo temporário + {@code move} atômico. Não emite URL assinada:
- * a leitura passa pelo backend depois do {@code ResourceAuthorizer} (o S3 presign entra com o SDK, Q-168).
+ * a leitura passa pelo backend depois do {@code ResourceAuthorizer}, em fluxo ({@link #open}). Em contêiner, o diretório precisa ser um
+ * volume ({@code VOLUME /data/media} no Dockerfile.backend): sem ele os anexos somem a cada deploy.
  */
 @Component
 @ConditionalOnProperty(prefix = "ws.storage", name = "type", havingValue = "local", matchIfMissing = true)
@@ -64,6 +66,18 @@ public class LocalMediaStorage implements MediaStoragePort {
     public byte[] read(String key) {
         try {
             return Files.readAllBytes(resolve(key));
+        } catch (NoSuchFileException e) {
+            throw new IllegalStateException("mídia ausente no storage", e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("falha ao ler mídia", e);
+        }
+    }
+
+    /** Fluxo direto do arquivo (download em streaming, sem carregar tudo na memória). */
+    @Override
+    public InputStream open(String key) {
+        try {
+            return Files.newInputStream(resolve(key));
         } catch (NoSuchFileException e) {
             throw new IllegalStateException("mídia ausente no storage", e);
         } catch (IOException e) {

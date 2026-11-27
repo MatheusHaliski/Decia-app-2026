@@ -870,3 +870,16 @@ o envio real `POST /api/tasks` / `PUT /api/tasks/{id}` nem o assistente da área
   formato, anexos, salvar e criar outra, rascunho), `lib/tasks/formRules.test.ts`, `lib/tasks/formats.test.ts`,
   `components/fileicons/kinds.test.ts`; os de antes (`tasks.test.tsx`, `assist.test.tsx`) continuam verdes.
 - Fora: escolher outro responsável (busca de pessoas sem API), órgão pela busca `/api/org-entities/search`, detecção por IA e lote.
+
+### Atualização (27/11/2026) — orientação no criador e anexos
+
+- **Avisos antes de salvar.** Prazo no passado ou antes do início vira atenção no próprio campo e no feedback de qualidade
+  (`dueDateWarning` e as checagens `prazoPassado`/`prazoInicio` de `assessTask(d, pack, { today })`). Tipos que o servidor aceita
+  ficam numa lista única, `lib/tasks/accepted.ts` (espelho do `DetectedType`; `accepted.test.ts` compara com o enum Java), que alimenta o
+  `accept` dos inputs, o campo `detected` do catálogo de formatos e a mensagem «não será aceito; envie em …». Anexo de formato diferente
+  do pedido mostra «Você pediu Desenho técnico (DWG/DXF/IFC/GLB/PDF) e anexou TXT» já na escolha (`lib/tasks/fileAdvice.ts`).
+- **Feedback sem contradição.** A norma técnica vale quando citada no título, descrição, critérios ou entregas (NBR/ABNT/ISO/NR/Lei nº);
+  a «entrega típica do campo» reconhece a entrega dos modelos do próprio campo.
+- **Anexos.** Arrastar e soltar, vários de uma vez, situação por arquivo (aguardando → enviando → enviado/não enviado, com o motivo),
+  input de câmera (`capture`) para foto no celular — no criador e na seção de anexos (`components/tasks/FileDrop.tsx`).
+- **Sem sessão.** O criador avisa no topo que salvar exige conta, com link para entrar e voltar.
