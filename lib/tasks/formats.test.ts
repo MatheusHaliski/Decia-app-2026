@@ -52,15 +52,26 @@ describe("catálogo família → variante (dado puro)", () => {
   });
 });
 
-describe("adaptador da tarefa (espelho em extensions até a API ter os campos)", () => {
-  it("formato → extensions.fileFormat e volta; sem família não grava nada", () => {
-    expect(formatToRequest({ family: "", variant: "", details: {} })).toEqual({ extensions: {} });
+describe("adaptador da tarefa (colunas próprias da V71; espelho antigo só lido)", () => {
+  it("formato → formatFamily/formatVariant/formatDetailsJson e volta; sem família não grava nada", () => {
+    expect(formatToRequest({ family: "", variant: "", details: {} })).toEqual({});
     const f = { family: "PLANILHA" as const, variant: "CSV" as const, details: { delimiter: "SEMICOLON", encoding: "UTF8", headerRow: "true" } };
     const req = formatToRequest(f);
-    expect(Object.keys(req.extensions)).toEqual(["fileFormat"]);
-    expect(req.extensions.fileFormat!.length).toBeLessThanOrEqual(500);
-    expect(formatFromView({ extensions: req.extensions })).toEqual(f);
+    expect(req).toMatchObject({ formatFamily: "PLANILHA", formatVariant: "CSV" });
+    expect(JSON.parse(req.formatDetailsJson!)).toEqual(f.details);
+    expect(formatFromView(req)).toEqual(f);
+    expect(formatToRequest({ family: "IMAGEM", variant: "", details: {} })).toEqual({ formatFamily: "IMAGEM" });
+    // tarefa gravada antes das colunas: o espelho em extensions ainda é lido
+    expect(formatFromView({ extensions: { fileFormat: packFormat(f) } })).toEqual(f);
     expect(unpackFormat(packFormat(f))).toEqual(f);
+  });
+
+  it("detalhes em JSON inválido ou que não é objeto viram vazio; anexo aceita formatDetailsJson da API", () => {
+    expect(formatFromView({ formatFamily: "PLANILHA", formatVariant: "CSV", formatDetailsJson: "[1]" }).details).toEqual({});
+    expect(formatFromView({ formatFamily: "PLANILHA", formatVariant: "CSV", formatDetailsJson: "{x" }).details).toEqual({});
+    const got = attachmentFormat({ fileName: "a.csv", formatFamily: "PLANILHA", formatVariant: "CSV", formatDetailsJson: '{"encoding":"UTF8"}' })!;
+    expect(got.estimated).toBe(false);
+    expect(got.format.details.encoding).toBe("UTF8");
   });
 
   it("colunas próprias do backend, quando vierem, valem antes do espelho", () => {

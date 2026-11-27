@@ -12,7 +12,7 @@
  * gravado logo depois de criar.
  */
 import type { AccessClassName, Criterion, Deliverable, Reference, TaskCategoryName, TaskTypeName, VisibilityName } from "./client";
-import { formatToRequest, invalidFormatFields, type FormatChoice } from "./formats";
+import { MAX_FORMAT_DETAILS_JSON, formatToRequest, invalidFormatFields, type FormatChoice } from "./formats";
 import { isIsoDate } from "./legalDeadline";
 
 /** Natureza do conteúdo (≤ 2) — enum Java `NatureTag`. */
@@ -270,6 +270,7 @@ export function validateTaskForm(v: TaskFormValues, opts: ValidateOptions): Part
   }
 
   if (v.format.family && invalidFormatFields(v.format).length) e.format = "taskForm.err.formatField";
+  else if ((formatToRequest(v.format).formatDetailsJson?.length ?? 0) > MAX_FORMAT_DETAILS_JSON) e.format = "taskForm.err.tooLong";
   if (v.deliverables.length > MAX_DELIVERABLES) e.deliverables = "taskForm.err.maxDeliverables";
   else if (v.deliverables.some((d) => d.text.length > 300)) e.deliverables = "taskForm.err.itemTooLong";
   if (v.criteria.length > MAX_CRITERIA) e.acceptanceCriteria = "taskForm.err.maxCriteria";
@@ -293,12 +294,11 @@ export function validateTaskForm(v: TaskFormValues, opts: ValidateOptions): Part
   }
 
   // limites do servidor para `extensions`: cada valor até 500 caracteres; no máximo 12 chaves no total
-  const packed = { ...packExtra(x), ...formatToRequest(v.format).extensions };
+  const packed = packExtra(x);
   const fieldOfKey: Record<string, TaskFieldKey> = {
     [EXTRA_KEYS.subcategory]: "subcategory", [EXTRA_KEYS.taxonomy]: "natures", [EXTRA_KEYS.effort]: "estimatedHours",
     [EXTRA_KEYS.origin]: "document", [EXTRA_KEYS.participants]: "participants", [EXTRA_KEYS.accessReason]: "accessReason",
   };
-  fieldOfKey.fileFormat = "format";
   for (const [k, val] of Object.entries(packed)) {
     const f = fieldOfKey[k]!;
     if (val.length > MAX_EXTENSION_VALUE && !e[f]) e[f] = "taskForm.err.tooLong";

@@ -345,12 +345,12 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
   const progress = sectionProgress({ ...values, area: form.area, responsibleId: form.responsibleId, hasAreaFields: extensionKeys.length > 0, files: files.length }, errors);
   const shownSections = TASK_SECTIONS.filter((s) => s !== "area" || extensionKeys.length > 0);
 
-  /** extensões além das reservadas: as da área escolhida, a lente e a tarefa-guia (com `withReserved`, também as do Acervo e o formato) */
+  /** extensões além das reservadas: as da área escolhida, a lente e a tarefa-guia (com `withReserved`, também as do Acervo; o formato vai nas colunas próprias) */
   function bodyExtensions(withReserved: boolean): Record<string, string> {
     const extensions = Object.fromEntries(extensionKeys.map((k) => [k, form.extensions[k] ?? ""]).filter(([, v]) => (v ?? "").trim()));
     if (recordLens && studyField) extensions[STUDY_FIELD_KEY] = studyField;
     if (recordLens && form.extensions[GUIDED_TASK_KEY]) extensions[GUIDED_TASK_KEY] = form.extensions[GUIDED_TASK_KEY];
-    return withReserved ? { ...extensions, ...packExtra(form.extra), ...formatToRequest(form.format).extensions } : extensions;
+    return withReserved ? { ...extensions, ...packExtra(form.extra) } : extensions;
   }
 
   function body(draft?: boolean): TaskRequest {
@@ -359,7 +359,7 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
       descriptionMd: form.descriptionMd || undefined, priority: form.priority, dueAt: form.dueAt || undefined,
       responsibleId: form.responsibleId || undefined, accessClass: form.accessClass, visibility: form.visibility,
       deliverables: form.deliverables.filter((d) => d.text.trim()), acceptanceCriteria: form.criteria.filter((c) => c.text.trim()),
-      references: form.references.filter((r) => r.url.trim()), extensions: bodyExtensions(true), draft, version,
+      references: form.references.filter((r) => r.url.trim()), extensions: bodyExtensions(true), ...formatToRequest(form.format), draft, version,
     };
   }
 
