@@ -157,7 +157,8 @@ class AcervoAdaptersIT {
         UUID taskId = legal.task().id();
         MediaObject m = mediaOf(u, "a".repeat(64));
         TaskAttachment a = attachments.insert(new TaskAttachment(null, taskId, m.id(), "planta.png", "image/png", 10, m.sha256(),
-                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM, "PNG", "{\"height\":\"32\",\"width\":\"64\"}"));
+                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM,
+                        "PNG", "{\"height\":\"32\",\"width\":\"64\"}"));
         assertThat(attachments.listByTask(taskId)).singleElement().satisfies(s -> {
             assertThat(s.createdAt()).isNotNull();
             // V71: formato do tipo real com os detalhes extraídos, ida e volta no MySQL (JSON)
