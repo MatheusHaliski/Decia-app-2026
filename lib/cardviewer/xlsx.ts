@@ -25,7 +25,7 @@ export type CellValue =
   | { kind: "date"; iso: string; time: boolean }
   | { kind: "bool"; value: boolean }
   | { kind: "error"; code: string };
-export type NumberFormat = "general" | "integer" | "decimal2" | "thousands" | "thousands2" | "percent" | "percent2" | "text";
+export type NumberFormat = "general" | "integer" | "decimal2" | "thousands" | "thousands2" | "percent" | "percent1" | "percent2" | "text";
 
 export interface XlsxCell { ref: string; value: CellValue; formula: boolean; rowSpan?: number; colSpan?: number; covered?: boolean }
 export interface XlsxSnapshot {
@@ -83,7 +83,10 @@ export function classifyFormatCode(code: string): StyleFormat {
   const clean = code.replace(/"[^"]*"/g, "").replace(/\[[^\]]*\]/g, "").replace(/\\./g, "").split(";")[0]!;
   if (/[dy]/i.test(clean) || (/m/i.test(clean) && !/[0#]/.test(clean))) return { kind: "date", time: /[hs]/i.test(clean) };
   if (/[hs]/i.test(clean)) return { kind: "time" };
-  if (clean.includes("%")) return { kind: "number", format: /\.0/.test(clean) ? "percent2" : "percent" };
+  if (clean.includes("%")) {
+    const dec = /\.(0+)/.exec(clean)?.[1]?.length ?? 0;
+    return { kind: "number", format: dec === 0 ? "percent" : dec === 1 ? "percent1" : "percent2" };
+  }
   if (clean === "@") return { kind: "number", format: "text" };
   const thousands = clean.includes(",");
   const decimals = /\.0/.test(clean);
@@ -322,7 +325,10 @@ export function formatCell(v: CellValue, intl: string): string {
     case "number": {
       const f = v.format;
       if (f === "text") return String(v.value);
-      if (f === "percent" || f === "percent2") return new Intl.NumberFormat(intl, { style: "percent", minimumFractionDigits: f === "percent2" ? 2 : 0, maximumFractionDigits: f === "percent2" ? 2 : 0 }).format(v.value);
+      if (f === "percent" || f === "percent1" || f === "percent2") {
+        const d = f === "percent" ? 0 : f === "percent1" ? 1 : 2;
+        return new Intl.NumberFormat(intl, { style: "percent", minimumFractionDigits: d, maximumFractionDigits: d }).format(v.value);
+      }
       if (f === "integer") return new Intl.NumberFormat(intl, { maximumFractionDigits: 0, useGrouping: false }).format(v.value);
       if (f === "decimal2") return new Intl.NumberFormat(intl, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false }).format(v.value);
       if (f === "thousands") return new Intl.NumberFormat(intl, { maximumFractionDigits: 0 }).format(v.value);

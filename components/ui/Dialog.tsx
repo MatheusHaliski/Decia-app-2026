@@ -29,20 +29,29 @@ function CloseButton() {
   );
 }
 
-export function Dialog({ open, onOpenChange, title, description, children, className, hideTitle }: CommonProps) {
+/** `full`: tela cheia no celular e quase tela cheia nas telas largas (visualizador de card); o conteúdo ocupa o resto da altura. */
+export type DialogSize = "md" | "full";
+
+const DIALOG_SIZE: Record<DialogSize, string> = {
+  md: "left-1/2 top-1/2 w-[min(92vw,32rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-[var(--ws-radius-lg)] border p-[var(--ws-space-6)]",
+  full: "inset-0 flex h-dvh flex-col overflow-hidden p-[var(--ws-space-3)] lg:inset-[var(--ws-space-5)] lg:h-auto lg:rounded-[var(--ws-radius-lg)] lg:border lg:p-[var(--ws-space-5)]",
+};
+
+export function Dialog({ open, onOpenChange, title, description, children, className, hideTitle, size = "md" }: CommonProps & { size?: DialogSize }) {
   return (
     <RD.Root open={open} onOpenChange={onOpenChange}>
       <RD.Portal>
         <RD.Overlay className="ws-scrim fixed inset-0 z-[var(--ws-z-dialog)]" />
         <RD.Content
           className={cn(
-            "fixed left-1/2 top-1/2 z-[var(--ws-z-dialog)] w-[min(92vw,32rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-6)] text-ws-text shadow-ws-2 outline-none",
+            "fixed z-[var(--ws-z-dialog)] border-ws-border bg-ws-surface-1 text-ws-text shadow-ws-2 outline-none",
+            DIALOG_SIZE[size],
             className,
           )}
         >
-          <RD.Title className={cn("font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-[var(--ws-text-h2--lh)]", hideTitle && "sr-only")}>{title}</RD.Title>
+          <RD.Title className={cn("font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-[var(--ws-text-h2--lh)]", size === "full" && "pr-12", hideTitle && "sr-only")}>{title}</RD.Title>
           {description ? <RD.Description className="mt-1 text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{description}</RD.Description> : null}
-          <div className="mt-[var(--ws-space-4)]">{children}</div>
+          <div className={size === "full" ? "mt-[var(--ws-space-3)] flex min-h-0 flex-1 flex-col" : "mt-[var(--ws-space-4)]"}>{children}</div>
           <CloseButton />
         </RD.Content>
       </RD.Portal>

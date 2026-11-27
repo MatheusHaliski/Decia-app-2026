@@ -1,0 +1,282 @@
+/**
+ * Formatos de entrega: FAMÍLIA → VARIANTE (docs/produto/FORMATOS_E_VARIANTES.md). Catálogo como dado puro: cada variante tem família,
+ * extensões, MIME, se o pipeline de mídia já reconhece o tipo real (`DetectedType`, D-67) e os CAMPOS PRÓPRIOS que fazem sentido no
+ * criador e na entrega; a família tem os campos comuns às suas variantes. Os valores viram critérios de aceite sugeridos (texto montado
+ * a partir do que a pessoa escolheu, nunca inventado).
+ *
+ * Gravação: o backend vai ganhar `formatFamily`, `formatVariant` e `formatDetailsJson` na tarefa (códigos deste catálogo). Enquanto o
+ * contrato gerado (`lib/api/schema.d.ts`) não os tiver, o formato vai em `extensions.fileFormat` (`family=…&variant=…&<campo>=…`), uma
+ * única chave — o servidor só aceita chaves `^[a-z][a-zA-Z0-9]{1,30}$` (sem ponto) e no máximo 12 por tarefa (`TaskBriefJson`). A troca
+ * fica num lugar só: `formatToRequest`/`formatFromView`.
+ */
+
+export const FORMAT_FAMILIES = ["PLANILHA", "DOCUMENTO", "APRESENTACAO", "IMAGEM", "DESENHO_TECNICO", "DADOS", "AUDIO_VIDEO", "PACOTE", "LINK", "OUTRO"] as const;
+export type FormatFamilyId = (typeof FORMAT_FAMILIES)[number];
+
+/** Códigos curtos de variante (os mesmos do backend, `formatVariant`). A mesma variante pode existir em mais de uma família (PDF). */
+export const FORMAT_VARIANT_CODES = [
+  "XLSX", "XLS", "XLSM", "ODS", "CSV", "TSV", "DOCX", "DOC", "ODT", "PDF", "PDF_A", "RTF", "MD", "TXT", "HTML", "PPTX", "ODP", "PNG", "JPG",
+  "SVG", "WEBP", "DWG", "DXF", "IFC", "GLB", "JSON", "XML", "MP3", "WAV", "M4A", "MP4", "WEBM", "MOV", "ZIP", "URL",
+] as const;
+export type FormatVariantCode = (typeof FORMAT_VARIANT_CODES)[number];
+
+export type FormatFieldKind = "select" | "text" | "number" | "bool";
+export interface FormatField {
+  /** chave estável (vai para os detalhes do formato); também o sufixo das chaves de i18n `taskForm.fmt.field.<key>` */
+  key: string;
+  kind: FormatFieldKind;
+  /** valores do select (rótulos em `taskForm.fmt.opt.<key>.<valor>`) */
+  options?: readonly string[];
+  /** limites do número */
+  min?: number;
+  max?: number;
+}
+
+export interface FormatVariant {
+  code: FormatVariantCode;
+  family: FormatFamilyId;
+  /** extensões aceitas (a primeira é a canônica); variante por link usa `url` */
+  extensions: readonly string[];
+  mime: readonly string[];
+  /** o tipo real é conferido pelo conteúdo no upload (`DetectedType` no backend, D-67) */
+  detected: boolean;
+  /** recusada pelo pipeline (macro): pode ser registrada, mas o envio do arquivo é recusado */
+  refused?: boolean;
+  fields: readonly FormatField[];
+}
+
+const bool = (key: string): FormatField => ({ key, kind: "bool" });
+const num = (key: string, min: number, max: number): FormatField => ({ key, kind: "number", min, max });
+const sel = (key: string, options: readonly string[]): FormatField => ({ key, kind: "select", options });
+const text = (key: string): FormatField => ({ key, kind: "text" });
+
+const ENCODING = sel("encoding", ["UTF8", "UTF8BOM", "LATIN1"]);
+const DELIMITER = sel("delimiter", ["SEMICOLON", "COMMA", "TAB", "PIPE"]);
+const DECIMAL = sel("decimal", ["COMMA", "DOT"]);
+const CAD_VERSION = sel("cadVersion", ["AC1032", "AC1027", "AC1024", "AC1021"]);
+
+/** Campos comuns da família (valem para todas as suas variantes). */
+export const FORMAT_FAMILY_FIELDS: Record<FormatFamilyId, readonly FormatField[]> = {
+  PLANILHA: [bool("headerRow")],
+  DOCUMENTO: [num("pages", 1, 5000)],
+  APRESENTACAO: [num("slides", 1, 500)],
+  IMAGEM: [num("minWidth", 1, 20000), num("minHeight", 1, 20000)],
+  DESENHO_TECNICO: [sel("unit", ["MM", "CM", "M", "IN", "FT"]), text("scale")],
+  DADOS: [ENCODING],
+  AUDIO_VIDEO: [num("durationMin", 1, 600)],
+  PACOTE: [text("contents")],
+  LINK: [bool("linkAccess")],
+  OUTRO: [text("description")],
+};
+
+const SHEET_OFFICE = [text("sheets"), bool("formulas"), bool("protected")];
+const v = (code: FormatVariantCode, family: FormatFamilyId, extensions: readonly string[], mime: readonly string[], detected: boolean, fields: readonly FormatField[] = [], refused?: boolean): FormatVariant =>
+  ({ code, family, extensions, mime, detected, fields, ...(refused ? { refused } : {}) });
+
+export const FORMAT_VARIANTS: readonly FormatVariant[] = [
+  v("XLSX", "PLANILHA", ["xlsx"], ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], true, SHEET_OFFICE),
+  v("XLS", "PLANILHA", ["xls"], ["application/vnd.ms-excel"], false, SHEET_OFFICE),
+  v("XLSM", "PLANILHA", ["xlsm"], ["application/vnd.ms-excel.sheet.macroEnabled.12"], false, SHEET_OFFICE, true),
+  v("ODS", "PLANILHA", ["ods"], ["application/vnd.oasis.opendocument.spreadsheet"], false, SHEET_OFFICE),
+  v("CSV", "PLANILHA", ["csv"], ["text/csv"], false, [DELIMITER, ENCODING, DECIMAL]),
+  v("TSV", "PLANILHA", ["tsv"], ["text/tab-separated-values"], false, [ENCODING, DECIMAL]),
+
+  v("DOCX", "DOCUMENTO", ["docx"], ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"], true, [text("template"), bool("trackChanges")]),
+  v("DOC", "DOCUMENTO", ["doc"], ["application/msword"], false, [text("template")]),
+  v("ODT", "DOCUMENTO", ["odt"], ["application/vnd.oasis.opendocument.text"], false, [text("template"), bool("trackChanges")]),
+  v("PDF", "DOCUMENTO", ["pdf"], ["application/pdf"], true, [bool("signed"), bool("textLayer")]),
+  v("PDF_A", "DOCUMENTO", ["pdf"], ["application/pdf"], true, [sel("pdfaLevel", ["1B", "2B", "3B"]), bool("signed"), bool("textLayer")]),
+  v("RTF", "DOCUMENTO", ["rtf"], ["application/rtf"], false),
+  v("MD", "DOCUMENTO", ["md"], ["text/markdown"], false, [ENCODING]),
+  v("TXT", "DOCUMENTO", ["txt"], ["text/plain"], false, [ENCODING]),
+  v("HTML", "DOCUMENTO", ["html", "htm"], ["text/html"], false, [ENCODING]),
+
+  v("PPTX", "APRESENTACAO", ["pptx"], ["application/vnd.openxmlformats-officedocument.presentationml.presentation"], true, [text("template")]),
+  v("ODP", "APRESENTACAO", ["odp"], ["application/vnd.oasis.opendocument.presentation"], false, [text("template")]),
+  v("PDF", "APRESENTACAO", ["pdf"], ["application/pdf"], true),
+
+  v("PNG", "IMAGEM", ["png"], ["image/png"], true, [bool("transparency")]),
+  v("JPG", "IMAGEM", ["jpg", "jpeg"], ["image/jpeg"], true),
+  v("SVG", "IMAGEM", ["svg"], ["image/svg+xml"], false, [bool("transparency")]),
+  v("WEBP", "IMAGEM", ["webp"], ["image/webp"], true, [bool("transparency")]),
+
+  v("DWG", "DESENHO_TECNICO", ["dwg"], ["image/vnd.dwg"], true, [CAD_VERSION]),
+  v("DXF", "DESENHO_TECNICO", ["dxf"], ["image/vnd.dxf"], true, [CAD_VERSION]),
+  v("IFC", "DESENHO_TECNICO", ["ifc"], ["application/x-step"], true, [sel("ifcSchema", ["IFC2X3", "IFC4", "IFC4X3"])]),
+  v("GLB", "DESENHO_TECNICO", ["glb"], ["model/gltf-binary"], true),
+  v("PDF", "DESENHO_TECNICO", ["pdf"], ["application/pdf"], true, [sel("paper", ["A0", "A1", "A2", "A3", "A4"]), bool("signed")]),
+
+  v("JSON", "DADOS", ["json"], ["application/json"], false, [text("schemaUrl")]),
+  v("XML", "DADOS", ["xml"], ["application/xml", "text/xml"], false, [text("schemaUrl")]),
+  v("CSV", "DADOS", ["csv"], ["text/csv"], false, [DELIMITER, bool("headerRow"), DECIMAL]),
+
+  v("MP3", "AUDIO_VIDEO", ["mp3"], ["audio/mpeg"], false, [bool("transcript")]),
+  v("WAV", "AUDIO_VIDEO", ["wav"], ["audio/wav"], false, [bool("transcript")]),
+  v("M4A", "AUDIO_VIDEO", ["m4a"], ["audio/mp4"], false, [bool("transcript")]),
+  v("MP4", "AUDIO_VIDEO", ["mp4"], ["video/mp4"], false, [bool("captions")]),
+  v("WEBM", "AUDIO_VIDEO", ["webm"], ["video/webm"], false, [bool("captions")]),
+  v("MOV", "AUDIO_VIDEO", ["mov"], ["video/quicktime"], false, [bool("captions")]),
+
+  v("ZIP", "PACOTE", ["zip"], ["application/zip"], true, [num("maxFiles", 1, 10000)]),
+
+  v("URL", "LINK", ["url"], ["text/uri-list"], false, [text("platform")]),
+];
+
+/** Variante da família (a mesma sigla pode existir em mais de uma família: PDF de documento, de apresentação e de prancha). */
+export const variantOf = (family: FormatFamilyId | "" | null | undefined, code: string | null | undefined): FormatVariant | undefined =>
+  family && code ? FORMAT_VARIANTS.find((x) => x.family === family && x.code === code) : undefined;
+export const variantsOf = (family: FormatFamilyId | ""): FormatVariant[] => FORMAT_VARIANTS.filter((x) => x.family === family);
+export const isFormatFamily = (x: string | null | undefined): x is FormatFamilyId => !!x && (FORMAT_FAMILIES as readonly string[]).includes(x);
+
+/** Campos que valem para a variante: os comuns da família seguidos dos próprios (sem repetir chave). */
+export function fieldsFor(family: FormatFamilyId | "", variant: string): FormatField[] {
+  if (!family) return [];
+  const own = variantOf(family, variant)?.fields ?? [];
+  const seen = new Set<string>();
+  return [...FORMAT_FAMILY_FIELDS[family], ...own].filter((f) => (seen.has(f.key) ? false : (seen.add(f.key), true)));
+}
+
+/** Formato escolhido (família, variante e detalhes). `details` guarda texto ("true"/"false" nos booleanos). */
+export interface FormatChoice { family: FormatFamilyId | ""; variant: FormatVariantCode | ""; details: Record<string, string> }
+export const emptyFormat = (): FormatChoice => ({ family: "", variant: "", details: {} });
+
+/**
+ * Troca de família/variante: preserva os detalhes dos campos que continuam valendo e descarta os outros, dizendo quais foram
+ * descartados (a tela avisa). Variante que não é da família fica vazia.
+ */
+export function changeFormat(cur: FormatChoice, family: FormatFamilyId | "", variant: string): { next: FormatChoice; dropped: string[] } {
+  const code = (variantOf(family, variant)?.code ?? "") as FormatVariantCode | "";
+  const keep = new Set(fieldsFor(family, code).map((f) => f.key));
+  const details: Record<string, string> = {};
+  const dropped: string[] = [];
+  for (const [k, val] of Object.entries(cur.details)) {
+    if (!val) continue;
+    if (keep.has(k)) details[k] = val;
+    else dropped.push(k);
+  }
+  return { next: { family, variant: code, details }, dropped };
+}
+
+export function fieldValueValid(f: FormatField, val: string): boolean {
+  if (!val) return true;
+  switch (f.kind) {
+    case "bool": return val === "true" || val === "false";
+    case "select": return (f.options ?? []).includes(val);
+    case "number": {
+      const n = Number(val);
+      return Number.isInteger(n) && n >= (f.min ?? 0) && n <= (f.max ?? Number.MAX_SAFE_INTEGER);
+    }
+    case "text": return val.length <= 200;
+  }
+}
+
+/** Só os detalhes que valem para a família/variante e têm valor válido. */
+export function cleanDetails(f: FormatChoice): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const field of fieldsFor(f.family, f.variant)) {
+    const val = (f.details[field.key] ?? "").trim();
+    if (val && fieldValueValid(field, val)) out[field.key] = val;
+  }
+  return out;
+}
+
+/** Normaliza um formato vindo de fora (projeto, visão da API, rascunho): códigos fora do catálogo viram vazio. */
+export function normalizeFormat(raw: { family?: unknown; variant?: unknown; details?: unknown } | null | undefined): FormatChoice {
+  const family = typeof raw?.family === "string" && isFormatFamily(raw.family) ? raw.family : "";
+  if (!family) return emptyFormat();
+  const variant = (variantOf(family, typeof raw?.variant === "string" ? raw.variant : "")?.code ?? "") as FormatVariantCode | "";
+  const details = raw?.details && typeof raw.details === "object"
+    ? Object.fromEntries(Object.entries(raw.details as Record<string, unknown>).filter(([, x]) => typeof x === "string") as [string, string][])
+    : {};
+  return { family, variant, details: cleanDetails({ family, variant, details }) };
+}
+
+/** Campos com valor inválido (chaves), na ordem da tela. */
+export function invalidFormatFields(f: FormatChoice): string[] {
+  return fieldsFor(f.family, f.variant).filter((field) => !fieldValueValid(field, f.details[field.key] ?? "")).map((field) => field.key);
+}
+
+// ---------- adaptador da tarefa (um lugar só para trocar quando a API tiver os campos) ----------
+
+/** Chave de `extensions` que espelha o formato enquanto `TaskRequest` não tem `formatFamily`/`formatVariant`/`formatDetailsJson`. */
+export const FORMAT_EXTENSION_KEY = "fileFormat";
+
+/** Formato → valor do espelho em `extensions` (`family=…&variant=…&<campo>=…`); vazio sem família. */
+export function packFormat(f: FormatChoice): string {
+  if (!f.family) return "";
+  const p = new URLSearchParams();
+  p.set("family", f.family);
+  if (f.variant) p.set("variant", f.variant);
+  for (const [k, val] of Object.entries(cleanDetails(f))) p.set(k, val);
+  return p.toString();
+}
+
+export function unpackFormat(raw: string | undefined): FormatChoice {
+  if (!raw) return emptyFormat();
+  const p = new URLSearchParams(raw);
+  const details: Record<string, string> = {};
+  p.forEach((val, k) => { if (k !== "family" && k !== "variant") details[k] = val; });
+  return normalizeFormat({ family: p.get("family"), variant: p.get("variant"), details });
+}
+
+/** Campos da visão da tarefa quando o backend os publicar (`TaskView.formatFamily`…); hoje ausentes no contrato gerado. */
+interface FormatColumns { formatFamily?: string | null; formatVariant?: string | null; formatDetailsJson?: string | null }
+
+/**
+ * Formato → parte do corpo de `POST/PUT /api/tasks`. Hoje: só o espelho em `extensions.fileFormat`. Quando `TaskRequest` tiver
+ * `formatFamily`, `formatVariant` e `formatDetailsJson`, trocar aqui (e só aqui) para enviá-los.
+ */
+export function formatToRequest(f: FormatChoice): { extensions: Record<string, string> } {
+  const packed = packFormat(f);
+  return { extensions: packed ? { [FORMAT_EXTENSION_KEY]: packed } : {} };
+}
+
+/** Visão da tarefa → formato: as colunas próprias, se o servidor já as devolver; senão o espelho em `extensions`. */
+export function formatFromView(view: { extensions?: Readonly<Record<string, string>> } & FormatColumns): FormatChoice {
+  if (view.formatFamily) {
+    let details: unknown = {};
+    try {
+      details = view.formatDetailsJson ? JSON.parse(view.formatDetailsJson) : {};
+    } catch {
+      details = {};
+    }
+    return normalizeFormat({ family: view.formatFamily, variant: view.formatVariant ?? "", details });
+  }
+  return unpackFormat(view.extensions?.[FORMAT_EXTENSION_KEY]);
+}
+
+/** Critério sugerido: chave de i18n + variáveis (os valores escolhidos). A tela traduz; nada é inventado. */
+export interface SuggestedCriterion { key: string; vars: Record<string, string>; /** valor de select: traduzir esta chave e usar como `value` */ optionKey?: string }
+
+/**
+ * Critérios de aceite sugeridos a partir do formato escolhido: um da variante ("Entregue em CSV") e um por campo preenchido —
+ * booleano só quando marcado (exige algo); select/número/texto com o valor. Ex.: CSV + UTF-8 + cabeçalho → "Entregue em CSV",
+ * "Codificação UTF-8", "Cabeçalho na linha 1".
+ */
+export function suggestedCriteria(f: FormatChoice): SuggestedCriterion[] {
+  if (!f.family) return [];
+  const out: SuggestedCriterion[] = [];
+  const variant = variantOf(f.family, f.variant);
+  if (variant) out.push({ key: variant.family === "LINK" ? "taskForm.fmt.crit.byLink" : "taskForm.fmt.crit.variant", vars: { variant: variant.code } });
+  for (const field of fieldsFor(f.family, f.variant)) {
+    const val = (f.details[field.key] ?? "").trim();
+    if (!val || !fieldValueValid(field, val)) continue;
+    if (field.kind === "bool") {
+      if (val === "true") out.push({ key: `taskForm.fmt.crit.${field.key}`, vars: {} });
+    } else {
+      out.push({ key: `taskForm.fmt.crit.${field.key}`, vars: { value: val }, ...(field.kind === "select" ? { optionKey: `taskForm.fmt.opt.${field.key}.${val}` } : {}) });
+    }
+  }
+  return out;
+}
+
+/** Ícone da variante (extensão canônica) ou da família. */
+export function formatIconSource(f: { family: FormatFamilyId | ""; variant: string }): { extension?: string; url?: string; type?: undefined } {
+  const variant = variantOf(f.family, f.variant);
+  if (variant) return variant.family === "LINK" ? { url: "https://" } : { extension: variant.code === "PDF_A" ? "pdf" : variant.extensions[0] };
+  const first: Partial<Record<FormatFamilyId, string>> = {
+    PLANILHA: "xlsx", DOCUMENTO: "docx", APRESENTACAO: "pptx", IMAGEM: "png", DESENHO_TECNICO: "dwg", DADOS: "json", AUDIO_VIDEO: "mp4", PACOTE: "zip",
+  };
+  if (f.family === "LINK") return { url: "https://" };
+  return { extension: f.family ? first[f.family] : undefined };
+}

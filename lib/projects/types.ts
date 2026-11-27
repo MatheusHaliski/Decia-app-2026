@@ -8,6 +8,7 @@
  */
 import type { DependencyType } from "./engine/schedule";
 import type { OpportunityResponse, OrgStructure, RaciLetter, RiskKind, ThreatResponse } from "./engine/methods";
+import type { FormatFamilyId, FormatVariantCode } from "../tasks/formats";
 
 export type { DependencyType } from "./engine/schedule";
 export type { RaciLetter, RiskKind, OrgStructure } from "./engine/methods";
@@ -41,6 +42,12 @@ export type IsoDate = string;
 
 export interface TeamMember { userId: string; role: ProjectRole }
 
+/**
+ * Formato da entrega/artefato (FAMÍLIA → VARIANTE → detalhes), pelo catálogo `lib/tasks/formats.ts` — os mesmos códigos dos campos
+ * `formatFamily`/`formatVariant`/`formatDetailsJson` da tarefa no backend. Opcional: projetos anteriores não têm.
+ */
+export interface DeliverableFormat { family: FormatFamilyId; variant?: FormatVariantCode; details?: Record<string, string> }
+
 export interface Task {
   id: string;
   code: string;
@@ -73,6 +80,8 @@ export interface Task {
   doneAt?: IsoDate;
   /** prazo da atividade (`ProjectTask.dueAt`, RF22): vem da demanda, do cálculo de trás para frente do Autopiloto (RF30) ou da pessoa */
   dueAt?: IsoDate;
+  /** formato da entrega da atividade (quando ela produz um arquivo) */
+  format?: DeliverableFormat;
 }
 
 /** Sprint do Scrum: timebox com início, fim e a META DA SPRINT (compromisso do backlog da sprint, Scrum Guide). */
@@ -90,6 +99,8 @@ export interface WbsNode {
   /** dicionário da EAP: critério de aceite e responsável */
   acceptance?: string;
   ownerId?: string;
+  /** formato da entrega (ex.: Planilha → CSV em UTF-8) */
+  format?: DeliverableFormat;
 }
 
 export interface Requirement {
@@ -159,7 +170,8 @@ export interface Gate { phase: ProjectPhase; outcome: GateOutcome; decisionId?: 
 /** Termo de Abertura do Projeto (TAP) — alto nível; autoriza o projeto e nomeia o GP; quem aprova é o patrocinador. */
 export interface Charter {
   justification: string[];
-  objectives: { id: string; text: string; smart: boolean; goalId?: string }[];
+  /** objetivo SMART: texto + indicador, meta e prazo (opcionais nos projetos anteriores ao criador completo) */
+  objectives: { id: string; text: string; smart: boolean; goalId?: string; indicator?: string; target?: string; deadline?: IsoDate }[];
   product: string;
   highLevelRequirements: string[];
   premises: string[];
@@ -168,6 +180,11 @@ export interface Charter {
   /** papéis de equipe necessários (bloco "Equipe" do Project Model Canvas) */
   teamRoles: string[];
   milestones: { id: string; title: string; date?: IsoDate }[];
+  /** escopo: o que está dentro e o que fica explicitamente fora (criador completo, 12/11/2026) */
+  scopeIn?: string[];
+  scopeOut?: string[];
+  /** critérios de sucesso do projeto (como saber que deu certo) */
+  successCriteria?: string[];
   summaryBudget: number;
   managerId?: string;
   sponsorId?: string;
@@ -239,9 +256,22 @@ export interface ProjectOrigin {
   credits?: readonly { id: string; title: string }[];
 }
 
+/** Classificação de acesso do projeto (mesmos valores da tarefa; SIGILOSO exige justificativa). */
+export const PROJECT_ACCESS_CLASSES = ["PUBLICO", "INTERNO", "RESTRITO", "SIGILOSO"] as const;
+export type ProjectAccessClass = (typeof PROJECT_ACCESS_CLASSES)[number];
+export const PROJECT_VISIBILITIES = ["PRIVADA", "DEPARTAMENTO", "EMPRESA", "PUBLICA"] as const;
+export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number];
+export interface ProjectAccess { accessClass: ProjectAccessClass; visibility: ProjectVisibility; justification?: string }
+
 export interface ProjectModel {
   id: string;
   title: string;
+  /** resumo do projeto (criador completo); ausente nos projetos anteriores */
+  description?: string;
+  /** término previsto declarado no criador (o término calculado vem do cronograma) */
+  targetEndDate?: IsoDate;
+  /** classificação de acesso e visibilidade; ausente = INTERNO / DEPARTAMENTO */
+  access?: ProjectAccess;
   /** início do projeto (offset 0 do cronograma) */
   startDate: IsoDate;
   /** data de status para o valor agregado */
