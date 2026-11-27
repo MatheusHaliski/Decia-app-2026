@@ -649,7 +649,16 @@ class ConnectorServiceTest {
             assertThat(a.isPrimary()).isTrue();
             assertThat(a.antivirusStatus()).as("sem antivírus configurado fica em quarentena").isEqualTo(AntivirusStatus.PENDENTE);
             assertThat(media.rows).containsKey(a.mediaObjectId());
+            // mesmo caminho do upload direto: formato pelo tipo real, proveniência (quem importou, por qual provedor, hash do original)
+            assertThat(a.formatFamily()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.FormatFamily.DOCUMENTO);
+            assertThat(a.formatVariant()).isEqualTo("PDF");
+            assertThat(a.formatDetailsJson()).contains("\"encrypted\"");
+            assertThat(a.uploadedBy()).isEqualTo(me.getId());
+            assertThat(a.uploadedVia()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.UploadChannel.GOOGLE);
+            assertThat(a.originalSha256()).hasSize(64).isEqualTo(a.sha256()).as("PDF não passa por strip");
         });
+        AuditEvent copied = audits.stream().filter(e -> e.action().equals(AuditActions.CONNECTOR_IMPORTED)).findFirst().orElseThrow();
+        assertThat(copied.metadata()).containsKeys("sha256", "originalSha256");
         assertThat(tasks.rows.get(doc.id()).task().format()).isEqualTo("pdf");
         assertThat(media.blobs).hasSize(1);
 
@@ -660,6 +669,8 @@ class ConnectorServiceTest {
         assertThat(big.sourceKind()).isEqualTo(SourceKind.MS_WORD);
         assertThat(big.title()).isEqualTo("Ofício");
         assertThat(attachments.findByTask(big.id())).singleElement().extracting(a -> a.mimeType()).isEqualTo(DetectedType.DOCX.mime());
+        assertThat(attachments.findByTask(big.id())).singleElement().extracting(a -> a.uploadedVia())
+                .isEqualTo(br.gov.pr.secid.workstation.domain.acervo.UploadChannel.MICROSOFT);
         assertThat(tasks.rows.get(big.id()).task().format()).isEqualTo("docx");
 
         graph.pdfRejected = true;   // conversão do Graph recusada → cai para o original

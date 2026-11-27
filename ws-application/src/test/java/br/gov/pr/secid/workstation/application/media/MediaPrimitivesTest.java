@@ -21,9 +21,11 @@ class MediaPrimitivesTest {
     void assinaturasDesconhecidasOuCurtasNaoViramTipo() {
         assertThat(MagicBytes.sniff(null)).isEmpty();
         assertThat(MagicBytes.sniff(new byte[] {1, 2})).isEmpty();
-        assertThat(MagicBytes.sniff("hello world".getBytes(StandardCharsets.US_ASCII))).isEmpty();
+        // texto puro vira candidato a TXT: o TextInspector decide pelo arquivo inteiro e pela extensão (CSV/TSV/TXT/MD/JSON/XML)
+        assertThat(MagicBytes.sniff("hello world".getBytes(StandardCharsets.US_ASCII))).contains(DetectedType.TXT);
+        assertThat(MagicBytes.sniff("hello".getBytes(StandardCharsets.US_ASCII))).as("controle C0 não é texto").isEmpty();
         assertThat(MagicBytes.sniff("glTF\u0001\u0000\u0000\u0000xxxx".getBytes(StandardCharsets.ISO_8859_1))).as("glTF 1.0 não").isEmpty();
-        assertThat(MagicBytes.sniff("ACAD".getBytes(StandardCharsets.US_ASCII))).isEmpty();
+        assertThat(MagicBytes.sniff("ACAD".getBytes(StandardCharsets.US_ASCII))).as("não é DWG; só texto").contains(DetectedType.TXT);
         assertThat(MagicBytes.sniff("\u00EF\u00BB\u00BFISO-10303-21;".getBytes(StandardCharsets.ISO_8859_1))).contains(DetectedType.IFC);
         assertThat(MagicBytes.sniff("999\nfeito no CAD\n0\nSECTION\n".getBytes(StandardCharsets.US_ASCII))).contains(DetectedType.DXF);
         assertThat(MagicBytes.sniff("AutoCAD Binary DXF\r\n\u001a\u0000rest".getBytes(StandardCharsets.ISO_8859_1))).contains(DetectedType.DXF);

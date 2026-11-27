@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { DecisionWorkspace, useMounted, useNow } from "@/components/decia";
+import { DecisionApiNotice, DecisionWorkspace, useMounted, useNow } from "@/components/decia";
 import { PageHeader } from "@/components/shell/PageHeader";
 import { ViewerProfileSelect } from "@/components/shell/UserPanel";
 import { Button, EmptyState, ErrorState, LoadingState } from "@/components/ui";
@@ -43,7 +43,7 @@ function Inner({ decisionId }: { decisionId: string }) {
     );
   }
   if (!mounted) return <LoadingState />;
-  if (!aggregate && http && http.status() !== "ready" && http.status() !== "error") return <LoadingState />;
+  if (!aggregate && http && ((http.status() !== "ready" && http.status() !== "error") || http.isFetching(decisionId))) return <LoadingState />;
   if (!aggregate && http) {
     // na API, inexistente e sem acesso são o mesmo 404 (BOLA): a tela não distingue
     return <EmptyState title={t("deciaapi.notFound")} description={apiError ? describeError(apiError) : t("deciaapi.notFoundDesc")} action={<Button variant="primary" href="/decia?tab=decisoes">{t("decia.ws.back")}</Button>} />;
@@ -59,7 +59,7 @@ function Inner({ decisionId }: { decisionId: string }) {
   };
   return (
     <>
-    {apiError ? <p role="alert" className="mb-3 rounded-[var(--ws-radius-md)] bg-ws-danger-soft p-3 text-[length:var(--ws-text-body-sm)] text-ws-danger-ink">{t("deciaapi.saveError")} {describeError(apiError)}</p> : null}
+    {apiError ? <div className="mb-3"><DecisionApiNotice error={apiError} /></div> : null}
     <DecisionWorkspace
       aggregate={aggregate}
       now={now}
@@ -69,6 +69,7 @@ function Inner({ decisionId }: { decisionId: string }) {
       initialSection={initialSection}
       onSectionChange={onSectionChange}
       backHref="/decia?tab=decisoes"
+      source={repo.source}
     />
     </>
   );

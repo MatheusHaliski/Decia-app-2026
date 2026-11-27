@@ -184,6 +184,32 @@ class AcervoAdaptersIT {
         assertThat(evidences.findByTasks(List.of(taskId))).hasSize(1);
         assertThat(evidences.countByMedia(m.id())).isEqualTo(1);
 
+        // V73: proveniência — hash do original, quem enviou, canal e captura do EXIF CIFRADA no banco (mesmo conversor das coordenadas)
+        String capture = "{\"cameraModel\":\"Modelo X\",\"latitude\":\"-25.4284\",\"longitude\":\"-49.2733\"}";
+        MediaObject m2 = mediaOf(u, "b".repeat(64));
+        TaskAttachment p = attachments.insert(new TaskAttachment(null, taskId, m2.id(), "foto.jpg", "image/jpeg", 10, m2.sha256(),
+                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, false, 1, br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM, "JPG",
+                null, "c".repeat(64), u.getId(), br.gov.pr.secid.workstation.domain.acervo.UploadChannel.GOOGLE, capture));
+        String rawCapture = jdbc.queryForObject("SELECT capture_metadata_enc FROM task_attachments WHERE id = ?", String.class, (Object) bytes(p.id()));
+        assertThat(rawCapture).startsWith("enc:v1:").doesNotContain("25.4284").doesNotContain("Modelo");
+        assertThat(attachments.findById(p.id())).hasValueSatisfying(s -> {
+            assertThat(s.attachment().originalSha256()).isEqualTo("c".repeat(64));
+            assertThat(s.attachment().uploadedBy()).isEqualTo(u.getId());
+            assertThat(s.attachment().uploadedVia()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.UploadChannel.GOOGLE);
+            assertThat(s.attachment().captureMetadata()).isEqualTo(capture);
+        });
+        StoredEvidence pe = evidences.insert(new Evidence(null, u.getId(), m2.id(), null, null, null, null, taskId, null, StudioStatus.ORIGINAL, null,
+                null, null, null, "c".repeat(64), u.getId(), br.gov.pr.secid.workstation.domain.acervo.UploadChannel.GOOGLE, capture));
+        assertThat(jdbc.queryForObject("SELECT capture_metadata_enc FROM evidences WHERE id = ?", String.class, (Object) bytes(pe.evidence().id())))
+                .startsWith("enc:v1:").doesNotContain("Modelo");
+        assertThat(evidences.findById(pe.evidence().id())).hasValueSatisfying(s -> {
+            assertThat(s.evidence().originalSha256()).isEqualTo("c".repeat(64));
+            assertThat(s.evidence().captureMetadata()).isEqualTo(capture);
+        });
+        evidences.delete(pe.evidence().id());
+        attachments.delete(p.id());
+        media.delete(m2.id());
+
         evidences.delete(e.evidence().id());
         attachments.delete(a.id());
         assertThat(evidences.countByMedia(m.id())).isZero();

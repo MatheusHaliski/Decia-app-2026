@@ -23,10 +23,12 @@ export interface DecisionRepository {
   /** Carrega (se preciso) e espera as escritas em voo — para quem lê fora do React (handoff). */
   ready?(): Promise<void>;
   /**
-   * Id definitivo de uma decisão criada agora: na API o `create` devolve um id provisório e o servidor dá o UUID depois; quem guarda o
+   * Id definitivo de uma decisão criada agora (rejeita se o servidor recusou a criação): na API o `create` devolve um id provisório e o servidor dá o UUID depois; quem guarda o
    * id em outro lugar (a Mesa de projetos) espera por ele. No DEMO é o próprio id.
    */
   confirmedId?(id: string): Promise<string>;
+  /** Busca uma decisão pelo id quando ela não está na lista carregada (link direto); no DEMO a lista já tem tudo. */
+  open?(id: string): Promise<void>;
   /** Busca no servidor as decisões ligadas a um item de trabalho (bloco "Decisões ligadas"); no DEMO a lista já tem tudo. */
   linkedTo?(type: WorkLinkTarget, targetId: string): Promise<void>;
 }
@@ -91,5 +93,9 @@ export function linkedDecisions(list: readonly DecisionAggregate[], type: WorkLi
 export function useDecision(id: string, repo: DecisionRepository = demoRepository()): DecisionAggregate | undefined {
   const list = useDecisions(repo);
   // `get` resolve também o id provisório de uma decisão recém-criada na API (lib/decia/http.ts)
-  return repo.get(id) ?? list.find((a) => a.decision.id === id);
+  const found = repo.get(id) ?? list.find((a) => a.decision.id === id);
+  useEffect(() => {
+    if (!found) void repo.open?.(id);
+  }, [found, repo, id]);
+  return found;
 }

@@ -61,7 +61,7 @@ function DeciaHome() {
       router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
     }
   };
-  const view = { decisions, now, people, currentUserId };
+  const view = { decisions, now, people, currentUserId, source: repo.source };
   const loading = <LoadingState />;
 
   return (

@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n/useI18n";
 import { DecisionStatusBadge } from "./Badges";
 import { ChallengeDialog, DecideDialog } from "./Dialogs";
 import { formatDay } from "./hooks";
+import { workLinkLabel } from "./LinkedDecisions";
 import { ReadinessSummary } from "./ReadinessCheck";
 import { CompareSection, DecisionSection, EvidenceSection, ExecutionSection, OverviewSection, RisksSection, type SectionProps } from "./WorkspaceSections";
 
@@ -25,6 +26,8 @@ export interface DecisionWorkspaceProps {
   /** card da visão geral começa virado (capturas) */
   flipped?: boolean;
   backHref?: string;
+  /** fonte das decisões: o selo DEMO só aparece no laboratório */
+  source?: "API" | "DEMO";
 }
 
 const STAGE_ICON: Record<StageState, string> = { done: "✓", attention: "!", empty: "" };
@@ -46,7 +49,7 @@ function SavedAgo({ at, now }: { at: string; now: Date }) {
  * Decision Workspace (05 §3) — não é modal: cabeçalho (pergunta, estado, responsável, prazo, prontidão, Desafiar,
  * Decidir, "salvo"), trilha dos 9 estágios e 6 seções (rail à esquerda no desktop; seletor no celular).
  */
-export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSave, initialSection = "visao-geral", onSectionChange, initialDecideOpen, flipped, backHref }: DecisionWorkspaceProps) {
+export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSave, initialSection = "visao-geral", onSectionChange, initialDecideOpen, flipped, backHref, source = "DEMO" }: DecisionWorkspaceProps) {
   const { t, intl } = useI18n();
   const [section, setSection] = useState<WorkspaceSection>(initialSection);
   const [deciding, setDeciding] = useState(!!initialDecideOpen);
@@ -79,10 +82,10 @@ export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSav
       <header className="grid gap-[var(--ws-space-3)] rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-4)] shadow-ws-1">
         <div className="flex flex-wrap items-center gap-2">
           {backHref ? <Button size="sm" variant="ghost" href={backHref}>← {t("decia.ws.back")}</Button> : null}
-          {projectLink ? <Button size="sm" variant="ghost" icon="mesa" href={`/projects/${projectLink.targetId}/edit`}>{t("decia.ws.openProject", { project: projectLink.label })}</Button> : null}
+          {projectLink ? <Button size="sm" variant="ghost" icon="mesa" href={`/projects/${projectLink.targetId}/edit`}>{t("decia.ws.openProject", { project: workLinkLabel(projectLink, t) })}</Button> : null}
           <DecisionStatusBadge status={d.status} />
           <Badge tone="neutral">{t(`decia.complexity.${d.complexity}`)}</Badge>
-          <Badge tone="neutral" title={t("decia.demoHint")}>{t("decia.demo")}</Badge>
+          {source === "DEMO" ? <Badge tone="neutral" title={t("decia.demoHint")}>{t("decia.demo")}</Badge> : null}
           <span className="ml-auto"><SavedAgo at={d.updatedAt} now={now} /></span>
         </div>
         <h1 className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h1)] font-semibold leading-[var(--ws-text-h1--lh)] [overflow-wrap:break-word]">{d.question}</h1>

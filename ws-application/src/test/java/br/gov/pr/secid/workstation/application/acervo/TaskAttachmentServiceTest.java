@@ -1,5 +1,7 @@
 package br.gov.pr.secid.workstation.application.acervo;
 
+import br.gov.pr.secid.workstation.application.media.MediaUploadInspector;
+import br.gov.pr.secid.workstation.domain.acervo.UploadChannel;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.AttachmentView;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.EvidenceInput;
 import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentService.EvidenceView;
@@ -320,5 +322,68 @@ class TaskAttachmentServiceTest {
         assertThat(mine).filteredOn(x -> x.evidence() != null).extracting(x -> x.evidence().caption()).containsExactly("Foto");
         assertThat(service.content(cu(me), sig.id(), mine.stream().filter(x -> x.taskId().equals(sig.id())).findFirst().orElseThrow().id())
                 .inline()).isTrue();
+    }
+
+    @Test
+    void provenienciaHashesAutorCanalECapturaCifravelSoParaQuemEdita() {
+        User me = person(company);
+        User colega = person(company);
+        TaskItem t = taskOf(me, "Vistoria da ponte", TaskState.DISPONIVEL, Visibility.EMPRESA, AccessClassification.INTERNO, null);
+        byte[] jpeg = br.gov.pr.secid.workstation.application.media.CaptureMetadataTest.jpegWithExif();
+
+        AttachmentView a = service.upload(cu(me), t.id(), new FileInput(jpeg, "foto.jpg", "image/jpeg"), CTX);
+        assertThat(a.originalSha256()).as("hash do arquivo como chegou").isEqualTo(MediaUploadInspector.sha256(jpeg));
+        assertThat(a.sha256()).as("hash do binário guardado (sem EXIF)").isNotEqualTo(a.originalSha256())
+                .isEqualTo(MediaUploadInspector.sha256(media.blobs.values().iterator().next()));
+        assertThat(a.uploadedBy()).isEqualTo(me.getId());
+        assertThat(a.uploadedVia()).isEqualTo(UploadChannel.DIRETO);
+        assertThat(a.hasCaptureMetadata()).isTrue();
+        assertThat(a.capture()).isNotNull();
+        assertThat(a.capture().latitude()).isEqualTo("-25.4284");
+        assertThat(a.capture().cameraModel()).isEqualTo("Modelo X 12");
+        assertThat(a.capture().takenAt()).isEqualTo("2026-11-12T13:15:30-03:00");
+        // guardado como JSON (o adaptador JPA cifra com AES-GCM); o binário perdeu o EXIF
+        TaskAttachment row = attachments.findById(a.id()).orElseThrow().attachment();
+        assertThat(row.captureMetadata()).contains("-49.2733");
+        assertThat(new String(media.blobs.values().iterator().next(), StandardCharsets.ISO_8859_1)).doesNotContain("Fabricante");
+
+        // colega da empresa vê o anexo e os hashes, mas não a captura (dado pessoal)
+        AttachmentView visto = service.list(cu(colega), t.id()).get(0);
+        assertThat(visto.hasCaptureMetadata()).isTrue();
+        assertThat(visto.capture()).isNull();
+        assertThat(visto.originalSha256()).isEqualTo(a.originalSha256());
+
+        // auditoria: os dois hashes e o canal; nunca a captura
+        AuditEvent added = audits.stream().filter(e -> e.action().equals("TASK_ATTACHMENT_ADDED")).findFirst().orElseThrow();
+        assertThat(added.metadata()).containsEntry("sha256", a.sha256()).containsEntry("originalSha256", a.originalSha256())
+                .containsEntry("via", "DIRETO").doesNotContainKeys("capture", "latitude");
+        assertThat(added.metadata().toString()).doesNotContain("-25.4284");
+
+        // a evidência herda a proveniência do anexo
+        EvidenceView ev = service.markEvidence(cu(me), t.id(), a.id(), new EvidenceInput("Fissura", null, null, null), CTX);
+        assertThat(ev.originalSha256()).isEqualTo(a.originalSha256());
+        assertThat(ev.uploadedBy()).isEqualTo(me.getId());
+        assertThat(ev.uploadedVia()).isEqualTo(UploadChannel.DIRETO);
+        assertThat(ev.capture()).isNotNull();
+        assertThat(service.evidences(cu(colega), t.id()).get(0).capture()).isNull();
+        AuditEvent marked = audits.stream().filter(e -> e.action().equals("TASK_EVIDENCE_ADDED")).findFirst().orElseThrow();
+        assertThat(marked.metadata()).containsEntry("sha256", a.sha256()).containsEntry("originalSha256", a.originalSha256());
+
+        // download em fluxo devolve o binário guardado
+        assertThat(service.content(cu(colega), t.id(), a.id()).readAll()).isEqualTo(media.blobs.values().iterator().next());
+    }
+
+    @Test
+    void textoEOpenDocumentViramAnexoComFormatoDetectado() {
+        User me = person(company);
+        TaskItem t = taskOf(me, "Planilha de custos", TaskState.DISPONIVEL, Visibility.PRIVADA, AccessClassification.INTERNO, null);
+        byte[] csv = "Item;Valor\r\nCimento;10,50\r\n".getBytes(StandardCharsets.UTF_8);
+        AttachmentView a = service.upload(cu(me), t.id(), new FileInput(csv, "custos.csv", "text/csv"), CTX);
+        assertThat(a.mimeType()).isEqualTo("text/csv");
+        assertThat(a.formatVariant()).isEqualTo("CSV");
+        assertThat(a.formatDetailsJson()).contains("\"delimiter\":\"SEMICOLON\"").contains("\"lineEnding\":\"CRLF\"");
+        assertThat(a.originalSha256()).isEqualTo(a.sha256()).as("texto não tem strip");
+        assertThat(a.hasCaptureMetadata()).isFalse();
+        assertThat(service.content(cu(me), t.id(), a.id()).inline()).as("texto sai como anexo, nunca inline").isFalse();
     }
 }

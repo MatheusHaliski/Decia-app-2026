@@ -64,6 +64,9 @@
           "available" : {
             "type" : "boolean"
           },
+          "capture" : {
+            "$ref" : "#/components/schemas/CaptureView"
+          },
           "createdAt" : {
             "format" : "date-time",
             "type" : "string"
@@ -84,6 +87,9 @@
           "formatVariant" : {
             "type" : "string"
           },
+          "hasCaptureMetadata" : {
+            "type" : "boolean"
+          },
           "id" : {
             "format" : "uuid",
             "type" : "string"
@@ -94,11 +100,17 @@
           "mimeType" : {
             "type" : "string"
           },
+          "originalSha256" : {
+            "type" : "string"
+          },
           "primary" : {
             "type" : "boolean"
           },
           "scanStatus" : {
             "enum" : [ "PENDENTE", "LIMPO", "INFECTADO", "NAO_VERIFICADO" ],
+            "type" : "string"
+          },
+          "sha256" : {
             "type" : "string"
           },
           "sizeBytes" : {
@@ -110,6 +122,14 @@
             "type" : "string"
           },
           "taskTitle" : {
+            "type" : "string"
+          },
+          "uploadedBy" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "uploadedVia" : {
+            "enum" : [ "DIRETO", "GOOGLE", "MICROSOFT", "APPLE_ICLOUD" ],
             "type" : "string"
           }
         },
@@ -130,6 +150,26 @@
             "type" : "array"
           },
           "username" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "CaptureView" : {
+        "properties" : {
+          "cameraMake" : {
+            "type" : "string"
+          },
+          "cameraModel" : {
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "string"
+          },
+          "longitude" : {
+            "type" : "string"
+          },
+          "takenAt" : {
             "type" : "string"
           }
         },
@@ -466,6 +506,10 @@
             "enum" : [ "ESTRATEGICA", "TATICA", "OPERACIONAL", "TECNICA", "FINANCEIRA", "PRODUTO", "PESSOAS", "CONTRATACAO", "RISCO" ],
             "type" : "string"
           },
+          "projectId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
           "question" : {
             "maxLength" : 500,
             "minLength" : 0,
@@ -590,10 +634,175 @@
         },
         "type" : "object"
       },
+      "DecisionAssumptionInput" : {
+        "properties" : {
+          "alternativeId" : {
+            "type" : "string"
+          },
+          "confidencePct" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "importance" : {
+            "enum" : [ "BAIXO", "MEDIO", "ALTO", "CRITICO" ],
+            "type" : "string"
+          },
+          "ownerUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "statement" : {
+            "type" : "string"
+          },
+          "validationNote" : {
+            "type" : "string"
+          },
+          "validationStatus" : {
+            "enum" : [ "NAO_VALIDADA", "EM_VALIDACAO", "VALIDADA", "INVALIDADA" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionAssumptionView" : {
+        "properties" : {
+          "alternativeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "confidencePct" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "importance" : {
+            "enum" : [ "BAIXO", "MEDIO", "ALTO", "CRITICO" ],
+            "type" : "string"
+          },
+          "origin" : {
+            "enum" : [ "HUMANO", "IA", "IMPORTADA" ],
+            "type" : "string"
+          },
+          "ownerUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "statement" : {
+            "type" : "string"
+          },
+          "validatedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "validationNote" : {
+            "type" : "string"
+          },
+          "validationStatus" : {
+            "enum" : [ "NAO_VALIDADA", "EM_VALIDACAO", "VALIDADA", "INVALIDADA" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionCheckpointInput" : {
+        "properties" : {
+          "action" : {
+            "enum" : [ "MANTER", "AJUSTAR", "REABRIR" ],
+            "type" : "string"
+          },
+          "assumptionsChanged" : {
+            "type" : "boolean"
+          },
+          "confidencePctAfter" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "dueAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "kind" : {
+            "enum" : [ "PROGRAMADO", "GATILHO" ],
+            "type" : "string"
+          },
+          "newEvidence" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "AGENDADO", "CONCLUIDO", "PERDIDO", "CANCELADO" ],
+            "type" : "string"
+          },
+          "stillValid" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionCheckpointView" : {
+        "properties" : {
+          "action" : {
+            "enum" : [ "MANTER", "AJUSTAR", "REABRIR" ],
+            "type" : "string"
+          },
+          "assumptionsChanged" : {
+            "type" : "boolean"
+          },
+          "completedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "completedByUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "confidencePctAfter" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "dueAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "kind" : {
+            "enum" : [ "PROGRAMADO", "GATILHO" ],
+            "type" : "string"
+          },
+          "newEvidence" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "AGENDADO", "CONCLUIDO", "PERDIDO", "CANCELADO" ],
+            "type" : "string"
+          },
+          "stillValid" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
       "DecisionCommand" : {
         "properties" : {
           "alternativeId" : {
             "type" : "string"
+          },
+          "assumption" : {
+            "$ref" : "#/components/schemas/DecisionAssumptionInput"
+          },
+          "checkpoint" : {
+            "$ref" : "#/components/schemas/DecisionCheckpointInput"
           },
           "confidencePct" : {
             "format" : "int32",
@@ -605,6 +814,12 @@
           "doNothing" : {
             "type" : "boolean"
           },
+          "forecast" : {
+            "$ref" : "#/components/schemas/DecisionForecastInput"
+          },
+          "itemId" : {
+            "type" : "string"
+          },
           "name" : {
             "type" : "string"
           },
@@ -614,6 +829,9 @@
           },
           "rationale" : {
             "type" : "string"
+          },
+          "recommendation" : {
+            "$ref" : "#/components/schemas/DecisionRecommendationInput"
           },
           "ref" : {
             "type" : "string"
@@ -625,6 +843,15 @@
           "result" : {
             "enum" : [ "SUCESSO", "PARCIAL", "FALHOU", "CANCELADA", "SUBSTITUIDA" ],
             "type" : "string"
+          },
+          "retrospective" : {
+            "$ref" : "#/components/schemas/DecisionRetrospectiveInput"
+          },
+          "risk" : {
+            "$ref" : "#/components/schemas/DecisionRiskInput"
+          },
+          "scenario" : {
+            "$ref" : "#/components/schemas/DecisionScenarioInput"
           },
           "score" : {
             "format" : "int32",
@@ -647,8 +874,11 @@
             "enum" : [ "RASCUNHO", "ENQUADRAMENTO", "PESQUISA", "COMPARACAO", "AGUARDANDO_DECISAO", "DECIDIDA", "EM_EXECUCAO", "RESOLVIDA", "REVISADA", "REABERTA", "ARQUIVADA" ],
             "type" : "string"
           },
+          "trigger" : {
+            "$ref" : "#/components/schemas/DecisionTriggerInput"
+          },
           "type" : {
-            "enum" : [ "TRANSITION", "REOPEN", "ADD_ALTERNATIVE", "ADD_CRITERION", "SET_WEIGHT", "SET_SCORE", "ADD_EVIDENCE", "DECIDE", "RECORD_OUTCOME" ],
+            "enum" : [ "TRANSITION", "REOPEN", "ADD_ALTERNATIVE", "ADD_CRITERION", "SET_WEIGHT", "SET_SCORE", "ADD_EVIDENCE", "DECIDE", "RECORD_OUTCOME", "PUT_ASSUMPTION", "REMOVE_ASSUMPTION", "PUT_RISK", "REMOVE_RISK", "PUT_SCENARIO", "REMOVE_SCENARIO", "PUT_FORECAST", "PUT_RECOMMENDATION", "PUT_TRIGGER", "REMOVE_TRIGGER", "PUT_CHECKPOINT", "LINK_WORK", "UNLINK_WORK", "PUT_RETROSPECTIVE" ],
             "type" : "string"
           },
           "warningsConfirmed" : {
@@ -657,6 +887,9 @@
           "weightPct" : {
             "format" : "double",
             "type" : "number"
+          },
+          "workLink" : {
+            "$ref" : "#/components/schemas/DecisionWorkLinkInput"
           }
         },
         "type" : "object"
@@ -819,6 +1052,65 @@
         },
         "type" : "object"
       },
+      "DecisionForecastInput" : {
+        "properties" : {
+          "alternativeId" : {
+            "type" : "string"
+          },
+          "probabilityPct" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "resolution" : {
+            "enum" : [ "PENDENTE", "OCORREU", "NAO_OCORREU", "ANULADA" ],
+            "type" : "string"
+          },
+          "resolveBy" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "statement" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionForecastView" : {
+        "properties" : {
+          "alternativeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "forecasterUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "probabilityPct" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "resolution" : {
+            "enum" : [ "PENDENTE", "OCORREU", "NAO_OCORREU", "ANULADA" ],
+            "type" : "string"
+          },
+          "resolveBy" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "resolvedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "statement" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "DecisionOutcomeView" : {
         "properties" : {
           "id" : {
@@ -875,11 +1167,281 @@
           "edit" : {
             "type" : "boolean"
           },
+          "editRecords" : {
+            "type" : "boolean"
+          },
           "editStructure" : {
             "type" : "boolean"
           },
           "reopen" : {
             "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRecommendationInput" : {
+        "properties" : {
+          "alternativeId" : {
+            "type" : "string"
+          },
+          "contradicting" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "criticalAssumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "limitationsMd" : {
+            "type" : "string"
+          },
+          "reasoningMd" : {
+            "type" : "string"
+          },
+          "source" : {
+            "enum" : [ "MODELO", "IA" ],
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "SUGERIDA", "ACEITA", "DESCARTADA" ],
+            "type" : "string"
+          },
+          "supporting" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "whatWouldChangeMd" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRecommendationView" : {
+        "properties" : {
+          "alternativeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "contradicting" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "criticalAssumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "limitationsMd" : {
+            "type" : "string"
+          },
+          "modelVersion" : {
+            "type" : "string"
+          },
+          "reasoningMd" : {
+            "type" : "string"
+          },
+          "source" : {
+            "enum" : [ "MODELO", "IA" ],
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "SUGERIDA", "ACEITA", "DESCARTADA" ],
+            "type" : "string"
+          },
+          "supporting" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "whatWouldChangeMd" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRetrospectiveInput" : {
+        "properties" : {
+          "failedAssumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "lessonsMd" : {
+            "type" : "string"
+          },
+          "processQuality" : {
+            "enum" : [ "ADEQUADA", "PARCIAL", "INADEQUADA" ],
+            "type" : "string"
+          },
+          "shareAsLesson" : {
+            "type" : "boolean"
+          },
+          "whatExpected" : {
+            "type" : "string"
+          },
+          "whatHappened" : {
+            "type" : "string"
+          },
+          "whatWasRight" : {
+            "type" : "string"
+          },
+          "whatWasWrong" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRetrospectiveView" : {
+        "properties" : {
+          "failedAssumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "lessonsMd" : {
+            "type" : "string"
+          },
+          "outcomeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "processQuality" : {
+            "enum" : [ "ADEQUADA", "PARCIAL", "INADEQUADA" ],
+            "type" : "string"
+          },
+          "reviewedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "reviewedByUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "shareAsLesson" : {
+            "type" : "boolean"
+          },
+          "whatExpected" : {
+            "type" : "string"
+          },
+          "whatHappened" : {
+            "type" : "string"
+          },
+          "whatWasRight" : {
+            "type" : "string"
+          },
+          "whatWasWrong" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRiskInput" : {
+        "properties" : {
+          "alternativeId" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "impact" : {
+            "enum" : [ "BAIXO", "MEDIO", "ALTO", "CRITICO" ],
+            "type" : "string"
+          },
+          "likelihood" : {
+            "enum" : [ "RARA", "POSSIVEL", "PROVAVEL", "QUASE_CERTA" ],
+            "type" : "string"
+          },
+          "mitigation" : {
+            "type" : "string"
+          },
+          "ownerUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "source" : {
+            "enum" : [ "MANUAL", "PRE_MORTEM", "RED_TEAM", "IA" ],
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "ABERTO", "MITIGADO", "ACEITO", "OCORREU", "ENCERRADO" ],
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionRiskView" : {
+        "properties" : {
+          "alternativeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "impact" : {
+            "enum" : [ "BAIXO", "MEDIO", "ALTO", "CRITICO" ],
+            "type" : "string"
+          },
+          "likelihood" : {
+            "enum" : [ "RARA", "POSSIVEL", "PROVAVEL", "QUASE_CERTA" ],
+            "type" : "string"
+          },
+          "mitigation" : {
+            "type" : "string"
+          },
+          "origin" : {
+            "enum" : [ "HUMANO", "IA", "IMPORTADA" ],
+            "type" : "string"
+          },
+          "ownerUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "severity" : {
+            "enum" : [ "BAIXO", "MEDIO", "ALTO", "CRITICO" ],
+            "type" : "string"
+          },
+          "source" : {
+            "enum" : [ "MANUAL", "PRE_MORTEM", "RED_TEAM", "IA" ],
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "ABERTO", "MITIGADO", "ACEITO", "OCORREU", "ENCERRADO" ],
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
           }
         },
         "type" : "object"
@@ -1013,6 +1575,67 @@
         },
         "type" : "object"
       },
+      "DecisionScenarioInput" : {
+        "properties" : {
+          "alternativeId" : {
+            "type" : "string"
+          },
+          "assumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "expectedResult" : {
+            "type" : "string"
+          },
+          "likelihood" : {
+            "enum" : [ "RARA", "POSSIVEL", "PROVAVEL", "QUASE_CERTA" ],
+            "type" : "string"
+          },
+          "scenarioCase" : {
+            "enum" : [ "MELHOR", "BASE", "PIOR" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionScenarioView" : {
+        "properties" : {
+          "alternativeId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "assumptionIds" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "expectedResult" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "likelihood" : {
+            "enum" : [ "RARA", "POSSIVEL", "PROVAVEL", "QUASE_CERTA" ],
+            "type" : "string"
+          },
+          "scenarioCase" : {
+            "enum" : [ "MELHOR", "BASE", "PIOR" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "DecisionSnapshotView" : {
         "properties" : {
           "confidencePct" : {
@@ -1057,6 +1680,58 @@
         },
         "type" : "object"
       },
+      "DecisionTriggerInput" : {
+        "properties" : {
+          "comparator" : {
+            "type" : "string"
+          },
+          "conditionText" : {
+            "type" : "string"
+          },
+          "metricKey" : {
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "ATIVO", "DISPARADO", "ARQUIVADO" ],
+            "type" : "string"
+          },
+          "threshold" : {
+            "format" : "double",
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionTriggerView" : {
+        "properties" : {
+          "comparator" : {
+            "type" : "string"
+          },
+          "conditionText" : {
+            "type" : "string"
+          },
+          "firedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "metricKey" : {
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "ATIVO", "DISPARADO", "ARQUIVADO" ],
+            "type" : "string"
+          },
+          "threshold" : {
+            "format" : "double",
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
       "DecisionView" : {
         "properties" : {
           "alternatives" : {
@@ -1068,6 +1743,18 @@
           "assessments" : {
             "items" : {
               "$ref" : "#/components/schemas/DecisionAssessmentView"
+            },
+            "type" : "array"
+          },
+          "assumptions" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionAssumptionView"
+            },
+            "type" : "array"
+          },
+          "checkpoints" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionCheckpointView"
             },
             "type" : "array"
           },
@@ -1098,6 +1785,12 @@
             },
             "type" : "array"
           },
+          "forecasts" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionForecastView"
+            },
+            "type" : "array"
+          },
           "outcome" : {
             "$ref" : "#/components/schemas/DecisionOutcomeView"
           },
@@ -1110,11 +1803,82 @@
           "permissions" : {
             "$ref" : "#/components/schemas/DecisionPermissions"
           },
+          "recommendations" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionRecommendationView"
+            },
+            "type" : "array"
+          },
+          "retrospective" : {
+            "$ref" : "#/components/schemas/DecisionRetrospectiveView"
+          },
+          "risks" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionRiskView"
+            },
+            "type" : "array"
+          },
+          "scenarios" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionScenarioView"
+            },
+            "type" : "array"
+          },
           "snapshots" : {
             "items" : {
               "$ref" : "#/components/schemas/DecisionSnapshotView"
             },
             "type" : "array"
+          },
+          "triggers" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionTriggerView"
+            },
+            "type" : "array"
+          },
+          "workLinks" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DecisionWorkLinkView"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionWorkLinkInput" : {
+        "properties" : {
+          "targetId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "targetType" : {
+            "enum" : [ "TAREFA", "PROJETO", "MARCO" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DecisionWorkLinkView" : {
+        "properties" : {
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "createdByUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "targetId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "targetType" : {
+            "enum" : [ "TAREFA", "PROJETO", "MARCO" ],
+            "type" : "string"
           }
         },
         "type" : "object"
@@ -1284,6 +2048,9 @@
           "caption" : {
             "type" : "string"
           },
+          "capture" : {
+            "$ref" : "#/components/schemas/CaptureView"
+          },
           "createdAt" : {
             "format" : "date-time",
             "type" : "string"
@@ -1298,6 +2065,9 @@
           "formatVariant" : {
             "type" : "string"
           },
+          "hasCaptureMetadata" : {
+            "type" : "boolean"
+          },
           "hasLocation" : {
             "type" : "boolean"
           },
@@ -1311,6 +2081,9 @@
           "longitude" : {
             "type" : "string"
           },
+          "originalSha256" : {
+            "type" : "string"
+          },
           "ownerId" : {
             "format" : "uuid",
             "type" : "string"
@@ -1321,6 +2094,14 @@
           },
           "taskId" : {
             "format" : "uuid",
+            "type" : "string"
+          },
+          "uploadedBy" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "uploadedVia" : {
+            "enum" : [ "DIRETO", "GOOGLE", "MICROSOFT", "APPLE_ICLOUD" ],
             "type" : "string"
           }
         },
@@ -3867,6 +4648,22 @@
             "format" : "int32",
             "type" : "integer"
           }
+        }, {
+          "in" : "query",
+          "name" : "targetType",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "TAREFA", "PROJETO", "MARCO" ],
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "targetId",
+          "required" : false,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -3883,7 +4680,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro",
+        "summary" : "RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro; com targetType+targetId, só as ligadas àquela tarefa/projeto/marco (lista vazia se o item não for visível)",
         "tags" : [ "RF29 Decisões (DECIA)" ]
       },
       "post" : {
@@ -3976,7 +4773,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado); BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA",
+        "summary" : "RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado, premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints, vínculos de trabalho e retrospectiva); BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA",
         "tags" : [ "RF29 Decisões (DECIA)" ]
       }
     },
@@ -5255,7 +6052,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "format" : "byte",
+                  "format" : "binary",
                   "type" : "string"
                 }
               }
@@ -5263,7 +6060,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono)",
+        "summary" : "RF41.CA06 Conteúdo do anexo em fluxo, com Range (206) (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono)",
         "tags" : [ "RF41 Anexos e evidências" ]
       }
     },

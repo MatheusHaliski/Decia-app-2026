@@ -7,6 +7,7 @@ import type { DeciaActions } from "@/components/projects/shared";
 import { PageHeader } from "@/components/shell/PageHeader";
 import { ViewerProfileSelect } from "@/components/shell/UserPanel";
 import { Button, EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui";
+import { describeError } from "@/lib/api/client";
 import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
 import { useDecisions } from "@/lib/decia/repository";
 import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
@@ -55,7 +56,7 @@ function Inner({ projectId }: { projectId: string }) {
           ? { title, description: t("decia2.project.labLink"), tone: "aviso" }
           : { title, description: t("pm.ws.openedInDecia"), tone: "sucesso" });
         router.push(decisionHref(r.decisionId));
-      });
+      }, (e: unknown) => toast({ title, description: `${t("deciaapi.saveError")} ${describeError(e)}`, tone: "erro" }));
     };
     return {
       openGate: (phase) => open(openGateDecision(deciaRepo, model, phase, t(`pm.phase.${phase}`), deciaActorId), t("pm.ws.gateOpened", { phase: t(`pm.phase.${phase}`) })),

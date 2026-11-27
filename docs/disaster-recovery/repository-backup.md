@@ -10,7 +10,8 @@ It does **not** back up or restore Firebase, databases, uploads, user files,
 Storage, secrets, environment variables, GitHub Secrets, service accounts,
 external APIs, integration data, Trello, GitHub integrations, Slack, Jira, or
 DECIA application data. No secrets or `.env` files are copied as part of this
-workflow.
+workflow. The database and media (attachments) runbook is
+[`media-e-banco.md`](media-e-banco.md).
 
 ## Repositories
 

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Button, Dialog, EmptyState, Field, RadioCards, Select, Sheet, Tag, Textarea, cn } from "@/components/ui";
 import { track } from "@/lib/decia/analytics";
 import { DECISION_TEMPLATES } from "@/lib/decia/commands";
@@ -19,6 +19,24 @@ interface ViewProps {
   now: Date;
   people: PeopleDirectory;
   currentUserId: string;
+  /** fonte das decisões: na API os projetos do filtro vêm das próprias decisões, nunca dos exemplos DEMO */
+  source?: "API" | "DEMO";
+}
+
+/**
+ * Projetos do filtro: os que as decisões citam (raiz `projectId` ou vínculo PROJETO). No laboratório os nomes vêm dos exemplos;
+ * na API só o rótulo do vínculo (quando houver) ou o início do id — nunca a lista DEMO.
+ */
+export function projectFilterOptions(decisions: readonly DecisionAggregate[], source: "API" | "DEMO"): { value: string; label: string }[] {
+  const out = new Map<string, string>();
+  if (source === "DEMO") for (const [k, v] of Object.entries(DEMO_PROJECTS)) out.set(k, v.name);
+  for (const a of decisions) {
+    const link = a.workLinks.find((w) => w.targetType === "PROJETO" && (!a.decision.projectId || w.targetId === a.decision.projectId));
+    const id = a.decision.projectId ?? link?.targetId;
+    if (!id || out.get(id)) continue;
+    out.set(id, link?.label || (source === "DEMO" ? DEMO_PROJECTS[id]?.name : undefined) || `#${id.slice(0, 8)}`);
+  }
+  return [...out].map(([value, label]) => ({ value, label })).sort((x, y) => x.label.localeCompare(y.label));
 }
 
 /** Folha com o card DETAIL (flip): "Por quê?" no STANDARD e detalhes longos no celular (04 §7). */
@@ -117,7 +135,8 @@ export function filterDecisions(decisions: readonly DecisionAggregate[], vms: re
     const d = a.decision;
     if (f.status && d.status !== f.status) return false;
     if (f.owner && d.ownerUserId !== f.owner) return false;
-    if (f.project && (f.project === "-" ? !!d.projectId : d.projectId !== f.project)) return false;
+    const projectOf = d.projectId ?? a.workLinks.find((w) => w.targetType === "PROJETO")?.targetId;
+    if (f.project && (f.project === "-" ? !!projectOf : projectOf !== f.project)) return false;
     if (f.risk && vm.risk !== f.risk) return false;
     if (f.impact && d.impact !== f.impact) return false;
     if (f.kind && d.kind !== f.kind) return false;
@@ -129,7 +148,7 @@ export function filterDecisions(decisions: readonly DecisionAggregate[], vms: re
   });
 }
 
-export function DecisionsBoard({ decisions, now, people, initialView }: ViewProps & { initialView?: "grid" | "list" }) {
+export function DecisionsBoard({ decisions, now, people, initialView, source = "DEMO" }: ViewProps & { initialView?: "grid" | "list" }) {
   const { t } = useI18n();
   const mobile = useMediaQuery("(max-width: 639px)");
   const [view, setView] = useState<"grid" | "list" | null>(initialView ?? null);
@@ -170,7 +189,7 @@ export function DecisionsBoard({ decisions, now, people, initialView }: ViewProp
         <div className="grid gap-3 border-t border-ws-border p-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           <Field label={t("decia.list.filter.status")}>{({ id }) => <Select id={id} value={filters.status} onChange={set("status")} options={[all, ...DECISION_LIFECYCLE.map((s) => ({ value: s, label: t(`decia.status.${s}`) }))]} />}</Field>
           <Field label={t("decia.list.filter.owner")}>{({ id }) => <Select id={id} value={filters.owner} onChange={set("owner")} options={[all, ...owners.map((o) => ({ value: o, label: people[o]?.name ?? o }))]} />}</Field>
-          <Field label={t("decia.list.filter.project")}>{({ id }) => <Select id={id} value={filters.project} onChange={set("project")} options={[all, ...Object.entries(DEMO_PROJECTS).map(([k, v]) => ({ value: k, label: v.name })), { value: "-", label: t("decia.list.noProject") }]} />}</Field>
+          <Field label={t("decia.list.filter.project")}>{({ id }) => <Select id={id} value={filters.project} onChange={set("project")} options={[all, ...projectFilterOptions(decisions, source), { value: "-", label: t("decia.list.noProject") }]} />}</Field>
           <Field label={t("decia.list.filter.risk")}>{({ id }) => <Select id={id} value={filters.risk} onChange={set("risk")} options={[all, ...DECISION_LEVEL.map((l) => ({ value: l, label: t(`decia.level.${l}`) })), { value: "NAO_AVALIADO", label: t("decia.chip.riskNone") }]} />}</Field>
           <Field label={t("decia.list.filter.impact")}>{({ id }) => <Select id={id} value={filters.impact} onChange={set("impact")} options={[all, ...DECISION_LEVEL.map((l) => ({ value: l, label: t(`decia.level.${l}`) }))]} />}</Field>
           <Field label={t("decia.list.filter.deadline")}>{({ id }) => <Select id={id} value={filters.deadline} onChange={set("deadline")} options={[all, ...(["overdue", "week", "month", "none"] as const).map((v) => ({ value: v, label: t(`decia.list.deadline.${v}`) }))]} />}</Field>
@@ -231,6 +250,9 @@ export function NewDecisionDialog({ open, onOpenChange, repository, currentUserI
   const effective = complexity ?? suggested;
   const q = question.trim();
   const valid = q.length >= 15 && q.endsWith("?");
+  const reasonId = useId();
+  // motivo visível do botão desabilitado (não só a cor): o que falta na pergunta
+  const reason = valid ? null : q.length < 15 ? t("decia2.new.reasonShort", { n: 15 - q.length }) : t("decia2.new.reasonMark");
   const create = () => {
     const agg = repository.create({ question: q, impact, complexity: effective, templateKey: template || undefined, ownerUserId: currentUserId });
     track("decision_created", { decisionId: agg.decision.id, complexity: effective, templateKey: template || undefined });
@@ -258,9 +280,10 @@ export function NewDecisionDialog({ open, onOpenChange, repository, currentUserI
         <Field label={t("decia.new.template")}>
           {({ id }) => <Select id={id} value={template} onChange={(e) => setTemplate(e.target.value)} options={[{ value: "", label: t("decia.new.noTemplate") }, ...Object.keys(DECISION_TEMPLATES).map((k) => ({ value: k, label: t(`decia.new.templates.${k}`) }))]} />}
         </Field>
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {reason ? <p id={reasonId} className="mr-auto text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="create-decision-reason">{reason}</p> : null}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("decia.common.cancel")}</Button>
-          <Button variant="primary" disabled={!valid} onClick={create} data-testid="create-decision">{t("decia.new.create")}</Button>
+          <Button variant="primary" disabled={!valid} aria-describedby={reason ? reasonId : undefined} onClick={create} data-testid="create-decision">{t("decia.new.create")}</Button>
         </div>
       </div>
     </Dialog>

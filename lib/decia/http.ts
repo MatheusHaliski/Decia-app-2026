@@ -342,6 +342,8 @@ export interface HttpDecisionRepository extends DecisionRepository {
   refresh(): Promise<void>;
   /** Espera as escritas em voo (testes e navegação). */
   settled(): Promise<void>;
+  /** Uma decisão aberta pela URL está sendo buscada (`GET /api/decisions/{id}`) — a tela mostra carregando, não 404. */
+  isFetching(id: string): boolean;
 }
 
 export interface HttpRepositoryOptions {
@@ -358,6 +360,10 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
   const confirmed = new Map<string, DecisionAggregate>();
   const aliases = new Map<string, string>();
   const creations = new Map<string, Promise<string>>();
+  const fetching = new Set<string>();
+  /** cópia otimista de cada criação: quem monta em cima dela (a ponte da Mesa) não "mudou" a raiz em relação ao servidor */
+  const createdLocal = new Map<string, DecisionAggregate>();
+  const fetched = new Set<string>();
   let state: HttpStatus = "idle";
   let error: unknown = null;
   let chain: Promise<void> = Promise.resolve();
@@ -406,14 +412,15 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
     const byPos = <T extends { id: string; position: number }>(list: T[]) => [...list].sort((a, b) => a.position - b.position);
     const newAlts = byPos(fresh(base.alternatives, server.alternatives));
     const newCrits = byPos(fresh(base.criteria, server.criteria));
-    sent.filter((c) => c.type === "ADD_ALTERNATIVE").forEach((c, i) => { if (c.ref && newAlts[i]) aliases.set(c.ref, newAlts[i].id); });
-    sent.filter((c) => c.type === "ADD_CRITERION").forEach((c, i) => { if (c.ref && newCrits[i]) aliases.set(c.ref, newCrits[i].id); });
+    sent.filter((c) => c.type === "ADD_ALTERNATIVE").forEach((c, i) => { const a = newAlts[i]; if (c.ref && a) aliases.set(c.ref, a.id); });
+    sent.filter((c) => c.type === "ADD_CRITERION").forEach((c, i) => { const x = newCrits[i]; if (c.ref && x) aliases.set(c.ref, x.id); });
     const match = <T extends Keyed>(type: DecisionCommandType, known: readonly T[], serverList: readonly T[], localList: readonly T[], sig: (x: T) => string) => {
       const pool = fresh(known, serverList);
       for (const c of sent.filter((x) => x.type === type && x.ref)) {
         const mine = localList.find((x) => x.id === c.ref);
         const k = mine ? pool.findIndex((x) => sig(x) === sig(mine)) : -1;
-        if (k >= 0) { aliases.set(c.ref!, pool[k].id); pool.splice(k, 1); }
+        const hit = k >= 0 ? pool[k] : undefined;
+        if (hit && c.ref) { aliases.set(c.ref, hit.id); pool.splice(k, 1); }
       }
     };
     match("PUT_ASSUMPTION", base.assumptions, server.assumptions, local.assumptions, (x) => x.statement);
@@ -437,6 +444,22 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
     ready() {
       if (state === "idle") loading = load();
       return chain.then(() => loading ?? undefined);
+    },
+    isFetching: (id) => fetching.has(id),
+    async open(id) {
+      // fora das 50 mais recentes da listagem: busca a decisão pelo id (404 uniforme do servidor = não existe ou sem acesso)
+      if (!isServerId(id) || fetched.has(id) || fetching.has(id) || items.some((a) => a.decision.id === alias(id))) return;
+      fetching.add(id);
+      emit();
+      try {
+        merge([fromDto(await transport.get<DecisionViewDto>(`/api/decisions/${encodeURIComponent(id)}`))]);
+      } catch (e) {
+        error = e;
+        items = [...items];
+      }
+      fetched.add(id);
+      fetching.delete(id);
+      emit();
     },
     confirmedId(id) {
       return creations.get(id) ?? Promise.resolve(alias(id));
@@ -464,7 +487,8 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
           emit();
           return;
         }
-        const limits = unsupportedChanges(base, agg, alias);
+        const local = createdLocal.get(localId);
+        const limits = unsupportedChanges(local ? { ...base, decision: local.decision, participants: local.participants } : base, agg, alias);
         const commands = diffCommands(base, agg, opts.userId, alias);
         if (!commands.length) {
           // nada que a API grave mudou: a tela volta ao estado confirmado (ids do servidor) e avisa o que não foi gravado
@@ -502,13 +526,19 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
           independentScoring: false, templateKey: input.templateKey, projectId, createdAt: iso, updatedAt: iso,
         },
         participants: [{ userId: opts.userId, role: "CONDUTOR", joinedAt: iso }],
-        alternatives: [], criteria: [], assessments: [], evidence: [], evidenceLinks: [], assumptions: [], risks: [], scenarios: [], forecasts: [],
+        // os critérios do modelo já aparecem (o servidor cria os mesmos; os ids locais viram os do servidor pelo nome)
+        alternatives: [], criteria: (tpl?.criteria ?? []).map((name, i) => ({ id: `${tempId}-c${i}`, name, direction: "MAIOR_MELHOR" as const, weightPct: null, origin: "HUMANO" as const, position: i })),
+        assessments: [], evidence: [], evidenceLinks: [], assumptions: [], risks: [], scenarios: [], forecasts: [],
         recommendations: [], triggers: [], snapshots: [], checkpoints: [], workLinks: [], events: [],
       };
       put(local);
+      createdLocal.set(tempId, local);
       emit();
       let settle: (id: string) => void = () => {};
-      creations.set(tempId, new Promise<string>((resolve) => { settle = resolve; }));
+      let fail: (e: unknown) => void = () => {};
+      const created = new Promise<string>((resolve, reject) => { settle = resolve; fail = reject; });
+      created.catch(() => undefined); // quem não espera pela criação não recebe rejeição solta
+      creations.set(tempId, created);
       void enqueue(async () => {
         try {
           const dto = await transport.post<DecisionViewDto>("/api/decisions", {
@@ -517,6 +547,10 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
           });
           const server = fromDto(dto);
           aliases.set(tempId, server.decision.id);
+          for (const c of local.criteria) {
+            const match = server.criteria.find((x) => x.name.toLowerCase() === c.name.toLowerCase());
+            if (match) aliases.set(c.id, match.id);
+          }
           confirmed.set(server.decision.id, server);
           put(server, tempId);
           error = null;
@@ -524,7 +558,7 @@ export function createHttpRepository(opts: HttpRepositoryOptions): HttpDecisionR
         } catch (e) {
           error = e;
           items = items.filter((a) => a.decision.id !== tempId);
-          settle(tempId);
+          fail(e);
         }
         emit();
       });

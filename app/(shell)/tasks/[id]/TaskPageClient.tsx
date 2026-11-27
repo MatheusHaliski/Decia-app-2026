@@ -1,4 +1,5 @@
 "use client";
+import { LinkedDecisions } from "@/components/decia/LinkedDecisions";
 import { TaskDetail } from "@/components/social";
 import { useMounted, useSocial } from "@/components/social/context";
 import { RfPage } from "@/components/shell/RfPage";
@@ -24,6 +25,7 @@ export function TaskPageClient({ taskId, persisted = false }: { taskId: string; 
     return (
       <RfPage page={PAGE} noEmpty>
         <PersistedTaskDetail id={taskId} />
+        <LinkedDecisions taskId={taskId} />
       </RfPage>
     );
   }
@@ -36,6 +38,7 @@ function DemoTaskPage({ taskId }: { taskId: string }) {
   return (
     <RfPage page={PAGE} subtitle={title} noEmpty actions={<Badge tone="neutral" title={t("social.demoHint")}>{t("decia.demo")}</Badge>}>
       <TaskDetail taskId={taskId} />
+      <LinkedDecisions taskId={taskId} taskTitle={title} />
     </RfPage>
   );
 }

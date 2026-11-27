@@ -202,8 +202,17 @@ public final class CaptureMetadata {
     private record Entry(int tag, int type, long count, int valueAt) {
     }
 
+    /** TIFF/EXIF → captura; estrutura que não fecha (offset fora, IFD gigante, cabeçalho errado) → nulo. */
     static Capture parseTiff(byte[] b) {
-        if (b.length < 8) {
+        try {
+            return parseTiffOrThrow(b);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    private static Capture parseTiffOrThrow(byte[] b) {
+        if (b == null || b.length < 8) {
             return null;
         }
         boolean little;

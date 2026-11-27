@@ -8,6 +8,9 @@
 -- de ser uma migration/rotina de DBA explícita que derrube e recrie o gatilho, registrada em docs/DECISOES.md — nunca um caminho da app.
 -- TRUNCATE não dispara gatilho: o usuário da aplicação em produção não deve ter DROP (TRUNCATE exige DROP) — ver
 -- docs/arquitetura/seguranca-audit-log.md.
+-- PRÉ-REQUISITO do servidor: com binlog ligado (padrão do 8.4), CREATE TRIGGER por usuário sem SUPER exige
+-- log_bin_trust_function_creators=1 (senão erro 1419 e a API não sobe) — ligado no docker-compose.dev.yml e nos testes; em produção, no
+-- parameter group / my.cnf do servidor gerenciado.
 -- Corpo de uma instrução só (sem BEGIN/END): dispensa DELIMITER e roda igual no Flyway e no cliente mysql.
 CREATE TRIGGER trg_audit_log_no_update BEFORE UPDATE ON audit_log
     FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'audit_log e append-only: UPDATE proibido';
