@@ -14,16 +14,17 @@ import { ITEM_SIZE, makeRef, refId, refKind, zoneAt } from "./canvas";
 import { canvasZones, effectiveDuration, scheduleOf, wbsRoot } from "./derive";
 import { wouldCreateCycle } from "./engine/schedule";
 import { PMC_TARGET, type PmcBlock } from "./lifecycle";
+import { normalizeFormat } from "../tasks/formats";
 import { PROJECT_AREAS, PROJECT_PHASES } from "./types";
 import type {
-  Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
+  DeliverableFormat, Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
   Charter, Closure, CommItem, Dependency, ProjectArea, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
   ProjectSnapshot, Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
 } from "./types";
 
 type TaskPatch = Partial<Pick<Task,
   "title" | "status" | "durationDays" | "pert" | "percentComplete" | "budget" | "actualCost" | "responsibleId" | "reviewerId" | "moscow"
-  | "sprint" | "wbsId" | "milestone" | "changeId" | "dueAt">>;
+  | "sprint" | "wbsId" | "milestone" | "changeId" | "dueAt" | "format">>;
 type CharterList = "justification" | "highLevelRequirements" | "premises" | "constraints" | "highLevelRisks" | "teamRoles" | "objectives" | "milestones";
 
 export type ProjectCommand =
@@ -41,7 +42,7 @@ export type ProjectCommand =
   | { type: "NOTE_UPDATE"; id: string; text: string; color?: CanvasNote["color"] }
   | { type: "NOTE_DELETE"; id: string }
   | { type: "WBS_ADD"; parentId?: string; title: string }
-  | { type: "WBS_UPDATE"; id: string; patch: Partial<Pick<WbsNode, "title" | "budget" | "acceptance" | "ownerId">> }
+  | { type: "WBS_UPDATE"; id: string; patch: Partial<Pick<WbsNode, "title" | "budget" | "acceptance" | "ownerId" | "format">> }
   | { type: "WBS_REMOVE"; id: string }
   | { type: "REQ_ADD"; text: string; origin?: string }
   | { type: "REQ_UPDATE"; id: string; patch: Partial<Pick<Requirement, "text" | "origin" | "test" | "originStakeholderId">> }
@@ -121,6 +122,17 @@ const CHANGE_FLOW: Record<ChangeStatus, readonly ChangeStatus[]> = {
 };
 
 /** Retrato do projeto para o histórico (RF22.CA02 `snapshotJson`): tudo menos a lista de versões e o número da versão. */
+/**
+ * Formato de entrega num patch: pelo catálogo (`lib/tasks/formats.ts`). `undefined` limpa; família fora do catálogo → `null` (recusa).
+ */
+function checkedFormat(raw: DeliverableFormat | undefined): DeliverableFormat | undefined | null {
+  if (raw === undefined) return undefined;
+  const f = normalizeFormat(raw);
+  if (!f.family) return null;
+  const details = Object.keys(f.details).length ? f.details : undefined;
+  return { family: f.family, ...(f.variant ? { variant: f.variant } : {}), ...(details ? { details } : {}) };
+}
+
 export function snapshotOf(model: ProjectModel): ProjectSnapshot {
   const snap: Partial<ProjectModel> = { ...model };
   delete snap.versions;
@@ -216,6 +228,11 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       if (patch.budget !== undefined && !(patch.budget >= 0)) return fail("VALOR_INVALIDO", "budget");
       if (patch.actualCost !== undefined && !(patch.actualCost >= 0)) return fail("VALOR_INVALIDO", "actualCost");
       if (patch.wbsId && !model.wbs.some((n) => n.id === patch.wbsId)) return fail("NAO_ENCONTRADO", patch.wbsId);
+      if (patch.format !== undefined) {
+        const f = checkedFormat(patch.format);
+        if (f === null) return fail("VALOR_INVALIDO", "format");
+        patch.format = f;
+      }
       if (patch.changeId) {
         // ligar a atividade a uma mudança só vale com a mudança aprovada pelo comitê (regulariza o scope creep)
         const ch = model.changes.find((c) => c.id === patch.changeId);
@@ -382,6 +399,11 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
         if (!patch.title) return fail("TEXTO_VAZIO");
       }
       if (patch.budget !== undefined && !(patch.budget >= 0)) return fail("VALOR_INVALIDO", "budget");
+      if ("format" in patch) {
+        const f = checkedFormat(patch.format);
+        if (f === null) return fail("VALOR_INVALIDO", "format");
+        patch.format = f;
+      }
       return ok({ ...model, wbs: model.wbs.map((x) => (x.id === n.id ? { ...x, ...patch } : x)) }, true, "wbsUpdated", { title: patch.title ?? n.title });
     }
     case "WBS_REMOVE": {

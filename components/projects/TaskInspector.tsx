@@ -11,6 +11,8 @@ import { flattenWbs, scheduleOf, wbsTree } from "@/lib/projects/derive";
 import { pert } from "@/lib/projects/engine/pert";
 import { DEPENDENCY_TYPES, offsetToDate, type DependencyType } from "@/lib/projects/engine/schedule";
 import { FLOW_STATUSES, MOSCOW, PROJECT_PHASES, type Moscow, type ProjectPhase, type Task } from "@/lib/projects/types";
+import { normalizeFormat } from "@/lib/tasks/formats";
+import { FormatPicker } from "@/components/tasks/FormatPicker";
 import { CommitNumber, CommitText } from "./common";
 import { fmt, nameOf, type PanelProps } from "./shared";
 
@@ -107,6 +109,13 @@ function InspectorBody({ task, onClose, model, dispatch, people, readOnly }: Pan
         </Field>
         <CommitNumber label={t("pm.task.field.sprint")} value={task.sprint} min={1} onCommit={(v) => upd({ sprint: Math.round(v) })} />
         <Checkbox checked={Boolean(task.milestone)} onCheckedChange={(v) => upd({ milestone: v })} label={t("pm.task.field.milestone")} hint={t("pm.task.milestoneHint")} disabled={readOnly} />
+        {/* formato da entrega da atividade (família → variante → detalhes, mesmo catálogo da tarefa); cada troca vira versão (TASK_UPDATE) */}
+        {!readOnly ? (
+          <div className="sm:col-span-2" data-testid="inspector-format">
+            <FormatPicker compact value={normalizeFormat(task.format ?? null)} testId={`inspector-format-${task.id}`}
+              onChange={(f) => upd({ format: f.family ? { family: f.family, ...(f.variant ? { variant: f.variant } : {}), details: f.details } : undefined })} />
+          </div>
+        ) : null}
       </fieldset>
 
       <section className="grid gap-2" aria-labelledby={`pert-${task.id}`}>

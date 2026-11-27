@@ -18,6 +18,7 @@ import br.gov.pr.secid.workstation.application.acervo.TaskService.TransitionInpu
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
+import br.gov.pr.secid.workstation.domain.acervo.FormatFamily;
 import br.gov.pr.secid.workstation.domain.acervo.TaskCategory;
 import br.gov.pr.secid.workstation.domain.acervo.TaskState;
 import br.gov.pr.secid.workstation.domain.acervo.TaskType;
@@ -65,14 +66,19 @@ public class TaskController {
         this.legal = legal;
     }
 
-    /** Corpo do criador/edição; {@code version} só é exigido na edição. */
+    /**
+     * Corpo do criador/edição; {@code version} só é exigido na edição. Formato da entrega (V71): família, variante da família e detalhes
+     * como objeto JSON de textos ({@code formatDetailsJson}) com só as chaves da variante — 422 VALIDACAO para variante de outra família
+     * ou chave/valor fora do catálogo, 400 FORMATO_DETALHES_INVALIDO para JSON que não é objeto de textos.
+     */
     public record TaskRequest(@Size(max = 200) String title, @Size(max = 20000) String descriptionMd, TaskType type, TaskCategory category,
                               Priority priority, LocalDate dueAt, UUID responsibleId, AccessClassification accessClass, Visibility visibility,
                               @Size(max = 500) String objective, WorkArea area, List<Deliverable> deliverables, List<Criterion> acceptanceCriteria,
-                              List<Reference> references, Map<String, String> extensions, Boolean draft, Long version) {
+                              List<Reference> references, Map<String, String> extensions, Boolean draft, Long version,
+                              FormatFamily formatFamily, @Size(max = 10) String formatVariant, @Size(max = 4000) String formatDetailsJson) {
         TaskInput toInput() {
             return new TaskInput(title, descriptionMd, type, category, priority, dueAt, responsibleId, accessClass, visibility, objective, area,
-                    deliverables, acceptanceCriteria, references, extensions, draft);
+                    deliverables, acceptanceCriteria, references, extensions, draft, formatFamily, formatVariant, formatDetailsJson);
         }
     }
 

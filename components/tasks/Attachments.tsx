@@ -6,11 +6,13 @@
  * cifrada. Imagem abre numa aba; os demais tipos são baixados (nunca renderizados como página).
  */
 import { useCallback, useEffect, useId, useState, type FormEvent } from "react";
-import { Button, Card, Checkbox, Dialog, EmptyState, ErrorState, Field, Input, Link, LoadingState, Tag, Textarea, useToast } from "@/components/ui";
+import { Button, Card, Checkbox, Dialog, EmptyState, ErrorState, Field, Input, Link, LoadingState, Select, Tag, Textarea, useToast } from "@/components/ui";
 import { ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { attachmentsApi, type AttachmentView, type EvidenceMeta, type TaskView } from "@/lib/tasks/client";
 import { formatBytes, formatDateTime, isBlob, localDateTimeToIso, openOrDownload } from "@/lib/tasks/files";
+import { attachmentFormat, FORMAT_FAMILIES, formatFromView, formatMismatch, type FormatFamilyId } from "@/lib/tasks/formats";
+import { AttachmentFormat, useFormatText } from "./AttachmentFormat";
 
 /** Igual ao teto do servidor (`TaskAttachmentService.MAX_BYTES` e `spring.servlet.multipart.max-file-size`). */
 export const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024;
@@ -141,6 +143,9 @@ export function TaskAttachments({ task }: { task: TaskView }) {
   const [markForm, setMarkForm] = useState<EvidenceForm>(EMPTY_FORM);
   const [markErrors, setMarkErrors] = useState<Record<string, string>>({});
   const [announce, setAnnounce] = useState("");
+  const asked = formatFromView(task);
+  const formatText = useFormatText();
+  const mismatched = items ? formatMismatch(task, items) : [];
 
   const load = useCallback(() => {
     setError(null);
@@ -213,11 +218,21 @@ export function TaskAttachments({ task }: { task: TaskView }) {
         {error ? <ErrorState title={t("tasks.attach.loadError")} description={error} onRetry={load} /> : !items ? <LoadingState /> : !items.length ? (
           <p className="text-ws-text-muted">{t("tasks.attach.empty")}</p>
         ) : (
+          <>
+          {asked.family ? (
+            <p role="status" className={`rounded-[var(--ws-radius-md)] border border-ws-border p-2 text-[length:var(--ws-text-body-sm)] ${mismatched.length ? "bg-ws-warning-soft" : "bg-ws-surface-2"}`} data-testid="format-asked">
+              <span aria-hidden>{mismatched.length ? "! " : "✓ "}</span>
+              {mismatched.length
+                ? t(mismatched.length === 1 ? "taskForm.fmt.mismatchOne" : "taskForm.fmt.mismatchMany", { n: mismatched.length, asked: formatText(asked), files: mismatched.map((m) => m.fileName).join(", ") })
+                : t("taskForm.fmt.allMatch", { asked: formatText(asked) })}
+            </p>
+          ) : null}
           <ul className="grid gap-2" aria-label={t("tasks.attach.listLabel")}>
             {items.map((a) => (
               <li key={a.id} className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-border p-2 sm:grid-cols-[minmax(0,1fr)_auto]" data-testid="attachment-item">
                 <div className="grid min-w-0 gap-1">
                   <p className="font-semibold [overflow-wrap:anywhere]"><span aria-hidden>{a.image ? "▣ " : "▤ "}</span>{a.fileName}</p>
+                  <AttachmentFormat a={a} asked={a.evidence ? undefined : asked} />
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[length:var(--ws-text-caption)] text-ws-text-muted">
                     <span>{formatBytes(a.sizeBytes, intl)}</span>
                     <span>{t("tasks.attach.uploadedOn", { date: formatDateTime(a.createdAt, intl) })}</span>
@@ -243,6 +258,7 @@ export function TaskAttachments({ task }: { task: TaskView }) {
               </li>
             ))}
           </ul>
+          </>
         )}
       </div>
 
@@ -285,6 +301,7 @@ export function MyAttachments() {
   const [items, setItems] = useState<AttachmentView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<MineFilter>("all");
+  const [family, setFamily] = useState<FormatFamilyId | "">("");
   const load = useCallback(() => {
     setError(null);
     attachmentsApi.mine(200).then((r) => setItems(Array.isArray(r) ? r : [])).catch((e) => setError(loadMineError(e, t)));
@@ -296,7 +313,9 @@ export function MyAttachments() {
   if (!items.length) {
     return <EmptyState title={t("attachments.empty")} description={t("attachments.emptyHint")} action={<Button variant="primary" href="/tasks">{t("attachments.goToTasks")}</Button>} />;
   }
-  const shown = items.filter((a) => matchesMine(a, filter));
+  const familyOf = (a: AttachmentView) => attachmentFormat(a)?.format.family ?? "";
+  const families = FORMAT_FAMILIES.filter((f) => items.some((a) => familyOf(a) === f));
+  const shown = items.filter((a) => matchesMine(a, filter) && (!family || familyOf(a) === family));
   return (
     <div className="grid gap-3" data-testid="my-attachments">
       <p className="text-ws-text-muted">{t("attachments.intro")}</p>
@@ -307,6 +326,16 @@ export function MyAttachments() {
           </Button>
         ))}
       </div>
+      {families.length ? (
+        <div className="max-w-xs">
+          <Field label={t("taskForm.fmt.filterFamily")} hint={t("taskForm.fmt.filterHint")}>
+            {({ id, describedBy }) => (
+              <Select id={id} aria-describedby={describedBy} value={family} onChange={(e) => setFamily(e.target.value as FormatFamilyId | "")} data-testid="attachments-family"
+                options={[{ value: "", label: t("taskForm.fmt.allFamilies") }, ...families.map((f) => ({ value: f, label: `${t(`taskForm.fmt.familyName.${f}`)} (${items.filter((a) => familyOf(a) === f).length})` }))]} />
+            )}
+          </Field>
+        </div>
+      ) : null}
       <p aria-live="polite" className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t(shown.length === 1 ? "attachments.countOne" : "attachments.countMany", { n: shown.length })}</p>
       {shown.length ? (
         <div className="overflow-x-auto">
@@ -327,6 +356,7 @@ export function MyAttachments() {
                 <tr key={a.id} className="border-b border-ws-border align-top" data-testid="my-attachment-row">
                   <th scope="row" className="py-2 pr-3 font-normal">
                     <span className="block font-semibold [overflow-wrap:anywhere]"><span aria-hidden>{a.image ? "▣ " : "▤ "}</span>{a.fileName}</span>
+                    <AttachmentFormat a={a} />
                     <EvidenceSummary a={a} />
                   </th>
                   <td className="py-2 pr-3 [overflow-wrap:anywhere]"><Link href={`/tasks/${a.taskId}`}>{a.taskTitle}</Link></td>

@@ -133,7 +133,7 @@ class AccessPolicyMatrixTest {
                 AccessClassification.RESTRITO, "pdf", null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.ARQUIVO, null, null, null,
                 responsible, null, null, null, null, null, Priority.MEDIA, TaskState.DISPONIVEL, null, null, null, null, null, null, null, null,
                 Visibility.EMPRESA, false, false, false, null, null, null, null, CoverMode.AUTO, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0,
-                0, 0, null);
+                0, 0, null, null, null, null);
         ScopedResource r = ScopedResource.of(t, C1);
         assertThat(r.kind()).isEqualTo(ScopedResource.Kind.TASK);
         assertThat(r.collaborators()).containsExactly(responsible);

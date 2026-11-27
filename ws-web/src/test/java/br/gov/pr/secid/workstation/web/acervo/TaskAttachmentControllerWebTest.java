@@ -97,12 +97,12 @@ class TaskAttachmentControllerWebTest {
 
     private AttachmentView attachment(EvidenceView evidence) {
         return new AttachmentView(attachmentId, taskId, "Vistoria", "planta.png", "image/png", 120, true, true, MediaScanStatus.NAO_VERIFICADO, true,
-                Instant.parse("2026-11-12T12:00:00Z"), evidence);
+                Instant.parse("2026-11-12T12:00:00Z"), evidence, null, null, null);
     }
 
     private EvidenceView evidence() {
         return new EvidenceView(evidenceId, taskId, attachmentId, "Fissura", Instant.parse("2026-11-12T13:15:00Z"), true, "-25.4284", "-49.2733",
-                userId, Instant.parse("2026-11-12T13:20:00Z"));
+                userId, Instant.parse("2026-11-12T13:20:00Z"), null, null, null);
     }
 
     private static MockMultipartFile file() {

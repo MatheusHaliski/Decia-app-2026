@@ -8,6 +8,7 @@
  * padronizado e, no compacto, um rodapé de trabalho (`footer`) no lugar da barra social.
  */
 import type { ReactNode } from "react";
+import { useCardViewerTrigger } from "@/components/cardviewer/open";
 import { Avatar, Badge, Link, Tag, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import type { AnyTaskCardViewModel, DelegationInfo, TaskCardBase } from "@/lib/social/view-model";
@@ -75,8 +76,11 @@ function Shell({ vm, layout, children, className, testId = "task-card" }: { vm: 
   const { t } = useI18n();
   const state = useStateLabel(vm);
   const draft = vm.state === "RASCUNHO";
+  // visualizador de card (?ver=tarefa:<id>): clique fora dos controles ou Enter no card; o ampliado (detalhe) não abre
+  const { className: viewerClass, ...viewer } = useCardViewerTrigger(vm.id ? { kind: "tarefa", id: vm.id } : null, layout !== "expanded");
   return (
     <article
+      {...viewer}
       aria-label={t("social.card.taskAria", { title: vm.title, type: t(`social.taskType.${vm.type}`), state })}
       data-layout={layout}
       data-variant={[...vm.variants].join(" ")}
@@ -88,6 +92,7 @@ function Shell({ vm, layout, children, className, testId = "task-card" }: { vm: 
         vm.department ? NODE_BORDER[vm.department.color] : "border-ws-border",
         draft && "border-dashed",
         vm.state === "ARQUIVADA" && "opacity-[0.62] saturate-[0.35]",
+        viewerClass,
         className,
       )}
     >

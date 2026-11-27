@@ -131,6 +131,7 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | Profissão de interesse (RF75 E1–E5, RF78 M1–M3, RF81) — planejada, renumerada depois dos conectores (Q-255) | D-147–D-152 | Q-244–Q-267 | V62–V68 |
 | Acervo RF41 (12/11/2026): regras padrão do catálogo de prazos legais (`legal_deadline_rules`, só dados; anexos e evidências usam as tabelas da V11) | — | — | V69 |
 | Aviso diário de prazo (RF41.CA04/RF44): trava entre instâncias dos trabalhos agendados (`scheduled_job_locks`, escrita à mão, sem entidade de domínio — `DomainCatalog.INFRA_TABLES`) | — | — | V70 |
+| Formato da entrega família → variante → detalhes (27/11/2026): `tasks` (escolhido no criador, validado por `DeliveryFormats`), `task_attachments` e `evidences` (pelo tipo REAL detectado, detalhes extraídos pelo servidor); escrita à mão como a V37/V60. A API de decisões do DECIA (fase 7) não precisou de migration: usa as tabelas da V22 | — | — | V71 |
 
 Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
 de mais de uma migration, pede uma faixa nova neste quadro antes de criar).

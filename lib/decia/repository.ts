@@ -1,8 +1,8 @@
 /**
- * DECIA — repositório em memória (DEMO). A API de decisões ainda não existe e não é presumida (03 §8: nenhuma API de
- * decisão antes do Bloco 4/5 de segurança). A interface `DecisionRepository` é o contrato que um cliente HTTP real
- * implementará depois (`GET/POST /api/decisions…`); a UI só fala com ela por `useDecisions`/`useDecision`.
- * Os dados vivem só na memória desta aba do navegador — recarregar volta aos exemplos.
+ * DECIA — repositório em memória (DEMO) e o contrato `DecisionRepository`. Com sessão autenticada a UI usa o cliente HTTP real
+ * (lib/decia/http.ts, `source: "API"`, fase 7); no laboratório (perfil de visualização sem sessão) continua este DEMO — a escolha
+ * fica em `useDecisionRepository` (lib/decia/useDecisionRepository.ts). A UI só fala com a interface por `useDecisions`/`useDecision`.
+ * No DEMO os dados vivem só na memória desta aba do navegador — recarregar volta aos exemplos.
  */
 "use client";
 import { useSyncExternalStore } from "react";
@@ -64,5 +64,6 @@ export function useDecisions(repo: DecisionRepository = demoRepository()): reado
 
 export function useDecision(id: string, repo: DecisionRepository = demoRepository()): DecisionAggregate | undefined {
   const list = useDecisions(repo);
-  return list.find((a) => a.decision.id === id);
+  // `get` resolve também o id provisório de uma decisão recém-criada na API (lib/decia/http.ts)
+  return repo.get(id) ?? list.find((a) => a.decision.id === id);
 }

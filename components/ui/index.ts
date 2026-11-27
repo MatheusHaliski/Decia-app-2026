@@ -11,7 +11,7 @@ export { Card } from "./Card";
 export type { CardProps } from "./Card";
 export { cn } from "./cn";
 export { Dialog, Sheet } from "./Dialog";
-export type { SheetProps } from "./Dialog";
+export type { DialogSize, SheetProps } from "./Dialog";
 export { Checkbox, Field, Input, RadioCards, Select, SelectList, Switch, Textarea } from "./Form";
 export type { InputProps, RadioCardOption, SelectListOption, SelectOption } from "./Form";
 export { GLYPH_NAMES, GLYPHS, Glyph, MOJI_NAMES, MOJIS, Moji } from "./glyphs/Glyph";

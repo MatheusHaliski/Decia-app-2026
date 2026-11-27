@@ -87,7 +87,10 @@ public record TaskItem(
         @Attr("compartilhamentos") long sharesCount,
         @Attr("remixes") long remixesCount,
         @Attr("visualizações") long viewsCount,
-        @Attr(value = "chancelas aprovadas (cache)", opt = true) String sealIdsJson) {
+        @Attr(value = "chancelas aprovadas (cache)", opt = true) String sealIdsJson,
+        @Attr(value = "família do formato de entrega (V71)", opt = true) FormatFamily formatFamily,
+        @Attr(value = "variante do formato (código curto, conferido contra a família)", opt = true, len = 10) String formatVariant,
+        @Attr(value = "detalhes do formato (só chaves da variante; JSON pequeno)", opt = true) String formatDetailsJson) {
 
     public static final int MAX_TAGS_PER_KIND = 2;
     /** Tamanho de {@code tasks.source_ref} e de {@code tasks.format}. */
@@ -146,7 +149,7 @@ public record TaskItem(
         return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, category, null, Set.of(), Set.of(), accessClass, null,
                 null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.MANUAL, null, null, null, responsibleId, dueAt, null, null, null, null,
                 priority, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
-                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
+                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null, null);
     }
 
     /**
@@ -172,7 +175,7 @@ public record TaskItem(
         return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, null, null, Set.of(), Set.of(), accessClass, format,
                 null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, sourceKind, sourceRef, linkMode, null, null, null, null, null, null, null,
                 Priority.MEDIA, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
-                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
+                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null, null);
     }
 
     /** Campos que o criador/edição altera (RF12); o resto — estado, origem, contadores, IA — é preservado. */
@@ -184,7 +187,7 @@ public record TaskItem(
                 blockedByTaskId, blockedByUserId, blockReason, docSituation, receivedAt, senderOrigin, protocolNumber, retentionPolicyJson,
                 newVisibility, favorite, offeredInCounter, aiGenerated, aiInferenceId, aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin,
                 tags, notes, originalTaskId, sourceProjectId, checklistItemId, reuseCount, projectUsageCount, likesCount, commentsCount, savesCount,
-                sharesCount, remixesCount, viewsCount, sealIdsJson);
+                sharesCount, remixesCount, viewsCount, sealIdsJson, formatFamily, formatVariant, formatDetailsJson);
     }
 
     /**
@@ -204,7 +207,30 @@ public record TaskItem(
                 dueAt, ruleId, baseDate, due, null, priority, state, blockedByTaskId, blockedByUserId, blockReason, docSituation, receivedAt,
                 senderOrigin, protocolNumber, retentionPolicyJson, visibility, favorite, offeredInCounter, aiGenerated, aiInferenceId,
                 aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin, tags, notes, originalTaskId, sourceProjectId, checklistItemId,
-                reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount, sealIdsJson);
+                reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount, sealIdsJson, formatFamily, formatVariant, formatDetailsJson);
+    }
+
+    /**
+     * Formato da entrega (família → variante → detalhes, docs/produto/FORMATOS_E_VARIANTES.md): quem chama já validou com
+     * {@link DeliveryFormats#validate} e passa o JSON canônico. Tudo nulo limpa; variante ou detalhes sem família é inválido.
+     */
+    public TaskItem withFormat(FormatFamily family, String variant, String detailsJson) {
+        if (family == null && (variant != null || detailsJson != null)) {
+            throw new IllegalArgumentException("VALIDACAO: variante e detalhes do formato exigem a família");
+        }
+        if (variant != null && DeliveryFormats.variant(family, variant).isEmpty()) {
+            throw new IllegalArgumentException("VALIDACAO: variante " + variant + " não é da família " + family);
+        }
+        if (detailsJson != null && detailsJson.length() > DeliveryFormats.MAX_DETAILS_JSON) {
+            throw new IllegalArgumentException("VALIDACAO: detalhes do formato ≤ " + DeliveryFormats.MAX_DETAILS_JSON);
+        }
+        return new TaskItem(id, ownerId, departmentId, title, summary, descriptionMd, type, category, subcategory, processTags, natureTags,
+                accessClass, format, effortSize, estimatedHours, amountInvolved, origin, sourceKind, sourceRef, linkMode, orgEntityId, responsibleId,
+                dueAt, legalDeadlineRuleId, legalDeadlineBaseDate, legalDueAt, legalOverrideReason, priority, state, blockedByTaskId, blockedByUserId,
+                blockReason, docSituation, receivedAt, senderOrigin, protocolNumber, retentionPolicyJson, visibility, favorite, offeredInCounter,
+                aiGenerated, aiInferenceId, aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin, tags, notes, originalTaskId, sourceProjectId,
+                checklistItemId, reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount,
+                sealIdsJson, family, variant, detailsJson);
     }
 
     private TaskItem withState(TaskState next, UUID byTask, UUID byUser, String reason) {
@@ -215,6 +241,6 @@ public record TaskItem(
                 next == TaskState.OFERECIDA || (offeredInCounter && next != TaskState.DISPONIVEL && next != TaskState.MODELO_PUBLICO),
                 aiGenerated, aiInferenceId, aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin, tags, notes, originalTaskId,
                 sourceProjectId, checklistItemId, reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount,
-                viewsCount, sealIdsJson);
+                viewsCount, sealIdsJson, formatFamily, formatVariant, formatDetailsJson);
     }
 }

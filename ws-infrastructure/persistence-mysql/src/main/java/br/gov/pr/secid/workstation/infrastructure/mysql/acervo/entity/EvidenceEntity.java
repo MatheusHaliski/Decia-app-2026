@@ -1,5 +1,6 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity;
 
+import br.gov.pr.secid.workstation.domain.acervo.FormatFamily;
 import br.gov.pr.secid.workstation.domain.acervo.StudioStatus;
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
@@ -53,6 +54,17 @@ public class EvidenceEntity extends AuditableEntity {
 
     @Column(name = "derived_task_id", columnDefinition = "BINARY(16)")
     private UUID derivedTaskId;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "format_family")
+    private FormatFamily formatFamily;
+
+    @Column(name = "format_variant")
+    private String formatVariant;
+
+    @Column(name = "format_details_json", columnDefinition = "JSON")
+    private String formatDetailsJson;
 
     public UUID getOwnerId() {
         return ownerId;
@@ -132,5 +144,29 @@ public class EvidenceEntity extends AuditableEntity {
 
     public void setDerivedTaskId(UUID derivedTaskId) {
         this.derivedTaskId = derivedTaskId;
+    }
+
+    public FormatFamily getFormatFamily() {
+        return formatFamily;
+    }
+
+    public void setFormatFamily(FormatFamily formatFamily) {
+        this.formatFamily = formatFamily;
+    }
+
+    public String getFormatVariant() {
+        return formatVariant;
+    }
+
+    public void setFormatVariant(String formatVariant) {
+        this.formatVariant = formatVariant;
+    }
+
+    public String getFormatDetailsJson() {
+        return formatDetailsJson;
+    }
+
+    public void setFormatDetailsJson(String formatDetailsJson) {
+        this.formatDetailsJson = formatDetailsJson;
     }
 }

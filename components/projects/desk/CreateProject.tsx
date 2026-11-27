@@ -19,9 +19,11 @@ export interface CreateProjectProps {
   actorId?: string;
   now?: () => Date;
   onCreated?: (projectId: string) => void;
+  /** sem o cartão "Em branco" (em `/projects/new` o assistente completo faz esse papel) */
+  hideBlank?: boolean;
 }
 
-export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () => new Date(), onCreated }: CreateProjectProps) {
+export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () => new Date(), onCreated, hideBlank }: CreateProjectProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const router = useRouter();
@@ -47,8 +49,8 @@ export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () =
   };
 
   return (
-    <div className="grid gap-[var(--ws-space-3)] lg:grid-cols-3" data-create-project>
-      <Card as="section" padding="md" aria-labelledby="new-blank" className="grid content-start gap-3">
+    <div className={hideBlank ? "grid gap-[var(--ws-space-3)] lg:grid-cols-2" : "grid gap-[var(--ws-space-3)] lg:grid-cols-3"} data-create-project>
+      {hideBlank ? null : <Card as="section" padding="md" aria-labelledby="new-blank" className="grid content-start gap-3">
         <h3 id="new-blank" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("projectNew.blank.title")}</h3>
         <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("projectNew.blank.hint")}</p>
         <form className="grid gap-3" onSubmit={(e) => {
@@ -70,7 +72,7 @@ export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () =
           </Field>
           <div><Button type="submit" variant="primary" icon="criar-projeto" disabled={!blank.title.trim()}>{t("projectNew.blank.cta")}</Button></div>
         </form>
-      </Card>
+      </Card>}
 
       <Card as="section" padding="md" aria-labelledby="new-template" className="grid content-start gap-3">
         <h3 id="new-template" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("projectNew.template.title")}</h3>

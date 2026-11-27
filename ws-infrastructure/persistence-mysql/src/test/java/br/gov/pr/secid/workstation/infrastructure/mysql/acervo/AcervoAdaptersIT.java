@@ -157,7 +157,7 @@ class AcervoAdaptersIT {
         UUID taskId = legal.task().id();
         MediaObject m = mediaOf(u, "a".repeat(64));
         TaskAttachment a = attachments.insert(new TaskAttachment(null, taskId, m.id(), "planta.png", "image/png", 10, m.sha256(),
-                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0));
+                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, null, null, null));
         assertThat(attachments.listByTask(taskId)).singleElement().satisfies(s -> assertThat(s.createdAt()).isNotNull());
         assertThat(attachments.findById(a.id())).isPresent();
         assertThat(attachments.countByMedia(m.id())).isEqualTo(1);
@@ -165,7 +165,7 @@ class AcervoAdaptersIT {
         assertThat(attachments.listByTaskOwner(UUID.randomUUID(), 10)).isEmpty();
 
         StoredEvidence e = evidences.insert(new Evidence(null, u.getId(), m.id(), Instant.parse("2026-11-12T13:15:00Z"), "-25.4284", "-49.2733",
-                "Fissura", taskId, null, StudioStatus.ORIGINAL, null));
+                "Fissura", taskId, null, StudioStatus.ORIGINAL, null, null, null, null));
         String rawLatitude = jdbc.queryForObject("SELECT latitude_enc FROM evidences WHERE id = ?", String.class, (Object) bytes(e.evidence().id()));
         assertThat(rawLatitude).isNotBlank().doesNotContain("25.4284");
         assertThat(evidences.findByTask(taskId)).singleElement().satisfies(s -> {

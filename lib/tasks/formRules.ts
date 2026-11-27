@@ -12,6 +12,7 @@
  * gravado logo depois de criar.
  */
 import type { AccessClassName, Criterion, Deliverable, Reference, TaskCategoryName, TaskTypeName, VisibilityName } from "./client";
+import { formatToRequest, invalidFormatFields, type FormatChoice } from "./formats";
 import { isIsoDate } from "./legalDeadline";
 
 /** Natureza do conteúdo (≤ 2) — enum Java `NatureTag`. */
@@ -57,7 +58,7 @@ export const EXTRA_KEYS = {
   participants: "participants",
   accessReason: "accessReason",
 } as const;
-const RESERVED = new Set<string>(Object.values(EXTRA_KEYS));
+const RESERVED = new Set<string>([...Object.values(EXTRA_KEYS), "fileFormat"]);
 export const isReservedExtension = (key: string) => RESERVED.has(key);
 
 /** Campos do Acervo que o criador completo acrescenta ao briefing. Datas em ISO (aaaa-mm-dd); números como digitados. */
@@ -184,7 +185,7 @@ export type TaskSectionId = (typeof TASK_SECTIONS)[number];
 export type TaskFieldKey =
   | "title" | "type" | "priority" | "objective" | "descriptionMd" | "category" | "subcategory" | "natures" | "processes" | "area"
   | "responsibleId" | "participants" | "dueAt" | "startAt" | "legalRule" | "legalBase" | "effortSize" | "estimatedHours" | "amount"
-  | "deliverables" | "acceptanceCriteria" | "references" | "accessClass" | "visibility" | "accessReason" | "origin" | "sender" | "document"
+  | "format" | "deliverables" | "acceptanceCriteria" | "references" | "accessClass" | "visibility" | "accessReason" | "origin" | "sender" | "document"
   | "protocol" | "receivedAt" | "docSituation" | "extensions";
 
 /** Ordem dos campos na tela (foco no primeiro erro) e a seção de cada um. */
@@ -194,7 +195,7 @@ export const TASK_FIELD_SECTION: ReadonlyArray<readonly [TaskFieldKey, TaskSecti
   ["category", "frame"], ["subcategory", "frame"], ["natures", "frame"], ["processes", "frame"], ["area", "frame"],
   ["responsibleId", "people"], ["participants", "people"],
   ["startAt", "dates"], ["dueAt", "dates"], ["legalRule", "dates"], ["legalBase", "dates"], ["effortSize", "dates"], ["estimatedHours", "dates"], ["amount", "dates"],
-  ["deliverables", "deliver"], ["acceptanceCriteria", "deliver"],
+  ["format", "deliver"], ["deliverables", "deliver"], ["acceptanceCriteria", "deliver"],
   ["references", "refs"],
   ["accessClass", "access"], ["visibility", "access"], ["accessReason", "access"],
   ["origin", "origin"], ["sender", "origin"], ["document", "origin"], ["protocol", "origin"], ["receivedAt", "origin"], ["docSituation", "origin"],
@@ -221,6 +222,8 @@ export interface TaskFormValues {
   otherExtensions: Readonly<Record<string, string>>;
   extra: TaskExtra;
   legal: LegalChoice;
+  /** formato da entrega (família → variante → detalhes) */
+  format: FormatChoice;
 }
 
 export interface ValidateOptions {
@@ -266,6 +269,7 @@ export function validateTaskForm(v: TaskFormValues, opts: ValidateOptions): Part
     if (!Number.isFinite(a) || a < 0) e.amount = "taskForm.err.amount";
   }
 
+  if (v.format.family && invalidFormatFields(v.format).length) e.format = "taskForm.err.formatField";
   if (v.deliverables.length > MAX_DELIVERABLES) e.deliverables = "taskForm.err.maxDeliverables";
   else if (v.deliverables.some((d) => d.text.length > 300)) e.deliverables = "taskForm.err.itemTooLong";
   if (v.criteria.length > MAX_CRITERIA) e.acceptanceCriteria = "taskForm.err.maxCriteria";
@@ -289,11 +293,12 @@ export function validateTaskForm(v: TaskFormValues, opts: ValidateOptions): Part
   }
 
   // limites do servidor para `extensions`: cada valor até 500 caracteres; no máximo 12 chaves no total
-  const packed = packExtra(x);
+  const packed = { ...packExtra(x), ...formatToRequest(v.format).extensions };
   const fieldOfKey: Record<string, TaskFieldKey> = {
     [EXTRA_KEYS.subcategory]: "subcategory", [EXTRA_KEYS.taxonomy]: "natures", [EXTRA_KEYS.effort]: "estimatedHours",
     [EXTRA_KEYS.origin]: "document", [EXTRA_KEYS.participants]: "participants", [EXTRA_KEYS.accessReason]: "accessReason",
   };
+  fieldOfKey.fileFormat = "format";
   for (const [k, val] of Object.entries(packed)) {
     const f = fieldOfKey[k]!;
     if (val.length > MAX_EXTENSION_VALUE && !e[f]) e[f] = "taskForm.err.tooLong";
@@ -336,7 +341,7 @@ export function sectionProgress(
     frame: level(!!v.category && !!v.area, any(v.category, x.subcategory, x.natures, x.processes, v.area)),
     people: level(any(v.responsibleId, x.participants.filter((p) => p.trim())), false),
     dates: level(any(v.dueAt, v.legal.enabled && v.legal.ruleId), any(x.startAt, x.effortSize, x.estimatedHours, x.amount)),
-    deliver: level(v.deliverables.some((d) => d.text.trim()) && v.criteria.some((c) => c.text.trim()), any(v.deliverables, v.criteria)),
+    deliver: level(v.deliverables.some((d) => d.text.trim()) && v.criteria.some((c) => c.text.trim()), any(v.deliverables, v.criteria, v.format.family)),
     refs: level(v.references.some((r) => r.url.trim()) || v.files > 0, any(v.references)),
     access: level(v.accessClass !== "SIGILOSO" || !!x.accessReason.trim(), true),
     origin: level(!external || (!!x.sender.trim() && !!x.document.trim()), true),

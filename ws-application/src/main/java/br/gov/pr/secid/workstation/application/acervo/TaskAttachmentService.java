@@ -10,6 +10,7 @@ import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
+import br.gov.pr.secid.workstation.application.media.DetectedFormat;
 import br.gov.pr.secid.workstation.application.media.DetectedType;
 import br.gov.pr.secid.workstation.application.media.ImageMetadata;
 import br.gov.pr.secid.workstation.application.media.MediaUploadInspector;
@@ -19,6 +20,7 @@ import br.gov.pr.secid.workstation.application.media.MediaUploadService;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.acervo.AntivirusStatus;
 import br.gov.pr.secid.workstation.domain.acervo.Evidence;
+import br.gov.pr.secid.workstation.domain.acervo.FormatFamily;
 import br.gov.pr.secid.workstation.domain.acervo.OcrStatus;
 import br.gov.pr.secid.workstation.domain.acervo.StudioStatus;
 import br.gov.pr.secid.workstation.domain.acervo.TaskAttachment;
@@ -102,7 +104,8 @@ public class TaskAttachmentService {
      * @param evidence    marca de evidência, quando o anexo é prova de execução
      */
     public record AttachmentView(UUID id, UUID taskId, String taskTitle, String fileName, String mimeType, long sizeBytes, boolean image,
-                                 boolean primary, MediaScanStatus scanStatus, boolean available, Instant createdAt, EvidenceView evidence) {
+                                 boolean primary, MediaScanStatus scanStatus, boolean available, Instant createdAt, EvidenceView evidence,
+                                 FormatFamily formatFamily, String formatVariant, String formatDetailsJson) {
     }
 
     /**
@@ -110,7 +113,8 @@ public class TaskAttachmentService {
      * demais veem apenas {@code hasLocation}.
      */
     public record EvidenceView(UUID id, UUID taskId, UUID attachmentId, String caption, Instant takenAt, boolean hasLocation, String latitude,
-                               String longitude, UUID ownerId, Instant createdAt) {
+                               String longitude, UUID ownerId, Instant createdAt, FormatFamily formatFamily, String formatVariant,
+                               String formatDetailsJson) {
     }
 
     /** Arquivo recebido: bytes e o nome/Content-Type DECLARADOS pelo cliente (só conferidos contra o tipo real). */
@@ -249,7 +253,8 @@ public class TaskAttachmentService {
             throw ApiException.conflict("EVIDENCIA_EXISTENTE", "Este arquivo já está registrado como evidência desta tarefa.");
         }
         StoredEvidence saved = evidences.insert(new Evidence(null, viewer.userId(), mediaId, p.takenAt(), p.latitude(), p.longitude(), p.caption(),
-                taskId, null, StudioStatus.ORIGINAL, null));
+                taskId, null, StudioStatus.ORIGINAL, null, a.attachment().formatFamily(), a.attachment().formatVariant(),
+                a.attachment().formatDetailsJson()));
         record(actor, ctx, AuditActions.TASK_EVIDENCE_ADDED, taskId, Map.of("evidence", saved.evidence().id().toString(),
                 "attachment", a.attachment().id().toString(), "newFile", newFile, "hasLocation", p.latitude() != null));
         return evidenceView(saved, a.attachment().id(), viewer, true);
@@ -278,8 +283,11 @@ public class TaskAttachmentService {
         MediaUploadService.Stored s = media.upload(Viewer.user(task.ownerId()), new UploadCandidate(clean, name, type, ACCEPTED),
                 task.accessClass(), false);
         int order = current.stream().mapToInt(x -> x.attachment().sortOrder()).max().orElse(-1) + 1;
+        // formato pelo tipo REAL (magic bytes) e detalhes extraídos do binário já limpo — nunca pelo nome nem pelo MIME declarado
+        DetectedFormat.Result format = DetectedFormat.of(ok.type(), clean);
         TaskAttachment row = attachments.insert(new TaskAttachment(null, task.id(), s.media().id(), s.safeName(), s.media().mimeType(),
-                s.media().sizeBytes(), s.media().sha256(), antivirus(s.scanStatus()), OcrStatus.PENDENTE, null, current.isEmpty(), order));
+                s.media().sizeBytes(), s.media().sha256(), antivirus(s.scanStatus()), OcrStatus.PENDENTE, null, current.isEmpty(), order,
+                format.family(), format.variant(), TaskFormatJson.write(format.details())));
         return new Attached(new StoredAttachment(row, clock.instant()), false);
     }
 
@@ -302,7 +310,7 @@ public class TaskAttachmentService {
                 .findFirst().map(e -> evidenceView(e, a.id(), viewer, editor)).orElse(null);
         MediaScanStatus scan = a.antivirusStatus() == AntivirusStatus.LIMPO ? MediaScanStatus.LIMPO : media.scanStatus(a.mediaObjectId());
         return new AttachmentView(a.id(), a.taskId(), taskTitle, a.fileName(), a.mimeType(), a.sizeBytes(), IMAGE_MIMES.contains(a.mimeType()),
-                a.isPrimary(), scan, media.servable(scan), s.createdAt(), evidence);
+                a.isPrimary(), scan, media.servable(scan), s.createdAt(), evidence, a.formatFamily(), a.formatVariant(), a.formatDetailsJson());
     }
 
     private static EvidenceView evidenceView(StoredEvidence s, UUID attachmentId, Viewer viewer, boolean editor) {
@@ -310,7 +318,8 @@ public class TaskAttachmentService {
         boolean located = e.latitude() != null && e.longitude() != null;
         boolean showCoordinates = located && (editor || viewer.is(e.ownerId()));
         return new EvidenceView(e.id(), e.linkedTaskId(), attachmentId, e.caption(), e.takenAt(), located,
-                showCoordinates ? e.latitude() : null, showCoordinates ? e.longitude() : null, e.ownerId(), s.createdAt());
+                showCoordinates ? e.latitude() : null, showCoordinates ? e.longitude() : null, e.ownerId(), s.createdAt(), e.formatFamily(),
+                e.formatVariant(), e.formatDetailsJson());
     }
 
     /** Quarentena da mídia → situação do anexo: só LIMPO libera; sem motor (NAO_VERIFICADO) fica PENDENTE (D-67). */

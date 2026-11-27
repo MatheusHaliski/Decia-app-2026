@@ -178,10 +178,32 @@ class TaskAttachmentServiceTest {
         // teto de anexos por tarefa
         for (int i = 0; i < TaskAttachmentService.MAX_PER_TASK; i++) {
             attachments.insert(new TaskAttachment(null, t.id(), UUID.randomUUID(), "f" + i + ".pdf", "application/pdf", 1, "sha" + i,
-                    AntivirusStatus.LIMPO, OcrStatus.PENDENTE, null, false, i + 1));
+                    AntivirusStatus.LIMPO, OcrStatus.PENDENTE, null, false, i + 1, null, null, null));
         }
         assertThatThrownBy(() -> service.upload(cu(me), t.id(), png(5), CTX)).satisfies(api(409, "LIMITE_ANEXOS"));
         assertThat(media.rows).hasSize(1);
+    }
+
+    @Test
+    void formatoDoAnexoEDaEvidenciaSegueOTipoRealNuncaONomeNemOMime() {
+        User me = person(company);
+        TaskItem t = taskOf(me, "Planta", TaskState.EM_USO, Visibility.PRIVADA, AccessClassification.INTERNO, null);
+        // MIME declarado genérico (octet-stream): o formato vem dos bytes — PNG 64×32
+        AttachmentView a = service.upload(cu(me), t.id(), new FileInput(ImageMetadataTest.pngWithText(64, 32, 11), "planta.png",
+                "application/octet-stream"), CTX);
+        assertThat(a.formatFamily()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM);
+        assertThat(a.formatVariant()).isEqualTo("PNG");
+        assertThat(a.formatDetailsJson()).isEqualTo("{\"height\":\"32\",\"width\":\"64\"}");
+        // extensão mentirosa (PNG chamado de .pdf): recusada pelo tipo real, nada gravado com formato errado
+        int before = attachments.listByTask(t.id()).size();
+        assertThatThrownBy(() -> service.upload(cu(me), t.id(), new FileInput(ImageMetadataTest.pngWithText(8, 8, 12), "laudo.pdf",
+                "application/pdf"), CTX)).satisfies(api(415, "TIPO_DIVERGENTE"));
+        assertThat(attachments.listByTask(t.id())).hasSize(before);
+        // a evidência herda o formato do anexo que a sustenta
+        EvidenceView ev = service.addEvidence(cu(me), t.id(), new FileInput(ImageMetadataTest.pngWithText(20, 10, 13), "foto.png", "image/png"),
+                new EvidenceInput("Fachada", null, null, null), CTX);
+        assertThat(ev.formatVariant()).isEqualTo("PNG");
+        assertThat(ev.formatDetailsJson()).contains("\"width\":\"20\"");
     }
 
     @Test

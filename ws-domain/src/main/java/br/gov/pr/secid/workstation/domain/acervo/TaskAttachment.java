@@ -23,5 +23,8 @@ public record TaskAttachment(
         @Attr(value = "OCR", def = "'PENDENTE'") OcrStatus ocrStatus,
         @Attr(value = "referência do texto OCR no OpenSearch", opt = true, len = 200) String ocrTextRef,
         @Attr("anexo principal") boolean isPrimary,
-        @Attr("ordem") int sortOrder) {
+        @Attr("ordem") int sortOrder,
+        @Attr(value = "família do formato, pelo tipo REAL detectado (V71)", opt = true) FormatFamily formatFamily,
+        @Attr(value = "variante do formato, pelo tipo REAL detectado", opt = true, len = 10) String formatVariant,
+        @Attr(value = "detalhes extraídos pelo servidor (páginas, dimensões, abas…)", opt = true) String formatDetailsJson) {
 }
