@@ -860,8 +860,9 @@ o envio real `POST /api/tasks` / `PUT /api/tasks/{id}` nem o assistente da área
 - **Salvar rascunho** (`draft: true`) e **Salvar e criar outra** (mantém tipo, categoria, área e acesso; foco volta ao título).
 - **Tipo de tarefa e formato com ícone de arquivo** (`components/fileicons/**`): no valor escolhido e nas opções (“Escolher pelo ícone”).
 - **Gravação:** `category` vai na coluna do contrato; subcategoria, natureza, processo, esforço/horas/valor/início, origem/remetente/
-  documento/protocolo/recebimento/situação, participantes, justificativa e formato vão em `extensions` em chaves reservadas
-  (`subcategory`, `taxonomy`, `effort`, `origin`, `participants`, `accessReason`, `fileFormat`) até o `TaskRequest` ter os campos
+  documento/protocolo/recebimento/situação, participantes, justificativa vão em `extensions` em chaves reservadas
+  (`subcategory`, `taxonomy`, `effort`, `origin`, `participants`, `accessReason`); o formato vai nas colunas próprias
+  `formatFamily`/`formatVariant`/`formatDetailsJson` (V71; `fileFormat` antigo só é lido). As demais ficam em `extensions` até o `TaskRequest` ter os campos
   (lacuna de API: `TaskItem` já tem as colunas `subcategory`, `natureTags`, `processTags`, `effortSize`, `estimatedHours`,
   `amountInvolved`, `origin`, `docSituation`, `receivedAt`, `senderOrigin`, `protocolNumber`, mas o contrato não as recebe). O prazo legal
   é gravado pela rota própria `PUT /api/tasks/{id}/legal-deadline` logo depois de criar; anexos por `POST /api/tasks/{id}/attachments`.

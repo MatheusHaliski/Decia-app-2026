@@ -121,7 +121,7 @@ describe("criador completo de tarefas", () => {
     expect(onSaved.mock.calls[0]![0]).toMatchObject({ version: 2 });
   });
 
-  it("formato família → variante: só os campos da variante, aviso ao trocar, critérios sugeridos e gravação em fileFormat", async () => {
+  it("formato família → variante: só os campos da variante, aviso ao trocar, critérios sugeridos e gravação nas colunas de formato", async () => {
     renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
     fill(/Título/, "Base de dados de imóveis");
     fill(/^Tipo/, "PLANILHA");
@@ -143,8 +143,10 @@ describe("criador completo de tarefas", () => {
     expect(screen.getByRole("checkbox", { name: "Cabeçalho na linha 1" }).getAttribute("data-state")).toBe("checked");
     fireEvent.click(screen.getByTestId("task-submit"));
     await waitFor(() => expect(posts).toHaveLength(1));
-    const ff = new URLSearchParams((posts[0]!.extensions as Record<string, string>).fileFormat);
-    expect([ff.get("family"), ff.get("variant"), ff.get("headerRow"), ff.get("delimiter")]).toEqual(["PLANILHA", "XLSX", "true", null]);
+    expect(posts[0]).toMatchObject({ formatFamily: "PLANILHA", formatVariant: "XLSX" });
+    expect(JSON.parse(posts[0]!.formatDetailsJson as string)).toMatchObject({ headerRow: "true" });
+    expect(JSON.parse(posts[0]!.formatDetailsJson as string)).not.toHaveProperty("delimiter");
+    expect((posts[0]!.extensions as Record<string, string>).fileFormat).toBeUndefined();
   });
 
   it("anexo escolhido no criador mostra o formato estimado e avisa quando difere do pedido", () => {

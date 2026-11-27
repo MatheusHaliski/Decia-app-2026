@@ -4,10 +4,10 @@
  * criador e na entrega; a família tem os campos comuns às suas variantes. Os valores viram critérios de aceite sugeridos (texto montado
  * a partir do que a pessoa escolheu, nunca inventado).
  *
- * Gravação: o backend vai ganhar `formatFamily`, `formatVariant` e `formatDetailsJson` na tarefa (códigos deste catálogo). Enquanto o
- * contrato gerado (`lib/api/schema.d.ts`) não os tiver, o formato vai em `extensions.fileFormat` (`family=…&variant=…&<campo>=…`), uma
- * única chave — o servidor só aceita chaves `^[a-z][a-zA-Z0-9]{1,30}$` (sem ponto) e no máximo 12 por tarefa (`TaskBriefJson`). A troca
- * fica num lugar só: `formatToRequest`/`formatFromView`.
+ * Gravação: colunas próprias da tarefa no backend — `formatFamily`, `formatVariant` e `formatDetailsJson` (códigos deste catálogo,
+ * validados de novo no servidor, V71). Tarefas gravadas antes da V71 guardavam o formato em `extensions.fileFormat`
+ * (`family=…&variant=…&<campo>=…`): a leitura ainda o aceita e, ao salvar de novo, o formato passa para as colunas e o espelho some.
+ * A troca fica num lugar só: `formatToRequest`/`formatFromView`.
  */
 
 export const FORMAT_FAMILIES = ["PLANILHA", "DOCUMENTO", "APRESENTACAO", "IMAGEM", "DESENHO_TECNICO", "DADOS", "AUDIO_VIDEO", "PACOTE", "LINK", "OUTRO"] as const;
@@ -198,7 +198,7 @@ export function invalidFormatFields(f: FormatChoice): string[] {
 
 // ---------- adaptador da tarefa (um lugar só para trocar quando a API tiver os campos) ----------
 
-/** Chave de `extensions` que espelha o formato enquanto `TaskRequest` não tem `formatFamily`/`formatVariant`/`formatDetailsJson`. */
+/** Chave de `extensions` onde tarefas anteriores às colunas próprias (V71) guardavam o formato; só lida, nunca mais gravada. */
 export const FORMAT_EXTENSION_KEY = "fileFormat";
 
 /** Formato → valor do espelho em `extensions` (`family=…&variant=…&<campo>=…`); vazio sem família. */
@@ -219,29 +219,41 @@ export function unpackFormat(raw: string | undefined): FormatChoice {
   return normalizeFormat({ family: p.get("family"), variant: p.get("variant"), details });
 }
 
-/** Campos da visão da tarefa quando o backend os publicar (`TaskView.formatFamily`…); hoje ausentes no contrato gerado. */
+/** Colunas de formato da visão da tarefa (`TaskView.formatFamily`…). */
 interface FormatColumns { formatFamily?: string | null; formatVariant?: string | null; formatDetailsJson?: string | null }
 
-/**
- * Formato → parte do corpo de `POST/PUT /api/tasks`. Hoje: só o espelho em `extensions.fileFormat`. Quando `TaskRequest` tiver
- * `formatFamily`, `formatVariant` e `formatDetailsJson`, trocar aqui (e só aqui) para enviá-los.
- */
-export function formatToRequest(f: FormatChoice): { extensions: Record<string, string> } {
-  const packed = packFormat(f);
-  return { extensions: packed ? { [FORMAT_EXTENSION_KEY]: packed } : {} };
+/** Limite do servidor para `formatDetailsJson` (CHECK da V71). */
+export const MAX_FORMAT_DETAILS_JSON = 2000;
+
+/** Parte do corpo de `POST/PUT /api/tasks` com o formato; sem família, nada (o PUT grava sem formato). */
+export interface FormatRequestFields { formatFamily?: FormatFamilyId; formatVariant?: FormatVariantCode; formatDetailsJson?: string }
+
+/** Formato → colunas próprias do corpo de `POST/PUT /api/tasks` (só os campos válidos da variante; detalhes em JSON de textos). */
+export function formatToRequest(f: FormatChoice): FormatRequestFields {
+  if (!f.family) return {};
+  const details = cleanDetails(f);
+  return {
+    formatFamily: f.family,
+    ...(f.variant ? { formatVariant: f.variant } : {}),
+    ...(Object.keys(details).length ? { formatDetailsJson: JSON.stringify(details) } : {}),
+  };
+}
+
+/** JSON de detalhes → objeto de textos; inválido ou que não é objeto = vazio. */
+function parseDetails(raw: string | null | undefined): Record<string, string> {
+  if (!raw) return {};
+  try {
+    const v: unknown = JSON.parse(raw);
+    if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+    return Object.fromEntries(Object.entries(v).filter(([, x]) => typeof x === "string" || typeof x === "number" || typeof x === "boolean").map(([k, x]) => [k, String(x)]));
+  } catch {
+    return {};
+  }
 }
 
 /** Visão da tarefa → formato: as colunas próprias, se o servidor já as devolver; senão o espelho em `extensions`. */
 export function formatFromView(view: { extensions?: Readonly<Record<string, string>> } & FormatColumns): FormatChoice {
-  if (view.formatFamily) {
-    let details: unknown = {};
-    try {
-      details = view.formatDetailsJson ? JSON.parse(view.formatDetailsJson) : {};
-    } catch {
-      details = {};
-    }
-    return normalizeFormat({ family: view.formatFamily, variant: view.formatVariant ?? "", details });
-  }
+  if (view.formatFamily) return normalizeFormat({ family: view.formatFamily, variant: view.formatVariant ?? "", details: parseDetails(view.formatDetailsJson) });
   return unpackFormat(view.extensions?.[FORMAT_EXTENSION_KEY]);
 }
 
@@ -290,6 +302,8 @@ export interface AttachmentFormatInput {
   formatFamily?: string | null;
   formatVariant?: string | null;
   formatDetails?: Readonly<Record<string, string>> | null;
+  /** como a API manda (`AttachmentView.formatDetailsJson`); usado quando `formatDetails` não vier */
+  formatDetailsJson?: string | null;
 }
 /** Formato do anexo; `estimated` = derivado no navegador pela extensão/MIME (o servidor ainda não mandou o tipo real). */
 export interface AttachmentFormat { format: FormatChoice; estimated: boolean }
@@ -306,7 +320,7 @@ const extOf = (name: string | null | undefined) => {
  */
 export function attachmentFormat(a: AttachmentFormatInput): AttachmentFormat | null {
   if (a.formatFamily && isFormatFamily(a.formatFamily)) {
-    return { format: normalizeFormat({ family: a.formatFamily, variant: a.formatVariant ?? "", details: a.formatDetails ?? {} }), estimated: false };
+    return { format: normalizeFormat({ family: a.formatFamily, variant: a.formatVariant ?? "", details: a.formatDetails ?? parseDetails(a.formatDetailsJson) }), estimated: false };
   }
   const ext = extOf(a.fileName);
   const mime = (a.mimeType ?? "").toLowerCase().split(";")[0]!.trim();
