@@ -96,7 +96,8 @@ class TaskPersistenceIT {
         User u = owner("tarefa.it");
         TaskItem draft = TaskItem.create(u.getId(), null, "Peça de campanha", "Descrição", TaskType.IMAGEM_EDITADA, null, Priority.ALTA,
                 LocalDate.of(2026, 11, 10), null, AccessClassification.INTERNO, Visibility.EMPRESA);
-        StoredTask created = tasks.insert(draft, brief(null, "Divulgar o serviço"));
+        StoredTask created = tasks.insert(draft.withFormat(br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM, "PNG", "{\"minWidth\":\"1080\"}"),
+                brief(null, "Divulgar o serviço"));
         UUID id = created.task().id();
         assertThat(id).isNotNull();
         assertThat(created.brief().taskId()).isEqualTo(id);
@@ -106,6 +107,14 @@ class TaskPersistenceIT {
         assertThat(reopened.task().state()).isEqualTo(TaskState.RASCUNHO);
         assertThat(reopened.brief().objective()).isEqualTo("Divulgar o serviço");
         assertThat(reopened.brief().extensionsJson()).contains("1080x1080");
+        // V71: formato da entrega (família → variante → detalhes) volta igual; o CHECK recusa família fora da lista
+        assertThat(reopened.task().formatFamily()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM);
+        assertThat(reopened.task().formatVariant()).isEqualTo("PNG");
+        assertThat(reopened.task().formatDetailsJson()).contains("minWidth");
+        assertThatThrownBy(() -> jdbc.update("UPDATE tasks SET format_family = 'GIGANTE' WHERE id = ?", (Object) bytes(id)))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbc.update("UPDATE tasks SET format_details_json = '[1]' WHERE id = ?", (Object) bytes(id)))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
 
         // só o briefing muda: a versão da tarefa sobe mesmo assim (PESSIMISTIC_FORCE_INCREMENT)
         StoredTask edited = tasks.update(reopened.task(), brief(id, "Novo objetivo"), reopened.version());

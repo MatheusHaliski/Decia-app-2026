@@ -157,21 +157,28 @@ class AcervoAdaptersIT {
         UUID taskId = legal.task().id();
         MediaObject m = mediaOf(u, "a".repeat(64));
         TaskAttachment a = attachments.insert(new TaskAttachment(null, taskId, m.id(), "planta.png", "image/png", 10, m.sha256(),
-                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, null, null, null));
-        assertThat(attachments.listByTask(taskId)).singleElement().satisfies(s -> assertThat(s.createdAt()).isNotNull());
+                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM, "PNG", "{\"height\":\"32\",\"width\":\"64\"}"));
+        assertThat(attachments.listByTask(taskId)).singleElement().satisfies(s -> {
+            assertThat(s.createdAt()).isNotNull();
+            // V71: formato do tipo real com os detalhes extraídos, ida e volta no MySQL (JSON)
+            assertThat(s.attachment().formatFamily()).isEqualTo(br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM);
+            assertThat(s.attachment().formatVariant()).isEqualTo("PNG");
+            assertThat(s.attachment().formatDetailsJson()).contains("\"width\"").contains("\"64\"");
+        });
         assertThat(attachments.findById(a.id())).isPresent();
         assertThat(attachments.countByMedia(m.id())).isEqualTo(1);
         assertThat(attachments.listByTaskOwner(u.getId(), 10)).extracting(TitledAttachment::taskTitle).containsExactly("Responder pedido LAI");
         assertThat(attachments.listByTaskOwner(UUID.randomUUID(), 10)).isEmpty();
 
         StoredEvidence e = evidences.insert(new Evidence(null, u.getId(), m.id(), Instant.parse("2026-11-12T13:15:00Z"), "-25.4284", "-49.2733",
-                "Fissura", taskId, null, StudioStatus.ORIGINAL, null, null, null, null));
+                "Fissura", taskId, null, StudioStatus.ORIGINAL, null, br.gov.pr.secid.workstation.domain.acervo.FormatFamily.IMAGEM, "PNG", null));
         String rawLatitude = jdbc.queryForObject("SELECT latitude_enc FROM evidences WHERE id = ?", String.class, (Object) bytes(e.evidence().id()));
         assertThat(rawLatitude).isNotBlank().doesNotContain("25.4284");
         assertThat(evidences.findByTask(taskId)).singleElement().satisfies(s -> {
             assertThat(s.evidence().latitude()).isEqualTo("-25.4284");
             assertThat(s.evidence().longitude()).isEqualTo("-49.2733");
             assertThat(s.evidence().caption()).isEqualTo("Fissura");
+            assertThat(s.evidence().formatVariant()).isEqualTo("PNG");
         });
         assertThat(evidences.findByTasks(List.of(taskId))).hasSize(1);
         assertThat(evidences.countByMedia(m.id())).isEqualTo(1);
