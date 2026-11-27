@@ -252,3 +252,21 @@ describe("Melhorias ✦ (CI determinístico)", () => {
     expect(r.checks.find((c) => c.id === "espelho")?.where.href).toBe(`/projects/${m.id}/mirror`);
   });
 });
+
+describe("formato família → variante", () => {
+  it("formato do arquivo pela extensão e pelo MIME; desconhecido é nulo", async () => {
+    const { formatOfFile } = await import("./files");
+    expect(formatOfFile("a.xlsx", "")).toEqual({ family: "PLANILHA", variant: "XLSX" });
+    expect(formatOfFile("semext", "image/png")).toEqual({ family: "IMAGEM", variant: "PNG" });
+    expect(formatOfFile("a.xyz", "")).toBeNull();
+  });
+  it("aponta anexo em formato diferente do pedido", async () => {
+    const { formatMismatch } = await import("./checks");
+    const asked = { family: "PLANILHA" as const, variant: "XLSX" as const, details: {} };
+    expect(formatMismatch(asked, [{ fileName: "a.xlsx" }, { fileName: "b.csv" }])).toEqual({ asked: "XLSX", wrong: ["b.csv"], right: 1 });
+    expect(formatMismatch({ family: "DOCUMENTO", variant: "PDF_A", details: {} }, [{ fileName: "x.pdf" }])?.wrong).toEqual([]);
+    expect(formatMismatch({ family: "", variant: "", details: {} }, [{ fileName: "a.xlsx" }])).toBeNull();
+    const r = taskChecks({ subject: subjectFromView(view({ extensions: { fileFormat: "family=PLANILHA&variant=XLSX" } })), today: "2026-11-15", files: { attachments: 1, evidences: 0, list: [{ fileName: "b.csv" }] } });
+    expect(r.checks.find((c) => c.id === "formatoAnexo")?.verdict).toBe("ATENCAO");
+  });
+});

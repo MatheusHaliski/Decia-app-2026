@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CardViewerHost } from "@/components/cardviewer/CardViewerHost";
 import { AppShell } from "@/components/shell/AppShell";
 import { SessionWatcher } from "@/components/shell/SessionWatcher";
 
@@ -8,6 +9,7 @@ export default function ShellLayout({ children }: { children: ReactNode }) {
     <AppShell>
       <SessionWatcher />
       {children}
+      <CardViewerHost />
     </AppShell>
   );
 }

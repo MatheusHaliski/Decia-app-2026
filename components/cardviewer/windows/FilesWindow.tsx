@@ -11,13 +11,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, Input, Link, LoadingState, useToast } from "@/components/ui";
 import { describeError } from "@/lib/api/client";
-import { buildCloudTree, readLocalTree, treeTotals, type FileNode, type LocalDirHandle } from "@/lib/cardviewer/files";
+import { buildCloudTree, formatOfFile, readLocalTree, treeTotals, type FileNode, type LocalDirHandle } from "@/lib/cardviewer/files";
 import { forgetDirHandle, handleKey, loadDirHandle, saveDirHandle, supportsDirectoryPicker } from "@/lib/cardviewer/handles";
 import { demoCandidates } from "@/lib/cardviewer/demo";
 import { wbsTree, type WbsTreeNode } from "@/lib/projects/derive";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { attachmentsApi } from "@/lib/tasks/client";
 import { formatBytes, formatDateTime, isBlob, openOrDownload } from "@/lib/tasks/files";
+import { FileTypeIcon } from "@/components/fileicons/FileTypeIcon";
 import { useViewerData } from "../context";
 
 type Source = "nuvem" | "local";
@@ -68,8 +69,9 @@ function TreeItem({ node, actions }: { node: FileNode; actions?: (n: FileNode) =
   }
   return (
     <li className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 px-1 py-0.5" data-node={node.id}>
-      <span aria-hidden>{node.kind === "link" ? "↗" : "▫"}</span>
+      {node.kind === "link" ? <span aria-hidden>↗</span> : <FileTypeIcon name={node.name} mime={node.mime} size={18} />}
       {node.kind === "link" && node.url ? <Link href={node.url}>{name}</Link> : <span className="min-w-0 [overflow-wrap:anywhere]">{name}</span>}
+      {node.format ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-format={`${node.format.family}/${node.format.variant}`}>{t("cardviewer.fmt.label", { family: t(`cardviewer.fmt.family.${node.format.family}`), variant: node.format.variant })}</span> : null}
       {node.size !== undefined ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{formatBytes(node.size, intl)}</span> : null}
       {node.date ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{formatDateTime(node.date, intl)}</span> : null}
       {node.evidenceCaption ? <span className="w-full pl-4 text-[length:var(--ws-text-caption)] text-ws-text-muted">“{node.evidenceCaption}”</span> : null}
@@ -127,7 +129,7 @@ function CloudFiles() {
 
   // sem API de arquivos: estrutura DEMO, marcada
   let nodes: FileNode[] = [];
-  if (task) nodes = [{ id: "demo", kind: "folder", name: "demo", labelKey: "cardviewer.files.demoFolder", children: demoCandidates(task.subject.title).map((c) => ({ id: `demo/${c.id}`, kind: "file", name: c.name, mime: c.mime })) }];
+  if (task) nodes = [{ id: "demo", kind: "folder", name: "demo", labelKey: "cardviewer.files.demoFolder", children: demoCandidates(task.subject.title).map((c) => ({ id: `demo/${c.id}`, kind: "file", name: c.name, mime: c.mime, format: formatOfFile(c.name, c.mime) })) }];
   else if (project?.subject.variant === "MESA") nodes = wbsNodes(wbsTree(project.subject.model.wbs), project.subject.model.tasks);
   else if (project?.subject.variant === "MURAL") {
     const st = project.subject.state;

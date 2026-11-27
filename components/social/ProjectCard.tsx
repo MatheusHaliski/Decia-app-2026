@@ -4,6 +4,7 @@
  * tarefas, borda na cor do departamento, status (texto), barra de 7 fases com a atual destacada e nome em texto, próximo
  * marco, "n tarefas · n pessoas", último evento DECIA e a barra social. Layouts `mosaic` (grade) e `mural` (linha).
  */
+import { useCardViewerTrigger } from "@/components/cardviewer/open";
 import { Link, Tag, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { PROJECT_PHASES } from "@/lib/social/types";
@@ -61,10 +62,12 @@ export function ProjectCard({ vm, layout = "mosaic", className }: { vm: ProjectC
     className,
   );
   const aria = t("social.card.projectAria", { title: vm.title, status: t(`social.projectStatus.${vm.status}`) });
+  // visualizador de card (?ver=projeto:<id>)
+  const { className: viewerClass, ...viewer } = useCardViewerTrigger({ kind: "projeto", id: vm.id });
 
   if (layout === "mural") {
     return (
-      <article aria-label={aria} data-layout="mural" data-variant={[...vm.variants].join(" ")} data-testid="project-card" className={cn(shell, "grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-2 p-2.5")}>
+      <article {...viewer} aria-label={aria} data-layout="mural" data-variant={[...vm.variants].join(" ")} data-testid="project-card" className={cn(shell, viewerClass, "grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-2 p-2.5")}>
         <Mosaic vm={vm} className="size-16 overflow-hidden rounded-[var(--ws-radius-sm)] [&>div]:text-[0.75rem]" />
         <div className="grid min-w-0 gap-1">
           <div className="flex flex-wrap items-center gap-1.5">{status}{vm.aiGenerated ? <Spark /> : null}{vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}{vm.seals.map((s) => <Seal key={s.label} issuer={s.issuer} label={s.label} size={22} />)}</div>
@@ -78,7 +81,7 @@ export function ProjectCard({ vm, layout = "mosaic", className }: { vm: ProjectC
   }
 
   return (
-    <article aria-label={aria} data-layout="mosaic" data-variant={[...vm.variants].join(" ")} data-testid="project-card" className={cn(shell, "flex flex-col")}>
+    <article {...viewer} aria-label={aria} data-layout="mosaic" data-variant={[...vm.variants].join(" ")} data-testid="project-card" className={cn(shell, viewerClass, "flex flex-col")}>
       <div className="relative">
         <Mosaic vm={vm} className="aspect-[3/2] w-full" />
         <div className="absolute left-2 top-2 flex gap-1">{vm.aiGenerated ? <Spark /> : null}</div>

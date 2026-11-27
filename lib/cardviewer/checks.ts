@@ -12,13 +12,14 @@
 import type { OccupationPack } from "@/lib/career/occupationPack";
 import { mirrorSummary, type MirrorSummary } from "@/lib/projects/compliance/evaluate";
 import { computeMetrics, type LinkedDecision } from "@/lib/projects/metrics";
-import type { ProjectModel } from "@/lib/projects/types";
 import { allMetrics } from "@/lib/projects/feedback";
 import { effectiveDueOf, isOpenState } from "@/lib/tasks/acervo";
 import { requestFromView, type TaskRequest, type TaskView } from "@/lib/tasks/client";
 import { deadlineStatus, isIsoDate } from "@/lib/tasks/legalDeadline";
 import { assessTask, type CheckStatus, type QuickFix } from "@/lib/tasks/quality";
+import { formatFromView, type FormatChoice } from "@/lib/tasks/formats";
 import type { TaskDraft } from "@/lib/tasks/templates";
+import { formatOfFile } from "./files";
 import type { ProjectSubject, TaskSubject } from "./subject";
 
 export type Verdict = "FALHOU" | "ATENCAO" | "PASSOU";
@@ -82,7 +83,7 @@ export interface TaskCheckInput {
   subject: TaskSubject;
   today: string;
   /** anexos e evidências conhecidos (API); `null` = fonte sem arquivos (DEMO) — os checks de arquivo ficam de fora */
-  files: { attachments: number; evidences: number } | null;
+  files: { attachments: number; evidences: number; list?: readonly { fileName?: string; mimeType?: string }[] } | null;
   pack?: OccupationPack | null;
 }
 
@@ -134,6 +135,12 @@ export function taskChecks({ subject: s, today, files, pack }: TaskCheckInput): 
       const v: Verdict = files.attachments > 0 ? "PASSOU" : s.state === "CONCLUIDA" ? "FALHOU" : "ATENCAO";
       out.push(mine("anexos", "ARQUIVOS", v, { n: files.attachments, type: s.type }, { href: s.source === "API" ? `/tasks/${s.id}` : edit, label: { key: "cardviewer.where.files" } }));
     }
+    const asked = formatFromView({ extensions: s.extensions });
+    const mism = formatMismatch(asked, files.list ?? []);
+    if (mism) {
+      const v: Verdict = mism.wrong.length === 0 ? "PASSOU" : mism.right === 0 && s.state === "CONCLUIDA" ? "FALHOU" : "ATENCAO";
+      out.push(mine("formatoAnexo", "ARQUIVOS", v, { asked: mism.asked, files: mism.wrong.slice(0, 3).join(", "), n: mism.wrong.length }, { href: edit, label: { key: "cardviewer.where.edit" } }));
+    }
     if (s.category && EVIDENCE_CATEGORIES.has(s.category)) {
       const v: Verdict = files.evidences > 0 ? "PASSOU" : s.state === "CONCLUIDA" ? "FALHOU" : "ATENCAO";
       out.push(mine("evidencias", "ARQUIVOS", v, { n: files.evidences }, { href: `/tasks/${s.id}`, label: { key: "cardviewer.where.files" } }));
@@ -152,6 +159,25 @@ export function taskChecks({ subject: s, today, files, pack }: TaskCheckInput): 
   out.push(mine("descricao", "QUALIDADE", descV, { n: desc.length }));
 
   return report(out);
+}
+
+/**
+ * Anexos em formato diferente do pedido (família → variante de `lib/tasks/formats.ts`). Pedido só de família: confere a família;
+ * com variante: confere a variante (PDF e PDF/A contam como o mesmo arquivo). Sem formato pedido ou sem anexos: `null` (não se aplica).
+ */
+export function formatMismatch(asked: FormatChoice, files: readonly { fileName?: string; mimeType?: string }[]): { asked: string; wrong: string[]; right: number } | null {
+  if (!asked.family || !files.length) return null;
+  const want = asked.variant || asked.family;
+  const same = (v: string) => v === asked.variant || (["PDF", "PDF_A"].includes(v) && ["PDF", "PDF_A"].includes(asked.variant));
+  const wrong: string[] = [];
+  let right = 0;
+  for (const f of files) {
+    const got = formatOfFile(f.fileName, f.mimeType);
+    const ok = !!got && (asked.variant ? same(got.variant) : got.family === asked.family);
+    if (ok) right += 1;
+    else wrong.push(f.fileName ?? "?");
+  }
+  return { asked: want, wrong, right };
 }
 
 /** Corpo de PUT com a correção aplicada (preserva todo o resto e a versão, para o servidor recusar se alguém mudou antes). */

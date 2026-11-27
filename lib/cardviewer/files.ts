@@ -5,7 +5,23 @@
  *  • Este computador — a pasta que a pessoa escolheu pela File System Access API, lida só no navegador (nada vai ao servidor), com
  *    teto de profundidade e de itens para não travar a aba numa pasta enorme.
  * Funções puras (a leitura da pasta local recebe o handle e não pede permissão: quem pede é a tela, com gesto da pessoa).
+ * Cada arquivo leva o formato FAMÍLIA → VARIANTE do catálogo de `lib/tasks/formats.ts` (pela extensão e pelo MIME).
  */
+import { FORMAT_VARIANTS, type FormatFamilyId, type FormatVariantCode } from "@/lib/tasks/formats";
+
+export interface FileFormat { family: FormatFamilyId; variant: FormatVariantCode }
+
+/**
+ * Formato de um arquivo no catálogo família → variante: pela extensão (a primeira variante que a aceita; PDF fica em DOCUMENTO/PDF) e,
+ * sem extensão conhecida, pelo MIME. Desconhecido → `null` (nunca adivinhado).
+ */
+export function formatOfFile(name: string | undefined, mime: string | undefined): FileFormat | null {
+  const ext = extensionOf(name);
+  const m = (mime ?? "").toLowerCase().split(";")[0]!.trim();
+  const byExt = ext ? FORMAT_VARIANTS.find((v) => v.extensions.includes(ext)) : undefined;
+  const hit = byExt ?? (m ? FORMAT_VARIANTS.find((v) => v.mime.some((x) => x.toLowerCase() === m)) : undefined);
+  return hit ? { family: hit.family, variant: hit.code } : null;
+}
 
 export type FileNodeKind = "folder" | "file" | "link";
 export interface FileNode {
@@ -28,6 +44,8 @@ export interface FileNode {
   /** situação do antivírus quando o anexo ainda não pode ser baixado */
   unavailable?: boolean;
   evidenceCaption?: string;
+  /** formato família → variante (arquivos) */
+  format?: FileFormat | null;
   /** arquivo do computador (só na árvore local) */
   file?: () => Promise<File>;
 }
@@ -104,7 +122,7 @@ export function buildCloudTree(attachments: readonly CloudAttachment[], evidence
     if (!a.id) continue;
     const node: FileNode = {
       id: `nuvem/anexo/${a.id}`, kind: "file", name: a.fileName || a.id, size: a.sizeBytes, date: a.createdAt, mime: a.mimeType,
-      attachmentId: a.id, unavailable: a.available === false,
+      attachmentId: a.id, unavailable: a.available === false, format: formatOfFile(a.fileName, a.mimeType),
     };
     const ev = evidences.find((e) => e.attachmentId === a.id);
     if (ev || a.evidence || evidenceIds.has(a.id)) {
@@ -210,7 +228,7 @@ export async function readLocalTree(dir: LocalDirHandle, limits: { maxDepth: num
         } catch {
           /* arquivo sumiu ou bloqueado: lista sem metadados */
         }
-        out.push({ id, kind: "file", name: h.name, size, date, mime, file: () => h.getFile() });
+        out.push({ id, kind: "file", name: h.name, size, date, mime, format: formatOfFile(h.name, mime), file: () => h.getFile() });
       }
     }
     return out.sort(byName);

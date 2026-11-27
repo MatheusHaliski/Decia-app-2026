@@ -3,7 +3,8 @@
  * Cartão de projeto da "Minha mesa" (RF21; RF21.CA06 "abrir na Mesa do projeto"): fase, % concluído, próximo marco, versão e
  * a última alteração; origem do esquema (✦ Autopiloto, modelo). Números do resumo calculado (`summarizeProject`).
  */
-import { Badge, Button, Card, PercentBar, Tag } from "@/components/ui";
+import { useCardViewerTrigger } from "@/components/cardviewer/open";
+import { Badge, Button, Card, PercentBar, Tag, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { summarizeProject } from "@/lib/projects/autopilot/overview";
 import type { ProjectModel } from "@/lib/projects/types";
@@ -15,8 +16,10 @@ export function ProjectCard({ model, today, people }: { model: ProjectModel; tod
   const s = summarizeProject(model, today);
   const last = model.versions.at(-1);
   const titleId = `desk-card-${model.id}`;
+  // visualizador de card (?ver=projeto:<id>): clique fora dos botões ou Enter no cartão
+  const { className: viewerClass, ...viewer } = useCardViewerTrigger({ kind: "projeto", id: model.id });
   return (
-    <Card as="article" padding="sm" aria-labelledby={titleId} className="grid content-start gap-2" data-project-card={model.id}>
+    <Card as="article" padding="sm" aria-labelledby={titleId} className={cn("grid content-start gap-2", viewerClass)} data-project-card={model.id} {...viewer}>
       <header className="flex flex-wrap items-start gap-2">
         <h3 id={titleId} className="min-w-0 flex-1 font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-body-lg)] font-semibold leading-tight">{model.title}</h3>
         <Tag>{t("pm.ws.version", { n: model.version })}</Tag>
