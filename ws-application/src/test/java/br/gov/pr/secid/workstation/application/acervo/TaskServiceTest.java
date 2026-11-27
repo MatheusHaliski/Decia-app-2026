@@ -351,7 +351,8 @@ class TaskServiceTest {
                     t.retentionPolicyJson(), t.visibility(), t.favorite(), t.offeredInCounter(), t.aiGenerated(), t.aiInferenceId(),
                     t.aiConfidenceJson(), t.thumbnailUrl(), t.coverUrl(), t.coverMode(), t.cardSkin(), t.tags(), t.notes(), t.originalTaskId(),
                     t.sourceProjectId(), t.checklistItemId(), t.reuseCount(), t.projectUsageCount(), t.likesCount(), t.commentsCount(),
-                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(), t.formatDetailsJson());
+                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(),
+                    t.formatDetailsJson());
         }
     }
 

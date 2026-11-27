@@ -177,15 +177,15 @@ class DecisionApiPersistenceIT {
         assertThat(row.get("kind")).isEqualTo("DECISAO");
         assertThat(SnapshotCanonicalizer.sha256((String) row.get("content_json"))).isEqualTo(row.get("content_sha256"));
         assertThat((String) row.get("content_json")).doesNotContain("Pessoa dec.ana");
-        assertThat(decided.events()).extracting(DecisionView.Event::type).contains(DecisionEventType.DECISAO_FINALIZADA);
+        assertThat(decided.events()).extracting(DecisionView.DecisionEventView::type).contains(DecisionEventType.DECISAO_FINALIZADA);
         assertThat(jdbc.queryForObject("SELECT status FROM decisions WHERE id = ?", String.class, (Object) bytes(id))).isEqualTo("DECIDIDA");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_log WHERE resource_id = ?", Integer.class, id.toString())).isGreaterThanOrEqualTo(3);
 
         DecisionView reopened = service.apply(cu(ana), id, decided.decision().version(), List.of(DecisionCommand.reopen("Novo preço")), CTX);
         assertThat(reopened.decision().status()).isEqualTo(DecisionLifecycle.REABERTA);
-        assertThat(reopened.snapshots()).extracting(DecisionView.Snapshot::kind).containsExactly(SnapshotKind.DECISAO, SnapshotKind.REABERTURA);
+        assertThat(reopened.snapshots()).extracting(DecisionView.DecisionSnapshotView::kind).containsExactly(SnapshotKind.DECISAO, SnapshotKind.REABERTURA);
         // trilha em ordem estável (carimbos crescentes por µs) e sem texto livre no payload
-        List<DecisionView.Event> events = service.get(cu(ana), id).events();
+        List<DecisionView.DecisionEventView> events = service.get(cu(ana), id).events();
         assertThat(events.get(0).type()).isEqualTo(DecisionEventType.DECISAO_CRIADA);
         assertThat(events.get(events.size() - 1).type()).isEqualTo(DecisionEventType.ESTADO_ALTERADO);
         assertThat(events).allSatisfy(e -> assertThat(e.payload().toString()).doesNotContain("Novo preço", "Cotação"));

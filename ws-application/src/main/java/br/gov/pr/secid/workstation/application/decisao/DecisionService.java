@@ -7,6 +7,17 @@ import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.Graph;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredDecision;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredEvidence;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionAlternativeView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionAssessmentView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionCriterionView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionEventView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionEvidenceLinkView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionEvidenceView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionOutcomeView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionParticipantView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionPermissions;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionRoot;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionSnapshotView;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
@@ -580,7 +591,7 @@ public class DecisionService {
     DecisionView view(Viewer viewer, DecisionRole role, StoredDecision s, Graph g) {
         Decision d = s.decision();
         boolean editable = editable(d.status());
-        DecisionView.Permissions perms = new DecisionView.Permissions(
+        DecisionPermissions perms = new DecisionPermissions(
                 editable && allowed(viewer, d, role, ResourceAction.EDIT_STRUCTURE),
                 editable && allowed(viewer, d, role, ResourceAction.ASSESS),
                 PATH_TO_AWAITING.containsKey(d.status()) && allowed(viewer, d, role, ResourceAction.DECIDE),
@@ -588,37 +599,37 @@ public class DecisionService {
                 allowed(viewer, d, role, ResourceAction.EDIT));
         DecisionParticipant me = g.participants().stream().filter(p -> p.userId().equals(viewer.userId())).findFirst().orElse(null);
         boolean seeOthers = !d.independentScoring() || (me != null && me.assessmentsSubmittedAt() != null);
-        DecisionView.Root root = new DecisionView.Root(d.id(), s.version(), d.title(), d.question(), d.contextMd(), d.objective(), d.constraintsMd(),
+        DecisionRoot root = new DecisionRoot(d.id(), s.version(), d.title(), d.question(), d.contextMd(), d.objective(), d.constraintsMd(),
                 d.scope(), strings(d.stakeholdersJson()), d.targetDate(), d.ownerUserId(), d.createdByUserId(), d.companyId(), d.departmentId(),
                 d.sessionId(), d.projectId(), d.status(), d.complexity(), d.kind(), d.impact(), d.urgency(), d.visibility(), d.accessClass(),
                 d.weightingEnabled(), d.independentScoring(), d.templateKey(), d.selectedAlternativeId(), d.decidedAt(), d.decisionConfidencePct(),
                 d.rationale(), d.reviewEveryDays(), s.createdAt(), s.updatedAt());
         return new DecisionView(root,
-                g.participants().stream().map(p -> new DecisionView.Participant(p.userId(), p.role(), p.joinedAt(), p.assessmentsSubmittedAt()))
+                g.participants().stream().map(p -> new DecisionParticipantView(p.userId(), p.role(), p.joinedAt(), p.assessmentsSubmittedAt()))
                         .toList(),
-                g.alternatives().stream().map(a -> new DecisionView.Alternative(a.id(), a.label(), a.title(), a.description(), a.doNothing(),
+                g.alternatives().stream().map(a -> new DecisionAlternativeView(a.id(), a.label(), a.title(), a.description(), a.doNothing(),
                         strings(a.prosJson()), strings(a.consJson()), a.estimatedCost() == null ? null : a.estimatedCost().toPlainString(),
                         a.estimatedDurationDays(), a.status(), a.discardReason(), a.origin(), a.position())).toList(),
-                g.criteria().stream().map(c -> new DecisionView.Criterion(c.id(), c.name(), c.description(), c.direction(),
+                g.criteria().stream().map(c -> new DecisionCriterionView(c.id(), c.name(), c.description(), c.direction(),
                         c.weightPct() == null ? null : c.weightPct().doubleValue(), c.catalogKey(), c.origin(), c.position())).toList(),
                 g.assessments().stream().filter(a -> seeOthers || a.assessorUserId().equals(viewer.userId()))
-                        .map(a -> new DecisionView.Assessment(a.id(), a.alternativeId(), a.criterionId(), a.assessorUserId(), a.score(), a.rationale(),
+                        .map(a -> new DecisionAssessmentView(a.id(), a.alternativeId(), a.criterionId(), a.assessorUserId(), a.score(), a.rationale(),
                                 a.submittedAt(), a.origin())).toList(),
                 g.evidence().stream().map(DecisionService::evidenceView).toList(),
-                g.evidenceLinks().stream().map(l -> new DecisionView.EvidenceLinkView(l.id(), l.evidenceId(), l.targetType(), l.targetId(), l.stance(),
+                g.evidenceLinks().stream().map(l -> new DecisionEvidenceLinkView(l.id(), l.evidenceId(), l.targetType(), l.targetId(), l.stance(),
                         l.note())).toList(),
-                g.snapshots().stream().map(x -> new DecisionView.Snapshot(x.id(), x.kind(), x.versionNumber(), x.takenAt(), x.takenByUserId(),
+                g.snapshots().stream().map(x -> new DecisionSnapshotView(x.id(), x.kind(), x.versionNumber(), x.takenAt(), x.takenByUserId(),
                         x.contentJson(), x.contentSha256(), x.rationale(), x.confidencePct(), x.selectedAlternativeLabel(), x.modelVersion())).toList(),
-                g.outcome() == null ? null : new DecisionView.Outcome(g.outcome().id(), g.outcome().result(), g.outcome().observedAt(),
+                g.outcome() == null ? null : new DecisionOutcomeView(g.outcome().id(), g.outcome().result(), g.outcome().observedAt(),
                         g.outcome().summary(), g.outcome().recordedByUserId()),
-                g.events().stream().map(e -> new DecisionView.Event(e.id(), e.actorUserId(), e.type(), payload(e.payloadJson()), e.at(),
+                g.events().stream().map(e -> new DecisionEventView(e.id(), e.actorUserId(), e.type(), payload(e.payloadJson()), e.at(),
                         e.correlationId())).toList(),
                 perms);
     }
 
-    private static DecisionView.Evidence evidenceView(StoredEvidence s) {
+    private static DecisionEvidenceView evidenceView(StoredEvidence s) {
         DecisionEvidence e = s.evidence();
-        return new DecisionView.Evidence(e.id(), e.nature(), e.kind(), e.title(), e.summary(), e.sourceLabel(), e.sourceUrl(), e.authorLabel(),
+        return new DecisionEvidenceView(e.id(), e.nature(), e.kind(), e.title(), e.summary(), e.sourceLabel(), e.sourceUrl(), e.authorLabel(),
                 e.observedAt(), e.retrievedAt(), e.sourceQuality(), e.relevance(), e.reliability(), e.origin(), e.addedByUserId(), s.addedAt(),
                 e.supersededAt());
     }

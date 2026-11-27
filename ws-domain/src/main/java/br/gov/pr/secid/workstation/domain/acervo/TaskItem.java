@@ -207,7 +207,8 @@ public record TaskItem(
                 dueAt, ruleId, baseDate, due, null, priority, state, blockedByTaskId, blockedByUserId, blockReason, docSituation, receivedAt,
                 senderOrigin, protocolNumber, retentionPolicyJson, visibility, favorite, offeredInCounter, aiGenerated, aiInferenceId,
                 aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin, tags, notes, originalTaskId, sourceProjectId, checklistItemId,
-                reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount, sealIdsJson, formatFamily, formatVariant, formatDetailsJson);
+                reuseCount, projectUsageCount, likesCount, commentsCount, savesCount, sharesCount, remixesCount, viewsCount, sealIdsJson,
+                formatFamily, formatVariant, formatDetailsJson);
     }
 
     /**

@@ -331,7 +331,8 @@ public class JpaAcervoAdapters {
 
     static StoredEvidence stored(EvidenceEntity e) {
         return new StoredEvidence(new Evidence(e.getId(), e.getOwnerId(), e.getMediaObjectId(), e.getTakenAt(), e.getLatitudeEnc(),
-                e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId(), e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson()),
+                e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId(),
+                e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson()),
                 e.getCreatedAt());
     }
 
@@ -342,7 +343,8 @@ public class JpaAcervoAdapters {
 
     static TaskAttachment toDomain(TaskAttachmentEntity e) {
         return new TaskAttachment(e.getId(), e.getTaskId(), e.getMediaObjectId(), e.getFileName(), e.getMimeType(), e.getSizeBytes(), e.getSha256(),
-                e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder(), e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson());
+                e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder(), e.getFormatFamily(),
+                e.getFormatVariant(), e.getFormatDetailsJson());
     }
 
     private static StoredTask stored(TaskItemEntity e, TaskBriefEntity b) {

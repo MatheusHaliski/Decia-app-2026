@@ -17,9 +17,8 @@ import { effectiveDueOf, isOpenState } from "@/lib/tasks/acervo";
 import { requestFromView, type TaskRequest, type TaskView } from "@/lib/tasks/client";
 import { deadlineStatus, isIsoDate } from "@/lib/tasks/legalDeadline";
 import { assessTask, type CheckStatus, type QuickFix } from "@/lib/tasks/quality";
-import { formatFromView, type FormatChoice } from "@/lib/tasks/formats";
+import { formatFromView, matchesFormat, type FormatChoice } from "@/lib/tasks/formats";
 import type { TaskDraft } from "@/lib/tasks/templates";
-import { formatOfFile } from "./files";
 import type { ProjectSubject, TaskSubject } from "./subject";
 
 export type Verdict = "FALHOU" | "ATENCAO" | "PASSOU";
@@ -167,17 +166,14 @@ export function taskChecks({ subject: s, today, files, pack }: TaskCheckInput): 
  */
 export function formatMismatch(asked: FormatChoice, files: readonly { fileName?: string; mimeType?: string }[]): { asked: string; wrong: string[]; right: number } | null {
   if (!asked.family || !files.length) return null;
-  const want = asked.variant || asked.family;
-  const same = (v: string) => v === asked.variant || (["PDF", "PDF_A"].includes(v) && ["PDF", "PDF_A"].includes(asked.variant));
+  // uma regra só com o criador e o Acervo: `matchesFormat` do catálogo (aceita, por exemplo, PDF de prancha em Desenho técnico)
   const wrong: string[] = [];
   let right = 0;
   for (const f of files) {
-    const got = formatOfFile(f.fileName, f.mimeType);
-    const ok = !!got && (asked.variant ? same(got.variant) : got.family === asked.family);
-    if (ok) right += 1;
+    if (matchesFormat(asked, f) === true) right += 1;
     else wrong.push(f.fileName ?? "?");
   }
-  return { asked: want, wrong, right };
+  return { asked: asked.variant || asked.family, wrong, right };
 }
 
 /** Corpo de PUT com a correção aplicada (preserva todo o resto e a versão, para o servidor recusar se alguém mudou antes). */

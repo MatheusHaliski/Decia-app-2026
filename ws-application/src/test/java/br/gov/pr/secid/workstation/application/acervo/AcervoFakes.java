@@ -98,7 +98,8 @@ final class AcervoFakes {
         @Override
         public TaskAttachment insert(TaskAttachment a) {
             TaskAttachment saved = new TaskAttachment(UUID.randomUUID(), a.taskId(), a.mediaObjectId(), a.fileName(), a.mimeType(), a.sizeBytes(),
-                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(), a.formatVariant(), a.formatDetailsJson());
+                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(),
+                    a.formatVariant(), a.formatDetailsJson());
             rows.put(saved.id(), new StoredAttachment(saved, T0.plusSeconds(++tick)));
             return saved;
         }

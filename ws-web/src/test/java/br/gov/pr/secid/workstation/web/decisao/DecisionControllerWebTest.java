@@ -91,12 +91,12 @@ class DecisionControllerWebTest {
     }
 
     private DecisionView view(long version, DecisionLifecycle status) {
-        DecisionView.Root root = new DecisionView.Root(decisionId, version, "Fornecedor", "Qual fornecedor contratar?", null, null, null, null,
+        DecisionView.DecisionRoot root = new DecisionView.DecisionRoot(decisionId, version, "Fornecedor", "Qual fornecedor contratar?", null, null, null, null,
                 List.of(), null, userId, userId, UUID.randomUUID(), null, null, null, status, DecisionComplexity.RAPIDA, DecisionKind.OPERACIONAL,
                 DecisionLevel.MEDIO, DecisionLevel.MEDIO, Visibility.PRIVADA, AccessClassification.INTERNO, false, false, null, null, null, null,
                 null, null, Instant.now(), Instant.now());
         return new DecisionView(root, List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), null, List.of(),
-                new DecisionView.Permissions(true, true, true, false, true));
+                new DecisionView.DecisionPermissions(true, true, true, false, true));
     }
 
     private static String commands(long version) {
