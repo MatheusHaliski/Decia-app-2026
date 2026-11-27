@@ -4,13 +4,16 @@
  * no perfil, para a empresa, para o chefe nem em busca, e não é sinal de busca de emprego. O que ela muda é só o ponto de partida das
  * telas pessoais: o criador de tarefas pré-seleciona o campo de estudo (área, modelos, campos da área e checagem da profissão) e mostra
  * o plano de desenvolvimento; trocar não mexe em tarefas já criadas (RF81.CA08).
+ * Persistência: com sessão, `/api/me/preferences` (só do dono); sem sessão, só nesta aba — a não ser que a pessoa consinta aqui em
+ * lembrar neste navegador (chave própria, apagada ao sair da conta ou ao desligar).
  */
-import { useState } from "react";
-import { Button, Card, Tag } from "@/components/ui";
+import { useEffect, useState } from "react";
+import { Button, Card, Switch, Tag } from "@/components/ui";
 import { occupationArea } from "@/lib/career/categories";
 import { baseLocale } from "@/lib/i18n/state";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
+import { occupationDeviceConsent, setOccupationDeviceConsent } from "@/lib/preferences/storage";
 import { isOccupationCode } from "@/lib/preferences/types";
 import { FIELD_INDEX } from "@/lib/tasks/fieldIndex.gen";
 import { OccupationCombobox } from "./OccupationCombobox";
@@ -23,6 +26,14 @@ export function OccupationSettingsCard({ className }: { className?: string }) {
   const field = code ? FIELD_INDEX.find((f) => f.code === code) : undefined;
   const area = occupationArea(code);
   const [announce, setAnnounce] = useState("");
+  // o consentimento é do navegador: lido depois da montagem (no servidor não há localStorage)
+  const [onDevice, setOnDevice] = useState(false);
+  useEffect(() => { setOnDevice(occupationDeviceConsent()); }, []);
+  const toggleDevice = (on: boolean) => {
+    const final = setOccupationDeviceConsent(on, code);
+    setOnDevice(final);
+    setAnnounce(t(final ? "profissao2.device.on" : "profissao2.device.off"));
+  };
 
   const change = (next: string | null) => {
     update({ preferredOccupation: next });
@@ -51,6 +62,9 @@ export function OccupationSettingsCard({ className }: { className?: string }) {
         ) : (
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted" data-testid="occupation-generic">{t("career.settings.generic")}</p>
         )}
+        <div className="border-t border-ws-border pt-1" data-testid="occupation-device">
+          <Switch checked={onDevice} onCheckedChange={toggleDevice} label={t("profissao2.device.label")} hint={t("profissao2.device.hint")} />
+        </div>
         <p className="sr-only" aria-live="polite">{announce}</p>
       </div>
     </Card>

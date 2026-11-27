@@ -517,7 +517,8 @@
         ],
         "evidence": "diagrama vetorial ou prancha",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de permissão de trabalho em altura ou espaço confinado",
@@ -610,7 +611,8 @@
         ],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L8": {
         "title": "Resposta a um briefing de consultoria em SST",
@@ -1049,7 +1051,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "X2, L7, L6, L5 e a revisão de critérios cabem no celular (inclusive em campo); D4, D5, D7 e D1 exigem computador.",
     "nudges": {
       "cadence": "semanal",

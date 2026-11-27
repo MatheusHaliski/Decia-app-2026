@@ -5,22 +5,37 @@
  *  • Este computador — a pasta que a pessoa escolheu pela File System Access API, lida só no navegador (nada vai ao servidor), com
  *    teto de profundidade e de itens para não travar a aba numa pasta enorme.
  * Funções puras (a leitura da pasta local recebe o handle e não pede permissão: quem pede é a tela, com gesto da pessoa).
- * Cada arquivo leva o formato FAMÍLIA → VARIANTE do catálogo de `lib/tasks/formats.ts` (pela extensão e pelo MIME).
+ * Cada arquivo leva o formato FAMÍLIA → VARIANTE do catálogo de `lib/tasks/formats.ts`: o que o SERVIDOR detectou pelo conteúdo
+ * (`formatFamily`/`formatVariant` do anexo) quando houver; senão, estimado pela extensão e pelo MIME — e marcado "estimado".
  */
-import { FORMAT_VARIANTS, type FormatFamilyId, type FormatVariantCode } from "@/lib/tasks/formats";
+import { FORMAT_VARIANTS, isFormatFamily, variantOf, type FormatFamilyId, type FormatVariantCode } from "@/lib/tasks/formats";
 
-export interface FileFormat { family: FormatFamilyId; variant: FormatVariantCode }
+export interface FileFormat {
+  family: FormatFamilyId;
+  /** vazio quando o servidor reconhece a família mas o catálogo não tem a variante (ex.: GIF) */
+  variant: FormatVariantCode | "";
+  /** deduzido no navegador pela extensão/MIME (o servidor não informou o tipo real) */
+  estimated: boolean;
+}
+
+/** Formato detectado pelo servidor no anexo (colunas da V71). */
+export interface ServerFormat { formatFamily?: string | null; formatVariant?: string | null }
 
 /**
- * Formato de um arquivo no catálogo família → variante: pela extensão (a primeira variante que a aceita; PDF fica em DOCUMENTO/PDF) e,
- * sem extensão conhecida, pelo MIME. Desconhecido → `null` (nunca adivinhado).
+ * Formato de um arquivo no catálogo família → variante: o do servidor quando vier (tipo real, `estimated: false`); senão pela extensão
+ * (a primeira variante que a aceita; PDF fica em DOCUMENTO/PDF) e, sem extensão conhecida, pelo MIME (`estimated: true`).
+ * Desconhecido → `null` (nunca adivinhado).
  */
-export function formatOfFile(name: string | undefined, mime: string | undefined): FileFormat | null {
+export function formatOfFile(name: string | undefined, mime: string | undefined, server?: ServerFormat | null): FileFormat | null {
+  if (server?.formatFamily && isFormatFamily(server.formatFamily)) {
+    const code = (variantOf(server.formatFamily, server.formatVariant ?? "")?.code ?? "") as FormatVariantCode | "";
+    return { family: server.formatFamily, variant: code, estimated: false };
+  }
   const ext = extensionOf(name);
   const m = (mime ?? "").toLowerCase().split(";")[0]!.trim();
   const byExt = ext ? FORMAT_VARIANTS.find((v) => v.extensions.includes(ext)) : undefined;
   const hit = byExt ?? (m ? FORMAT_VARIANTS.find((v) => v.mime.some((x) => x.toLowerCase() === m)) : undefined);
-  return hit ? { family: hit.family, variant: hit.code } : null;
+  return hit ? { family: hit.family, variant: hit.code, estimated: true } : null;
 }
 
 export type FileNodeKind = "folder" | "file" | "link";
@@ -53,6 +68,8 @@ export interface FileNode {
 export interface CloudAttachment {
   id?: string; fileName?: string; mimeType?: string; sizeBytes?: number; createdAt?: string; image?: boolean; available?: boolean;
   evidence?: { id?: string; caption?: string } | null;
+  /** formato detectado pelo servidor (V71) */
+  formatFamily?: string | null; formatVariant?: string | null; formatDetailsJson?: string | null;
 }
 export interface CloudEvidence { id?: string; attachmentId?: string; caption?: string; takenAt?: string; createdAt?: string }
 export interface CloudLinks {
@@ -122,7 +139,7 @@ export function buildCloudTree(attachments: readonly CloudAttachment[], evidence
     if (!a.id) continue;
     const node: FileNode = {
       id: `nuvem/anexo/${a.id}`, kind: "file", name: a.fileName || a.id, size: a.sizeBytes, date: a.createdAt, mime: a.mimeType,
-      attachmentId: a.id, unavailable: a.available === false, format: formatOfFile(a.fileName, a.mimeType),
+      attachmentId: a.id, unavailable: a.available === false, format: formatOfFile(a.fileName, a.mimeType, a),
     };
     const ev = evidences.find((e) => e.attachmentId === a.id);
     if (ev || a.evidence || evidenceIds.has(a.id)) {

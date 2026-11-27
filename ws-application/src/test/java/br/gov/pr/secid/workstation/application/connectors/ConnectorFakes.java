@@ -275,7 +275,7 @@ final class ConnectorFakes {
         public TaskAttachment insert(TaskAttachment a) {
             TaskAttachment saved = new TaskAttachment(UUID.randomUUID(), a.taskId(), a.mediaObjectId(), a.fileName(), a.mimeType(), a.sizeBytes(),
                     a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(),
-                    a.formatVariant(), a.formatDetailsJson());
+                    a.formatVariant(), a.formatDetailsJson(), a.originalSha256(), a.uploadedBy(), a.uploadedVia(), a.captureMetadata());
             rows.add(saved);
             return saved;
         }

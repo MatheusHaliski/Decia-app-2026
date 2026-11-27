@@ -138,7 +138,8 @@
         "criteria": ["até 600 caracteres", "nomeia a política ou espaço de atuação", "cita três competências", "inclui uma prova com link", "nenhuma menção a usuário atendido"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -147,7 +148,8 @@
         "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRESS indicado", "sem idade, estado civil ou foto obrigatória", "nenhum dado de usuário atendido"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "POP de acolhida e encaminhamento",
@@ -165,7 +167,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão de encaminhamento", "ponto de registro técnico e de contrarreferência"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L3": {
         "title": "Estudo de caso fictício em formato STAR",
@@ -188,7 +191,7 @@
     },
     "custom": [
       { "id": "X1", "editor": "letters", "title": "Estrutura de parecer social com caso fictício", "competency": "Estudo social e parecer social", "criteria": ["identificação do solicitante e objetivo do parecer", "metodologia e instrumentos usados (entrevista, visita, documentos)", "análise fundamentada em teoria e legislação", "parecer conclusivo com encaminhamentos", "caso declaradamente fictício, sem dado identificável", "linguagem sem juízo moral sobre a família"], "evidence": "modelo de parecer", "time": "90 min", "trigger": "Quer treinar a estrutura de um parecer social sem usar caso real?", "level": 2 },
-      { "id": "X2", "editor": "drawings", "title": "Mapa da rede socioassistencial do território", "competency": "Articulação de rede intersetorial", "criteria": ["ao menos oito serviços ou equipamentos públicos mapeados", "agrupados por política (assistência, saúde, educação, justiça, trabalho)", "legenda e fonte dos dados", "indicação dos fluxos de referência entre serviços", "sem endereço de pessoa ou família"], "evidence": "infográfico ou diagrama publicado", "time": "90 min", "trigger": "Que serviços do seu território você aciona com mais frequência?", "level": 2 }
+      { "id": "X2", "editor": "drawings", "title": "Mapa da rede socioassistencial do território", "competency": "Articulação de rede intersetorial", "criteria": ["ao menos oito serviços ou equipamentos públicos mapeados", "agrupados por política (assistência, saúde, educação, justiça, trabalho)", "legenda e fonte dos dados", "indicação dos fluxos de referência entre serviços", "sem endereço de pessoa ou família"], "evidence": "infográfico ou diagrama publicado", "time": "90 min", "trigger": "Que serviços do seu território você aciona com mais frequência?", "level": 2, "taskType": "DIAGRAMA" }
     ]
   },
   "rubric": {
@@ -257,7 +260,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "relatorio-tecnico", "pop", "parecer", "relatorio-de-caso", "proposta", "roteiro", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D4, X2 e L4 pedem computador.",
     "nudges": {
       "cadence": "semanal",

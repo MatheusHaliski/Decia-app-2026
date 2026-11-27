@@ -532,7 +532,10 @@ public final class ForeignKeyPolicy {
             new Fk("connector_accounts", "owner_id", "users", "CASCADE"),
             new Fk("connector_oauth_states", "owner_id", "users", "CASCADE"),
             new Fk("task_external_links", "task_id", "tasks", "CASCADE"),
-            new Fk("task_external_links", "account_id", "connector_accounts", "SET NULL")
+            new Fk("task_external_links", "account_id", "connector_accounts", "SET NULL"),
+            // V73 — acervo_proveniencia_anexos
+            new Fk("task_attachments", "uploaded_by", "users", "SET NULL"),
+            new Fk("evidences", "uploaded_by", "users", "SET NULL")
     );
     // <<< gerado
 

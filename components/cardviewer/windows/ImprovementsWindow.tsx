@@ -6,6 +6,9 @@
  * "rodar verificação". MANUAL roda as verificações a pedido, mas sem sugestões da IA nem "aplicar". "Aplicar sugestão" (tarefa da API,
  * correções seguras do Acervo) monta a PROPOSTA (o que muda) e só grava depois que a pessoa revisa e confirma — com a versão atual,
  * para o servidor recusar se alguém mudou antes. D-12: textos montados dos fatos calculados; tudo da IA marcado com ✦.
+ * A sugestão é concreta (critério do formato, objetivo pré-redigido, a correção) ou não aparece — nunca repete o achado.
+ * Lente: o campo de estudo da tarefa; sem ele, a profissão preferida de QUEM VÊ (D-147: só para a própria pessoa, marcada "pela sua
+ * profissão"), sem gravar nada na tarefa.
  */
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Link, Tag, useToast } from "@/components/ui";
@@ -14,7 +17,11 @@ import { describeError } from "@/lib/api/client";
 import { evaluateAiAction, personalPolicy } from "@/lib/ai/autonomy";
 import type { OccupationPack } from "@/lib/career/occupationPack";
 import { packFor } from "@/lib/career/packs";
-import { applyFix, projectChecks, taskChecks, VERDICT_MARK, VERDICTS, type ImprovementCheck, type Verdict } from "@/lib/cardviewer/checks";
+import { applyFix, projectChecks, renderMsg, taskChecks, VERDICT_MARK, VERDICTS, type ImprovementCheck, type Verdict } from "@/lib/cardviewer/checks";
+import { isOccupationCode } from "@/lib/preferences/types";
+import { baseLocale } from "@/lib/i18n/state";
+import { fieldByCode } from "@/lib/tasks/areas";
+import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
 import { STUDY_FIELD_KEY } from "@/lib/tasks/areas";
@@ -25,8 +32,9 @@ import { useViewerData } from "../context";
 const TONE: Record<Verdict, "danger" | "warning" | "success"> = { FALHOU: "danger", ATENCAO: "warning", PASSOU: "success" };
 
 export function ImprovementsWindow() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { prefs } = usePreferences();
+  const { profile } = useViewer();
   const { task, project, today } = useViewerData();
   const policy = personalPolicy(prefs.aiAutonomyDefault);
   const auto = evaluateAiAction(policy, "SUGESTAO_ESPONTANEA", { requestedByUser: false }).ok;
@@ -35,10 +43,14 @@ export function ImprovementsWindow() {
   const [runId, setRunId] = useState(0);
   const [pack, setPack] = useState<OccupationPack | null>(null);
 
-  // rubrica do campo de estudo, quando a tarefa tem um (mesma escada de status do criador do Acervo)
-  const field = task?.subject.extensions[STUDY_FIELD_KEY];
+  // rubrica do campo de estudo, quando a tarefa tem um (mesma escada de status do criador do Acervo); sem ele, a profissão
+  // preferida de quem vê serve de lente (só para essa pessoa, nada é gravado na tarefa)
+  const own = task?.subject.extensions[STUDY_FIELD_KEY];
+  const viewerLens = !own && profile !== "VISITANTE" && isOccupationCode(prefs.preferredOccupation) ? prefs.preferredOccupation : null;
+  const field = own || viewerLens || null;
+  const lensLabel = viewerLens ? fieldByCode(viewerLens)?.label[baseLocale(locale) as "pt-BR" | "en" | "es"] ?? viewerLens : null;
   useEffect(() => {
-    if (!field) return;
+    if (!field) { setPack(null); return; }
     let alive = true;
     packFor(field, "pesquisa").then((p) => { if (alive) setPack(p?.pack ?? null); }).catch(() => undefined);
     return () => { alive = false; };
@@ -65,6 +77,11 @@ export function ImprovementsWindow() {
         <span className="flex-1" />
         <Button size="sm" variant="spark" onClick={() => { setRan(true); setRunId((n) => n + 1); }}>{t(ran ? "cardviewer.ci.rerun" : "cardviewer.ci.run")}</Button>
       </div>
+      {task && lensLabel ? (
+        <p className="rounded-[var(--ws-radius-sm)] border border-ws-accent bg-ws-accent-soft px-2 py-1 text-[length:var(--ws-text-caption)]" data-testid="ci-viewer-lens">
+          <span aria-hidden>🔒 </span>{t("criador2.ci.viewerLens", { field: lensLabel })}
+        </p>
+      ) : null}
       {!ran ? <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted" data-testid="ci-idle">{t(policy.mode === "MANUAL" ? "cardviewer.ci.manual" : "cardviewer.ci.onRequest")}</p> : null}
       {report ? (
         <>
@@ -90,8 +107,12 @@ function CheckItem({ c, suggestions, canPropose }: { c: ImprovementCheck; sugges
   const { task } = useViewerData();
   const [proposal, setProposal] = useState(false);
   const m = c.metric ? metricText(t, intl, c.metric) : null;
-  const detail = m ? m.detail : t(c.detail.key, c.detail.vars);
-  const suggestion = c.suggestion ? (m ? m.advice : t(c.suggestion.key, c.suggestion.vars)) : null;
+  const detail = m ? m.detail : renderMsg(t, c.detail);
+  const raw = c.suggestion ? (m ? m.advice : renderMsg(t, c.suggestion)) : null;
+  // nunca repetir o achado nem propor o critério que a tarefa já tem
+  const existing = new Set((task?.subject.criteria ?? []).map((x) => x.text.trim().toLowerCase()));
+  const repeatsCriterion = c.suggestion?.key === "criador2.sug.criterionFromFormat" && !!c.suggestion.tvars?.text && existing.has(renderMsg(t, c.suggestion.tvars.text).trim().toLowerCase());
+  const suggestion = raw && raw.trim() !== detail.trim() && !repeatsCriterion ? raw : null;
   const where = t(c.where.label.key, { ...c.where.label.vars, tab: c.where.label.vars?.tab ? t(`cardviewer.tab.${c.where.label.vars.tab}`) : "" });
   const applicable = !!c.fix && !!task?.view && task.subject.editable && canPropose && suggestions;
   return (

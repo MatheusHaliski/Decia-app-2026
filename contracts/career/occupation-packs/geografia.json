@@ -159,7 +159,8 @@
         "criteria": ["até 600 caracteres", "nomeia habilitação e frente-alvo", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -168,7 +169,8 @@
         "criteria": ["uma página", "três conquistas com número", "habilitação, registro e ferramentas declarados", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D7": {
         "title": "Infográfico ou mapa coroplético com dados do IBGE",
@@ -177,7 +179,8 @@
         "criteria": ["fonte e ano citados", "legenda com classes e unidade", "uma mensagem principal", "dados agregados, sem pessoa identificável", "créditos de bases e ícones"],
         "evidence": "imagem e PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L4": {
         "title": "Relatório técnico curto de análise geográfica ou de estágio",
@@ -195,7 +198,8 @@
         "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de controle de qualidade marcados"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -230,7 +234,8 @@
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "2 h",
         "trigger": "Que fenômeno do território você mostraria num mapa?",
-        "level": 2
+        "level": 2,
+        "taskType": "MAPA"
       }
     ]
   },
@@ -304,7 +309,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["prancha", "infografico", "diagrama", "2d-tecnico"],
     "lettersTemplates": ["plano-de-aula", "relatorio-tecnico", "artigo", "projeto-de-pesquisa", "proposta", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6), revisão (L10) e roteiro de campo (X2); mapas em prancha (X3), infográfico (D7) e relatório (L4) pedem computador.",
     "nudges": {
       "cadence": "semanal",

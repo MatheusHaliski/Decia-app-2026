@@ -23,12 +23,16 @@ import java.util.zip.ZipInputStream;
  *   <li>profundidade de ZIP dentro de ZIP ({@code maxDepth}; 1 = permite planilha embutida num DOCX, não permite ZIP dentro dela);</li>
  *   <li>nome de entrada com {@code ..}, absoluto, com {@code \} ou NUL (zip-slip) → recusado.</li>
  * </ul>
- * Também decide o subtipo Office pelo conteúdo ({@code [Content_Types].xml} + {@code word/}, {@code xl/}, {@code ppt/}).
+ * Também decide o subtipo pelo conteúdo: OOXML por {@code [Content_Types].xml} + {@code word/}, {@code xl/}, {@code ppt/}; OpenDocument pela
+ * entrada {@code mimetype} na raiz (texto exato {@code application/vnd.oasis.opendocument.text|spreadsheet|presentation}) junto com
+ * {@code content.xml} — modelos ({@code -template}) e outros subtipos ODF ficam como ZIP.
  */
 public final class ZipInspector {
     static final String CODE = "ARQUIVO_SUSPEITO";
     private static final long RATIO_FLOOR = 1L << 20;
     private static final byte[] ZIP_LOCAL = {'P', 'K', 0x03, 0x04};
+    private static final String ODF_MIMETYPE = "mimetype";
+    private static final int ODF_MIMETYPE_MAX = 100;
 
     /** Limites do guarda. */
     public record Limits(int maxEntries, long maxUncompressedBytes, int maxRatio, int maxDepth) {
@@ -52,7 +56,8 @@ public final class ZipInspector {
         if (c.entries == 0) {
             throw suspicious("ZIP vazio.", "zip_vazio");
         }
-        return new Report(officeType(rootNames), c.entries, c.total);
+        DetectedType odf = odfType(c.odfMimetype, rootNames);
+        return new Report(odf != null ? odf : officeType(rootNames), c.entries, c.total);
     }
 
     private static void walk(InputStream in, int depth, Counter c, Set<String> names) throws IOException {
@@ -70,11 +75,15 @@ public final class ZipInspector {
                     continue;
                 }
                 ByteArrayOutputStream nested = null;
+                ByteArrayOutputStream mimetype = depth == 0 && ODF_MIMETYPE.equals(name) ? new ByteArrayOutputStream() : null;
                 int head = 0;
                 byte[] first = new byte[4];
                 int n;
                 while ((n = zip.read(buf)) > 0) {
                     c.add(n);
+                    if (mimetype != null && mimetype.size() <= ODF_MIMETYPE_MAX) {
+                        mimetype.write(buf, 0, Math.min(n, ODF_MIMETYPE_MAX + 1 - mimetype.size()));
+                    }
                     if (head < 4) {
                         int copy = Math.min(4 - head, n);
                         System.arraycopy(buf, 0, first, head, copy);
@@ -93,6 +102,9 @@ public final class ZipInspector {
                 if (nested != null) {
                     walk(new ByteArrayInputStream(nested.toByteArray()), depth + 1, c, null);
                 }
+                if (mimetype != null && mimetype.size() <= ODF_MIMETYPE_MAX) {
+                    c.odfMimetype = mimetype.toString(java.nio.charset.StandardCharsets.US_ASCII);
+                }
             }
         }
     }
@@ -107,6 +119,19 @@ public final class ZipInspector {
                 throw suspicious("Entrada de ZIP com caminho inválido.", "zip_slip");
             }
         }
+    }
+
+    /** OpenDocument: {@code mimetype} na raiz com o subtipo exato e o {@code content.xml} do pacote. */
+    static DetectedType odfType(String mimetype, Set<String> names) {
+        if (mimetype == null || !names.contains("content.xml")) {
+            return null;
+        }
+        return switch (mimetype.strip()) {
+            case "application/vnd.oasis.opendocument.text" -> DetectedType.ODT;
+            case "application/vnd.oasis.opendocument.spreadsheet" -> DetectedType.ODS;
+            case "application/vnd.oasis.opendocument.presentation" -> DetectedType.ODP;
+            default -> null;
+        };
     }
 
     private static DetectedType officeType(Set<String> names) {
@@ -137,6 +162,7 @@ public final class ZipInspector {
         final long compressed;
         int entries;
         long total;
+        String odfMimetype;
 
         Counter(Limits limits, long compressed) {
             this.limits = limits;

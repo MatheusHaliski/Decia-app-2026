@@ -151,7 +151,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "limites de especificação ou controle marcados", "uma mensagem principal explícita", "dados públicos ou fictícios"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D4": {
         "title": "Fluxograma de processo ou de fluxo de amostra",
@@ -160,7 +161,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável identificadas", "nenhuma tarefa órfã", "pontos de controle ou registros marcados", "legenda de símbolos"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L3": {
         "title": "Estudo de caso de não conformidade resolvida",
@@ -246,7 +248,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "proposta", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo", "projeto-de-pesquisa"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); POP (L7), relatório (L4), FDS (X1) e Drawings (D4, D7) rendem mais no computador.",
     "nudges": {
       "cadence": "semanal",

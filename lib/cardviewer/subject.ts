@@ -12,6 +12,7 @@ import { effectiveDueOf, isOpenState } from "@/lib/tasks/acervo";
 import { criteriaProgress, type Criterion, type TaskView } from "@/lib/tasks/client";
 import { daysBetween, deadlineStatus, isIsoDate, type DeadlineKind } from "@/lib/tasks/legalDeadline";
 import { workStatusOf } from "@/lib/tasks/status";
+import { formatFromView, type FormatChoice } from "@/lib/tasks/formats";
 
 export type DataSource = "API" | "DEMO";
 
@@ -47,6 +48,8 @@ export interface TaskSubject {
   criteria: Criterion[];
   references: { label: string; url: string }[];
   extensions: Record<string, string>;
+  /** formato da entrega pedido (colunas próprias da API, V71, ou o espelho antigo em `extensions`) */
+  format: FormatChoice;
   blockReason: string | null;
   blockedByTaskId: string | null;
   originalTaskId: string | null;
@@ -69,7 +72,7 @@ export function subjectFromView(v: TaskView): TaskSubject {
     deliverables: (v.deliverables ?? []).map((d) => d.text ?? "").filter(Boolean),
     criteria: (v.acceptanceCriteria ?? []).map((c) => ({ text: c.text ?? "", done: !!c.done })),
     references: (v.references ?? []).map((r) => ({ label: r.label ?? "", url: r.url ?? "" })),
-    extensions: { ...(v.extensions ?? {}) },
+    extensions: { ...(v.extensions ?? {}) }, format: formatFromView(v),
     blockReason: v.blockReason?.trim() || null, blockedByTaskId: v.blockedByTaskId ?? null, originalTaskId: null, aiGenerated: v.sourceKind === "TEXTO_IA",
     seals: [], editable: v.editable !== false,
   };
@@ -83,7 +86,7 @@ export function subjectFromSocial(state: SocialState, t: SocialTask, viewerId: s
     dueAt: day(t.dueAt), legalDueAt: day(t.legalDueAt), legalRuleId: null, legalBaseDate: null, version: null, createdAt: t.createdAt, updatedAt: null,
     sourceKind: t.originalTaskId ? "REMIX" : t.aiGenerated ? "TEXTO_IA" : null, sourceRef: t.originalTaskId, linkMode: null,
     accessClass: t.accessClass, visibility: t.visibility, category: t.category, area: null,
-    objective: t.summary ?? "", descriptionMd: "", deliverables: [], criteria: [], references: [], extensions: t.format ? { format: t.format } : {},
+    objective: t.summary ?? "", descriptionMd: "", deliverables: [], criteria: [], references: [], extensions: t.format ? { format: t.format } : {}, format: formatFromView({}),
     blockReason: t.blockReason, blockedByTaskId: null, originalTaskId: t.originalTaskId, aiGenerated: t.aiGenerated,
     seals: t.seals.map((s) => ({ issuer: s.issuer, label: s.label })), editable: t.ownerId === viewerId,
   };
@@ -113,7 +116,8 @@ export function taskFacts(s: TaskSubject, today: string): Fact[] {
   const open = isOpenState(s.state as never);
   out.push({ id: "state", from: "cardviewer.from.state", type: "label", key: ws ? `social.workStatus.${ws}` : `social.taskState.${s.state}` });
   out.push(s.priority ? { id: "priority", from: "cardviewer.from.priority", type: "label", key: `tasks.priority.${s.priority}` } : null);
-  out.push({ id: "responsible", from: "cardviewer.from.responsible", type: "text", text: s.responsibleName ?? (s.responsibleId ? `#${s.responsibleId.slice(0, 8)}` : "—") });
+  const r = responsibleOf(s);
+  out.push({ id: "responsible", from: r.kind === "AUTOR" ? "criador2.viewer.responsibleFromOwner" : "cardviewer.from.responsible", type: "label", key: r.key, vars: r.vars });
   out.push(deadlineFact("due", "cardviewer.from.due", s.dueAt, today, open));
   out.push(deadlineFact("legalDue", s.legalRuleId ? "cardviewer.from.legalDueRule" : "cardviewer.from.legalDue", s.legalDueAt, today, open, true));
   const eff = effectiveDueOf(s.dueAt, s.legalDueAt);
@@ -126,6 +130,17 @@ export function taskFacts(s: TaskSubject, today: string): Fact[] {
   out.push({ id: "criteria", from: "cardviewer.from.criteria", type: "progress", done: p.done, total: p.total, percent: p.percent });
   out.push(s.updatedAt ? { id: "updatedAt", from: "cardviewer.from.updatedAt", type: "date", date: s.updatedAt } : null);
   return out.filter((f): f is Fact => !!f);
+}
+
+/**
+ * Responsável como as duas telas mostram (visualizador e página da tarefa, mesma regra do card): o designado; sem designado, quem
+ * criou responde pela tarefa (marcado "autor"); a API só traz ids, então aparece o id curto (`#1a2b3c4d`), igual nas duas.
+ */
+export function responsibleOf(s: Pick<TaskSubject, "responsibleId" | "responsibleName" | "ownerId" | "ownerName">): { kind: "DESIGNADO" | "AUTOR" | "NENHUM"; key: string; vars: Record<string, string> } {
+  const label = (id: string | null, name: string | null) => name ?? (id ? `#${id.slice(0, 8)}` : "");
+  if (s.responsibleId) return { kind: "DESIGNADO", key: "criador2.viewer.responsible", vars: { name: label(s.responsibleId, s.responsibleName) } };
+  if (s.ownerId || s.ownerName) return { kind: "AUTOR", key: "criador2.viewer.responsibleOwner", vars: { name: label(s.ownerId, s.ownerName) } };
+  return { kind: "NENHUM", key: "criador2.viewer.responsibleNone", vars: {} };
 }
 
 /** Agrupa os ~80 `sourceKind` da API em origens legíveis. */

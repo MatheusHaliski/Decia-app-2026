@@ -26,6 +26,8 @@ export interface PlanItem {
   /** código interno da tarefa-guia — só para ligar ao modelo e ao progresso; nunca exibido */
   code: string;
   editor: "letters" | "drawings";
+  /** trilha Carreira (currículo, perfil, 30-60-90) ou trabalho */
+  track: "trabalho" | "carreira";
   /** exige computador (3D e vista explodida — d4 do guia) */
   computerOnly: boolean;
   status: PlanStatus;
@@ -44,13 +46,14 @@ export interface DevelopmentPlan {
   withoutModel: number;
 }
 
-const DRAWINGS_TYPES = new Set(["DESENHO_TECNICO", "IMAGEM_EDITADA", "IMAGEM_WEB", "DIAGRAMA"]);
 
 export function developmentPlan(pack: OccupationPack, fieldCode: string, area: WorkArea, tasks: readonly PlanTaskInput[] = []): DevelopmentPlan {
   const ownFields = new Set(pack.fields.length ? pack.fields : [fieldCode]);
   // só conta o que nasceu de uma tarefa-guia DESTA profissão: trocar de profissão não leva o progresso junto (RF81.CA08)
   const mine = tasks.filter((t) => t.extensions?.guidedTask && ownFields.has(t.extensions.studyField ?? "") && t.state !== "ARQUIVADA");
-  const items = packTemplates(pack, area).map((template): PlanItem => {
+  // o plano é de desenvolvimento: trilha de trabalho E trilha Carreira (currículo, perfil, 30-60-90), na ordem do pacote
+  const customEditor = new Map(pack.guidedTasks.custom.map((c) => [c.id, c.editor]));
+  const items = packTemplates(pack, area, "TODAS").map((template): PlanItem => {
     const code = template.tags?.[0] ?? template.id.split(".").pop() ?? "";
     const related = mine.filter((t) => t.extensions?.guidedTask === code);
     const finished = related.find((t) => t.state === "CONCLUIDA");
@@ -58,7 +61,9 @@ export function developmentPlan(pack: OccupationPack, fieldCode: string, area: W
     return {
       template,
       code,
-      editor: DRAWINGS_TYPES.has(template.type) ? "drawings" : "letters",
+      // editor pela tarefa-guia (D = Drawings) ou pela tarefa própria do campo, não pelo tipo (infográfico é IMAGEM_EDITADA, fluxo é DIAGRAMA)
+      editor: code.startsWith("D") ? "drawings" : customEditor.get(code) ?? "letters",
+      track: template.track ?? "trabalho",
       computerOnly: (COMPUTER_ONLY_TASKS as readonly string[]).includes(code),
       status,
       taskId: (finished ?? related[0])?.id,

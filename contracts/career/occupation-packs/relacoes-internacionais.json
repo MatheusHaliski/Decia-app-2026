@@ -167,7 +167,8 @@
         "criteria": ["fonte primária e período citados", "eixos rotulados ou legenda", "uma mensagem principal explícita", "unidade indicada"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L6": {
         "title": "Resumo de perfil em relações internacionais",
@@ -176,7 +177,8 @@
         "criteria": ["até 600 caracteres", "nomeia frente e temas", "cita três competências e idiomas", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -200,7 +202,8 @@
         "evidence": "diagrama em PDF/PNG",
         "time": "90 min",
         "trigger": "Quer explorar futuros possíveis de uma crise ou negociação?",
-        "level": 3
+        "level": 3,
+        "taskType": "DIAGRAMA"
       }
     ]
   },
@@ -271,7 +274,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["infografico", "diagrama"],
     "lettersTemplates": ["relatorio-tecnico", "proposta", "estudo-de-caso", "artigo", "bio", "curriculo", "carta", "post", "plano-30-60-90", "revisao", "projeto-de-pesquisa"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); notas (L4), matriz de cenários (X2) e infográficos (D7) pedem computador.",
     "nudges": {
       "cadence": "semanal",

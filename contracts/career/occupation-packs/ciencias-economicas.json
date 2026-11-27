@@ -142,7 +142,8 @@
         "criteria": ["fonte com código da série citada", "período e unidade explícitos", "eixos rotulados", "uma mensagem principal", "valores nominais ou reais indicados"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L4": {
         "title": "Nota técnica sobre dados públicos",
@@ -248,7 +249,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama"],
     "lettersTemplates": ["relatorio-tecnico", "estudo-de-caso", "artigo", "post", "proposta", "parecer", "projeto-de-pesquisa", "plano-30-60-90", "curriculo", "carta", "bio", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); infográficos (D7), notas técnicas (L4) e estudos com planilha (X1) pedem computador.",
     "nudges": {
       "cadence": "semanal",

@@ -48,8 +48,13 @@ The backup destination is the newly created `ws-backup001` repository.
 
 The workflow has only `contents: read` permission on the source. Writes to the
 backup repository use this dedicated deploy key. SSH host keys are obtained
-from GitHub's metadata endpoint over HTTPS and strict host-key checking remains
-enabled.
+from GitHub's metadata endpoint over HTTPS, authenticated with the job's own
+`GITHUB_TOKEN` (unauthenticated calls from shared runner IPs hit the rate limit
+and returned 403). If the endpoint is still unavailable, the workflow falls back
+to the github.com host keys pinned in the workflow (published under "GitHub's
+SSH key fingerprints"). Strict host-key checking remains enabled in both cases.
+If GitHub rotates a host key, update the pinned block in
+`.github/workflows/repository-backup.yml`.
 
 ## Automatic and manual execution
 
@@ -63,10 +68,21 @@ The workflow is **Work Station Repository Backup**:
 Only one backup run is allowed at a time; an in-progress run is not cancelled
 when another is requested. Each run fetches all source branches and tags,
 pushes refs individually, and checks remote ref object IDs afterward. It does
-not prune refs or use mirror/force pushes. A deleted source ref therefore
-remains in the backup. A non-fast-forward branch update or conflicting tag
-causes the run to fail for investigation instead of silently rewriting the
-backup.
+not prune refs or use mirror pushes. A deleted source ref therefore remains in
+the backup.
+
+Ref policy (since 27/11/2026):
+
+| Ref | Behaviour |
+| --- | --- |
+| `main` | Fast-forward only, **never forced**. A divergence fails the run for investigation. |
+| `dependabot/*`, `renovate/*` | Not backed up and not verified. Bots force-push these branches on every rebase and recreate them from `main`; before this rule they made every run fail. |
+| Any other branch | Fast-forward push. If the source branch was rewritten (force push), the previous backup tip is first stored as `refs/superseded/<branch>/<old-oid>` and then the branch is updated with `--force-with-lease` pinned to that old oid. No history is lost. |
+| Tags | Pushed without force; a conflicting tag fails the run. |
+
+The run summary reports how many bot branches were skipped and how many
+rewritten branches were preserved under `refs/superseded/`. To inspect them:
+`git ls-remote git@github.com:MatheusHaliski/ws-backup001.git 'refs/superseded/*'`.
 
 ## First-run checklist and verification
 

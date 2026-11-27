@@ -17,7 +17,10 @@ import java.util.zip.ZipInputStream;
  * magic bytes — D-67): nunca pelo nome nem pelo {@code Content-Type} do cliente. Os detalhes são só o que dá para extrair com segurança e
  * barato, sem executar nada: largura × altura da imagem (cabeçalho), páginas, camada de texto e cifra do PDF (varredura dos dicionários,
  * sem interpretar conteúdo), abas da planilha e slides da apresentação (nomes das entradas do ZIP — o pipeline já passou o guarda de
- * zip-bomb), entradas do ZIP e versão do DWG (cabeçalho). O que não der para extrair fica de fora (nulo).
+ * zip-bomb), entradas do ZIP e versão do DWG (cabeçalho); nos OpenDocument, páginas do ODT ({@code meta:page-count} do {@code meta.xml}), abas
+ * do ODS e slides do ODP (elementos {@code table:table}/{@code draw:page} do {@code content.xml}, contados como texto, sem parser);
+ * nos textos, codificação, quebra de linha, linhas e — CSV/TSV — delimitador, colunas e cabeçalho ({@link TextInspector#details}). O que
+ * não der para extrair fica de fora (nulo).
  */
 public final class DetectedFormat {
     /** Teto de bytes varridos no PDF (o upload já é limitado a 15 MB). */
@@ -28,6 +31,11 @@ public final class DetectedFormat {
     private static final Pattern SHEET = Pattern.compile("xl/worksheets/sheet\\d+\\.xml");
     private static final Pattern SLIDE = Pattern.compile("ppt/slides/slide\\d+\\.xml");
     private static final Pattern DWG_VERSION = Pattern.compile("AC10\\d\\d");
+    /** Teto lido de {@code content.xml}/{@code meta.xml} de um OpenDocument para contar abas, slides e páginas. */
+    static final int ODF_XML_SCAN = 8 * 1024 * 1024;
+    private static final Pattern ODF_PAGE_COUNT = Pattern.compile("meta:page-count=\"(\\d{1,6})\"");
+    private static final Pattern ODF_TABLE = Pattern.compile("<table:table[\\s>]");
+    private static final Pattern ODF_DRAW_PAGE = Pattern.compile("<draw:page[\\s>]");
 
     /** Família e variante (códigos de {@code DeliveryFormats}); variante nula quando o catálogo não tem código para o tipo (GIF). */
     public record Result(FormatFamily family, String variant, Map<String, String> details) {
@@ -77,6 +85,24 @@ public final class DetectedFormat {
             case DXF -> new Result(FormatFamily.DESENHO_TECNICO, "DXF", d);
             case IFC -> new Result(FormatFamily.DESENHO_TECNICO, "IFC", d);
             case GLB -> new Result(FormatFamily.DESENHO_TECNICO, "GLB", d);
+            case ODT -> {
+                odfCount(b, "meta.xml", ODF_PAGE_COUNT, true, "pages", d);
+                yield new Result(FormatFamily.DOCUMENTO, "ODT", d);
+            }
+            case ODS -> {
+                odfCount(b, "content.xml", ODF_TABLE, false, "sheets", d);
+                yield new Result(FormatFamily.PLANILHA, "ODS", d);
+            }
+            case ODP -> {
+                odfCount(b, "content.xml", ODF_DRAW_PAGE, false, "slides", d);
+                yield new Result(FormatFamily.APRESENTACAO, "ODP", d);
+            }
+            case CSV -> text(FormatFamily.PLANILHA, "CSV", type, b);
+            case TSV -> text(FormatFamily.PLANILHA, "TSV", type, b);
+            case TXT -> text(FormatFamily.DOCUMENTO, "TXT", type, b);
+            case MD -> text(FormatFamily.DOCUMENTO, "MD", type, b);
+            case JSON -> text(FormatFamily.DADOS, "JSON", type, b);
+            case XML -> text(FormatFamily.DADOS, "XML", type, b);
         };
     }
 
@@ -133,6 +159,51 @@ public final class DetectedFormat {
         } else if (!encrypted && !s.contains("/ObjStm")) {
             d.put("textLayer", "false");
         }
+    }
+
+    private static Result text(FormatFamily family, String variant, DetectedType type, byte[] b) {
+        return new Result(family, variant, b.length == 0 ? Map.of() : TextInspector.details(type, b));
+    }
+
+    /**
+     * OpenDocument: lê UMA entrada XML do pacote (até {@link #ODF_XML_SCAN}) e conta as ocorrências do padrão — ou, com {@code captured},
+     * usa o número capturado (ex.: {@code meta:page-count}). Sem a entrada, ou zero, o campo fica de fora.
+     */
+    static void odfCount(byte[] b, String entry, Pattern pattern, boolean captured, String key, Map<String, String> d) {
+        String xml = zipEntryText(b, entry, ODF_XML_SCAN);
+        if (xml == null) {
+            return;
+        }
+        Matcher m = pattern.matcher(xml);
+        int n = 0;
+        if (captured) {
+            if (m.find()) {
+                n = Integer.parseInt(m.group(1));
+            }
+        } else {
+            while (m.find()) {
+                n++;
+            }
+        }
+        if (n > 0) {
+            d.put(key, Integer.toString(n));
+        }
+    }
+
+    /** Texto UTF-8 de uma entrada do ZIP (no máximo {@code max} bytes); ausente ou ilegível → nulo. */
+    static String zipEntryText(byte[] b, String name, int max) {
+        int seen = 0;
+        try (ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(b))) {
+            ZipEntry e;
+            while ((e = zin.getNextEntry()) != null && seen++ < MAX_ZIP_ENTRIES) {
+                if (name.equals(e.getName())) {
+                    return new String(zin.readNBytes(max), StandardCharsets.UTF_8);
+                }
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            return null;
+        }
+        return null;
     }
 
     /** Conta entradas do ZIP (todas, ou as que casam com {@code pattern}) só pelos nomes; conteúdo nunca é interpretado. */

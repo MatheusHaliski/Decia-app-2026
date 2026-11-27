@@ -219,7 +219,7 @@
     "editors": { "letters": "media", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "curriculo", "carta", "bio", "plano-30-60-90", "post", "revisao", "roteiro"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L6, X2, L5) e revisão (L10), úteis entre voos; X1 e L4 pedem computador. Nudges respeitam os horários de d2, sem pedir a escala.",
     "nudges": {
       "cadence": "semanal",

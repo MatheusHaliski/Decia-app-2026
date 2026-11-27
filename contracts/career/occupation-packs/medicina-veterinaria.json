@@ -159,7 +159,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D4": {
         "title": "Fluxo de um processo clínico ou de inspeção",
@@ -168,7 +169,8 @@
         "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão nomeados", "registros ou documentos gerados indicados"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D7": {
         "title": "Infográfico de indicadores sanitários ou zootécnicos",
@@ -177,7 +179,8 @@
         "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -250,7 +253,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["estudo-de-caso", "relatorio-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "artigo"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só bio (L6), post (L5) e revisão (L10); relato de caso, POP, relatório e fluxo pedem computador. Plantões e campo: plano semanal com tarefas de 15–30 min.",
     "nudges": {
       "cadence": "semanal",

@@ -145,13 +145,20 @@ class ForeignKeyPolicyTest {
                     }
                 }).as("audit_log RESTRICT").isInstanceOf(SQLException.class).hasMessageContaining("fk_audit_log__actor_id");
 
-                try (Statement st = c.createStatement()) {
-                    st.execute("DELETE FROM audit_log");
-                    st.execute("DELETE FROM users WHERE username = 'dono'");
-                    try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM user_preferences")) {
-                        rs.next();
-                        assertThat(rs.getLong(1)).as("user_preferences CASCADE").isZero();
+                // V72: a trilha também não sai por DELETE direto (gatilho append-only) — o usuário com trilha fica para sempre
+                assertThatThrownBy(() -> {
+                    try (Statement st = c.createStatement()) {
+                        st.execute("DELETE FROM audit_log");
                     }
+                }).as("audit_log append-only (V72)").isInstanceOf(SQLException.class).hasMessageContaining("append-only");
+
+                // conta SEM trilha: apagar leva junto o dado do dono (CASCADE)
+                insertUser(c, "semtrilha", "TEST_SEED");
+                try (Statement st = c.createStatement()) {
+                    st.execute("INSERT INTO user_preferences (user_id) SELECT id FROM users WHERE username = 'semtrilha'");
+                    long before = countPreferences(st);
+                    st.execute("DELETE FROM users WHERE username = 'semtrilha'");
+                    assertThat(countPreferences(st)).as("user_preferences CASCADE").isEqualTo(before - 1);
                 }
             } finally {
                 c.rollback();
@@ -189,6 +196,13 @@ class ForeignKeyPolicyTest {
                 }
                 assertThat(on).as("só ai.local.only nasce ligada").containsExactly("ai.local.only");
             }
+        }
+    }
+
+    private static long countPreferences(Statement st) throws SQLException {
+        try (ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM user_preferences")) {
+            rs.next();
+            return rs.getLong(1);
         }
     }
 

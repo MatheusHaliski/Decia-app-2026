@@ -26,5 +26,18 @@ public record TaskAttachment(
         @Attr("ordem") int sortOrder,
         @Attr(value = "família do formato, pelo tipo REAL detectado (V71)", opt = true) FormatFamily formatFamily,
         @Attr(value = "variante do formato, pelo tipo REAL detectado", opt = true, len = 10) String formatVariant,
-        @Attr(value = "detalhes extraídos pelo servidor (páginas, dimensões, abas…)", opt = true) String formatDetailsJson) {
+        @Attr(value = "detalhes extraídos pelo servidor (páginas, dimensões, abas…)", opt = true) String formatDetailsJson,
+        @Attr(value = "SHA-256 do arquivo COMO RECEBIDO, antes de remover metadados (V73)", opt = true, sql = "CHAR(64)") String originalSha256,
+        @Attr(value = "quem enviou (V73)", opt = true, ref = "users", onDelete = OnDelete.SET_NULL) UUID uploadedBy,
+        @Attr(value = "canal de entrada: DIRETO ou provedor conectado (V73)", opt = true) UploadChannel uploadedVia,
+        @Attr(value = "metadados de captura do EXIF (data, GPS, câmera), JSON cifrado (V73)", opt = true, sql = "TEXT", encrypted = true)
+        String captureMetadata) {
+
+    /** Anexo sem proveniência (linhas anteriores à V73 e testes): hashes/autor/canal/captura nulos. */
+    public TaskAttachment(UUID id, UUID taskId, UUID mediaObjectId, String fileName, String mimeType, long sizeBytes, String sha256,
+                          AntivirusStatus antivirusStatus, OcrStatus ocrStatus, String ocrTextRef, boolean isPrimary, int sortOrder,
+                          FormatFamily formatFamily, String formatVariant, String formatDetailsJson) {
+        this(id, taskId, mediaObjectId, fileName, mimeType, sizeBytes, sha256, antivirusStatus, ocrStatus, ocrTextRef, isPrimary, sortOrder,
+                formatFamily, formatVariant, formatDetailsJson, null, null, null, null);
+    }
 }

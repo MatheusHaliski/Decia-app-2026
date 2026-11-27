@@ -134,7 +134,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de decisão", "pelo menos um ponto de medição anotado", "sem nome de empresa ou dado sigiloso"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "D5": {
         "title": "Antes e depois de um processo ou layout",
@@ -143,7 +144,8 @@
         "criteria": ["duas versões lado a lado", "três mudanças anotadas", "cada mudança com justificativa mensurável", "legenda e escala ou indicação 'esquemático'", "dados anonimizados ou fictícios declarados"],
         "evidence": "prancha comparativa PDF/PNG",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D7": {
         "title": "Infográfico de indicadores (OEE, lead time, qualidade)",
@@ -152,7 +154,8 @@
         "criteria": ["indicador nomeado com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem identificar empresa quando sigiloso"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L7": {
         "title": "POP ou instrução de trabalho com critério de aceite",
@@ -179,7 +182,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -192,7 +196,8 @@
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "90 min",
         "trigger": "Quer mostrar um fluxo inteiro com seus desperdícios?",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       {
         "id": "X2",
@@ -275,7 +280,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "prancha", "2d-tecnico"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "proposta", "carta", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D4, D5, D7 e X1 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP e A3.",
     "nudges": {
       "cadence": "semanal",

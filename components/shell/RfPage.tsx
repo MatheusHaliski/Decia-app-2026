@@ -1,9 +1,11 @@
 "use client";
 import type { ReactNode } from "react";
-import { Badge, Card, EmptyState, ErrorState, Link, Tabs, cn, type TabItem } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, ErrorState, Link, Tabs, cn, type TabItem } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
-import { visibleTabs, type SubTab } from "@/lib/nav/matrix";
+import { useLabView } from "@/lib/nav/labView";
+import { resolveHref, visibleTabs, type SubTab } from "@/lib/nav/matrix";
 import type { PageEntry } from "@/lib/pages/registry";
+import { isComingSoon, soonGuideOf } from "@/lib/pages/status";
 import { RF_CATALOG, type RfEntry } from "@/lib/rf/catalog.gen";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { PageHeader } from "./PageHeader";
@@ -13,6 +15,9 @@ import { ViewerProfileSelect } from "./UserPanel";
  * Página-esqueleto de um RF (etapa (b), ARQUITETURA §6): PageHeader com título da aba e chips do RF, bloco "O que esta
  * aba vai fazer" com a história e os CAs copiados do README (lib/rf/catalog.gen.ts), sub-abas da matriz e EmptyState com
  * WS Moji. Quando a matriz marca O (oculta) para o perfil de visualização, mostra o 403 ACESSO_NEGADO simulado.
+ *
+ * Modo produto (fora do laboratório, lib/nav/labView.ts): sem chips de RF, CAs, célula de acesso, nota de matriz nem código 403;
+ * rota `skeleton`/`preview` (lib/pages/status.ts) mostra só o vazio orientado "Em breve: …; enquanto isso, …" com um link útil.
  */
 export interface RfPageProps {
   page: PageEntry;
@@ -73,9 +78,27 @@ export function RfBlock({ rf, open = false }: { rf: RfEntry; open?: boolean }) {
   );
 }
 
+/** Vazio orientado de uma rota "Em breve" (modo produto): o que vem, o que fazer enquanto isso e um link útil. */
+export function ComingSoonState({ page }: { page: PageEntry }) {
+  const { t } = useI18n();
+  const { user } = useViewer();
+  const guide = soonGuideOf(page.route);
+  return (
+    <div data-testid="coming-soon">
+      <EmptyState
+        moji={page.moji ?? "vazio"}
+        title={t("guide.soon.title", { what: t(`guide.soon.${guide.id}.what`) })}
+        description={t(`guide.soon.${guide.id}.meanwhile`)}
+        action={<Button variant="primary" size="sm" href={resolveHref(guide, user)}>{t(`guide.soon.${guide.id}.cta`)}</Button>}
+      />
+    </div>
+  );
+}
+
 export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hideCas, actions, emptyTitleKey, noEmpty }: RfPageProps) {
   const { t } = useI18n();
-  const { profile } = useViewer();
+  const { profile, canSwitch } = useViewer();
+  const lab = useLabView();
   const cell = page.access[profile];
   const title = subtitle ? <>{t(page.titleKey)} <span className="text-ws-text-muted">· {subtitle}</span></> : t(page.titleKey);
   const rfs = page.rfs.map(rfById).filter((r): r is RfEntry => !!r);
@@ -91,17 +114,28 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
         <ErrorState
           title={t("forbidden.title")}
           description={t("forbidden.description", { profile: t(`profile.${profile}`) })}
-          code="403 ACESSO_NEGADO"
-          action={<div className="flex items-center gap-2 text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("viewer.switchHint")} <ViewerProfileSelect /></div>}
+          code={lab ? "403 ACESSO_NEGADO" : undefined}
+          action={lab && canSwitch
+            ? <div className="flex items-center gap-2 text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("viewer.switchHint")} <ViewerProfileSelect /></div>
+            : <Button size="sm" href="/today">{t("guide.forbidden.back")}</Button>}
         />
-        {!hideCas && rfs.length ? <section aria-labelledby="rf-block" className="grid grid-cols-[minmax(0,1fr)] gap-2"><h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>{rfs.map((rf) => <RfBlock key={rf.id} rf={rf} />)}</section> : null}
+        {lab && !hideCas && rfs.length ? <section aria-labelledby="rf-block" className="grid grid-cols-[minmax(0,1fr)] gap-2"><h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>{rfs.map((rf) => <RfBlock key={rf.id} rf={rf} />)}</section> : null}
       </div>
     );
   }
 
-  const accessBadge = (
+  const accessBadge = lab ? (
     <Badge tone={cell === "E" ? "success" : "info"} title={t("access.hint")}>{t(`access.${cell}`, { profile: t(`profile.${profile}`) })}</Badge>
-  );
+  ) : null;
+
+  if (!lab && isComingSoon(page.status)) {
+    return (
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-5)]">
+        <PageHeader title={title} glyph={page.glyph} actions={actions} />
+        <ComingSoonState page={page} />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-5)]">
@@ -110,8 +144,8 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
         glyph={page.glyph}
         rfs={page.rfs}
         proposal={page.note === "proposal"}
-        description={page.note === "sessionCards" ? t("rf.sessionCardsNote") : rfs[0]?.title}
-        actions={<>{accessBadge}{actions}</>}
+        description={lab ? (page.note === "sessionCards" ? t("rf.sessionCardsNote") : rfs[0]?.title) : undefined}
+        actions={accessBadge || actions ? <>{accessBadge}{actions}</> : undefined}
       />
       {children}
       {tabItems ? (
@@ -127,16 +161,18 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
       ) : noEmpty ? null : (
         <EmptyState moji={page.moji ?? "vazio"} title={t(emptyTitleKey ?? "rf.emptyTitleNoTab")} description={t("rf.emptyDescription")} />
       )}
-      {!hideCas && rfs.length ? (
+      {lab && !hideCas && rfs.length ? (
         <section aria-labelledby="rf-block" className="grid grid-cols-[minmax(0,1fr)] gap-2">
           <h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>
           <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("rf.ptBrNote")}</p>
           <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-2")}>{rfs.map((rf, i) => <RfBlock key={rf.id} rf={rf} open={i === 0} />)}</div>
         </section>
       ) : null}
-      <Card tone="soft" padding="sm" className="text-[length:var(--ws-text-caption)] text-ws-text-muted">
-        {t("rf.matrixNote", { matrix: page.matrix, route: page.route, file: page.file })}
-      </Card>
+      {lab ? (
+        <Card tone="soft" padding="sm" className="text-[length:var(--ws-text-caption)] text-ws-text-muted">
+          {t("rf.matrixNote", { matrix: page.matrix, route: page.route, file: page.file })}
+        </Card>
+      ) : null}
     </div>
   );
 }

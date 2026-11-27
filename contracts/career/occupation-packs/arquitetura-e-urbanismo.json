@@ -507,7 +507,8 @@
         ],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "D6": {
         "title": "Detalhe construtivo ou de marcenaria em 1:10",
@@ -536,7 +537,8 @@
         ],
         "evidence": "prancha de detalhe PDF ou SVG",
         "time": "90 min",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "D2": {
         "title": "Prancha de portfólio A3 com três projetos",
@@ -561,7 +563,8 @@
         ],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "D3": {
         "title": "Modelo 3D de um ambiente com três vistas renderizadas",
@@ -586,7 +589,8 @@
         ],
         "evidence": "modelo GLB + renders PNG",
         "time": "3 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "L8": {
         "title": "Resposta a um briefing residencial ou comercial",
@@ -1013,7 +1017,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D1, D3, D6 e D2 exigem computador; no celular ficam L6, L5, L10 e a revisão de critérios.",
     "nudges": {
       "cadence": "semanal",

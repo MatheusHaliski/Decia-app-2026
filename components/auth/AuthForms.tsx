@@ -6,6 +6,8 @@ import { ApiError, auth, describeError } from "@/lib/api/client";
 import { safeNext } from "@/lib/auth/next";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { RfBlock, rfById } from "@/components/shell/RfPage";
+import { OccupationCombobox } from "@/components/career/OccupationCombobox";
+import { useOptionalPreferences } from "@/lib/preferences/PreferencesProvider";
 
 /**
  * Formulários de autenticação (RF1 cadastro · RF2 login · recuperação de senha) chamando o BFF (`/bff/auth/*`, cookie
@@ -120,11 +122,16 @@ export function RegisterForm() {
   const [profileType, setProfileType] = useState<(typeof PROFILE_TYPES)[number]>("EMPREGADO");
   const [localError, setLocalError] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  // D-148: profissão opcional já no cadastro ("ainda não sei" = null). Fica nas preferências (só do dono, nesta aba) e sobe para a conta
+  // em `/api/me/preferences` no primeiro login (PreferencesProvider.mergeOnSignIn); nunca vai no corpo do cadastro nem no perfil.
+  const [occupation, setOccupation] = useState<string | null>(null);
+  const prefs = useOptionalPreferences();
   const { status, run, reset } = useSubmit(async (f: FormData) => {
     const password = String(f.get("password") ?? "");
     if (password !== String(f.get("confirm") ?? "")) { setLocalError(t("auth.register.passwordMismatch")); throw new ApiError(422, "VALIDACAO", t("error.validation"), { confirm: t("auth.register.passwordMismatch") }); }
     setLocalError(null);
     const receipt = await auth.register({ profileType, fullName: String(f.get("fullName") ?? ""), username: String(f.get("username") ?? ""), email: String(f.get("email") ?? ""), password, confirmPassword: password, acceptTerms });
+    if (occupation) prefs?.update({ preferredOccupation: occupation });
     router.push(`/verify-email?email=${encodeURIComponent(String(f.get("email") ?? ""))}&masked=${encodeURIComponent(receipt.maskedEmail ?? "")}`);
   });
   const fields = status.kind === "error" && status.error instanceof ApiError ? status.error.fields : {};
@@ -150,6 +157,9 @@ export function RegisterForm() {
             <Field label={t("auth.confirm")} error={fields.confirm ?? localError ?? undefined} required>
               {({ id, describedBy, invalid }) => <Input id={id} name="confirm" type="password" autoComplete="new-password" required aria-describedby={describedBy} invalid={invalid} />}
             </Field>
+          </div>
+          <div data-testid="register-occupation">
+            <OccupationCombobox value={occupation} onChange={setOccupation} label={t("profissao2.register.label")} hint={t("profissao2.register.hint")} />
           </div>
           <div className="grid gap-1" data-testid="register-terms">
             <Checkbox checked={acceptTerms} onCheckedChange={setAcceptTerms} label={t("auth.register.terms")} hint={t("auth.register.termsHint")} />

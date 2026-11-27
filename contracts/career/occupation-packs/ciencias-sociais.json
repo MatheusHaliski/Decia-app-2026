@@ -563,7 +563,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -588,7 +589,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L4": {
         "title": "Relatório de pesquisa ou nota técnica curta",
@@ -637,7 +639,8 @@
         ],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L3": {
         "title": "Estudo de caso STAR de um projeto de pesquisa ou avaliação",
@@ -1120,7 +1123,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de plano de aula; L4, X1, D7 e D4 pedem computador (planilha, R ou editor de dados).",
     "nudges": {
       "cadence": "semanal",

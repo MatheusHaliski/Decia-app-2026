@@ -138,7 +138,8 @@
         "criteria": ["escala declarada", "norte indicado", "legenda com todas as camadas", "áreas em ha por classe", "carimbo com título, autor e data", "sem coordenadas ou nomes reais"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "MAPA"
       },
       "D6": {
         "title": "Detalhe de espaçamento e plantio",
@@ -147,7 +148,8 @@
         "criteria": ["escala de detalhe declarada", "espaçamento cotado", "dimensões de cova ou sulco", "legenda dos elementos", "materiais especificados sem marca"],
         "evidence": "prancha de detalhe",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -220,7 +222,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["2d-tecnico", "infografico", "diagrama", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "laudo", "memorial", "parecer", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6, L3) e revisão (L10); D1, D6 e D7 pedem computador. Em campanha de campo o plano reduz para uma tarefa curta por semana.",
     "nudges": {
       "cadence": "semanal",

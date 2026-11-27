@@ -57,6 +57,11 @@ export function assignWindow(layout: ViewerLayout, index: number, win: WindowId)
   return { ...layout, panes };
 }
 
+/** Mostra a janela `win` (aba do visualizador): se já está num painel, nada muda; senão entra no ÚLTIMO painel. */
+export function showWindow(layout: ViewerLayout, win: WindowId): ViewerLayout {
+  return layout.panes.includes(win) ? layout : assignWindow(layout, layout.count - 1, win);
+}
+
 /**
  * Move o divisor `sep` (entre o painel `sep` e o `sep + 1`) em `delta` (fração da largura): só os dois vizinhos mudam, cada um
  * com pelo menos `MIN_RATIO`; a soma continua 1.

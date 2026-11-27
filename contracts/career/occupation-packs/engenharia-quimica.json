@@ -134,7 +134,8 @@
         "criteria": ["ao menos duas malhas de controle completas (sensor, controlador, elemento final)", "tags no padrão ISA-5.1", "linhas identificadas (fluido, diâmetro ou classe)", "legenda e carimbo preenchidos", "declaração de que o processo é didático ou anonimizado"],
         "evidence": "prancha PDF/SVG do P&ID",
         "time": "2 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "L4": {
         "title": "Memorial de balanço de massa e energia",
@@ -161,7 +162,8 @@
         "criteria": ["início e fim explícitos", "raias por área", "nenhuma atividade órfã", "ao menos dois pontos de controle anotados", "sem nome de empresa ou dado sigiloso"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L6": {
         "title": "Resumo de perfil em engenharia química",
@@ -170,7 +172,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -183,7 +186,8 @@
         "evidence": "prancha PDF/SVG do PFD",
         "time": "90 min",
         "trigger": "Quer mostrar um processo inteiro numa folha, com os números das correntes?",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       {
         "id": "X2",
@@ -268,7 +272,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao", "projeto-de-pesquisa"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D6 (P&ID), X1 (PFD) e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
     "nudges": {
       "cadence": "semanal",

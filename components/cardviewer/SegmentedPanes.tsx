@@ -55,7 +55,7 @@ export function SegmentedPanes({ layout, onLayout, render, windows = WINDOW_IDS 
   layout.panes.forEach((win, i) => {
     const headingId = `cv-pane-${i}`;
     cells.push(
-      <section key={`p${i}`} aria-labelledby={headingId} className="flex min-h-[18rem] min-w-0 flex-col overflow-hidden rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-1 lg:min-h-0" data-pane={i} data-window={win}>
+      <section key={`p${i}`} aria-labelledby={headingId} tabIndex={-1} className="flex min-h-[18rem] focus-visible:outline-none focus-visible:[box-shadow:var(--ws-focus-ring)] min-w-0 flex-col overflow-hidden rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-1 lg:min-h-0" data-pane={i} data-window={win}>
         <header className="flex flex-wrap items-center gap-2 border-b border-ws-border bg-ws-surface-2 px-2 py-1.5">
           <h3 id={headingId} className="min-w-0 flex-1 truncate font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-body)] font-semibold">
             {t(`cardviewer.window.${win}`)}

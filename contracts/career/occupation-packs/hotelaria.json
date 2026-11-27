@@ -173,7 +173,8 @@
         "criteria": ["eixos rotulados com unidade e período", "fonte dos dados citada (simulado ou anonimizado)", "uma mensagem principal visível", "sem dados de hóspedes identificáveis"],
         "evidence": "imagem PNG e PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D1": {
         "title": "Layout simples de salão de eventos ou café da manhã",
@@ -182,7 +183,8 @@
         "criteria": ["escala indicada e cotas gerais que fecham", "legenda de mobiliário e pontos de apoio", "saídas de emergência e circulação livre marcadas", "capacidade do formato indicada", "carimbo com título, autor e data"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -266,7 +268,7 @@
     "editors": { "letters": "media", "drawings": "baixa" },
     "drawingsModes": ["infografico", "2d-tecnico", "diagrama", "prancha"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "roteiro", "estudo-de-caso", "plano-30-60-90", "bio", "curriculo", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: script de recuperação (X1), bio (L6), post (L5) e revisão (L10); relatório de indicadores (L4), layout (D1) e infográfico (D7) pedem computador.",
     "nudges": {
       "cadence": "semanal",

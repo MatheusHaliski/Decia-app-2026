@@ -154,7 +154,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui um case com link", "sem informação estratégica de cliente"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -163,7 +164,8 @@
         "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "registro no CONRERP indicado, se houver", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "Procedimento de atendimento a demandas de imprensa",
@@ -185,7 +187,8 @@
         "evidence": "diagrama ou infográfico publicado",
         "time": "60 min",
         "trigger": "Quer desenhar o mapa de públicos de uma organização?",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       {
         "id": "X2",
@@ -279,7 +282,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["bio", "curriculo", "carta", "proposta", "pop", "relatorio-tecnico", "estudo-de-caso", "post", "roteiro", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e release curto (X2); L8, X3, X1 e D4 pedem computador.",
     "nudges": {
       "cadence": "semanal",

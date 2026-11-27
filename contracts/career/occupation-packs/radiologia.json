@@ -149,7 +149,8 @@
         "criteria": ["até 600 caracteres", "nomeia a modalidade", "cita três competências", "inclui uma prova com link", "nenhuma menção a paciente"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -158,7 +159,8 @@
         "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRTR indicado", "modalidades e equipamentos listados", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D4": {
         "title": "Fluxo do exame da recepção ao PACS",
@@ -167,7 +169,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de triagem de segurança", "ponto de decisão em intercorrência"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório técnico de controle de qualidade ou de indicadores",
@@ -261,7 +264,7 @@
     "editors": { "letters": "media", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "pop", "relatorio-tecnico", "estudo-de-caso", "proposta", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de POP e checklist; D4, D5, D7 e L4 pedem computador.",
     "nudges": {
       "cadence": "semanal",

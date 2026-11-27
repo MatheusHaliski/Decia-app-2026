@@ -1,6 +1,7 @@
 "use client";
 import { Badge, Glyph, Link, Sheet } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { useLabView } from "@/lib/nav/labView";
 import { createOptions } from "@/lib/nav/matrix";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
@@ -9,6 +10,8 @@ export function CreateSheet({ open, onOpenChange }: { open: boolean; onOpenChang
   const { t } = useI18n();
   const { profile } = useViewer();
   const options = createOptions(profile);
+  // o número do RF é rastreabilidade interna: só no laboratório
+  const lab = useLabView();
   return (
     <Sheet open={open} onOpenChange={onOpenChange} side="bottom" title={t("create.title")} description={t("create.description")}>
       <ul className="grid gap-1 sm:grid-cols-2" data-testid="create-sheet">
@@ -20,7 +23,7 @@ export function CreateSheet({ open, onOpenChange }: { open: boolean; onOpenChang
                 <span className="block font-semibold">{t(o.labelKey)}</span>
                 <span className="block text-[length:var(--ws-text-caption)] text-ws-text-muted">{t(o.hintKey)}</span>
               </span>
-              <Badge>{o.rf}</Badge>
+              {lab ? <Badge>{o.rf}</Badge> : null}
             </Link>
           </li>
         ))}

@@ -55,10 +55,25 @@ export interface UserPreferences {
    * Profissão preferida (RF81, D-148): código de um dos 79 ramos do catálogo `contracts/career/academic-fields.json` (validado pelo
    * índice gerado dele, `lib/tasks/fieldIndex.gen.ts`), ou `null` ("ainda não sei"). Privada (D-147): só o dono vê e usa — pré-seleciona
    * o campo de estudo no criador de tarefas e monta o plano de desenvolvimento; nunca aparece no perfil, para a empresa, em busca ou em
-   * agregado. Viaja dentro de `notificationPrefsJson` (como `aiAutonomyDefault`) e, sem sessão, só na aba (nunca no `localStorage`).
+   * agregado. Viaja dentro de `notificationPrefsJson` (como `aiAutonomyDefault`) para `PUT /api/me/preferences` (só do dono) e, sem sessão,
+   * fica só na aba — ou, com consentimento explícito em Configurações, numa chave própria do navegador (`lib/preferences/storage.ts`).
    */
   preferredOccupation: string | null;
+  /**
+   * A pessoa fechou o plano de desenvolvimento da profissão (`DevelopmentPlanPanel`): na primeira visita ele vem aberto; fechado uma
+   * vez, fica fechado nas próximas (auditoria 27/11/2026). Viaja no `notificationPrefsJson`, só do dono.
+   */
+  careerPlanCollapsed: boolean;
+  /**
+   * "Primeiros passos" da tela Hoje (components/onboarding): passos marcados como feitos e se a pessoa dispensou a lista. Viaja dentro
+   * de `notificationPrefsJson` (mesmo caminho da autonomia da IA), sem coluna nova no servidor.
+   */
+  onboarding: OnboardingPrefs;
 }
+
+export const ONBOARDING_STEPS = ["perfil", "profissao", "primeira-tarefa", "melhorias"] as const;
+export type OnboardingStep = (typeof ONBOARDING_STEPS)[number];
+export interface OnboardingPrefs { done: OnboardingStep[]; dismissed: boolean }
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
   theme: "auto",
@@ -76,7 +91,16 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   aiAutonomyDefault: "SOB_SOLICITACAO",
   // opcional: sem profissão vale o genérico e a pessoa escolhe quando quiser (RF81.CA07)
   preferredOccupation: null,
+  careerPlanCollapsed: false,
+  onboarding: { done: [], dismissed: false },
 };
+
+/** Lista de passos sem repetição, só com passos conhecidos, na ordem do catálogo. */
+export function sanitizeOnboarding(raw: unknown): OnboardingPrefs {
+  const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+  const done = Array.isArray(r.done) ? ONBOARDING_STEPS.filter((s) => (r.done as unknown[]).includes(s)) : [];
+  return { done, dismissed: r.dismissed === true };
+}
 
 const inList = <T extends readonly unknown[]>(list: T, v: unknown): v is T[number] => list.includes(v);
 
@@ -125,6 +149,8 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
     aiModeDefault: inList(AI_MODES, r.aiModeDefault) ? r.aiModeDefault : DEFAULT_PREFERENCES.aiModeDefault,
     aiAutonomyDefault: inList(AUTONOMY_MODES, r.aiAutonomyDefault) ? r.aiAutonomyDefault : DEFAULT_PREFERENCES.aiAutonomyDefault,
     preferredOccupation: isOccupationCode(r.preferredOccupation) ? r.preferredOccupation : null,
+    careerPlanCollapsed: bool(r.careerPlanCollapsed, DEFAULT_PREFERENCES.careerPlanCollapsed),
+    onboarding: sanitizeOnboarding(r.onboarding),
   };
 }
 
@@ -142,7 +168,7 @@ export function toServer(p: UserPreferences) {
     fontScale: Number((p.fontScale / 100).toFixed(2)),
     reduceMotion: p.reduceMotion,
     deskSkin: p.deskSkin.toUpperCase().replace("-", "_"),
-    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId, aiAutonomyDefault: p.aiAutonomyDefault, preferredOccupation: p.preferredOccupation }),
+    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId, aiAutonomyDefault: p.aiAutonomyDefault, preferredOccupation: p.preferredOccupation, careerPlanCollapsed: p.careerPlanCollapsed, onboarding: p.onboarding }),
     timezone: p.timezone,
     wipLimit: p.wipLimit,
     aiModeDefault: p.aiModeDefault.toUpperCase(),
@@ -160,6 +186,8 @@ export function fromServer(raw: unknown): UserPreferences {
   const nb = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).backgroundId : undefined);
   const autonomy = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).aiAutonomyDefault : undefined);
   const occupation = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).preferredOccupation : undefined);
+  const planCollapsed = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).careerPlanCollapsed : undefined);
+  const onboarding = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).onboarding : undefined);
   return sanitizePreferences({
     ...r,
     theme,
@@ -172,5 +200,7 @@ export function fromServer(raw: unknown): UserPreferences {
     aiModeDefault: typeof r.aiModeDefault === "string" ? r.aiModeDefault.toLowerCase() : undefined,
     aiAutonomyDefault: autonomy,
     preferredOccupation: occupation,
+    careerPlanCollapsed: planCollapsed,
+    onboarding,
   });
 }

@@ -141,7 +141,8 @@
         "criteria": ["até 600 caracteres", "nomeia o contexto de atuação", "cita três competências", "inclui uma prova com link", "nenhuma menção a pessoa atendida"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -150,7 +151,8 @@
         "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRP indicado", "sem idade, estado civil ou foto obrigatória", "nenhum dado de pessoa atendida"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "POP de acolhimento e encaminhamento",
@@ -177,7 +179,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão de encaminhamento", "ponto de registro documental"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório técnico de projeto, grupo ou programa",
@@ -260,7 +263,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "relatorio-tecnico", "pop", "parecer", "relatorio-de-caso", "roteiro", "plano-30-60-90", "projeto-de-pesquisa", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D4, D7 e L4 pedem computador.",
     "nudges": {
       "cadence": "semanal",

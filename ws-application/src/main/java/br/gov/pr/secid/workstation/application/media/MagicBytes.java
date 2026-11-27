@@ -5,7 +5,9 @@ import java.util.Optional;
 
 /**
  * Detecção do tipo real pelas primeiras bytes (assinaturas públicas de cada formato), sem biblioteca externa (D-67). Formatos ZIP
- * (DOCX/XLSX/PPTX/ZIP) voltam como {@link DetectedType#ZIP}: o subtipo é decidido pelo {@link ZipInspector} olhando o conteúdo.
+ * (DOCX/XLSX/PPTX/ODT/ODS/ODP/ZIP) voltam como {@link DetectedType#ZIP}: o subtipo é decidido pelo {@link ZipInspector} olhando o conteúdo.
+ * Texto sem assinatura (nem DXF nem IFC) volta como {@link DetectedType#TXT} genérico: o {@link TextInspector} confere o arquivo inteiro e
+ * escolhe CSV/TSV/MD/JSON/XML pela extensão.
  */
 public final class MagicBytes {
     private static final byte[] PNG = {(byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A};
@@ -79,7 +81,8 @@ public final class MagicBytes {
         if (lines.length >= 4 && lines[0].strip().equals("999") && lines[2].strip().equals("0") && lines[3].strip().startsWith("SECTION")) {
             return Optional.of(DetectedType.DXF);
         }
-        return Optional.empty();
+        // começo é texto: candidato a TXT (o TextInspector decide olhando TUDO — controles, codificação, formato)
+        return TextInspector.decode(java.util.Arrays.copyOf(b, n)).isPresent() || n < b.length ? Optional.of(DetectedType.TXT) : Optional.empty();
     }
 
     static boolean startsWith(byte[] b, int off, byte[] sig) {

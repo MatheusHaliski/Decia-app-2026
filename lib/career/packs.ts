@@ -11,6 +11,7 @@
  * Abaixo do mínimo pedido vale o pacote genérico, se ele alcança o mínimo; senão, nenhum (a tela segue sem a profissão).
  */
 import { FIELD_INDEX, PACK_LOADERS } from "@/lib/tasks/fieldIndex.gen";
+import { withAutonomyCeiling } from "./curation";
 import { GENERIC_PACK_CODE, type GuidedTaskCode, type OccupationPack, type PackStatus } from "./occupationPack";
 
 export const PACK_STATUS_RANK: Readonly<Record<PackStatus, number>> = { pesquisa: 0, revisado: 1, ativo: 2 };
@@ -47,11 +48,12 @@ export async function packFor(code: string | null | undefined, minStatus: PackSt
   const loaded: OccupationPack[] = [];
   const entry = code ? FIELD_INDEX.find((f) => f.code === code) : undefined;
   const ownLoader = entry ? loaders[entry.pack] : undefined;
-  if (ownLoader) loaded.push(await ownLoader());
+  // D-156: o carregador entrega o pacote já com o teto de autonomia (SOB_SOLICITACAO), qualquer que seja o dado
+  if (ownLoader) loaded.push(withAutonomyCeiling(await ownLoader()));
   const first = selectPack(code, minStatus, loaded);
   if (first?.own) return first;
   const genericLoader = loaders[GENERIC_PACK_CODE];
-  if (genericLoader && !loaded.some((p) => p.code === GENERIC_PACK_CODE)) loaded.push(await genericLoader());
+  if (genericLoader && !loaded.some((p) => p.code === GENERIC_PACK_CODE)) loaded.push(withAutonomyCeiling(await genericLoader()));
   return selectPack(code, minStatus, loaded);
 }
 

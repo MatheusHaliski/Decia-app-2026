@@ -151,7 +151,8 @@
         "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade (cabeças, mil litros, t)", "uma mensagem principal explícita", "sem dado de propriedade identificável"],
         "evidence": "imagem PNG e PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -224,7 +225,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["infografico", "diagrama", "2d-tecnico"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "parecer", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6, L3) e revisão (L10); D7, D4 e D1 pedem computador. Formulação (X1) e balanço forrageiro (X2) pedem planilha.",
     "nudges": {
       "cadence": "semanal",

@@ -158,7 +158,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "pelo menos dois pontos de decisão (divergência, avaria ou falta)", "inclui a emissão dos documentos fiscais", "declara dados fictícios"],
         "evidence": "diagrama vetorial (Drawings, modo diagrama)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de inventário cíclico",
@@ -185,7 +186,8 @@
         "criteria": ["escala indicada", "cotas das áreas e corredores", "legenda das áreas", "setas de fluxo do recebimento à expedição", "corredores compatíveis com o equipamento de movimentação"],
         "evidence": "prancha PDF/SVG (Drawings, modo 2d-tecnico)",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "D7": {
         "title": "Infográfico de OTIF e acuracidade",
@@ -194,11 +196,12 @@
         "criteria": ["uma mensagem principal explícita", "eixos rotulados com unidade", "fonte dos dados citada", "ação ou causa da mudança anotada", "dados fictícios ou agregados declarados"],
         "evidence": "imagem PNG + PDF (Drawings, modo infografico)",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
-      { "id": "X1", "editor": "letters", "title": "Análise de curva ABC de um estoque fictício", "competency": "Gestão de estoques", "criteria": ["lista de itens com valor ou giro fictícios", "classes A, B e C com corte justificado (ex.: 80/15/5)", "política de controle proposta por classe", "declaração de dados fictícios"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você priorizaria o controle de um estoque?", "level": 1 },
+      { "id": "X1", "editor": "letters", "title": "Análise de curva ABC de um estoque fictício", "competency": "Gestão de estoques", "criteria": ["lista de itens com valor ou giro fictícios", "classes A, B e C com corte justificado (ex.: 80/15/5)", "política de controle proposta por classe", "declaração de dados fictícios"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você priorizaria o controle de um estoque?", "level": 1, "taskType": "PLANILHA" },
       { "id": "X2", "editor": "letters", "title": "Cotação comparativa de frete", "competency": "Transporte e custos", "criteria": ["três transportadoras fictícias comparadas", "critérios além do preço (prazo, rastreamento, seguro, avarias)", "cubagem e peso cubado calculados", "condição de frete declarada (CIF/FOB ou Incoterm com versão)", "recomendação justificada"], "evidence": "proposta em Letters (modelo proposta)", "time": "45 min", "trigger": "Quer treinar uma cotação de frete com critérios além do preço?", "level": 2 }
     ]
   },
@@ -272,7 +275,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "plano-30-60-90", "estudo-de-caso", "curriculo", "bio", "carta", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, L6, L5, X1 e a revisão (L10) funcionam bem; D1 (layout) e D4 (fluxo com raias) pedem computador. Nunca fotografar painéis de WMS, notas fiscais ou etiquetas de clientes para anexar.",
     "nudges": {
       "cadence": "semanal",

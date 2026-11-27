@@ -14,7 +14,7 @@ const PAGE = pageByRoute("/handoffs")!;
 export default function Page() {
   const { t } = useI18n();
   return (
-    <RfPage page={PAGE} noEmpty actions={<Badge tone="neutral" title={t("handoff.demoHint")}>{t("decia.demo")}</Badge>}>
+    <RfPage page={PAGE} noEmpty actions={<Badge tone="neutral">{t("decia.demo")}</Badge>}>
       <Suspense fallback={<LoadingState />}>
         <HandoffWorkspace />
       </Suspense>

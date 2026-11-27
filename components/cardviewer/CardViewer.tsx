@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from "react";
 import { Badge, Button, Dialog, useToast } from "@/components/ui";
-import { defaultLayout, loadLayout, saveLayout, withCount, type PaneCount, type ViewerLayout, type WindowId } from "@/lib/cardviewer/layout";
+import { defaultLayout, loadLayout, saveLayout, showWindow, withCount, WINDOW_IDS, type PaneCount, type ViewerLayout, type WindowId } from "@/lib/cardviewer/layout";
 import { projectId, projectTitle } from "@/lib/cardviewer/subject";
 import { withViewer } from "@/lib/cardviewer/url";
 import { useI18n } from "@/lib/i18n/useI18n";
@@ -44,6 +44,16 @@ export function CardViewer({ value }: { value: ViewerContextValue }) {
     if (msg) setAnnounce(msg);
   };
   const setCount = (n: PaneCount) => update(withCount(layout, n), t("cardviewer.layout.count", { n }));
+  /** aba de janela: a que já está num painel ganha o foco; a outra entra no último painel (Melhorias sempre a um clique) */
+  const openWindow = (w: WindowId) => {
+    const at = layout.panes.indexOf(w);
+    if (at >= 0) {
+      document.querySelector<HTMLElement>(`[data-testid="segmented-panes"] [data-window="${w}"]`)?.focus();
+      return;
+    }
+    const next = showWindow(layout, w);
+    update(next, t("cardviewer.layout.assigned", { n: next.panes.indexOf(w) + 1, window: t(`cardviewer.window.${w}`) }));
+  };
 
   const title = value.task ? value.task.subject.title : value.project ? projectTitle(value.project.subject) : "";
   const source = value.task ? value.task.subject.source : "DEMO";
@@ -85,6 +95,17 @@ export function CardViewer({ value }: { value: ViewerContextValue }) {
             </div>
             <Button size="sm" variant="ghost" onClick={copyLink}>{t("cardviewer.copyLink")}</Button>
             <Button size="sm" href={pageHref}>{t("cardviewer.openPage")}</Button>
+          </div>
+          <div role="group" aria-label={t("criador2.viewer.windows")} className="flex flex-wrap items-center gap-1 border-b border-ws-border pb-2" data-testid="viewer-window-tabs">
+            {WINDOW_IDS.map((w) => {
+              const shown = layout.panes.includes(w);
+              return (
+                <Button key={w} size="sm" variant={shown ? "default" : "ghost"} aria-pressed={shown} data-window-tab={w} onClick={() => openWindow(w)}
+                  className={w === "melhorias" ? "text-ws-ai-spark-ink" : undefined}>
+                  {t(`cardviewer.window.${w}`)}
+                </Button>
+              );
+            })}
           </div>
           <p aria-live="polite" className="sr-only" data-testid="viewer-live">{announce}</p>
           <SegmentedPanes layout={layout} onLayout={update} render={(win) => <WindowBody win={win} />} />

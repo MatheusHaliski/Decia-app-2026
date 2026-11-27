@@ -129,7 +129,8 @@
         "criteria": ["início e fim explícitos", "raias por ator", "nenhuma tarefa órfã", "documentos gerados marcados", "norma de referência citada (CONAMA 237/1997 ou PNRS)"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório técnico de desempenho ou monitoramento ambiental",
@@ -147,7 +148,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com meta, padrão ou série histórica", "dados públicos ou anonimizados"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L7": {
         "title": "POP de controle operacional ambiental",
@@ -228,7 +230,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "parecer"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); PGRS (X1), EIA/RIMA simplificado (X2) e Drawings rendem mais no computador.",
     "nudges": {
       "cadence": "semanal",

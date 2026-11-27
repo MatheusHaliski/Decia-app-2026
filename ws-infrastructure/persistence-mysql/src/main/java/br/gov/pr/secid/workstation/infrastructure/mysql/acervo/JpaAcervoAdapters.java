@@ -203,6 +203,10 @@ public class JpaAcervoAdapters {
                 e.setFormatFamily(a.formatFamily());
                 e.setFormatVariant(a.formatVariant());
                 e.setFormatDetailsJson(a.formatDetailsJson());
+                e.setOriginalSha256(a.originalSha256());
+                e.setUploadedBy(a.uploadedBy());
+                e.setUploadedVia(a.uploadedVia());
+                e.setCaptureMetadataEnc(a.captureMetadata());
                 return toDomain(repo.saveAndFlush(e));
             }
 
@@ -266,6 +270,10 @@ public class JpaAcervoAdapters {
                 e.setFormatFamily(ev.formatFamily());
                 e.setFormatVariant(ev.formatVariant());
                 e.setFormatDetailsJson(ev.formatDetailsJson());
+                e.setOriginalSha256(ev.originalSha256());
+                e.setUploadedBy(ev.uploadedBy());
+                e.setUploadedVia(ev.uploadedVia());
+                e.setCaptureMetadataEnc(ev.captureMetadata());
                 return stored(repo.saveAndFlush(e));
             }
 
@@ -332,7 +340,8 @@ public class JpaAcervoAdapters {
     static StoredEvidence stored(EvidenceEntity e) {
         return new StoredEvidence(new Evidence(e.getId(), e.getOwnerId(), e.getMediaObjectId(), e.getTakenAt(), e.getLatitudeEnc(),
                 e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId(),
-                e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson()),
+                e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson(), e.getOriginalSha256(), e.getUploadedBy(), e.getUploadedVia(),
+                e.getCaptureMetadataEnc()),
                 e.getCreatedAt());
     }
 
@@ -344,7 +353,7 @@ public class JpaAcervoAdapters {
     static TaskAttachment toDomain(TaskAttachmentEntity e) {
         return new TaskAttachment(e.getId(), e.getTaskId(), e.getMediaObjectId(), e.getFileName(), e.getMimeType(), e.getSizeBytes(), e.getSha256(),
                 e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder(), e.getFormatFamily(),
-                e.getFormatVariant(), e.getFormatDetailsJson());
+                e.getFormatVariant(), e.getFormatDetailsJson(), e.getOriginalSha256(), e.getUploadedBy(), e.getUploadedVia(), e.getCaptureMetadataEnc());
     }
 
     private static StoredTask stored(TaskItemEntity e, TaskBriefEntity b) {

@@ -3,8 +3,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, Sheet, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { pageForPath } from "@/lib/nav/currentPage";
 import { BottomNav } from "./BottomNav";
 import { CreateSheet } from "./CreateSheet";
+import { CurrentPageProvider } from "./currentPage";
+import { DemoBanner } from "./DemoBanner";
 import { NavGroups, SidebarNav } from "./SidebarNav";
 import { TopBar } from "./TopBar";
 import { DeletionBanner } from "@/components/account/DeletionBanner";
@@ -42,6 +45,8 @@ function useSidebarCollapsed(): [boolean, (v: boolean) => void] {
  * AppShell (ARQUITETURA §6 etapa (b); referência de arquitetura: FAI app-shell): skip link, TopBar, SidebarNav (≥ 1024 px,
  * recolhível), gaveta lateral (< 1024 px), conteúdo em <main id="conteudo">, BottomNav + folha "+ Criar" no celular.
  * Landmarks: banner · navigation (menu principal, barra inferior) · main. Esc fecha gaveta/folha (radix).
+ * A rota atual (lib/nav/currentPage.ts) alimenta a ajuda "?" do PageHeader e, quando o status do registro é `demo`, a faixa
+ * global de modo demonstração no topo do conteúdo.
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
@@ -50,6 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useSidebarCollapsed();
   const [drawer, setDrawer] = useState(false);
   const [create, setCreate] = useState(false);
+  const page = pageForPath(pathname);
 
   useEffect(() => { setDrawer(false); setCreate(false); }, [pathname]);
 
@@ -60,7 +66,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="mx-auto flex max-w-[1600px]">
         <SidebarNav collapsed={collapsed} />
         <main id="conteudo" tabIndex={-1} className={cn("min-w-0 flex-1 px-[var(--ws-space-4)] pb-[calc(var(--ws-shell-bottomnav)+var(--ws-space-8))] pt-[var(--ws-space-5)] sm:px-[var(--ws-space-6)] lg:pb-[var(--ws-space-8)]", "focus-visible:outline-none")}>
-          <div className="mx-auto w-full max-w-[1180px]"><DeletionBanner />{children}</div>
+          <div className="mx-auto w-full max-w-[1180px]">
+            <DeletionBanner />
+            {page?.status === "demo" ? <DemoBanner /> : null}
+            <CurrentPageProvider value={page}>{children}</CurrentPageProvider>
+          </div>
         </main>
       </div>
       <Sheet open={drawer} onOpenChange={setDrawer} side="left" title={t("a11y.mainMenu")} hideTitle className="p-[var(--ws-space-3)]">

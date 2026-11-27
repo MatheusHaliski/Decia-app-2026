@@ -6,6 +6,7 @@
  * anexos e evidências (RF41.CA06) e, para desenho técnico e documento, o atalho para extrair quantitativos (RF34). A lista com sub-filtros
  * na URL é o `TaskAcervo` (Acervo.tsx); `MyTasks` continua servindo a aba Acervo do perfil.
  */
+import { responsibleOf } from "@/lib/cardviewer/subject";
 import { useCallback, useEffect, useState } from "react";
 import { CardGrid, TaskSchemeCard } from "@/components/social/TaskSchemeCard";
 import { Badge, Button, Card, Checkbox, EmptyState, ErrorState, Field, Link, LoadingState, Tag, Textarea, useToast } from "@/components/ui";
@@ -240,6 +241,9 @@ export function PersistedTaskDetail({ id }: { id: string }) {
         <Card title={t("tasks.detail.facts")}>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[length:var(--ws-text-body-sm)]">
             <dt className="text-ws-text-muted">{t("tasks.form.priority")}</dt><dd>{t(`tasks.priority.${task.priority ?? "MEDIA"}`)}</dd>
+            {/* mesma regra do visualizador de card (`responsibleOf`): o designado; sem ele, o autor marcado como tal */}
+            <dt className="text-ws-text-muted">{t("cardviewer.fact.responsible")}</dt>
+            <dd className="[overflow-wrap:anywhere]" data-testid="detail-responsible">{(() => { const r = responsibleOf({ responsibleId: task.responsibleId ?? null, responsibleName: null, ownerId: task.ownerId ?? null, ownerName: null }); return t(r.key, r.vars); })()}</dd>
             <dt className="text-ws-text-muted">{t("tasks.form.dueAt")}</dt><dd>{task.dueAt ? formatIsoDate(task.dueAt, intl) : "—"}</dd>
             <dt className="text-ws-text-muted">{t("tasks.deadline.title")}</dt><dd>{task.legalDueAt ? <><span aria-hidden>⚖ </span>{formatIsoDate(task.legalDueAt, intl)}</> : "—"}</dd>
             <dt className="text-ws-text-muted">{t("tasks.form.accessClass")}</dt><dd>{t(`social.access.${task.accessClass}`)}</dd>

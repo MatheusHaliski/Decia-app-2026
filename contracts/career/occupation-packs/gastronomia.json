@@ -162,7 +162,8 @@
         "criteria": ["três preparações com foto", "legenda com técnica, rendimento e papel", "grade consistente", "créditos ao chef ou equipe quando a receita não for sua", "sem pessoas identificáveis sem autorização"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L3": {
         "title": "Estudo de caso STAR de uma melhoria na cozinha",
@@ -189,7 +190,8 @@
         "criteria": ["escala indicada e cotas gerais", "legenda com as áreas", "setas de fluxo sem cruzamento sujo-limpo", "carimbo com título, autor e data"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -272,7 +274,7 @@
     "editors": { "letters": "media", "drawings": "media" },
     "drawingsModes": ["prancha", "2d-tecnico", "diagrama", "infografico"],
     "lettersTemplates": ["pop", "proposta", "relatorio-tecnico", "estudo-de-caso", "bio", "curriculo", "post", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: ficha técnica curta (X1), bio (L6), post (L5) e fotos para a prancha; planta de cozinha (D1) e relatório de CMV (L4) pedem computador.",
     "nudges": {
       "cadence": "semanal",

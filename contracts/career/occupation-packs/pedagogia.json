@@ -165,7 +165,8 @@
         "criteria": ["até 600 caracteres", "nomeia a etapa ou frente-alvo", "cita três competências", "inclui uma prova com link", "sem nome de aluno ou de escola identificável"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página para a vaga ou o concurso",
@@ -174,7 +175,8 @@
         "criteria": ["uma página", "três conquistas com número", "habilitação e etapa de atuação explícitas", "palavras-chave do edital ou da vaga presentes", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L3": {
         "title": "Estudo de caso STAR de uma situação pedagógica",
@@ -210,7 +212,8 @@
         "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "decisões com os dois caminhos", "sem dado de aluno"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D7": {
         "title": "Infográfico com dados educacionais agregados",
@@ -219,7 +222,8 @@
         "criteria": ["fonte e ano citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem aluno identificável", "créditos de imagens e ícones"],
         "evidence": "imagem e PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -254,7 +258,8 @@
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
         "trigger": "Que material você já criou ou criaria para a turma? Monte a prancha com instruções de uso.",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       {
         "id": "X4",
@@ -340,7 +345,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["prancha", "diagrama", "infografico", "wireframe"],
     "lettersTemplates": ["plano-de-aula", "relatorio-tecnico", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "plano-30-60-90", "artigo", "projeto-de-pesquisa", "revisao", "post"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); plano de aula (X1) é possível no celular, mas sequência didática (X2), prancha (X3) e fluxo (D4) pedem computador.",
     "nudges": {
       "cadence": "semanal",

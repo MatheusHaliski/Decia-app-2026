@@ -156,7 +156,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "ao menos dois pontos de decisão", "nenhuma etapa órfã", "legenda de símbolos"],
         "evidence": "diagrama vetorial no Drawings (modo diagrama)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório técnico curto",
@@ -174,7 +175,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados ou públicos"],
         "evidence": "imagem e PDF no Drawings (modo infográfico)",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D6": {
         "title": "Desenho técnico de prótese ou planejamento em modelo fictício",
@@ -183,7 +185,8 @@
         "criteria": ["modelo fictício ou de estudo declarado", "ao menos duas vistas", "materiais especificados", "medidas ou proporções indicadas", "legenda"],
         "evidence": "prancha no Drawings (modo 2d-tecnico ou prancha)",
         "time": "90 min",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -272,7 +275,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "2d-tecnico", "prancha"],
     "lettersTemplates": ["estudo-de-caso", "pop", "relatorio-tecnico", "relatorio-de-caso", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "projeto-de-pesquisa", "artigo", "proposta"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L3, L7, D4 e D7 pedem computador; D6 e D2 exigem computador.",
     "nudges": {
       "cadence": "semanal",

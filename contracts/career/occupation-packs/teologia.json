@@ -146,7 +146,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui um trabalho com link", "sem dado de fiéis, comunidade ou pessoas atendidas"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -155,7 +156,8 @@
         "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "sem idade, estado civil, foto obrigatória nem dado de fiéis"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L4": {
         "title": "Estudo acadêmico curto com referências",
@@ -267,7 +269,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "artigo", "projeto-de-pesquisa", "plano-de-aula", "relatorio-tecnico", "estudo-de-caso", "proposta", "roteiro", "pop", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e resenha em rascunho; L4, X2 e D4 pedem computador.",
     "nudges": {
       "cadence": "semanal",

@@ -156,7 +156,8 @@
         "criteria": ["escala indicada e cotas gerais que fecham", "legenda de mobiliário e serviços", "saídas de emergência e rotas de fuga marcadas", "lotação prevista indicada", "área acessível e circulação livre", "carimbo com título, autor e data"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "L4": {
         "title": "Relatório pós-evento com indicadores",
@@ -174,7 +175,8 @@
         "criteria": ["duas versões lado a lado na mesma escala", "três mudanças numeradas e justificadas", "saídas de emergência nas duas versões", "créditos do layout original"],
         "evidence": "prancha comparativa",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -257,7 +259,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["2d-tecnico", "prancha", "diagrama", "infografico"],
     "lettersTemplates": ["proposta", "plano-30-60-90", "roteiro", "relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: roteiro minuto a minuto (X1), bio (L6), post (L5) e revisão (L10); planta (D1), antes e depois (D5) e plano de evento (L9) pedem computador.",
     "nudges": {
       "cadence": "semanal",

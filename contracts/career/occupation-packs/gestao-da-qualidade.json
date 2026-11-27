@@ -153,7 +153,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de aprovação", "ao menos um ponto de controle anotado", "sem nome de empresa ou dado sigiloso"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "D5": {
         "title": "Antes e depois de uma melhoria da qualidade",
@@ -162,7 +163,8 @@
         "criteria": ["duas versões lado a lado", "três mudanças anotadas", "cada mudança com justificativa mensurável", "legenda", "dados anonimizados ou fictícios declarados"],
         "evidence": "prancha comparativa PDF/PNG",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D7": {
         "title": "Infográfico de indicador da qualidade (Pareto ou antes e depois)",
@@ -171,7 +173,8 @@
         "criteria": ["indicador nomeado com fórmula e meta", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem identificar empresa quando sigiloso"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L3": {
         "title": "Estudo de caso STAR de uma não conformidade resolvida",
@@ -198,7 +201,8 @@
         "criteria": ["até 600 caracteres", "nomeia setor e frente", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -211,7 +215,8 @@
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "60 min",
         "trigger": "Tem um problema recorrente para investigar a causa?",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       {
         "id": "X2",
@@ -291,7 +296,7 @@
     "editors": { "letters": "alta", "drawings": "alta" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "revisao", "bio", "curriculo", "carta", "plano-30-60-90", "post"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); mapas (D4), Ishikawa (X1), antes e depois (D5) e indicadores (D7) pedem computador.",
     "nudges": {
       "cadence": "semanal",

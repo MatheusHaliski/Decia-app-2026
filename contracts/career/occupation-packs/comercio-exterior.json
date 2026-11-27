@@ -154,7 +154,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "inclui DU-E, parametrização e câmbio", "Incoterm 2020 declarado e coerente com quem contrata frete e seguro", "operação fictícia declarada"],
         "evidence": "diagrama vetorial (Drawings, modo diagrama)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de despacho de exportação",
@@ -256,7 +257,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["pop", "proposta", "relatorio-tecnico", "parecer", "estudo-de-caso", "plano-30-60-90", "curriculo", "carta", "bio", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, L6, L5, L3 e a revisão (L10) funcionam bem; X1 (custo de importação), L4 e D4 pedem computador. Nunca fotografar DU-E, DUIMP, faturas ou telas do Siscomex para anexar.",
     "nudges": {
       "cadence": "semanal",

@@ -3,16 +3,21 @@
  * Criar projeto (RF5 / RF21 / RF30): em branco, a partir de um modelo (o projeto da aula ou um por tipo de demanda, montado com os
  * modelos de área do Acervo) ou pelo Autopiloto, a partir de uma demanda bruta. Cria no repositório (DEMO: memória desta aba) e
  * abre a Mesa do projeto novo, já com a versão 1 anotada.
+ * Com profissão preferida (só da própria pessoa, D-147), a área e o modelo já vêm pela categoria da profissão (`areaDefaults.ts`):
+ * engenharia → obra, administração → contratação, jurídico → ato normativo, TI → sistema; fora de TI a Mesa não cobra a governança de TI.
+ * "Criar em branco" desabilitado diz por quê, visível e ligado ao botão por `aria-describedby`.
  */
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button, Card, Field, Input, RadioCards, Select, useToast } from "@/components/ui";
+import { useEffect, useRef, useState } from "react";
+import { Button, Card, Field, Input, RadioCards, Select, Tag, useToast } from "@/components/ui";
 import { DEMO_CURRENT_USER_ID } from "@/lib/decia/fixtures";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { todayIso } from "@/lib/projects/autopilot/dates";
 import { blankProject, newProjectId, PROJECT_TEMPLATE_IDS, projectFromTemplate, type ProjectTemplateId } from "@/lib/projects/autopilot/proposal";
 import { demoProjectRepository, type CreateProjectResult, type ProjectRepository } from "@/lib/projects/repository";
-import { APPROACHES, PROJECT_AREAS, type Approach, type ProjectArea, type ProjectModel } from "@/lib/projects/types";
+import { APPROACHES, isItProject, PROJECT_AREAS, type Approach, type ProjectArea, type ProjectModel } from "@/lib/projects/types";
+import { useOptionalPreferences } from "@/lib/preferences/PreferencesProvider";
+import { GENERIC_DEFAULTS, projectDefaultsFor, templateAreaOverride } from "./areaDefaults";
 
 export interface CreateProjectProps {
   repo?: ProjectRepository;
@@ -23,13 +28,34 @@ export interface CreateProjectProps {
   hideBlank?: boolean;
 }
 
+/** Marca de que a sugestão veio da profissão preferida (só a própria pessoa vê; trocável). */
+function FromOccupation() {
+  const { t } = useI18n();
+  return (
+    <p className="flex flex-wrap items-center gap-1.5 text-[length:var(--ws-text-caption)]" data-testid="from-occupation">
+      <Tag tone="accent"><span aria-hidden>🔒</span>{t("career.fromProfession")}</Tag>
+      <span className="text-ws-text-muted">{t("profissao2.desk.fromOccupationHint")}</span>
+    </p>
+  );
+}
+
 export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () => new Date(), onCreated, hideBlank }: CreateProjectProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const router = useRouter();
   const today = todayIso(now());
-  const [blank, setBlank] = useState<{ title: string; area: ProjectArea; approach: Approach; start: string }>({ title: "", area: "SOFTWARE", approach: "HIBRIDO", start: today });
-  const [tpl, setTpl] = useState<ProjectTemplateId>("tipo-ti");
+  const prefs = useOptionalPreferences();
+  const occupation = prefs?.prefs.preferredOccupation ?? null;
+  const defaults = occupation ? projectDefaultsFor(occupation) : GENERIC_DEFAULTS;
+  const [blank, setBlank] = useState<{ title: string; area: ProjectArea; approach: Approach; start: string }>({ title: "", area: defaults.area, approach: defaults.approach, start: today });
+  const [tpl, setTpl] = useState<ProjectTemplateId>(defaults.template);
+  // as preferências chegam depois do 1º render: enquanto a pessoa não escolheu, a área e o modelo seguem a profissão
+  const touched = useRef({ area: false, tpl: false });
+  useEffect(() => {
+    if (!touched.current.area) setBlank((b) => ({ ...b, area: defaults.area, approach: defaults.approach }));
+    if (!touched.current.tpl) setTpl(defaults.template);
+  }, [defaults.area, defaults.approach, defaults.template]);
+  const blankReason = blank.title.trim() ? null : t("profissao2.desk.blankReason");
   const [tplTitle, setTplTitle] = useState("");
   const [tplStart, setTplStart] = useState(today);
 
@@ -55,22 +81,29 @@ export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () =
         <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("projectNew.blank.hint")}</p>
         <form className="grid gap-3" onSubmit={(e) => {
           e.preventDefault();
-          if (!blank.title.trim()) return;
+          if (blankReason) return;
           create((id) => blankProject({ id, title: blank.title, area: blank.area, approach: blank.approach, startDate: blank.start, actorId, now: now() }));
         }}>
           <Field label={t("projectNew.field.title")} required>
             {({ id }) => <Input id={id} value={blank.title} onChange={(e) => setBlank({ ...blank, title: e.target.value })} required />}
           </Field>
           <Field label={t("projectNew.field.area")} hint={t("projectNew.field.areaHint")}>
-            {({ id, describedBy }) => <Select id={id} aria-describedby={describedBy} value={blank.area} onChange={(e) => setBlank({ ...blank, area: e.target.value as ProjectArea })} options={PROJECT_AREAS.map((a) => ({ value: a, label: t(`tasks.area.${a}`) }))} />}
+            {({ id, describedBy }) => <Select id={id} aria-describedby={describedBy} value={blank.area} onChange={(e) => { touched.current.area = true; setBlank({ ...blank, area: e.target.value as ProjectArea }); }} options={PROJECT_AREAS.map((a) => ({ value: a, label: t(`tasks.area.${a}`) }))} data-testid="blank-area" />}
           </Field>
+          {defaults.fromOccupation && blank.area === defaults.area ? <FromOccupation /> : null}
+          <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="blank-governance">
+            {t(isItProject({ area: blank.area }) ? "profissao2.desk.governanceIt" : "profissao2.desk.governanceOther")}
+          </p>
           <Field label={t("projectNew.field.approach")}>
             {({ id }) => <Select id={id} value={blank.approach} onChange={(e) => setBlank({ ...blank, approach: e.target.value as Approach })} options={APPROACHES.map((a) => ({ value: a, label: t(`pm.approach.${a}`) }))} />}
           </Field>
           <Field label={t("projectNew.field.start")}>
             {({ id }) => <Input id={id} type="date" value={blank.start} onChange={(e) => e.target.value && setBlank({ ...blank, start: e.target.value })} />}
           </Field>
-          <div><Button type="submit" variant="primary" icon="criar-projeto" disabled={!blank.title.trim()}>{t("projectNew.blank.cta")}</Button></div>
+          <div className="grid gap-1">
+            <div><Button type="submit" variant="primary" icon="criar-projeto" disabled={!!blankReason} aria-describedby={blankReason ? "new-blank-reason" : undefined}>{t("projectNew.blank.cta")}</Button></div>
+            {blankReason ? <p id="new-blank-reason" className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="blank-reason"><span aria-hidden>ⓘ </span>{blankReason}</p> : null}
+          </div>
         </form>
       </Card>}
 
@@ -79,9 +112,14 @@ export function CreateProject({ repo, actorId = DEMO_CURRENT_USER_ID, now = () =
         <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("projectNew.template.hint")}</p>
         <form className="grid gap-3" onSubmit={(e) => {
           e.preventDefault();
-          create((id) => projectFromTemplate(tpl, { id, title: tplTitle, startDate: tplStart, actorId, now: now(), templateLabel: t(`projectNew.template.${tpl}.name`) }));
+          create((id) => {
+            const model = projectFromTemplate(tpl, { id, title: tplTitle, startDate: tplStart, actorId, now: now(), templateLabel: t(`projectNew.template.${tpl}.name`) });
+            const area = templateAreaOverride(tpl, defaults);
+            return area ? { ...model, area } : model;
+          });
         }}>
-          <RadioCards label={t("projectNew.template.label")} value={tpl} onValueChange={(v) => setTpl(v as ProjectTemplateId)} columns={1}
+          {defaults.fromOccupation && tpl === defaults.template ? <FromOccupation /> : null}
+          <RadioCards label={t("projectNew.template.label")} value={tpl} onValueChange={(v) => { touched.current.tpl = true; setTpl(v as ProjectTemplateId); }} columns={1}
             options={PROJECT_TEMPLATE_IDS.map((id) => ({ value: id, label: t(`projectNew.template.${id}.name`), hint: t(`projectNew.template.${id}.hint`) }))} />
           <Field label={t("projectNew.field.title")} hint={t("projectNew.template.titleHint", { name: t(`projectNew.template.${tpl}.name`) })}>
             {({ id, describedBy }) => <Input id={id} aria-describedby={describedBy} value={tplTitle} onChange={(e) => setTplTitle(e.target.value)} />}

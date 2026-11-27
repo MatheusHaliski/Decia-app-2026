@@ -544,7 +544,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -570,7 +571,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D4": {
         "title": "Fluxo de atendimento da recepção à alta",
@@ -599,7 +601,8 @@
         ],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L8": {
         "title": "Plano de tratamento para um briefing simulado",
@@ -642,7 +645,8 @@
         ],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       }
     },
     "custom": [
@@ -1057,7 +1061,7 @@
       "revisao",
       "roteiro"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D2, D4, D5 e D7 pedem computador.",
     "nudges": {
       "cadence": "semanal",

@@ -64,10 +64,13 @@ public final class DeliveryFormats {
 
     /**
      * Chaves que o servidor preenche ao detectar o tipo real de um anexo/evidência (nunca digitadas): páginas e camada de texto do PDF,
-     * largura × altura da imagem, abas da planilha, slides da apresentação, versão do DWG, entradas do ZIP.
+     * largura × altura da imagem, abas da planilha (XLSX/ODS), slides da apresentação (PPTX/ODP), páginas do ODT, versão do DWG, entradas
+     * do ZIP; nos textos (CSV, TSV, TXT, MD, JSON, XML) codificação ({@code UTF8}, {@code UTF8BOM}, {@code WINDOWS1252}), quebra de linha
+     * ({@code LF}, {@code CRLF}, {@code CR}, {@code MIXED}), linhas e — CSV/TSV — delimitador ({@code COMMA}, {@code SEMICOLON}, {@code TAB},
+     * {@code PIPE}), colunas e cabeçalho ({@code headerRow}).
      */
     public static final Set<String> DETECTED_KEYS = Set.of("pages", "textLayer", "width", "height", "sheets", "slides", "cadVersion", "entries",
-            "encrypted");
+            "encrypted", "encoding", "lineEnding", "lines", "delimiter", "columns", "headerRow");
 
     private static final Field ENCODING = sel("encoding", "UTF8", "UTF8BOM", "LATIN1");
     private static final Field DELIMITER = sel("delimiter", "SEMICOLON", "COMMA", "TAB", "PIPE");

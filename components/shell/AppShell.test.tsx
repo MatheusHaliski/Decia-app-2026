@@ -23,7 +23,7 @@ describe("AppShell", () => {
     const sidebar = screen.getByRole("navigation", { name: "Menu principal" });
     expect(within(sidebar).getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Descobrir", "Meu trabalho", "Criar", "Jogar e ganhar", "Gestão"]);
     expect(within(sidebar).getByRole("link", { name: /Mural/ }).getAttribute("aria-current")).toBe("page");
-    expect(within(sidebar).queryByRole("link", { name: "Admin" })).toBeNull();
+    expect(within(sidebar).queryByRole("link", { name: /Administração/ })).toBeNull();
     const bottom = screen.getByRole("navigation", { name: "Navegação principal (celular)" });
     expect(within(bottom).getAllByRole("link")).toHaveLength(4);
     fireEvent.click(screen.getByTestId("bottom-create"));
@@ -78,7 +78,7 @@ describe("RfPage (página-esqueleto)", () => {
     expect(screen.getByRole("tab", { name: "Mural da empresa" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "O que esta aba vai fazer" })).toBeTruthy();
     expect(screen.getAllByRole("list", { name: "Critérios de aceite" })[0]!.children.length).toBe(6);
-    expect(screen.getByText(/Sub-aba “Mural da empresa” ainda sem conteúdo/)).toBeTruthy();
+    expect(screen.getByText(/“Mural da empresa” ainda não tem conteúdo/)).toBeTruthy();
   });
 
   it("403 simulado para perfil oculto na matriz (Admin como EMPREGADO)", () => {

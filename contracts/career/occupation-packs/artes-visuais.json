@@ -158,7 +158,8 @@
         "criteria": ["três obras da mesma série", "ficha técnica completa em cada obra", "título da série presente", "crédito de foto", "declaração de autorização de imagem quando houver pessoas"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L6": {
         "title": "Texto de artista",
@@ -167,7 +168,8 @@
         "criteria": ["até 1.500 caracteres", "questão central nomeada", "procedimentos e materiais descritos", "uma referência artística citada", "link para evidência"],
         "evidence": "bio no perfil ou documento",
         "time": "30 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L8": {
         "title": "Resposta a um edital de artes visuais",
@@ -185,7 +187,8 @@
         "criteria": ["autor, título, fonte e licença creditados", "licença permite derivação", "duas transformações declaradas", "texto curto sobre o diálogo com a obra"],
         "evidence": "remix vinculado",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L4": {
         "title": "Memorial de processo criativo",
@@ -218,7 +221,8 @@
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "2 h",
         "trigger": "Quer mostrar como montaria uma exposição com suas obras ou de um coletivo?",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       }
     ]
   },
@@ -287,7 +291,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["prancha", "3d", "infografico", "diagrama"],
     "lettersTemplates": ["bio", "proposta", "memorial", "plano-de-aula", "curriculo", "estudo-de-caso", "post", "revisao", "projeto-de-pesquisa", "artigo"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D2, D3, D10 e X2 pedem computador ou tablet; no celular ficam L6, L5, L10 e a conferência das fichas técnicas.",
     "nudges": {
       "cadence": "semanal",

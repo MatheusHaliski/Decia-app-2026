@@ -162,7 +162,8 @@
         "criteria": ["até 600 caracteres", "nomeia a área", "cita três competências", "inclui uma prova com link", "sem promessa de resultado (emagrecimento, cura)"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D4": {
         "title": "Fluxo de produção de refeições ou de atendimento",
@@ -171,7 +172,8 @@
         "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão ou controle nomeados", "registros gerados indicados"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D7": {
         "title": "Infográfico de indicadores nutricionais ou da UAN",
@@ -180,7 +182,8 @@
         "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -259,7 +262,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["relatorio-de-caso", "estudo-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "artigo", "roteiro"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só bio (L6), post (L5), revisão (L10) e rascunho de material de EAN (X1); POP, FTP, relatório e fluxo pedem computador. UAN com turno cedo: tarefas curtas à tarde.",
     "nudges": {
       "cadence": "semanal",

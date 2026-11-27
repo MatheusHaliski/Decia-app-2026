@@ -45,12 +45,34 @@ const PLACEHOLDER = /\[[^\]]{1,60}\]/;
 const GENERIC_TITLES = new Set(["tarefa", "teste", "documento", "nova tarefa", "atividade", "trabalho", "relatorio", "reuniao"]);
 const URL_RE = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
 
+/** Norma técnica ou legal citada: ABNT NBR, ISO/IEC, NR, ou lei/decreto/resolução com número. */
+const STANDARD_RE = /\b((nbr|abnt|iso|iec)(?![a-z])|nr[- ]?\d|(lei|decreto|resolucao|portaria|instrucao normativa)( federal| estadual| municipal| complementar)?( n[oº°.]*)? ?\d)/;
 const deadlineIn = (s: string) => HAS_DEADLINE.test(norm(s));
 const isVague = (s: string) => VAGUE.test(norm(s)) && !HAS_NUMBER.test(s);
 const mentions = (re: RegExp, ...texts: string[]) => texts.some((t) => re.test(norm(t)));
 
+/**
+ * Prazo que pede atenção já no campo: no passado (antes de hoje) ou antes da data de início. Datas AAAA-MM-DD; vazio ou inválido →
+ * `null`. (Prazo antes do início também é erro ao salvar — `validateTaskForm` —, mas o aviso aparece enquanto a pessoa digita.)
+ */
+export function dueDateWarning(dueAt: string | null | undefined, startAt: string | null | undefined, today: string | null | undefined): "PASSADO" | "ANTES_INICIO" | null {
+  const iso = /^\d{4}-\d{2}-\d{2}$/;
+  const due = (dueAt ?? "").slice(0, 10);
+  if (!iso.test(due)) return null;
+  const start = (startAt ?? "").slice(0, 10);
+  if (iso.test(start) && due < start) return "ANTES_INICIO";
+  const now = (today ?? "").slice(0, 10);
+  if (iso.test(now) && due < now) return "PASSADO";
+  return null;
+}
+
+export interface AssessOptions {
+  /** hoje (AAAA-MM-DD): com ele, prazo no passado vira atenção (o criador passa; o visualizador já cobra o prazo vencido à parte) */
+  today?: string;
+}
+
 // ------------------------------------------------------------------ checagem
-export function assessTask(d: TaskDraft, pack?: OccupationPack | null): QualityReport {
+export function assessTask(d: TaskDraft, pack?: OccupationPack | null, opts: AssessOptions = {}): QualityReport {
   const checks: QualityCheck[] = [];
   const add = (c: QualityCheck) => checks.push(c);
   const allText = [d.title, d.objective, d.descriptionMd, ...d.criteria, ...d.deliverables];
@@ -85,6 +107,10 @@ export function assessTask(d: TaskDraft, pack?: OccupationPack | null): QualityR
     id: "prazo", group: "ESSENCIAL", field: "dueAt",
     status: d.dueAt ? "OK" : d.priority === "ALTA" || d.priority === "CRITICA" ? "FALTA" : "AVISO",
   });
+  // prazo definido, mas no passado ou antes do início: atenção (não passa como "OK" sozinho)
+  const dueWarn = dueDateWarning(d.dueAt, d.startAt, opts.today);
+  if (dueWarn === "PASSADO") add({ id: "prazoPassado", group: "ESSENCIAL", field: "dueAt", status: "AVISO", vars: { date: d.dueAt.slice(0, 10) } });
+  if (dueWarn === "ANTES_INICIO") add({ id: "prazoInicio", group: "ESSENCIAL", field: "dueAt", status: "AVISO", vars: { date: d.dueAt.slice(0, 10), start: (d.startAt ?? "").slice(0, 10) } });
   const badRefs = d.references.filter((r) => (r.url.trim() || r.label.trim()) && !URL_RE.test(r.url.trim()));
   if (badRefs.length) add({ id: "referenciasUrl", group: "ESSENCIAL", field: "references", status: "AVISO", vars: { n: badRefs.length } });
   const restricted = d.accessClass === "RESTRITO" || d.accessClass === "SIGILOSO";
@@ -166,7 +192,9 @@ function areaChecks(area: WorkArea, d: TaskDraft, criteria: string[], refs: Task
       c("plSmart", HAS_NUMBER.test(d.objective) && deadlineIn(d.objective), { field: "objective" });
       break;
     case "ENGENHARIA":
-      c("engNorma", /\b(nbr|abnt|iso|iec|nr[- ]?\d)/.test(norm(ext("standard"))), { field: "ext.standard" });
+      // a norma pode estar no campo próprio ou já citada no título, objetivo, descrição, critérios ou entregas (ex.: "Planta baixa
+      // conforme NBR 6492"): não pedir de novo o que a tarefa já diz
+      c("engNorma", mentions(STANDARD_RE, ext("standard"), ...allText), { field: "ext.standard" });
       c("engArt", mentions(/\b(art\b|rrt|anotacao de responsabilidade|registro de responsabilidade|responsavel tecnico)/, ...allText), {
         fixes: [{ kind: "ADD_CRITERION", text: "ART (ou RRT) do responsável técnico emitida e anexada à entrega" }],
       });
@@ -191,7 +219,7 @@ function fieldChecks(pack: OccupationPack, d: TaskDraft, criteria: string[], del
   // rubrica objetiva do campo: só os critérios automáticos que valem para ESTA tarefa — os da tarefa-guia de onde o modelo veio
   // ou, sem ela, os das tarefas do mesmo tipo de peça (texto no Letters × desenho no Drawings); nunca os de outra tarefa
   const guided = (d.extensions.guidedTask ?? "").trim();
-  const drawingTypes = new Set(["DESENHO_TECNICO", "IMAGEM_EDITADA", "IMAGEM_WEB"]);
+  const drawingTypes = new Set(["DESENHO_TECNICO", "IMAGEM_EDITADA", "IMAGEM_WEB", "DIAGRAMA", "MAPA", "PAINEL_DADOS"]);
   const customEditor = new Map(pack.guidedTasks.custom.map((c) => [c.id, c.editor]));
   const editorOf = (code: string) => (code.startsWith("D") ? "drawings" : code.startsWith("L") ? "letters" : customEditor.get(code));
   const wanted = drawingTypes.has(d.type) ? "drawings" : "letters";
@@ -208,8 +236,15 @@ function fieldChecks(pack: OccupationPack, d: TaskDraft, criteria: string[], del
     });
   }
   const typical = pack.vocabulary.deliverables;
+  // entregas dos modelos do próprio campo (tarefas-guia e tarefas próprias): aplicar um modelo do campo é, por definição, entrega
+  // reconhecida pelo campo — o feedback não pode pedir a entrega típica logo depois de a pessoa usar o modelo
+  const fromTemplates = [
+    ...Object.values(pack.guidedTasks.parameters ?? {}).map((p) => p?.evidence ?? ""),
+    ...pack.guidedTasks.custom.map((c) => c.evidence ?? ""),
+  ].filter(Boolean);
   if (typical.length) {
-    const match = deliverables.some((x) => typical.some((t) => overlap(stems(x), stems(t)) >= 2));
+    const same = (x: string, t: string) => norm(x.trim()) === norm(t.trim()) || overlap(stems(x), stems(t)) >= 2;
+    const match = deliverables.some((x) => typical.some((t) => same(x, t)) || fromTemplates.some((t) => same(x, t)));
     out.push({ id: "campoEntregas", group: "CAMPO", status: match ? "OK" : "AVISO", fixes: typical.slice(0, 2).map((t) => ({ kind: "ADD_DELIVERABLE" as const, text: t.charAt(0).toUpperCase() + t.slice(1) })) });
   }
   const cite = [...pack.ai.citeSources].sort((a, b) => rank(a.kind) - rank(b.kind));

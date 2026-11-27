@@ -1,6 +1,17 @@
 package br.gov.pr.secid.workstation.application.decisao;
 
 import br.gov.pr.secid.workstation.domain.decisao.CriterionAssessment;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionAssumption;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionCheckpoint;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionForecast;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRecommendation;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRetrospective;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRisk;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionScenario;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionTrigger;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionWorkLink;
+import br.gov.pr.secid.workstation.domain.decisao.WorkLinkTarget;
+import br.gov.pr.secid.workstation.domain.security.ScopedResource;
 import br.gov.pr.secid.workstation.domain.decisao.Decision;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionAlternative;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionCriterion;
@@ -33,10 +44,38 @@ public interface DecisionRepositoryPort {
     record StoredEvidence(DecisionEvidence evidence, Instant addedAt) {
     }
 
+    /** Recomendação com o carimbo de criação (a UI ordena e mostra "gerada em"). */
+    record StoredRecommendation(DecisionRecommendation recommendation, Instant createdAt) {
+    }
+
+    /** Vínculo de trabalho com o carimbo de criação. */
+    record StoredWorkLink(DecisionWorkLink link, Instant createdAt) {
+    }
+
+    /** Registros da fase 7b (premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints, vínculos e retrospectiva). */
+    record Records(List<DecisionAssumption> assumptions, List<DecisionRisk> risks, List<DecisionScenario> scenarios,
+                   List<DecisionForecast> forecasts, List<StoredRecommendation> recommendations, List<DecisionTrigger> triggers,
+                   List<DecisionCheckpoint> checkpoints, List<StoredWorkLink> workLinks, DecisionRetrospective retrospective) {
+        public Records {
+            assumptions = List.copyOf(assumptions);
+            risks = List.copyOf(risks);
+            scenarios = List.copyOf(scenarios);
+            forecasts = List.copyOf(forecasts);
+            recommendations = List.copyOf(recommendations);
+            triggers = List.copyOf(triggers);
+            checkpoints = List.copyOf(checkpoints);
+            workLinks = List.copyOf(workLinks);
+        }
+
+        public static Records empty() {
+            return new Records(List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), null);
+        }
+    }
+
     /** Filhos da decisão lidos para montar a visão (ordem: posição/data). {@code outcome} nulo = sem resultado registrado. */
     record Graph(List<DecisionParticipant> participants, List<DecisionAlternative> alternatives, List<DecisionCriterion> criteria,
                  List<CriterionAssessment> assessments, List<StoredEvidence> evidence, List<EvidenceLink> evidenceLinks,
-                 List<DecisionSnapshot> snapshots, DecisionOutcome outcome, List<DecisionEvent> events) {
+                 List<DecisionSnapshot> snapshots, DecisionOutcome outcome, List<DecisionEvent> events, Records records) {
         public Graph {
             participants = List.copyOf(participants);
             alternatives = List.copyOf(alternatives);
@@ -46,6 +85,13 @@ public interface DecisionRepositoryPort {
             evidenceLinks = List.copyOf(evidenceLinks);
             snapshots = List.copyOf(snapshots);
             events = List.copyOf(events);
+            records = records == null ? Records.empty() : records;
+        }
+
+        public Graph(List<DecisionParticipant> participants, List<DecisionAlternative> alternatives, List<DecisionCriterion> criteria,
+                     List<CriterionAssessment> assessments, List<StoredEvidence> evidence, List<EvidenceLink> evidenceLinks,
+                     List<DecisionSnapshot> snapshots, DecisionOutcome outcome, List<DecisionEvent> events) {
+            this(participants, alternatives, criteria, assessments, evidence, evidenceLinks, snapshots, outcome, events, Records.empty());
         }
 
         public static Graph empty() {
@@ -93,4 +139,45 @@ public interface DecisionRepositoryPort {
     void saveOutcome(DecisionOutcome outcome);
 
     void appendEvent(DecisionEvent event);
+
+    // ---------------------------------------------------------------------------------------------- fase 7b: registros da decisão
+
+    /** Insere (id nulo → gerado) ou substitui a premissa; devolve o estado gravado. */
+    DecisionAssumption saveAssumption(DecisionAssumption assumption);
+
+    void removeAssumption(UUID decisionId, UUID id);
+
+    DecisionRisk saveRisk(DecisionRisk risk);
+
+    void removeRisk(UUID decisionId, UUID id);
+
+    DecisionScenario saveScenario(DecisionScenario scenario);
+
+    void removeScenario(UUID decisionId, UUID id);
+
+    DecisionForecast saveForecast(DecisionForecast forecast);
+
+    StoredRecommendation saveRecommendation(DecisionRecommendation recommendation);
+
+    DecisionTrigger saveTrigger(DecisionTrigger trigger);
+
+    void removeTrigger(UUID decisionId, UUID id);
+
+    DecisionCheckpoint saveCheckpoint(DecisionCheckpoint checkpoint);
+
+    /** Liga a decisão ao trabalho (id do vínculo vem do serviço). Único por (decisão, tipo, alvo). */
+    StoredWorkLink addWorkLink(DecisionWorkLink link, Instant at);
+
+    void removeWorkLink(UUID decisionId, UUID id);
+
+    DecisionRetrospective saveRetrospective(DecisionRetrospective retrospective);
+
+    /** Decisões com vínculo para o alvo (ex.: a página da tarefa), mais recentes primeiro; o serviço filtra uma a uma pelo acesso. */
+    List<StoredDecision> findByWorkTarget(WorkLinkTarget type, UUID targetId, int limit);
+
+    /**
+     * Escopo de acesso do alvo de um vínculo (tarefa, projeto ou marco do projeto) para conferir que quem liga o vê; vazio = inexistente.
+     * O serviço responde o mesmo 422 para inexistente e invisível (sem oráculo de existência).
+     */
+    Optional<ScopedResource> workTarget(WorkLinkTarget type, UUID targetId);
 }

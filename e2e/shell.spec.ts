@@ -38,6 +38,29 @@ test("shell desktop: sidebar com 5 grupos, navegação por 3 grupos e estado ati
   await expect(page.getByRole("heading", { name: "O que esta aba vai fazer" })).toBeVisible();
 });
 
+test("guia da interface: / leva a Hoje, faixa de demonstração, ajuda '?' e 'Em breve' no menu", async ({ page }) => {
+  // a sessão simulada (cookie-sinal) faz a raiz abrir "Hoje"; o Mural continua a um clique
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/today$/);
+  await ready(page);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hoje");
+  await expect(page.getByTestId("first-steps")).toBeVisible();
+  await expect(page.getByTestId("today-shortcut-mural")).toHaveAttribute("href", "/mural");
+  await shot(page, "hoje");
+
+  const sidebar = page.getByRole("navigation", { name: "Menu principal" });
+  await expect(sidebar.getByRole("link", { name: /Painel de insights/ })).toContainText("Em breve");
+
+  await page.goto("/mural");
+  await expect(page.getByTestId("demo-banner")).toContainText("Modo demonstração");
+
+  await page.goto("/tasks");
+  await ready(page);
+  await expect(page.getByTestId("demo-banner")).toHaveCount(0);
+  await page.getByRole("button", { name: "Ajuda sobre esta tela" }).click();
+  await expect(page.getByRole("dialog", { name: "Sobre esta tela" }).getByRole("link", { name: "Criar uma tarefa" })).toHaveAttribute("href", "/tasks/new");
+});
+
 test("sino de notificações e Central de Perfil (troca de perfil de visualização)", async ({ page }) => {
   await page.goto("/mural");
   await ready(page);

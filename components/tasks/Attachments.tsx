@@ -13,6 +13,11 @@ import { attachmentsApi, type AttachmentView, type EvidenceMeta, type TaskView }
 import { formatBytes, formatDateTime, isBlob, localDateTimeToIso, openOrDownload } from "@/lib/tasks/files";
 import { attachmentFormat, FORMAT_FAMILIES, formatFromView, formatMismatch, type FormatFamilyId } from "@/lib/tasks/formats";
 import { AttachmentFormat, useFormatText } from "./AttachmentFormat";
+import { FileDrop } from "./FileDrop";
+import { acceptedAlternatives, adviseFile, askedCodes, splitPicked } from "@/lib/tasks/fileAdvice";
+
+/** Arquivo na fila de envio, com a situação de cada um (o cliente da API não expõe progresso em bytes: enviando → enviado/erro). */
+interface Queued { key: string; file: File; status: "pendente" | "enviando" | "enviado" | "erro"; error?: string }
 
 /** Igual ao teto do servidor (`TaskAttachmentService.MAX_BYTES` e `spring.servlet.multipart.max-file-size`). */
 export const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024;
@@ -132,8 +137,8 @@ export function TaskAttachments({ task }: { task: TaskView }) {
   const taskId = task.id!;
   const [items, setItems] = useState<AttachmentView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [inputKey, setInputKey] = useState(0);
+  const [queue, setQueue] = useState<Queued[]>([]);
+  const [pickError, setPickError] = useState<string | null>(null);
   const [asEvidence, setAsEvidence] = useState(false);
   const [form, setForm] = useState<EvidenceForm>(EMPTY_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -171,14 +176,50 @@ export function TaskAttachments({ task }: { task: TaskView }) {
     }
   }
 
+  /** Escolha (input, câmera ou arrastar): tipo recusado pelo servidor e arquivo grande demais não entram, com o motivo. */
+  function pick(picked: File[]) {
+    const { ok, refused } = splitPicked(picked, asked);
+    const big = ok.filter((f) => f.size > MAX_ATTACHMENT_BYTES);
+    const msgs = [
+      refused.length ? t("criador2.files.refused", { names: refused.map((f) => f.name).join(", "), types: acceptedAlternatives(asked).join(", ") }) : "",
+      big.length ? t("taskForm.files.tooBig", { names: big.map((f) => f.name).join(", ") }) : "",
+    ].filter(Boolean);
+    setPickError(msgs.length ? msgs.join(" ") : null);
+    setErrors({});
+    const fresh = ok.filter((f) => f.size <= MAX_ATTACHMENT_BYTES).map((file, i) => ({ key: `${Date.now()}-${i}-${file.name}`, file, status: "pendente" as const }));
+    // evidência é uma por envio (legenda e local próprios); anexos vão vários de uma vez
+    setQueue((cur) => (asEvidence ? fresh.slice(0, 1) : [...cur.filter((q) => q.status !== "enviado"), ...fresh].slice(0, 20)));
+  }
+
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!file) { setErrors({ file: t("tasks.attach.chooseFile") }); return; }
-    if (file.size > MAX_ATTACHMENT_BYTES) { setErrors({ file: t("tasks.attach.tooBig") }); return; }
+    const pending = queue.filter((q) => q.status === "pendente" || q.status === "erro");
+    if (!pending.length) { setErrors({ file: t("tasks.attach.chooseFile") }); return; }
     setErrors({});
-    const ok = await run(() => (asEvidence ? attachmentsApi.addEvidence(taskId, file, file.name, toMeta(form)) : attachmentsApi.upload(taskId, file, file.name)),
-      t(asEvidence ? "tasks.attach.evidenceSent" : "tasks.attach.sent"), setErrors);
-    if (ok) { setFile(null); setForm(EMPTY_FORM); setInputKey((k) => k + 1); }
+    setBusy(true);
+    const mark = (key: string, patch: Partial<Queued>) => setQueue((cur) => cur.map((q) => (q.key === key ? { ...q, ...patch } : q)));
+    let sent = 0;
+    const list = asEvidence ? pending.slice(0, 1) : pending;
+    for (const q of list) {
+      mark(q.key, { status: "enviando", error: undefined });
+      try {
+        await (asEvidence ? attachmentsApi.addEvidence(taskId, q.file, q.file.name, toMeta(form)) : attachmentsApi.upload(taskId, q.file, q.file.name));
+        mark(q.key, { status: "enviado" });
+        sent += 1;
+      } catch (err) {
+        if (asEvidence && err instanceof ApiError && err.status === 422 && Object.keys(err.fields).length) setErrors(err.fields);
+        mark(q.key, { status: "erro", error: errorText(err) });
+      }
+    }
+    setBusy(false);
+    if (sent) {
+      const ok = t(asEvidence ? "tasks.attach.evidenceSent" : sent === 1 ? "tasks.attach.sent" : "criador2.upload.sentMany", { n: sent });
+      toast({ title: ok, tone: "sucesso" });
+      setAnnounce(ok);
+      if (asEvidence) setForm(EMPTY_FORM);
+      load();
+    }
+    if (sent < list.length) toast({ title: t("tasks.attach.failed"), description: t("criador2.upload.someFailed", { n: list.length - sent }), tone: "erro" });
   }
 
   async function confirmMark() {
@@ -201,16 +242,37 @@ export function TaskAttachments({ task }: { task: TaskView }) {
         <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("tasks.attach.hint")}</p>
         {task.editable ? (
           <form className="grid gap-3 rounded-[var(--ws-radius-md)] border border-ws-border p-3" onSubmit={(e) => void submit(e)}>
-            <Field label={t("tasks.attach.file")} error={errors.file}>
-              {({ id, describedBy, invalid }) => (
-                <Input key={inputKey} id={id} type="file" aria-describedby={describedBy} invalid={invalid} disabled={busy}
-                  onChange={(e) => { setFile(e.target.files?.[0] ?? null); setErrors({}); }} />
-              )}
-            </Field>
-            <Checkbox checked={asEvidence} onCheckedChange={setAsEvidence} disabled={busy} label={t("tasks.attach.asEvidence")} />
+            <FileDrop label={t("tasks.attach.file")} error={errors.file ?? pickError ?? undefined} disabled={busy} multiple={!asEvidence} onFiles={pick} testId="attach-drop" />
+            {queue.length ? (
+              <ul className="grid gap-1" aria-label={t("criador2.upload.queue")} aria-live="polite" data-testid="attach-queue">
+                {queue.map((q) => {
+                  const advice = adviseFile({ name: q.file.name, type: q.file.type }, asked);
+                  return (
+                    <li key={q.key} className="flex items-center gap-2 text-[length:var(--ws-text-body-sm)]" data-file={q.file.name} data-status={q.status}>
+                      <span className="grid min-w-0 flex-1 gap-0.5">
+                        <span className="[overflow-wrap:anywhere]">{q.file.name} <span className="text-ws-text-muted">· {formatBytes(q.file.size, intl)}</span></span>
+                        {advice.mismatch ? (
+                          <span className="rounded-[var(--ws-radius-sm)] bg-ws-warning-soft px-1 text-[length:var(--ws-text-caption)]" data-testid="file-format-advice">
+                            <span aria-hidden>! </span>{t("criador2.files.mismatch", { asked: `${t(`taskForm.fmt.familyName.${asked.family}`)} (${askedCodes(asked)})`, got: advice.got })}
+                          </span>
+                        ) : null}
+                        <span className={q.status === "erro" ? "text-[length:var(--ws-text-caption)] text-ws-danger-ink" : "text-[length:var(--ws-text-caption)] text-ws-text-muted"} data-testid="file-upload-status">
+                          <span aria-hidden>{q.status === "enviado" ? "✓ " : q.status === "erro" ? "✕ " : q.status === "enviando" ? "◷ " : "○ "}</span>
+                          {t(`criador2.upload.${q.status}`)}{q.error ? `: ${q.error}` : ""}
+                        </span>
+                      </span>
+                      {q.status !== "enviando" ? (
+                        <Button size="sm" variant="ghost" disabled={busy} onClick={() => setQueue((cur) => cur.filter((x) => x.key !== q.key))} aria-label={t("tasks.form.remove", { item: q.file.name })}>×</Button>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+            <Checkbox checked={asEvidence} onCheckedChange={(v) => { setAsEvidence(v); if (v) setQueue((cur) => cur.filter((q) => q.status !== "enviado").slice(0, 1)); }} disabled={busy} label={t("tasks.attach.asEvidence")} />
             {asEvidence ? <EvidenceFields value={form} onChange={setForm} errors={errors} disabled={busy} /> : null}
             <div><Button type="submit" variant="primary" disabled={busy} busy={busy} aria-describedby={fileId}>{t(asEvidence ? "tasks.attach.sendEvidence" : "tasks.attach.send")}</Button></div>
-            <span id={fileId} className="sr-only">{file ? `${file.name} · ${formatBytes(file.size, intl)}` : ""}</span>
+            <span id={fileId} className="sr-only">{queue.filter((q) => q.status === "pendente").map((q) => `${q.file.name} · ${formatBytes(q.file.size, intl)}`).join("; ")}</span>
           </form>
         ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("tasks.attach.readOnlyNote")}</p>}
 

@@ -154,12 +154,72 @@ describe("criador completo de tarefas", () => {
     fill(/Formato da entrega/, "PLANILHA");
     fill(/^Variante/, "XLSX");
     const input = screen.getByLabelText(/^Anexos/) as HTMLInputElement;
-    fireEvent.change(input, { target: { files: [new File(["a;b"], "dados.csv", { type: "text/csv" })] } });
-    const line = screen.getByTestId("task-files").querySelector('[data-file="dados.csv"]')!;
+    // PDF é aceito pelo servidor, mas não é a planilha pedida: entra na lista com o aviso já na escolha
+    fireEvent.change(input, { target: { files: [new File(["%PDF"], "dados.pdf", { type: "application/pdf" })] } });
+    const line = screen.getByTestId("task-files").querySelector('[data-file="dados.pdf"]')!;
     const fmt = within(line as HTMLElement).getByTestId("attachment-format");
-    expect(fmt.getAttribute("data-variant")).toBe("CSV");
+    expect(fmt.getAttribute("data-variant")).toBe("PDF");
     expect(fmt.getAttribute("data-estimated")).toBe("true");
     expect(within(fmt).getByTestId("format-mismatch").textContent).toContain("Planilha · XLSX");
+    expect(within(line as HTMLElement).getByTestId("file-format-advice").textContent).toBe("! Você pediu Planilha (XLSX) e anexou PDF.");
+  });
+
+  it("anexo de tipo que o servidor recusa não entra: accept no input e mensagem com o que enviar", () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
+    fill(/Formato da entrega/, "DESENHO_TECNICO");
+    const input = screen.getByLabelText(/^Anexos/) as HTMLInputElement;
+    expect(input.getAttribute("accept")).toContain(".dwg");
+    expect(input.getAttribute("accept")).not.toContain(".mp4");
+    expect(input.multiple).toBe(true);
+    fireEvent.change(input, { target: { files: [new File(["x"], "visita.mp4", { type: "video/mp4" }), new File(["x"], "notas.txt", { type: "text/plain" })] } });
+    const box = screen.getByTestId("task-files");
+    expect(box.querySelector('[data-file="visita.mp4"]')).toBeNull();
+    expect(box.textContent).toContain("Não será aceito pelo servidor e ficou de fora: visita.mp4. Envie em DWG, DXF, IFC, GLB, PDF");
+    // TXT é aceito, mas diverge do desenho técnico pedido: entra, com o aviso já na escolha
+    const txt = box.querySelector('[data-file="notas.txt"]') as HTMLElement;
+    expect(within(txt).getByTestId("file-format-advice").textContent).toContain("Você pediu Desenho técnico (DWG/DXF/IFC/GLB/PDF) e anexou TXT.");
+    // câmera do celular: input só de imagem com capture
+    const cam = screen.getByTestId("task-files-drop-camera");
+    expect(cam.getAttribute("capture")).toBe("environment");
+    expect(cam.getAttribute("accept")).toContain("image/png");
+  });
+
+  it("arrastar e soltar vários arquivos de uma vez entra na lista", () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
+    const zone = screen.getByTestId("task-files-drop");
+    const files = [new File(["%PDF"], "a.pdf", { type: "application/pdf" }), new File(["x"], "b.png", { type: "image/png" })];
+    fireEvent.dragOver(zone, { dataTransfer: { files } });
+    expect(zone.getAttribute("data-dragging")).toBe("true");
+    fireEvent.drop(zone, { dataTransfer: { files } });
+    const box = screen.getByTestId("task-files");
+    expect(box.querySelector('[data-file="a.pdf"]')).toBeTruthy();
+    expect(box.querySelector('[data-file="b.png"]')).toBeTruthy();
+  });
+
+  it("prazo no passado ou antes do início vira atenção no campo e no feedback", async () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
+    fill(/^Prazo/, "2020-01-10");
+    expect(screen.getByTestId("due-warning").getAttribute("data-kind")).toBe("PASSADO");
+    expect(document.querySelector('[data-check="prazoPassado"]')?.getAttribute("data-status")).toBe("AVISO");
+    fill(/^Início previsto/, "2099-01-01");
+    fill(/^Prazo/, "2098-12-01");
+    expect(screen.getByTestId("due-warning").getAttribute("data-kind")).toBe("ANTES_INICIO");
+    expect(screen.getByTestId("due-warning").textContent).toContain("anterior ao início");
+  });
+
+  it("sem sessão (DEMO/sem API) avisa logo no topo que salvar exige conta, com link para entrar", async () => {
+    fetchMock.mockImplementation(async () => json(401, { code: "NAO_AUTENTICADO" }));
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
+    const banner = await screen.findByTestId("task-no-session");
+    expect(banner.textContent).toContain("Salvar uma tarefa exige entrar na sua conta");
+    expect(within(banner).getByRole("link").getAttribute("href")).toBe("/login?next=%2Ftasks%2Fnew");
+  });
+
+  it("com sessão não mostra o aviso de conta", async () => {
+    renderWithProviders(<TaskForm mode="create" onSaved={vi.fn()} />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    await new Promise((r) => setTimeout(r, 0));
+    expect(screen.queryByTestId("task-no-session")).toBeNull();
   });
 
   it("salvar e criar outra: mantém o enquadramento, limpa o resto e não sai do criador", async () => {
