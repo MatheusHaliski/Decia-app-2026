@@ -103,7 +103,7 @@ describe("criador completo de tarefas", () => {
     fill(/Cidadão remetente/, "Maria da Silva");
     fill(/Documento de origem/, "Requerimento 7/2026");
     fill(/Nº do protocolo/, "SEI 0001");
-    fireEvent.click(screen.getByRole("checkbox", { name: "Tem prazo legal" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: /^Tem prazo legal/ }));
     const rule = await screen.findByRole("option", { name: /Pedido LAI — 20 dias corridos/ });
     fireEvent.change(screen.getByLabelText(/Regra de prazo legal/), { target: { value: (rule as HTMLOptionElement).value } });
     fill(/Data de início/, "2026-11-10");
