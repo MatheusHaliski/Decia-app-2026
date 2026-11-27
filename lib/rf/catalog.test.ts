@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import { OUT, gerar, parseReadme, plain } from "../../scripts/rf/gerar-catalogo.mjs";
+import { OUT, STATUS_MD, gerar, gerarStatus, parseReadme, plain } from "../../scripts/rf/gerar-catalogo.mjs";
+import { classify, parseController, parseRegistry, parseRouteStatus } from "../../scripts/rf/status.mjs";
 import { RF_CATALOG } from "./catalog.gen";
 import { PAGES, rfsOf } from "@/lib/pages/registry";
 
@@ -8,6 +9,42 @@ import { PAGES, rfsOf } from "@/lib/pages/registry";
 describe("catálogo de RFs gerado dos READMEs", () => {
   it("lib/rf/catalog.gen.ts está em dia (rode node scripts/rf/gerar-catalogo.mjs)", () => {
     expect(fs.readFileSync(OUT, "utf8")).toBe(gerar());
+  });
+
+  it("docs/rf/STATUS.md está em dia com os controllers do ws-web e lib/pages/status.ts (rode node scripts/rf/gerar-catalogo.mjs)", () => {
+    expect(fs.readFileSync(STATUS_MD, "utf8")).toBe(gerarStatus());
+  });
+
+  it("todo RF tem status api · parcial · demo · planejado, e algum RF já é ponta a ponta", () => {
+    for (const rf of RF_CATALOG) expect(["api", "parcial", "demo", "planejado"], rf.id).toContain(rf.status);
+    expect(RF_CATALOG.some((r) => r.status === "api")).toBe(true);
+  });
+
+  it("status: lê @Tag/@RequestMapping/@Operation e aplica a regra api/parcial/demo/planejado", () => {
+    const java = [
+      '@RequestMapping("/api/x")',
+      '@Tag(name = "RF90 Coisas")',
+      "public class XController {",
+      '    @Operation(summary = "RF91.CA01/RF92.CA02 Cria " + "coisa")',
+      '    @PostMapping(path = "/novo", consumes = "a")',
+      "    void a() {}",
+      "    @GetMapping",
+      "    void b() {}",
+      "}",
+    ].join("\n");
+    const eps = parseController(java);
+    expect(eps).toEqual([
+      { method: "POST", path: "/api/x/novo", rfs: ["RF91", "RF92"], summary: "RF91.CA01/RF92.CA02 Cria coisa", file: "" },
+      { method: "GET", path: "/api/x", rfs: ["RF90"], summary: "", file: "" },
+    ]);
+    const rts = parseRegistry('p("/a", "f", "k", ["RF90", "RF93"], x), p("/b", "f", "k", ["RF94"], x), p("/c", "f", "k", ["RF91"], x), p("/d", "f", "k", ["RF95", "RF96"], x)')
+      .map((r) => ({ ...r, status: parseRouteStatus('export const ROUTE_STATUS: X = {\n  "/a": "live",\n  "/b": "demo",\n  "/c": "skeleton",\n  "/d": "live",\n};')[r.route] ?? "live" }));
+    expect(classify("RF90", eps, rts).status).toBe("api");
+    expect(classify("RF91", eps, rts).status).toBe("parcial"); // endpoint sem rota live
+    expect(classify("RF95", eps, rts).status).toBe("parcial"); // principal de rota live sem endpoint
+    expect(classify("RF94", eps, rts).status).toBe("demo");
+    expect(classify("RF96", eps, rts).status).toBe("planejado"); // citado de passagem
+    expect(classify("RF93", eps, rts).status).toBe("planejado");
   });
 
   it("tem RF1…RFn contíguos (todo docs/diagramas/RFnn), cada um com título, rota e pelo menos um CA ou linha de cobertura", () => {
