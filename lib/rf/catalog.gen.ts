@@ -2,8 +2,10 @@
 // Título, HU, Aba/rota, cobertura e CAs copiados dos READMEs (texto-fonte em pt-BR). Teste: lib/rf/catalog.test.ts.
 
 export type CaKind = 'enunciado' | 'rastreabilidade';
+/** api: endpoint + rota live · parcial: só um dos dois · demo: rota DEMO em memória · planejado: nada disso (docs/rf/STATUS.md). */
+export type RfStatus = 'api' | 'parcial' | 'demo' | 'planejado';
 export interface RfCa { id: string; text: string; note: string; kind: CaKind }
-export interface RfEntry { id: string; n: number; title: string; hu: string | null; summary: string | null; route: string | null; coverage: string | null; cas: RfCa[] }
+export interface RfEntry { id: string; n: number; title: string; hu: string | null; summary: string | null; route: string | null; coverage: string | null; cas: RfCa[]; status: RfStatus }
 
 export const RF_CATALOG: readonly RfEntry[] = [
   {
@@ -177,7 +179,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF2",
@@ -272,7 +275,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF3",
@@ -427,7 +431,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF4",
@@ -528,7 +533,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF5",
@@ -623,7 +629,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF6",
@@ -670,7 +677,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF7",
@@ -717,7 +725,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF8",
@@ -764,7 +773,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "parcial"
   },
   {
     "id": "RF9",
@@ -811,7 +821,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF10",
@@ -858,7 +869,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF11",
@@ -905,7 +917,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF12",
@@ -952,7 +965,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF13",
@@ -999,7 +1013,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF14",
@@ -1046,7 +1061,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF15",
@@ -1093,7 +1109,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF16",
@@ -1140,7 +1157,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF17",
@@ -1187,7 +1205,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF18",
@@ -1234,7 +1253,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF19",
@@ -1299,7 +1319,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF20",
@@ -1352,7 +1373,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "… RF20.CA15 (corpo = criador de tarefas",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "parcial"
   },
   {
     "id": "RF21",
@@ -1405,7 +1427,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF22",
@@ -1458,7 +1481,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF23",
@@ -1523,7 +1547,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "a confirmar — importar projeto de provedor",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF24",
@@ -1576,7 +1601,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF25",
@@ -1617,7 +1643,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF26",
@@ -1700,7 +1727,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF27",
@@ -1747,7 +1775,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF28",
@@ -1860,7 +1889,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF29",
@@ -1925,7 +1955,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF30",
@@ -1972,7 +2003,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF31",
@@ -2013,7 +2045,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF32",
@@ -2060,7 +2093,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF33",
@@ -2107,7 +2141,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF34",
@@ -2154,7 +2189,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "parcial"
   },
   {
     "id": "RF35",
@@ -2201,7 +2237,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF36",
@@ -2242,7 +2279,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF37",
@@ -2283,7 +2321,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF38",
@@ -2354,7 +2393,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "parcial"
   },
   {
     "id": "RF39",
@@ -2437,7 +2477,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF40",
@@ -2496,7 +2537,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF41",
@@ -2561,7 +2603,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF42",
@@ -2632,7 +2675,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF43",
@@ -2733,7 +2777,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF44",
@@ -2804,7 +2849,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "parcial"
   },
   {
     "id": "RF45",
@@ -2875,7 +2921,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF46",
@@ -2922,7 +2969,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "rastreabilidade"
       }
-    ]
+    ],
+    "status": "api"
   },
   {
     "id": "RF47",
@@ -3017,7 +3065,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "Conexão RF47 ↔ RF48",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF48",
@@ -3142,7 +3191,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "Conexão RF47 ↔ RF48",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF49",
@@ -3237,7 +3287,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF50",
@@ -3356,7 +3407,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF51",
@@ -3409,7 +3461,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF52",
@@ -3462,7 +3515,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF53",
@@ -3515,7 +3569,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF54",
@@ -3568,7 +3623,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF55",
@@ -3621,7 +3677,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF56",
@@ -3674,7 +3731,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF57",
@@ -3739,7 +3797,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF58",
@@ -3792,7 +3851,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF59",
@@ -3845,7 +3905,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF60",
@@ -3898,7 +3959,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF61",
@@ -3957,7 +4019,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF62",
@@ -4016,7 +4079,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF63",
@@ -4075,7 +4139,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF64",
@@ -4128,7 +4193,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF65",
@@ -4181,7 +4247,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF66",
@@ -4240,7 +4307,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF67",
@@ -4293,7 +4361,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF68",
@@ -4346,7 +4415,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF69",
@@ -4405,7 +4475,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF70",
@@ -4458,7 +4529,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF71",
@@ -4511,7 +4583,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF72",
@@ -4564,7 +4637,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF73",
@@ -4635,7 +4709,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF74",
@@ -4718,7 +4793,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF75",
@@ -4843,7 +4919,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF76",
@@ -4938,7 +5015,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF77",
@@ -5039,7 +5117,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF78",
@@ -5122,7 +5201,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF79",
@@ -5235,7 +5315,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   },
   {
     "id": "RF80",
@@ -5342,7 +5423,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "demo"
   },
   {
     "id": "RF81",
@@ -5413,6 +5495,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "note": "",
         "kind": "enunciado"
       }
-    ]
+    ],
+    "status": "planejado"
   }
 ];

@@ -174,7 +174,15 @@ jobs:
             | tar -xz gitleaks
           # Histórico inteiro DESTA branch (HEAD). Sem --log-opts o gitleaks usa --all e passa a julgar o PR por
           # commits de outras branches do remoto (fetch-depth 0 traz todas), que não são deste PR.
-          ./gitleaks git --redact --no-banner --exit-code 1 --log-opts="HEAD" .
+          # O relatório (redigido: sem o valor do segredo) lista commit:arquivo:regra:linha de cada achado, para triagem
+          # (falso positivo vai ao .gitleaksignore com justificativa; segredo real é revogado e trocado).
+          ./gitleaks git --redact --no-banner --exit-code 1 --log-opts="HEAD" \
+            --report-format json --report-path gitleaks-report.json . || {
+            echo "::group::Achados (fingerprint · regra · arquivo:linha)"
+            jq -r '.[] | "\(.Fingerprint) · \(.RuleID) · \(.File):\(.StartLine)"' gitleaks-report.json
+            echo "::endgroup::"
+            exit 1
+          }
 
   commits:
     name: Conventional Commits (commitlint)

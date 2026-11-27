@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Gera lib/rf/catalog.gen.ts a partir de docs/diagramas/RFnn/README.md (fonte de verdade dos RFs: título na linha 1,
 // HU, "Aba/rota", "Critérios de aceite cobertos" e os CAs numerados). Cada página-esqueleto cita o RF e lista os CAs
-// pelo texto do README — nunca inventados aqui. Uso: node scripts/rf/gerar-catalogo.mjs [--check]
+// pelo texto do README — nunca inventados aqui. O campo `status` (api · parcial · demo · planejado) vem do código, não do README
+// (scripts/rf/status.mjs), e o mesmo mapa gera docs/rf/STATUS.md. Uso: node scripts/rf/gerar-catalogo.mjs [--check]
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { STATUS_MD, mapaStatus, relatorio } from "./status.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIAGRAMAS = path.join(ROOT, "docs/diagramas");
@@ -102,18 +104,35 @@ export function parseReadme(id, md) {
   };
 }
 
-export function gerar() {
+export { STATUS_MD };
+
+/** Itens do catálogo (README) com o `status` derivado do código, mais o mapa completo (endpoints e rotas por RF). */
+export function itens() {
   const dirs = fs.readdirSync(DIAGRAMAS).filter((d) => /^RF\d+$/.test(d) && fs.existsSync(path.join(DIAGRAMAS, d, "README.md")));
   dirs.sort((a, b) => Number(a.slice(2)) - Number(b.slice(2)));
   const items = dirs.map((d) => parseReadme(d, fs.readFileSync(path.join(DIAGRAMAS, d, "README.md"), "utf8")));
   if (items.length < 48) throw new Error(`esperava ≥ 48 READMEs de RF, achei ${items.length}`);
+  const mapa = mapaStatus(items.map((r) => r.id));
+  return { items: items.map((r) => ({ ...r, status: mapa[r.id].status })), mapa };
+}
+
+/** docs/rf/STATUS.md (relatório do mapa de status, com a % ponta a ponta). */
+export function gerarStatus() {
+  const { items, mapa } = itens();
+  return relatorio(items, mapa);
+}
+
+export function gerar() {
+  const { items } = itens();
   return [
     "// GERADO por scripts/rf/gerar-catalogo.mjs a partir de docs/diagramas/RFnn/README.md — não editar à mão.",
     "// Título, HU, Aba/rota, cobertura e CAs copiados dos READMEs (texto-fonte em pt-BR). Teste: lib/rf/catalog.test.ts.",
     "",
     "export type CaKind = 'enunciado' | 'rastreabilidade';",
+    "/** api: endpoint + rota live · parcial: só um dos dois · demo: rota DEMO em memória · planejado: nada disso (docs/rf/STATUS.md). */",
+    "export type RfStatus = 'api' | 'parcial' | 'demo' | 'planejado';",
     "export interface RfCa { id: string; text: string; note: string; kind: CaKind }",
-    "export interface RfEntry { id: string; n: number; title: string; hu: string | null; summary: string | null; route: string | null; coverage: string | null; cas: RfCa[] }",
+    "export interface RfEntry { id: string; n: number; title: string; hu: string | null; summary: string | null; route: string | null; coverage: string | null; cas: RfCa[]; status: RfStatus }",
     "",
     `export const RF_CATALOG: readonly RfEntry[] = ${JSON.stringify(items, null, 2)};`,
     "",
@@ -122,13 +141,20 @@ export function gerar() {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const out = gerar();
+  const status = gerarStatus();
   if (process.argv.includes("--check")) {
-    const atual = fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8") : "";
-    if (atual !== out) { console.error(`${path.relative(ROOT, OUT)} desatualizado: rode node scripts/rf/gerar-catalogo.mjs`); process.exit(1); }
-    console.log("catálogo de RFs em dia");
+    let ok = true;
+    for (const [file, conteudo] of [[OUT, out], [STATUS_MD, status]]) {
+      const atual = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
+      if (atual !== conteudo) { console.error(`${path.relative(ROOT, file)} desatualizado: rode node scripts/rf/gerar-catalogo.mjs`); ok = false; }
+    }
+    if (!ok) process.exit(1);
+    console.log("catálogo e status de RFs em dia");
   } else {
-    fs.mkdirSync(path.dirname(OUT), { recursive: true });
-    fs.writeFileSync(OUT, out);
-    console.log(`gerado ${path.relative(ROOT, OUT)} (${(out.match(/"id": "RF\d+"/g) ?? []).length} RFs)`);
+    for (const [file, conteudo] of [[OUT, out], [STATUS_MD, status]]) {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, conteudo);
+    }
+    console.log(`gerado ${path.relative(ROOT, OUT)} (${(out.match(/"id": "RF\d+"/g) ?? []).length} RFs) e ${path.relative(ROOT, STATUS_MD)}`);
   }
 }
