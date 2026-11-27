@@ -1,0 +1,6 @@
+{
+  "$comment": "Teto do First Load JS (gzip) por rota — scripts/perf/budget.mjs. 'routes': padrão exato ou prefixo com *; o primeiro que casa vale. Reveja os números a cada build medido (relatório de desempenho).",
+  "default": "PLACEHOLDER",
+  "routes": {},
+  "ignore": []
+}
