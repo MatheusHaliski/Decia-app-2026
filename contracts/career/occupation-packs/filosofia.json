@@ -146,7 +146,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -155,7 +156,8 @@
         "criteria": ["uma página", "três conquistas com número", "habilitação declarada", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L10": {
         "title": "Revisão crítica de um argumento publicado",
@@ -217,7 +219,8 @@
         "evidence": "diagrama vetorial",
         "time": "60 min",
         "trigger": "Que argumento de um autor você conseguiria desenhar passo a passo?",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       {
         "id": "X4",
@@ -301,7 +304,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["plano-de-aula", "artigo", "revisao", "projeto-de-pesquisa", "relatorio-tecnico", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "post"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6) e revisão de argumento (L10); resenha (X4), relatório (L4) e mapa de argumento (X3) pedem computador.",
     "nudges": {
       "cadence": "semanal",

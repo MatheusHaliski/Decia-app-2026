@@ -130,7 +130,8 @@
         "criteria": ["ao menos 5 componentes numerados", "lista de peças com quantidade, denominação e material", "linhas de explosão coerentes com a montagem", "carimbo preenchido", "declaração de autoria e de que o conjunto não é sigiloso"],
         "evidence": "modelo GLB + prancha PDF",
         "time": "2 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "D3": {
         "title": "Modelo 3D de uma peça com dimensões reais",
@@ -139,7 +140,8 @@
         "criteria": ["três vistas renderizadas", "material e acabamento aplicados", "desenho 2D anexo com cotas e unidade", "dimensões coerentes com a função da peça"],
         "evidence": "modelo GLB + renders PNG + PDF",
         "time": "3 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "D6": {
         "title": "Detalhe de peça com cotas e tolerâncias",
@@ -148,7 +150,8 @@
         "criteria": ["cotas suficientes para fabricar (nenhuma dimensão faltante)", "tolerâncias dimensionais e ao menos uma geométrica", "material, tratamento e rugosidade indicados", "carimbo com escala e unidade", "simbologia de linhas e cortes normalizada"],
         "evidence": "prancha PDF/SVG de detalhe",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "L4": {
         "title": "Memorial de cálculo de um componente",
@@ -166,7 +169,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "POP de manutenção preventiva ou setup",
@@ -260,7 +264,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["3d", "2d-tecnico", "prancha", "diagrama", "infografico"],
     "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D3 e D8 (modelagem 3D) exigem computador; D6 e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
     "nudges": {
       "cadence": "semanal",

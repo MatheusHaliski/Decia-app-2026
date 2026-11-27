@@ -191,7 +191,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo jurídico de uma página",
@@ -200,7 +201,8 @@
         "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "sem idade, estado civil ou foto obrigatória", "sem nome de cliente"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L9": {
         "title": "Plano 30-60-90 para o cargo-alvo ou para um edital",
@@ -209,7 +211,8 @@
         "criteria": ["três fases", "três metas mensuráveis por fase", "cada meta com indicador ou entrega verificável", "coerente com o cargo ou o edital nomeado"],
         "evidence": "plano",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "track": "carreira"
       },
       "D4": {
         "title": "Fluxo de um procedimento jurídico ou de atendimento",
@@ -218,7 +221,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "prazos com base legal anotados", "sem dado de cliente real"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -316,7 +320,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["parecer", "relatorio-tecnico", "pop", "plano-30-60-90", "proposta", "estudo-de-caso", "curriculo", "carta", "bio", "revisao", "memorial", "artigo"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10) e leitura; parecer (L4), peça simulada (X1) e fluxo (D4) pedem computador.",
     "nudges": {
       "cadence": "semanal",

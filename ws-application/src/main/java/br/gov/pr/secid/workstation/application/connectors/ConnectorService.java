@@ -18,6 +18,7 @@ import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.media.DetectedType;
 import br.gov.pr.secid.workstation.application.media.MediaUploadInspector.UploadCandidate;
 import br.gov.pr.secid.workstation.application.media.MediaUploadService;
+import br.gov.pr.secid.workstation.application.media.PreparedUpload;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.acervo.LinkMode;
 import br.gov.pr.secid.workstation.domain.acervo.SourceKind;
@@ -449,7 +450,7 @@ public class ConnectorService {
         Viewer viewer = authorizer.viewer(actor);
         Gateway g = gateway(a.provider()).orElseThrow(ConnectorErrors::disabled);
         Fetched f = withAccess(a, g, access -> fetch(g.docs(), a.provider(), access, externalId, mode));
-        MediaUploadService.Stored copy = null;
+        ConnectorImportWriter.Copy copy = null;
         String format = f.classification().format();
         if (mode == LinkMode.COPIADO) {
             copy = store(viewer, f);
@@ -466,9 +467,17 @@ public class ConnectorService {
                 kind, sourceRef, mode, null, refs);
         TaskView view = writer.write(actor, task, copy, new ExternalOrigin(a.id(), a.provider(), item.externalId(), item.mimeType(),
                 item.version()), ctx);
+        Map<String, Object> meta = new java.util.LinkedHashMap<>();
+        meta.put("provider", a.provider().name());
+        meta.put("connector", a.id().toString());
+        meta.put("linkMode", mode.name());
+        meta.put("sourceKind", kind.name());
+        if (copy != null) {
+            meta.put("sha256", copy.stored().media().sha256());
+            meta.put("originalSha256", copy.prepared().originalSha256());
+        }
         audit.record(AuditEvent.of(actor.id(), AuditActions.CONNECTOR_IMPORTED, "task", view.id().toString(), AuditEvent.OK, ctx.ip(),
-                ctx.userAgent(), Map.of("provider", a.provider().name(), "connector", a.id().toString(), "linkMode", mode.name(),
-                        "sourceKind", kind.name())));
+                ctx.userAgent(), meta));
         return view;
     }
 
@@ -495,14 +504,18 @@ public class ConnectorService {
     }
 
     /**
-     * Guarda a cópia pelo pipeline de mídia (D-67: tipo real por magic bytes, limite por tipo, antivírus, dedupe, chave segura). Recusa do
-     * pipeline (tipo divergente, tamanho, arquivo suspeito ou infectado) vira {@code 400 VALIDACAO} com o código original em
-     * {@code details.reason}; armazenamento fora do ar continua 503.
+     * Guarda a cópia pelo MESMO caminho do upload direto ({@link MediaUploadService#prepare}): pipeline de mídia (D-67: tipo real por magic
+     * bytes, limite por tipo, zip-bomb), hash do arquivo como veio do provedor e captura do EXIF antes do strip dos metadados, formato pelo
+     * tipo real; depois antivírus, dedupe e chave segura no {@link MediaUploadService#upload}. Recusa do pipeline (tipo divergente, tamanho,
+     * arquivo suspeito ou infectado) vira {@code 400 VALIDACAO} com o código original em {@code details.reason}; armazenamento fora do ar
+     * continua 503.
      */
-    private MediaUploadService.Stored store(Viewer viewer, Fetched f) {
+    private ConnectorImportWriter.Copy store(Viewer viewer, Fetched f) {
         try {
-            return media.upload(viewer, new UploadCandidate(f.content().bytes(), f.fileName(), f.copyType().mime(), COPYABLE),
-                    AccessClassification.INTERNO, false);
+            UploadCandidate candidate = new UploadCandidate(f.content().bytes(), f.fileName(), f.copyType().mime(), COPYABLE);
+            PreparedUpload prepared = media.prepare(candidate);
+            MediaUploadService.Stored stored = media.upload(viewer, prepared.cleanCandidate(candidate), AccessClassification.INTERNO, false);
+            return new ConnectorImportWriter.Copy(stored, prepared);
         } catch (ApiException e) {
             if (e.status() >= 500) {
                 throw e;

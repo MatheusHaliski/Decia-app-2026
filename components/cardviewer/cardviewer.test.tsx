@@ -106,10 +106,38 @@ describe("visualizador de card — abrir, fechar e janelas", () => {
     await viewer();
   });
 
-  it("clicar no título (link) não abre o visualizador", async () => {
+  it("clicar no título do card abre o visualizador (não sai da tela); Ctrl+clique segue o link da página", async () => {
     renderWithProviders(<><PersistedTaskCard task={view()} /><CardViewerHost today={TODAY} /></>);
-    fireEvent.click(screen.getByRole("link", { name: "Vistoria da obra da escola" }));
+    const link = screen.getByRole("link", { name: "Vistoria da obra da escola" });
+    fireEvent.click(link, { ctrlKey: true });
     expect(window.location.search).toBe("");
+    fireEvent.click(link);
+    await viewer();
+    expect(window.location.search).toBe(`?ver=tarefa:${ID}`);
+  });
+
+  it("abas de janela sempre visíveis: Melhorias ✦ a um clique, sem procurar no seletor", async () => {
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />, { prefs: { aiAutonomyDefault: "SUGESTOES" } });
+    await viewer();
+    const tabs = screen.getByTestId("viewer-window-tabs");
+    const mel = within(tabs).getByRole("button", { name: "Melhorias ✦" });
+    expect(mel.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(mel);
+    expect(document.querySelector('[data-pane="1"]')?.getAttribute("data-window")).toBe("melhorias");
+    expect(mel.getAttribute("aria-pressed")).toBe("true");
+    expect(await pane(1).findByTestId("ci-score")).toBeTruthy();
+    // a que já está num painel só ganha o foco
+    fireEvent.click(within(tabs).getByRole("button", { name: "Resumo preciso" }));
+    expect(document.activeElement).toBe(document.querySelector('[data-pane="0"]'));
+  });
+
+  it("responsável: sem designado mostra o autor marcado, igual ao card da página", async () => {
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />);
+    await viewer();
+    const r = document.querySelector('[data-fact="responsible"]') as HTMLElement;
+    expect(r.textContent).toContain("#11111111 (autor; sem responsável designado)");
   });
 
   it("troca janelas, muda para 3 painéis e lembra o layout por pessoa", async () => {
@@ -156,7 +184,9 @@ describe("janela Arquivos", () => {
     expect(within(tree).getByText("Evidências")).toBeTruthy();
     expect(within(tree).getByText("Vínculos externos")).toBeTruthy();
     expect(within(tree).getByText("“Fissura na viga V3”")).toBeTruthy();
-    expect(tree.querySelector('[data-format="PLANILHA/XLSX"]')?.textContent).toBe("Planilha · XLSX");
+    // sem o formato do servidor no anexo: estimado pela extensão, e dito
+    expect(tree.querySelector('[data-format="PLANILHA/XLSX"]')?.textContent).toBe("Planilha · XLSX (estimado pela extensão)");
+    expect(tree.querySelector('[data-format="PLANILHA/XLSX"]')?.getAttribute("data-estimated")).toBe("true");
     expect(pane(1).getByTestId("cloud-totals").textContent).toContain("5 itens");
   });
 
@@ -288,6 +318,72 @@ describe("janela Melhorias ✦ (CI)", () => {
     const body = JSON.parse(String(calls.find((c) => c.method === "PUT")!.body));
     expect(body.version).toBe(3);
     expect(body.acceptanceCriteria.at(-1).done).toBe(false);
+  });
+});
+
+describe("Melhorias ✦ — sugestão concreta e lente", () => {
+  it("a sugestão nunca repete o achado: objetivo pré-redigido do título, tipo e prazo; sem o que propor, nada", async () => {
+    fetchMock.mockImplementation(async (url) => {
+      const u = String(url);
+      if (u.endsWith(`/api/tasks/${ID}`)) return json(200, view({ objective: "", area: undefined, descriptionMd: "" }));
+      if (u.endsWith("/attachments")) return json(200, []);
+      if (u.endsWith("/evidences")) return json(200, []);
+      return json(404, {});
+    });
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />, { prefs: { aiAutonomyDefault: "SUGESTOES" } });
+    await viewer();
+    fireEvent.click(within(screen.getByTestId("viewer-window-tabs")).getByRole("button", { name: "Melhorias ✦" }));
+    await pane(1).findByTestId("ci-score");
+    const obj = document.querySelector('[data-check="q.objetivo"]') as HTMLElement;
+    expect(obj.textContent).toContain("Proposta de objetivo: “Documento “Vistoria da obra da escola” entregue até 2026-11-20");
+    for (const el of document.querySelectorAll<HTMLElement>("[data-check]")) {
+      const ps = [...el.querySelectorAll("p")].map((p) => p.textContent?.replace(/^✦\s*(Sugestão da IA:\s*)?/, "").trim());
+      expect(new Set(ps).size).toBe(ps.length);
+    }
+  });
+
+  it("tarefa sem campo de estudo usa a profissão de quem vê como lente, marcada “pela sua profissão”", async () => {
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />, { prefs: { aiAutonomyDefault: "SUGESTOES", preferredOccupation: "engenharia-de-software" } });
+    await viewer();
+    fireEvent.click(within(screen.getByTestId("viewer-window-tabs")).getByRole("button", { name: "Melhorias ✦" }));
+    expect((await pane(1).findByTestId("ci-viewer-lens")).textContent).toContain("Rubrica pela sua profissão");
+    await waitFor(() => expect(document.querySelector('[data-group="CAMPO"], [data-check^="q.campo"]')).toBeTruthy());
+  });
+
+  it("visitante não usa profissão como lente", async () => {
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />, { profile: "VISITANTE", prefs: { aiAutonomyDefault: "SUGESTOES", preferredOccupation: "engenharia-de-software" } });
+    await viewer();
+    fireEvent.click(within(screen.getByTestId("viewer-window-tabs")).getByRole("button", { name: "Melhorias ✦" }));
+    await pane(1).findByTestId("ci-score");
+    expect(pane(1).queryByTestId("ci-viewer-lens")).toBeNull();
+  });
+});
+
+describe("Prévia de PDF", () => {
+  it("ficha do PDF com o que o servidor leu (páginas, camada de texto); nada é baixado sem pedir", async () => {
+    const pdf = { ...att("a6666666-6666-4666-8666-666666666666", "laudo.pdf", "application/pdf"), formatFamily: "DOCUMENTO", formatVariant: "PDF", formatDetailsJson: JSON.stringify({ pages: "12", textLayer: "false", encrypted: "false" }) };
+    fetchMock.mockImplementation(async (url) => {
+      const u = String(url);
+      calls.push({ method: "GET", url: u, body: null });
+      if (u.endsWith(`/api/tasks/${ID}`)) return json(200, view());
+      if (u.endsWith("/attachments")) return json(200, [pdf]);
+      if (u.endsWith("/evidences")) return json(200, []);
+      return json(404, {});
+    });
+    go(`?ver=tarefa:${ID}`);
+    renderWithProviders(<CardViewerHost today={TODAY} />);
+    await viewer();
+    const facts = await pane(1).findByTestId("pdf-facts");
+    expect(facts.querySelector('[data-fact="pages"]')?.textContent).toBe("12");
+    expect(facts.querySelector('[data-fact="textLayer"]')?.textContent).toContain("precisa de OCR");
+    expect(calls.some((c) => c.url.includes("/content"))).toBe(false);
+    // árvore: formato do servidor, sem "estimado"
+    choose(1, "arquivos");
+    const tree = await pane(1).findByTestId("file-tree");
+    expect(tree.querySelector('[data-format="DOCUMENTO/PDF"]')?.getAttribute("data-estimated")).toBe("false");
   });
 });
 

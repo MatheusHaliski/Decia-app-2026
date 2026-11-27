@@ -173,7 +173,7 @@
     },
     "custom": [
       { "id": "X1", "editor": "letters", "title": "Roteiro de abordagem e qualificação", "competency": "Prospecção e qualificação", "criteria": ["abertura com motivo do contato", "cinco perguntas de qualificação (ex.: SPIN ou BANT)", "três objeções comuns com resposta", "próximo passo combinado", "respeita opt-out e base legal da LGPD na prospecção"], "evidence": "roteiro em Letters", "time": "40 min", "trigger": "Quer treinar um roteiro de abordagem para o tipo de venda que você conhece?", "level": 1 },
-      { "id": "X2", "editor": "letters", "title": "Forecast ponderado de um funil fictício", "competency": "Previsão de vendas", "criteria": ["oportunidades fictícias por etapa", "probabilidade por etapa justificada", "previsão ponderada calculada", "cenários pessimista e otimista", "ações para fechar a lacuna até a meta"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você preveria o resultado do mês?", "level": 2 }
+      { "id": "X2", "editor": "letters", "title": "Forecast ponderado de um funil fictício", "competency": "Previsão de vendas", "criteria": ["oportunidades fictícias por etapa", "probabilidade por etapa justificada", "previsão ponderada calculada", "cenários pessimista e otimista", "ações para fechar a lacuna até a meta"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você preveria o resultado do mês?", "level": 2, "taskType": "PLANILHA" }
     ]
   },
   "rubric": {
@@ -243,7 +243,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["proposta", "relatorio-tecnico", "estudo-de-caso", "plano-30-60-90", "pop", "curriculo", "carta", "bio", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, X1 (roteiro), L6, L5 e L3 funcionam bem; L4, X2 e D7 ficam melhores no computador. Não anexar prints de CRM ou de pedidos com dados de clientes.",
     "nudges": {
       "cadence": "semanal",

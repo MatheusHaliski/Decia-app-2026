@@ -161,7 +161,8 @@
         "criteria": ["escala 1:50 declarada no carimbo", "cotas parciais fecham com a total", "mobiliário em escala com circulações anotadas", "giro de 1,50 m representado onde a NBR 9050 se aplica", "legenda e carimbo completos", "sem endereço ou dados do morador"],
         "evidence": "prancha PDF/SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "D3": {
         "title": "Modelo 3D de um ambiente com três vistas renderizadas",
@@ -170,7 +171,8 @@
         "criteria": ["dimensões reais coerentes com a planta", "materiais e luminárias aplicados", "três renders, um em nível de olho", "legenda com materiais e temperatura de cor"],
         "evidence": "modelo GLB + renders PNG",
         "time": "3 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "D2": {
         "title": "Prancha de portfólio A3 com três ambientes",
@@ -179,7 +181,8 @@
         "criteria": ["três trabalhos", "grid consistente", "legenda com tipo de espaço, área e solução", "créditos de coautores e fotógrafos", "declaração de autorização do cliente ou uso de projeto autoral"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L8": {
         "title": "Resposta a um briefing de interiores",
@@ -197,7 +200,8 @@
         "criteria": ["escala de detalhe declarada", "três vistas", "materiais e ferragens especificados", "cotas completas"],
         "evidence": "prancha de detalhe",
         "time": "90 min",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "D5": {
         "title": "Antes e depois de um layout",
@@ -206,7 +210,8 @@
         "criteria": ["duas versões lado a lado na mesma escala", "três mudanças anotadas", "justificativa por mudança", "ao menos uma mudança de acessibilidade ou circulação"],
         "evidence": "prancha comparativa",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -219,7 +224,8 @@
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "60 min",
         "trigger": "Quer apresentar o conceito de um ambiente antes de desenhar a planta?",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       }
     ]
   },
@@ -294,7 +300,7 @@
     "editors": { "letters": "baixa", "drawings": "alta" },
     "drawingsModes": ["2d-tecnico", "3d", "prancha", "infografico"],
     "lettersTemplates": ["proposta", "memorial", "estudo-de-caso", "relatorio-tecnico", "pop", "bio", "curriculo", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D1, D3, D6, D5 e D2 exigem computador; no celular ficam L6, L5, L10 e a conferência de critérios (cotas, legenda, giro).",
     "nudges": {
       "cadence": "semanal",

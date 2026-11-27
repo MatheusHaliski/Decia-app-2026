@@ -28,7 +28,7 @@ function GoalsTabs() {
 export default function Page() {
   const { t } = useI18n();
   return (
-    <RfPage page={PAGE} noEmpty actions={<Badge tone="neutral" title={t("pacts.demoHint")}>{t("decia.demo")}</Badge>}>
+    <RfPage page={PAGE} noEmpty actions={<Badge tone="neutral">{t("decia.demo")}</Badge>}>
       <Suspense fallback={<LoadingState />}>
         <GoalsTabs />
       </Suspense>

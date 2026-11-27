@@ -4,6 +4,8 @@
  */
 import { afterEach } from "vitest";
 import { cleanup } from "@testing-library/react";
+// caminho síncrono do i18n: en/es registrados já na carga (no app eles chegam por import() sob demanda — lib/i18n/loader.ts)
+import "@/lib/i18n/all";
 
 // RTL só limpa sozinho com globals do vitest; aqui a limpeza é explícita para os testes jsdom não acumularem renders.
 afterEach(() => { if (typeof window !== "undefined") cleanup(); });

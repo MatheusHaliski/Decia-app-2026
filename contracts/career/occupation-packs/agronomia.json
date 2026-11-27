@@ -143,7 +143,8 @@
         "criteria": ["escala declarada", "norte indicado", "legenda com todas as camadas", "cotas das dimensões principais", "carimbo com título, autor e data", "sem coordenadas ou nomes reais"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "MAPA"
       },
       "D7": {
         "title": "Infográfico de produtividade com fonte oficial",
@@ -152,7 +153,8 @@
         "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade (kg/ha ou t/ha)", "uma mensagem principal explícita", "sem dado de propriedade identificável"],
         "evidence": "imagem PNG e PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L7": {
         "title": "POP de aplicação segura de agrotóxicos ou de biossegurança",
@@ -236,7 +238,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["2d-tecnico", "infografico", "diagrama", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "laudo", "memorial", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6, L3) e revisão (L10); D1, D6 e D7 pedem computador. Em período de safra o plano reduz para uma tarefa curta por semana.",
     "nudges": {
       "cadence": "semanal",

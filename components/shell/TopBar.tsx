@@ -70,7 +70,7 @@ export function TopBar({ onToggleMenu, menuExpanded, menuControls }: TopBarProps
     <header className={cn("ws-shell-glass sticky top-0 z-[var(--ws-z-header)] h-[var(--ws-shell-header)] border-b")} role="banner">
       <div className="mx-auto flex h-full max-w-[1600px] items-center gap-[var(--ws-space-2)] px-[var(--ws-space-3)] sm:px-[var(--ws-space-4)]">
         <IconButton icon="mesa" label={t("a11y.toggleMenu")} aria-expanded={menuExpanded} aria-controls={menuControls} onClick={onToggleMenu} data-testid="menu-toggle" />
-        <Link href="/mural" variant="plain" className="flex shrink-0 items-center gap-2" aria-label={t("brand.home")}>
+        <Link href="/" variant="plain" className="flex shrink-0 items-center gap-2" aria-label={t("brand.home")}>
           {/* eslint-disable-next-line @next/next/no-img-element -- SVG estático da marca em /public */}
           <img src="/brand/work-station-monitor.svg" alt="" width={32} height={32} className="size-8" />
           <span className="hidden font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold md:inline">{t("brand.name")}</span>

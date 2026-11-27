@@ -136,7 +136,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "decisão de aprovação ou correção representada", "registro de saída identificado (FVS, boletim)"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D6": {
         "title": "Detalhe construtivo de uma solução executada",
@@ -145,7 +146,8 @@
         "criteria": ["escala de detalhe declarada", "materiais especificados com nome e espessura", "cotas que fecham", "sequência executiva numerada", "declaração de autoria e ausência de projeto sob sigilo"],
         "evidence": "prancha de detalhe PDF ou SVG",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "D7": {
         "title": "Infográfico de indicadores de obra",
@@ -154,7 +156,8 @@
         "criteria": ["fonte e período dos dados citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "dados anonimizados (sem nome de obra ou cliente sem autorização)"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L4": {
         "title": "Relatório técnico de andamento de obra",
@@ -172,7 +175,8 @@
         "criteria": ["escala declarada no carimbo", "cotas principais que fecham com o terreno", "legenda com todas as áreas", "carimbo com título, escala, data e autoria", "áreas de vivência da NR-18 presentes"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -256,7 +260,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "revisao", "post"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "Rotina de canteiro: L7, X1, L6 e L5 cabem no celular; D1, D6 e D7 exigem computador.",
     "nudges": {
       "cadence": "semanal",

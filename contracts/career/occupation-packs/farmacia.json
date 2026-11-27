@@ -164,7 +164,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "ao menos dois pontos de decisão", "nenhuma etapa órfã", "legenda de símbolos"],
         "evidence": "diagrama vetorial no Drawings (modo diagrama)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório técnico curto",
@@ -182,7 +183,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados ou públicos"],
         "evidence": "imagem e PDF no Drawings (modo infográfico)",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L8": {
         "title": "Resposta a um briefing simulado (regulatório ou de assistência farmacêutica)",
@@ -281,7 +283,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["estudo-de-caso", "pop", "relatorio-tecnico", "relatorio-de-caso", "proposta", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "projeto-de-pesquisa", "artigo"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L3, L7, L8, D4 e D7 pedem computador. Em turnos de balcão, prefira tarefas de 15 a 30 minutos.",
     "nudges": {
       "cadence": "semanal",

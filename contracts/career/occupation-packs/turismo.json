@@ -169,7 +169,8 @@
         "criteria": ["eixos rotulados com unidade e período", "fonte com data e região", "uma mensagem principal", "sem dados de clientes identificáveis"],
         "evidence": "imagem PNG e PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D2": {
         "title": "Prancha de portfólio com mapa de roteiro",
@@ -178,7 +179,8 @@
         "criteria": ["três trabalhos", "mapa com legenda, escala ou tempos e norte", "créditos de fotos e base cartográfica", "grade consistente", "sem pessoas identificáveis sem autorização"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       }
     },
     "custom": [
@@ -262,7 +264,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "prancha", "diagrama"],
     "lettersTemplates": ["roteiro", "proposta", "plano-30-60-90", "relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: roteiro de um dia (X1), bio (L6), post (L5) e revisão (L10); inventário (L4), infográfico (D7) e prancha com mapa (D2) pedem computador.",
     "nudges": {
       "cadence": "semanal",

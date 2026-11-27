@@ -10,6 +10,7 @@ import br.gov.pr.secid.workstation.domain.common.Visibility;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionComplexity;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionKind;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionLevel;
+import br.gov.pr.secid.workstation.domain.decisao.WorkLinkTarget;
 import br.gov.pr.secid.workstation.web.security.AuthorizedBy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +34,8 @@ import java.util.UUID;
  * RF29 — API da decisão estruturada do DECIA (fase 7, docs/decia/08): criar, listar as que a pessoa vê, abrir e aplicar comandos (estrutura,
  * notas, evidência e ciclo de vida) com versão otimista. Autorização no serviço ({@code ResourceAuthorizer.requireDecision}): invisível e
  * inexistente respondem o mesmo 404; visível sem a ação do papel DACI responde 403. Erros: 400 JSON/parâmetro, 409 EDICAO_CONCORRENTE ou
- * transição inválida, 422 VALIDACAO/DECISAO_INCOMPLETA/DECISAO_AVISOS_NAO_CONFIRMADOS.
+ * transição inválida, 422 VALIDACAO/DECISAO_INCOMPLETA/DECISAO_AVISOS_NAO_CONFIRMADOS. Fase 7b: os comandos também gravam premissas, riscos,
+ * cenários, previsões, recomendações, gatilhos, checkpoints, vínculos de trabalho e retrospectiva; a listagem filtra por item de trabalho.
  */
 @RestController
 @Tag(name = "RF29 Decisões (DECIA)")
@@ -44,10 +46,13 @@ public class DecisionController {
         this.decisions = decisions;
     }
 
-    /** Corpo da criação; {@code criteria} são os critérios do modelo escolhido (até 20). */
+    /**
+     * Corpo da criação; {@code criteria} são os critérios do modelo escolhido (até 20); {@code projectId} liga a decisão a um projeto que quem
+     * cria vê (portão, mudança ou seleção aberta pela Mesa) — inexistente ou invisível responde 422 no campo.
+     */
     public record CreateRequest(@NotNull @Size(max = 500) String question, @NotNull DecisionComplexity complexity, @NotNull DecisionLevel impact,
                                 DecisionKind kind, DecisionLevel urgency, @Size(max = 60) String templateKey, Visibility visibility,
-                                @Size(max = 20) List<@Size(max = 120) String> criteria) {
+                                @Size(max = 20) List<@Size(max = 120) String> criteria, UUID projectId) {
     }
 
     /** Lote de comandos sobre a versão {@code version} lida pelo cliente (tudo ou nada). */
@@ -59,12 +64,17 @@ public class DecisionController {
     @ResponseStatus(HttpStatus.CREATED)
     public DecisionView create(CurrentUser user, @Valid @RequestBody CreateRequest body, RequestContext ctx) {
         return decisions.create(user, new NewDecision(body.question(), body.complexity(), body.impact(), body.kind(), body.urgency(),
-                body.templateKey(), body.visibility(), body.criteria()), ctx);
+                body.templateKey(), body.visibility(), body.criteria(), body.projectId()), ctx);
     }
 
-    @Operation(summary = "RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro")
+    @Operation(summary = "RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro; "
+            + "com targetType+targetId, só as ligadas àquela tarefa/projeto/marco (lista vazia se o item não for visível)")
     @GetMapping("/api/decisions")
-    public List<DecisionView> list(CurrentUser user, @RequestParam(defaultValue = "50") int limit) {
+    public List<DecisionView> list(CurrentUser user, @RequestParam(defaultValue = "50") int limit,
+                                   @RequestParam(required = false) WorkLinkTarget targetType, @RequestParam(required = false) UUID targetId) {
+        if (targetType != null || targetId != null) {
+            return decisions.listLinked(user, targetType, targetId, limit);
+        }
         return decisions.list(user, limit);
     }
 
@@ -75,7 +85,8 @@ public class DecisionController {
         return decisions.get(user, id);
     }
 
-    @Operation(summary = "RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado); "
+    @Operation(summary = "RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado, "
+            + "premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints, vínculos de trabalho e retrospectiva); "
             + "BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA")
     @PostMapping("/api/decisions/{id}/commands")
     @AuthorizedBy("requireDecision")

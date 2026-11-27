@@ -131,7 +131,8 @@
         "criteria": ["fonte citada", "eixos e unidades rotulados", "barras de incerteza presentes", "comparação com modelo ou referência", "uma mensagem principal explícita"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L7": {
         "title": "POP de controle de qualidade ou de medição",
@@ -149,7 +150,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "pontos de verificação marcados"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -220,7 +222,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "artigo", "projeto-de-pesquisa", "pop", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); relatório (L4), projeto (X2) e infográfico (D7) rendem mais no computador.",
     "nudges": {
       "cadence": "semanal",

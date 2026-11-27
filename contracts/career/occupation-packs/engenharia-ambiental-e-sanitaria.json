@@ -138,7 +138,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com meta, padrão legal ou série histórica", "dados públicos ou anonimizados"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D4": {
         "title": "Fluxograma de processo de ETE ou de licenciamento",
@@ -147,7 +148,8 @@
         "criteria": ["início e fim explícitos", "raias ou unidades identificadas", "nenhuma tarefa ou fluxo órfão", "pontos de amostragem ou documentos gerados marcados", "legenda de símbolos"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de amostragem com cadeia de custódia",
@@ -250,7 +252,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "2d-tecnico", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "memorial", "curriculo", "bio", "post", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "L7, L6, L5 e a revisão de critérios cabem no celular (inclusive em campo); D7, D4, D1 e D6 exigem computador.",
     "nudges": {
       "cadence": "semanal",

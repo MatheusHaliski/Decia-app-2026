@@ -162,7 +162,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente-alvo e as línguas", "cita três competências", "inclui uma prova com link", "sem erro de ortografia ou concordância"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -171,7 +172,8 @@
         "criteria": ["uma página", "três conquistas com número", "línguas com nível declarado", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L10": {
         "title": "Revisão crítica de um texto com controle de alterações",
@@ -328,7 +330,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["plano-de-aula", "artigo", "revisao", "relatorio-tecnico", "proposta", "pop", "curriculo", "bio", "carta", "post", "projeto-de-pesquisa", "estudo-de-caso"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L5, L6) e revisão (L10); tradução comentada (X3), sequência didática (X2) e relatório (L4) pedem computador.",
     "nudges": {
       "cadence": "semanal",

@@ -88,6 +88,21 @@ describe("Configurações › Trabalho: profissão preferida (D-147)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Limpar" }));
     await waitFor(() => expect(adapter.saved.at(-1)?.preferredOccupation).toBeNull());
   });
+
+  it("lembrar no navegador só com consentimento explícito (padrão: só na aba)", async () => {
+    localStorage.clear();
+    renderWithProviders(<OccupationSettingsCard />, { prefs: { preferredOccupation: "direito" } });
+    const sw = within(screen.getByTestId("occupation-device")).getByRole("switch");
+    expect(sw.getAttribute("aria-checked")).toBe("false");
+    expect(localStorage.getItem("ws.prefs.occupation.device")).toBeNull();
+    await act(async () => { fireEvent.click(sw); });
+    expect(sw.getAttribute("aria-checked")).toBe("true");
+    expect(localStorage.getItem("ws.prefs.occupation.device")).toBe("direito");
+    expect(screen.getByText("A profissão será lembrada neste navegador.")).toBeTruthy();
+    await act(async () => { fireEvent.click(sw); });
+    expect(localStorage.getItem("ws.prefs.occupation.device")).toBeNull();
+    expect(localStorage.getItem("ws.prefs.occupation.consent")).toBeNull();
+  });
 });
 
 describe("plano de desenvolvimento (fora do criador: cada item abre /tasks/new?modelo=)", () => {
@@ -110,13 +125,30 @@ describe("plano de desenvolvimento (fora do criador: cada item abre /tasks/new?m
     expect(fetchMock).not.toHaveBeenCalled(); // tarefas recebidas: nada de API
   });
 
-  it("sem sessão o progresso fica indisponível, mas o plano aparece", async () => {
+  it("sem sessão o progresso fica indisponível, mas o plano aparece (aberto na primeira visita, com a trilha Carreira marcada)", async () => {
     fetchMock.mockResolvedValue(new Response("{}", { status: 401 }));
     renderWithProviders(<DevelopmentPlanPanel fieldCode="direito" />);
     const plan = screen.getByTestId("development-plan");
-    expect(plan.hasAttribute("open")).toBe(false);
-    await act(async () => { fireEvent.click(within(plan).getByText(/Seu plano de desenvolvimento · Direito/)); });
+    expect(plan.hasAttribute("open")).toBe(true);
     await waitFor(() => expect(screen.getByTestId("plan-progress").textContent).toContain("Entre na sua conta"), { timeout: 8000 });
     expect(plan.querySelectorAll("[data-plan-item]").length).toBeGreaterThan(0);
+    // currículo e perfil profissional ficam no plano, marcados como Carreira
+    const career = plan.querySelectorAll('[data-plan-item="campo.direito.L1"] [data-testid="plan-career-track"]');
+    expect(career).toHaveLength(1);
+    expect(plan.querySelector('[data-plan-item="campo.direito.L4"] [data-testid="plan-career-track"]')).toBeNull();
+  });
+
+  it("fechar o plano fica lembrado nas preferências; com a preferência salva, ele abre fechado", async () => {
+    fetchMock.mockResolvedValue(new Response("{}", { status: 401 }));
+    const adapter = memoryAdapter();
+    const { unmount } = renderWithProviders(<DevelopmentPlanPanel fieldCode="direito" />, { adapters: [adapter] });
+    const plan = screen.getByTestId("development-plan");
+    expect(plan.hasAttribute("open")).toBe(true);
+    await act(async () => { fireEvent.click(within(plan).getByText(/Seu plano de desenvolvimento · Direito/)); });
+    await waitFor(() => expect(adapter.saved.at(-1)?.careerPlanCollapsed).toBe(true));
+    expect(plan.hasAttribute("open")).toBe(false);
+    unmount();
+    renderWithProviders(<DevelopmentPlanPanel fieldCode="direito" />, { adapters: [memoryAdapter({ ...adapter.saved.at(-1)! })] });
+    await waitFor(() => expect(screen.getByTestId("development-plan").hasAttribute("open")).toBe(false));
   });
 });

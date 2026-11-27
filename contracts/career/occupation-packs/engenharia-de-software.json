@@ -611,7 +611,8 @@
         ],
         "evidence": "diagrama vetorial (SVG ou PDF)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L6": {
         "title": "Resumo de perfil em três frases",
@@ -632,7 +633,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -652,7 +654,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "Runbook de deploy, rollback ou rotina de operação",
@@ -702,7 +705,8 @@
         ],
         "evidence": "prancha de wireframe",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L8": {
         "title": "Resposta a um briefing técnico simulado",
@@ -1153,7 +1157,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D4, D7 e D9 exigem computador; X1 pede acesso ao repositório.",
     "nudges": {
       "cadence": "semanal",

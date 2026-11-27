@@ -16,7 +16,9 @@ import java.util.Set;
  * <ol>
  *   <li>vazio → {@code 422 ARQUIVO_VAZIO}; maior que o maior limite → {@code 413 ARQUIVO_GRANDE_DEMAIS} (antes de olhar o conteúdo);</li>
  *   <li>tipo real por magic bytes ({@link MagicBytes}); desconhecido ou fora da lista aceita pelo caso de uso → {@code 415 TIPO_NAO_PERMITIDO};</li>
- *   <li>ZIP: guarda de zip-bomb/zip-slip e subtipo Office pelo conteúdo ({@link ZipInspector}) → {@code 422 ARQUIVO_SUSPEITO};</li>
+ *   <li>ZIP: guarda de zip-bomb/zip-slip e subtipo Office/OpenDocument pelo conteúdo ({@link ZipInspector}) → {@code 422 ARQUIVO_SUSPEITO};</li>
+ *   <li>texto (CSV, TSV, TXT, MD, JSON, XML): UTF-8/Windows-1252 sem NUL e conteúdo que sustenta a extensão ({@link TextInspector}) →
+ *       {@code 415 TIPO_NAO_PERMITIDO} (binário, SVG, HTML) ou {@code 422 TEXTO_MALFORMADO} (JSON/XML inválido);</li>
  *   <li>limite por categoria → {@code 413};</li>
  *   <li>extensão do nome e {@code Content-Type} declarados precisam bater com o tipo real (PNG chamado de .jpg é recusado) →
  *       {@code 415 TIPO_DIVERGENTE};</li>
@@ -34,6 +36,7 @@ public class MediaUploadInspector {
     public static final String IMAGEM_GRANDE = "IMAGEM_GRANDE_DEMAIS";
     public static final String IMAGEM_INVALIDA = "IMAGEM_INVALIDA";
     public static final String SUSPEITO = ZipInspector.CODE;
+    public static final String TEXTO_MALFORMADO = "TEXTO_MALFORMADO";
 
     private final MediaUploadProperties props;
 
@@ -61,7 +64,12 @@ public class MediaUploadInspector {
             throw tooLarge(props.hardCap());
         }
         DetectedType sniffed = MagicBytes.sniff(b).orElseThrow(() -> unsupported("desconhecido", c.accepted()));
-        final DetectedType type = sniffed == DetectedType.ZIP ? ZipInspector.inspect(b, props.zipLimits()).type() : sniffed;
+        final DetectedType type = switch (sniffed) {
+            case ZIP -> ZipInspector.inspect(b, props.zipLimits()).type();
+            // texto não tem assinatura: o conteúdo inteiro decide se é texto e se sustenta a extensão (JSON/XML bem formados; SVG fora)
+            case TXT -> TextInspector.refine(b, FileNames.extension(c.declaredName()));
+            default -> sniffed;
+        };
         if (!c.accepted().contains(type)) {
             throw unsupported(type.name(), c.accepted());
         }

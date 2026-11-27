@@ -1,5 +1,7 @@
 package br.gov.pr.secid.workstation.application.media;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Optional;
@@ -13,6 +15,14 @@ public interface MediaStoragePort {
     void put(String key, byte[] content, String mime);
 
     byte[] read(String key);
+
+    /**
+     * Abre o binário em fluxo (download sem carregar o arquivo inteiro na memória). O padrão cai no {@link #read}; o disco local e o S3
+     * devolvem o fluxo real. Quem chama fecha.
+     */
+    default InputStream open(String key) {
+        return new ByteArrayInputStream(read(key));
+    }
 
     void delete(String key);
 

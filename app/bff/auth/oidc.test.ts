@@ -147,6 +147,6 @@ describe("BFF OIDC: Authorization Code + PKCE + state + nonce", () => {
     const res = await callbackGET(get(`/bff/auth/oidc/callback?code=abc&state=${p.s}`, cookie));
     const loc = new URL(res.headers.get("location")!);
     expect(loc.origin).toBe("http://localhost:3000");
-    expect(loc.pathname).toBe("/mural");
+    expect(loc.pathname).toBe("/today");
   });
 });

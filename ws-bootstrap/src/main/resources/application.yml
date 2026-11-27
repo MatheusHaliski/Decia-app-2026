@@ -225,6 +225,7 @@ ws:
       bucket: ${WS_S3_BUCKET:workstation-media}
       access-key: ${WS_S3_ACCESS_KEY_ID:}
       secret-key: ${WS_S3_SECRET_ACCESS_KEY:}
+      path-style: ${WS_S3_PATH_STYLE:true}               # MinIO usa caminho (endpoint/bucket/chave); AWS aceita os dois
   redis:
     enabled: ${WS_REDIS_ENABLED:false}
   cassandra:
@@ -257,6 +258,12 @@ ws:
     zip-max-ratio: ${WS_UPLOAD_ZIP_MAX_RATIO:100}
     zip-max-depth: ${WS_UPLOAD_ZIP_MAX_DEPTH:1}
     require-antivirus: ${WS_UPLOAD_REQUIRE_ANTIVIRUS:false}
+    antivirus: ${WS_UPLOAD_ANTIVIRUS:none}               # none | clamd (ClamAV via clamd TCP INSTREAM — ClamdAntivirus)
+    clamd:
+      host: ${WS_CLAMD_HOST:localhost}
+      port: ${WS_CLAMD_PORT:3310}
+      timeout-ms: ${WS_CLAMD_TIMEOUT_MS:30000}
+      chunk-bytes: ${WS_CLAMD_CHUNK_BYTES:65536}
     signed-url-ttl-seconds: ${WS_MEDIA_SIGNED_URL_TTL_SECONDS:60}
 
 ---

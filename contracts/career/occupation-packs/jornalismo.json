@@ -155,7 +155,8 @@
         "criteria": ["até 600 caracteres", "nomeia formato ou editoria-alvo", "cita três competências", "inclui um trabalho publicado com link", "sem fonte, pauta ou material não publicado"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -164,7 +165,8 @@
         "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "link para portfólio ou matérias", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D7": {
         "title": "Infográfico de uma base de dados pública",
@@ -173,7 +175,8 @@
         "criteria": ["fonte pública citada com data", "eixos e unidades rotulados", "uma mensagem principal no título", "nota de método presente", "sem dado pessoal identificável"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L3": {
         "title": "Estudo de caso de uma apuração",
@@ -300,7 +303,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "prancha", "wireframe", "diagrama"],
     "lettersTemplates": ["bio", "curriculo", "carta", "artigo", "roteiro", "estudo-de-caso", "post", "proposta", "relatorio-tecnico", "pop", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e rascunho de pauta; X1, X3, L4, D7 e D9 pedem computador para cruzar fontes e montar o gráfico.",
     "nudges": {
       "cadence": "semanal",

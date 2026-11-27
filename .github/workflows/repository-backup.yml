@@ -33,6 +33,7 @@ jobs:
         env:
           BACKUP_SSH_KEY: ${{ secrets.BACKUP_SSH_KEY }}
           BACKUP_URL: git@github.com:MatheusHaliski/ws-backup001.git
+          META_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -45,9 +46,27 @@ jobs:
           unset BACKUP_SSH_KEY
           ssh-keygen -y -f "$HOME/.ssh/id_ed25519" >/dev/null
 
-          curl --retry 3 --fail --silent --show-error --proto '=https' --tlsv1.2 \
-            https://api.github.com/meta \
-            | jq -er '.ssh_keys[] | "github.com " + .' > "$HOME/.ssh/known_hosts"
+          # Chaves de host do github.com. O /meta sem autenticação cai no limite por IP compartilhado dos runners
+          # (403), então a chamada usa o GITHUB_TOKEN do próprio job. Se ainda assim falhar, usamos as chaves
+          # publicadas fixadas abaixo (docs.github.com → "GitHub's SSH key fingerprints"); a verificação estrita de
+          # host continua ligada nos dois casos.
+          if curl --retry 3 --fail --silent --show-error --proto '=https' --tlsv1.2 \
+              -H "Authorization: Bearer ${META_TOKEN}" -H "Accept: application/vnd.github+json" \
+              https://api.github.com/meta \
+              | jq -er '.ssh_keys[] | "github.com " + .' > "$HOME/.ssh/known_hosts.meta" \
+              && test -s "$HOME/.ssh/known_hosts.meta"; then
+            mv "$HOME/.ssh/known_hosts.meta" "$HOME/.ssh/known_hosts"
+            echo "SSH host keys loaded from the GitHub metadata endpoint"
+          else
+            echo "::warning::GitHub /meta unavailable; using the pinned github.com host keys."
+            cat > "$HOME/.ssh/known_hosts" <<'KNOWN_HOSTS'
+          github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+          github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+          github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
+          KNOWN_HOSTS
+            rm -f "$HOME/.ssh/known_hosts.meta"
+          fi
+          unset META_TOKEN
           chmod 600 "$HOME/.ssh/known_hosts"
           test -s "$HOME/.ssh/known_hosts"
           ssh-keygen -F github.com -f "$HOME/.ssh/known_hosts" >/dev/null
@@ -95,14 +114,55 @@ jobs:
           branch_count=0
           tag_count=0
 
+          # Política de refs:
+          # - main: só fast-forward, NUNCA force. Divergência = falha para investigação.
+          # - branches de bot (dependabot/*, renovate/*): fora do backup. O bot reescreve essas branches com force
+          #   push a cada rebase e elas são descartáveis (recriadas pelo bot a partir da main).
+          # - demais branches: tenta fast-forward; se a origem foi reescrita (force push), o ref antigo do backup é
+          #   guardado em refs/superseded/<branch>/<oid> ANTES de atualizar a branch com --force-with-lease preso ao
+          #   oid antigo. Nada é perdido: o histórico substituído continua acessível no backup.
+          is_bot_branch() {
+            [[ "$1" == dependabot/* || "$1" == renovate/* ]]
+          }
+
+          declare -A backup_head_oids=()
+          while IFS=$'\t' read -r object_id ref_name; do
+            if [[ -n "${ref_name:-}" ]]; then
+              backup_head_oids["$ref_name"]="$object_id"
+            fi
+          done < <(git ls-remote --heads backup)
+
+          skipped_count=0
+          superseded_count=0
           echo "Synchronizing branches"
           for branch_ref in "${branch_refs[@]}"; do
             if [[ "$branch_ref" == refs/remotes/origin/HEAD ]]; then
               continue
             fi
             branch_name="${branch_ref#refs/remotes/origin/}"
-            git push backup "${branch_ref}:refs/heads/${branch_name}"
+            if is_bot_branch "$branch_name"; then
+              skipped_count=$((skipped_count + 1))
+              continue
+            fi
+            if git push backup "${branch_ref}:refs/heads/${branch_name}"; then
+              branch_count=$((branch_count + 1))
+              continue
+            fi
+            if [[ "$branch_name" == main ]]; then
+              echo "::error::main diverged from the backup; refusing to force-push it."
+              exit 1
+            fi
+            old_oid="${backup_head_oids[refs/heads/${branch_name}]:-}"
+            if [[ -z "$old_oid" ]]; then
+              echo "::error::Push of ${branch_name} failed and the backup has no previous ref for it."
+              exit 1
+            fi
+            echo "::warning::${branch_name} was rewritten at the source; keeping ${old_oid} as refs/superseded/${branch_name}/${old_oid}."
+            git fetch --no-tags backup "+refs/heads/${branch_name}:refs/backup-old/${branch_name}"
+            git push backup "refs/backup-old/${branch_name}:refs/superseded/${branch_name}/${old_oid}"
+            git push --force-with-lease="refs/heads/${branch_name}:${old_oid}" backup "${branch_ref}:refs/heads/${branch_name}"
             branch_count=$((branch_count + 1))
+            superseded_count=$((superseded_count + 1))
           done
 
           echo "Synchronizing tags"
@@ -138,6 +198,9 @@ jobs:
               continue
             fi
             branch_name="${branch_ref#refs/remotes/origin/}"
+            if is_bot_branch "$branch_name"; then
+              continue
+            fi
             expected_oid="$(git rev-parse "$branch_ref")"
             if [[ "${remote_head_oids[refs/heads/${branch_name}]:-}" != "$expected_oid" ]]; then
               echo "::error::Remote branch ${branch_name} does not match its source ref."
@@ -156,6 +219,8 @@ jobs:
           echo "Backup verification passed"
           echo "branches=${branch_count}" >> "$GITHUB_OUTPUT"
           echo "tags=${tag_count}" >> "$GITHUB_OUTPUT"
+          echo "skipped=${skipped_count}" >> "$GITHUB_OUTPUT"
+          echo "superseded=${superseded_count}" >> "$GITHUB_OUTPUT"
 
       - name: Write backup run summary
         if: always()
@@ -164,6 +229,8 @@ jobs:
           SYNC_OUTCOME: ${{ steps.sync.outcome }}
           BRANCH_COUNT: ${{ steps.sync.outputs.branches }}
           TAG_COUNT: ${{ steps.sync.outputs.tags }}
+          SKIPPED_COUNT: ${{ steps.sync.outputs.skipped }}
+          SUPERSEDED_COUNT: ${{ steps.sync.outputs.superseded }}
           TRIGGER: ${{ github.event_name }}
           SOURCE_BRANCH: ${{ github.ref_name }}
         run: |
@@ -192,6 +259,8 @@ jobs:
             echo "| Status | ${status} |"
             echo "| Branches processed | ${branch_count} |"
             echo "| Tags processed | ${tag_count} |"
+            echo "| Bot branches skipped | ${SKIPPED_COUNT:-Not completed} |"
+            echo "| Rewritten branches preserved | ${SUPERSEDED_COUNT:-Not completed} |"
             echo "| Remote verification | ${remote_verification} |"
             echo "| Workflow run | [${GITHUB_RUN_ID}](${run_url}) |"
             echo "| Trigger | ${TRIGGER} |"

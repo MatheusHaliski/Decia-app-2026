@@ -10,6 +10,8 @@
  * A troca fica num lugar só: `formatToRequest`/`formatFromView`.
  */
 
+import { isAcceptedExtension } from "./accepted";
+
 export const FORMAT_FAMILIES = ["PLANILHA", "DOCUMENTO", "APRESENTACAO", "IMAGEM", "DESENHO_TECNICO", "DADOS", "AUDIO_VIDEO", "PACOTE", "LINK", "OUTRO"] as const;
 export type FormatFamilyId = (typeof FORMAT_FAMILIES)[number];
 
@@ -70,56 +72,57 @@ export const FORMAT_FAMILY_FIELDS: Record<FormatFamilyId, readonly FormatField[]
 };
 
 const SHEET_OFFICE = [text("sheets"), bool("formulas"), bool("protected")];
-const v = (code: FormatVariantCode, family: FormatFamilyId, extensions: readonly string[], mime: readonly string[], detected: boolean, fields: readonly FormatField[] = [], refused?: boolean): FormatVariant =>
-  ({ code, family, extensions, mime, detected, fields, ...(refused ? { refused } : {}) });
+/** `detected` (o servidor aceita e confere o tipo real) vem da lista única de `accepted.ts`, espelho do `DetectedType` do backend. */
+const v = (code: FormatVariantCode, family: FormatFamilyId, extensions: readonly string[], mime: readonly string[], fields: readonly FormatField[] = [], refused?: boolean): FormatVariant =>
+  ({ code, family, extensions, mime, detected: extensions.some(isAcceptedExtension), fields, ...(refused ? { refused } : {}) });
 
 export const FORMAT_VARIANTS: readonly FormatVariant[] = [
-  v("XLSX", "PLANILHA", ["xlsx"], ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], true, SHEET_OFFICE),
-  v("XLS", "PLANILHA", ["xls"], ["application/vnd.ms-excel"], false, SHEET_OFFICE),
-  v("XLSM", "PLANILHA", ["xlsm"], ["application/vnd.ms-excel.sheet.macroEnabled.12"], false, SHEET_OFFICE, true),
-  v("ODS", "PLANILHA", ["ods"], ["application/vnd.oasis.opendocument.spreadsheet"], false, SHEET_OFFICE),
-  v("CSV", "PLANILHA", ["csv"], ["text/csv"], false, [DELIMITER, ENCODING, DECIMAL]),
-  v("TSV", "PLANILHA", ["tsv"], ["text/tab-separated-values"], false, [ENCODING, DECIMAL]),
+  v("XLSX", "PLANILHA", ["xlsx"], ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], SHEET_OFFICE),
+  v("XLS", "PLANILHA", ["xls"], ["application/vnd.ms-excel"], SHEET_OFFICE),
+  v("XLSM", "PLANILHA", ["xlsm"], ["application/vnd.ms-excel.sheet.macroEnabled.12"], SHEET_OFFICE, true),
+  v("ODS", "PLANILHA", ["ods"], ["application/vnd.oasis.opendocument.spreadsheet"], SHEET_OFFICE),
+  v("CSV", "PLANILHA", ["csv"], ["text/csv"], [DELIMITER, ENCODING, DECIMAL]),
+  v("TSV", "PLANILHA", ["tsv"], ["text/tab-separated-values"], [ENCODING, DECIMAL]),
 
-  v("DOCX", "DOCUMENTO", ["docx"], ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"], true, [text("template"), bool("trackChanges")]),
-  v("DOC", "DOCUMENTO", ["doc"], ["application/msword"], false, [text("template")]),
-  v("ODT", "DOCUMENTO", ["odt"], ["application/vnd.oasis.opendocument.text"], false, [text("template"), bool("trackChanges")]),
-  v("PDF", "DOCUMENTO", ["pdf"], ["application/pdf"], true, [bool("signed"), bool("textLayer")]),
-  v("PDF_A", "DOCUMENTO", ["pdf"], ["application/pdf"], true, [sel("pdfaLevel", ["1B", "2B", "3B"]), bool("signed"), bool("textLayer")]),
-  v("RTF", "DOCUMENTO", ["rtf"], ["application/rtf"], false),
-  v("MD", "DOCUMENTO", ["md"], ["text/markdown"], false, [ENCODING]),
-  v("TXT", "DOCUMENTO", ["txt"], ["text/plain"], false, [ENCODING]),
-  v("HTML", "DOCUMENTO", ["html", "htm"], ["text/html"], false, [ENCODING]),
+  v("DOCX", "DOCUMENTO", ["docx"], ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"], [text("template"), bool("trackChanges")]),
+  v("DOC", "DOCUMENTO", ["doc"], ["application/msword"], [text("template")]),
+  v("ODT", "DOCUMENTO", ["odt"], ["application/vnd.oasis.opendocument.text"], [text("template"), bool("trackChanges")]),
+  v("PDF", "DOCUMENTO", ["pdf"], ["application/pdf"], [bool("signed"), bool("textLayer")]),
+  v("PDF_A", "DOCUMENTO", ["pdf"], ["application/pdf"], [sel("pdfaLevel", ["1B", "2B", "3B"]), bool("signed"), bool("textLayer")]),
+  v("RTF", "DOCUMENTO", ["rtf"], ["application/rtf"]),
+  v("MD", "DOCUMENTO", ["md"], ["text/markdown"], [ENCODING]),
+  v("TXT", "DOCUMENTO", ["txt"], ["text/plain"], [ENCODING]),
+  v("HTML", "DOCUMENTO", ["html", "htm"], ["text/html"], [ENCODING]),
 
-  v("PPTX", "APRESENTACAO", ["pptx"], ["application/vnd.openxmlformats-officedocument.presentationml.presentation"], true, [text("template")]),
-  v("ODP", "APRESENTACAO", ["odp"], ["application/vnd.oasis.opendocument.presentation"], false, [text("template")]),
-  v("PDF", "APRESENTACAO", ["pdf"], ["application/pdf"], true),
+  v("PPTX", "APRESENTACAO", ["pptx"], ["application/vnd.openxmlformats-officedocument.presentationml.presentation"], [text("template")]),
+  v("ODP", "APRESENTACAO", ["odp"], ["application/vnd.oasis.opendocument.presentation"], [text("template")]),
+  v("PDF", "APRESENTACAO", ["pdf"], ["application/pdf"]),
 
-  v("PNG", "IMAGEM", ["png"], ["image/png"], true, [bool("transparency")]),
-  v("JPG", "IMAGEM", ["jpg", "jpeg"], ["image/jpeg"], true),
-  v("SVG", "IMAGEM", ["svg"], ["image/svg+xml"], false, [bool("transparency")]),
-  v("WEBP", "IMAGEM", ["webp"], ["image/webp"], true, [bool("transparency")]),
+  v("PNG", "IMAGEM", ["png"], ["image/png"], [bool("transparency")]),
+  v("JPG", "IMAGEM", ["jpg", "jpeg"], ["image/jpeg"]),
+  v("SVG", "IMAGEM", ["svg"], ["image/svg+xml"], [bool("transparency")]),
+  v("WEBP", "IMAGEM", ["webp"], ["image/webp"], [bool("transparency")]),
 
-  v("DWG", "DESENHO_TECNICO", ["dwg"], ["image/vnd.dwg"], true, [CAD_VERSION]),
-  v("DXF", "DESENHO_TECNICO", ["dxf"], ["image/vnd.dxf"], true, [CAD_VERSION]),
-  v("IFC", "DESENHO_TECNICO", ["ifc"], ["application/x-step"], true, [sel("ifcSchema", ["IFC2X3", "IFC4", "IFC4X3"])]),
-  v("GLB", "DESENHO_TECNICO", ["glb"], ["model/gltf-binary"], true),
-  v("PDF", "DESENHO_TECNICO", ["pdf"], ["application/pdf"], true, [sel("paper", ["A0", "A1", "A2", "A3", "A4"]), bool("signed")]),
+  v("DWG", "DESENHO_TECNICO", ["dwg"], ["image/vnd.dwg"], [CAD_VERSION]),
+  v("DXF", "DESENHO_TECNICO", ["dxf"], ["image/vnd.dxf"], [CAD_VERSION]),
+  v("IFC", "DESENHO_TECNICO", ["ifc"], ["application/x-step"], [sel("ifcSchema", ["IFC2X3", "IFC4", "IFC4X3"])]),
+  v("GLB", "DESENHO_TECNICO", ["glb"], ["model/gltf-binary"]),
+  v("PDF", "DESENHO_TECNICO", ["pdf"], ["application/pdf"], [sel("paper", ["A0", "A1", "A2", "A3", "A4"]), bool("signed")]),
 
-  v("JSON", "DADOS", ["json"], ["application/json"], false, [text("schemaUrl")]),
-  v("XML", "DADOS", ["xml"], ["application/xml", "text/xml"], false, [text("schemaUrl")]),
-  v("CSV", "DADOS", ["csv"], ["text/csv"], false, [DELIMITER, bool("headerRow"), DECIMAL]),
+  v("JSON", "DADOS", ["json"], ["application/json"], [text("schemaUrl")]),
+  v("XML", "DADOS", ["xml"], ["application/xml", "text/xml"], [text("schemaUrl")]),
+  v("CSV", "DADOS", ["csv"], ["text/csv"], [DELIMITER, bool("headerRow"), DECIMAL]),
 
-  v("MP3", "AUDIO_VIDEO", ["mp3"], ["audio/mpeg"], false, [bool("transcript")]),
-  v("WAV", "AUDIO_VIDEO", ["wav"], ["audio/wav"], false, [bool("transcript")]),
-  v("M4A", "AUDIO_VIDEO", ["m4a"], ["audio/mp4"], false, [bool("transcript")]),
-  v("MP4", "AUDIO_VIDEO", ["mp4"], ["video/mp4"], false, [bool("captions")]),
-  v("WEBM", "AUDIO_VIDEO", ["webm"], ["video/webm"], false, [bool("captions")]),
-  v("MOV", "AUDIO_VIDEO", ["mov"], ["video/quicktime"], false, [bool("captions")]),
+  v("MP3", "AUDIO_VIDEO", ["mp3"], ["audio/mpeg"], [bool("transcript")]),
+  v("WAV", "AUDIO_VIDEO", ["wav"], ["audio/wav"], [bool("transcript")]),
+  v("M4A", "AUDIO_VIDEO", ["m4a"], ["audio/mp4"], [bool("transcript")]),
+  v("MP4", "AUDIO_VIDEO", ["mp4"], ["video/mp4"], [bool("captions")]),
+  v("WEBM", "AUDIO_VIDEO", ["webm"], ["video/webm"], [bool("captions")]),
+  v("MOV", "AUDIO_VIDEO", ["mov"], ["video/quicktime"], [bool("captions")]),
 
-  v("ZIP", "PACOTE", ["zip"], ["application/zip"], true, [num("maxFiles", 1, 10000)]),
+  v("ZIP", "PACOTE", ["zip"], ["application/zip"], [num("maxFiles", 1, 10000)]),
 
-  v("URL", "LINK", ["url"], ["text/uri-list"], false, [text("platform")]),
+  v("URL", "LINK", ["url"], ["text/uri-list"], [text("platform")]),
 ];
 
 /** Variante da família (a mesma sigla pode existir em mais de uma família: PDF de documento, de apresentação e de prancha). */

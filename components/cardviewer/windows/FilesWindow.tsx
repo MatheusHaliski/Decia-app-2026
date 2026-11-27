@@ -71,7 +71,12 @@ function TreeItem({ node, actions }: { node: FileNode; actions?: (n: FileNode) =
     <li className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 px-1 py-0.5" data-node={node.id}>
       {node.kind === "link" ? <span aria-hidden>↗</span> : <FileTypeIcon name={node.name} mime={node.mime} size={18} />}
       {node.kind === "link" && node.url ? <Link href={node.url}>{name}</Link> : <span className="min-w-0 [overflow-wrap:anywhere]">{name}</span>}
-      {node.format ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-format={`${node.format.family}/${node.format.variant}`}>{t("cardviewer.fmt.label", { family: t(`cardviewer.fmt.family.${node.format.family}`), variant: node.format.variant })}</span> : null}
+      {node.format ? (
+        <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-format={`${node.format.family}/${node.format.variant}`} data-estimated={node.format.estimated}>
+          {node.format.variant ? t("cardviewer.fmt.label", { family: t(`cardviewer.fmt.family.${node.format.family}`), variant: node.format.variant }) : t(`cardviewer.fmt.family.${node.format.family}`)}
+          {node.format.estimated ? ` (${t("taskForm.fmt.estimated")})` : null}
+        </span>
+      ) : null}
       {node.size !== undefined ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{formatBytes(node.size, intl)}</span> : null}
       {node.date ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{formatDateTime(node.date, intl)}</span> : null}
       {node.evidenceCaption ? <span className="w-full pl-4 text-[length:var(--ws-text-caption)] text-ws-text-muted">“{node.evidenceCaption}”</span> : null}

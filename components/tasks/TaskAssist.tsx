@@ -15,6 +15,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Field, Select, Tag, cn, type Tone } from "@/components/ui";
 import { DevelopmentPlanPanel } from "@/components/career/DevelopmentPlan";
+import { areaTemplatesForField } from "@/lib/career/curation";
 import type { OccupationPack } from "@/lib/career/occupationPack";
 import { packFor } from "@/lib/career/packs";
 import { baseLocale } from "@/lib/i18n/state";
@@ -23,6 +24,7 @@ import { AREA_TEMPLATES } from "@/lib/tasks/areaTemplates";
 import { fieldByCode } from "@/lib/tasks/areas";
 import { WORK_AREAS, type WorkArea } from "@/lib/tasks/client";
 import { FIELD_INDEX } from "@/lib/tasks/fieldIndex.gen";
+import { localTodayIso } from "@/lib/tasks/legalDeadline";
 import { assessTask, type CheckGroup, type CheckStatus, type QualityCheck, type QuickFix } from "@/lib/tasks/quality";
 import { packTemplates, type TaskDraft, type TaskTemplate } from "@/lib/tasks/templates";
 
@@ -76,13 +78,16 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
 
   const area: WorkArea | null = draft.area || field?.area || null;
   const fieldTemplates = useMemo(() => (pack && field ? packTemplates(pack, field.area) : []), [pack, field]);
-  const areaTemplates = useMemo(() => (area ? AREA_TEMPLATES.filter((x) => x.area === area) : []), [area]);
-  const report = useMemo(() => assessTask(draft, pack), [draft, pack]);
+  // com campo escolhido, sem os modelos de contratação pública quando a profissão não lida com eles (Contábeis não recebe ETP)
+  const areaTemplates = useMemo(() => (area ? areaTemplatesForField(AREA_TEMPLATES.filter((x) => x.area === area), field?.code) : []), [area, field]);
+  const [today] = useState(() => localTodayIso());
+  const report = useMemo(() => assessTask(draft, pack, { today }), [draft, pack, today]);
 
   // modelo vindo da URL: aplica uma vez, quando o modelo (da área ou do campo) estiver disponível
   useEffect(() => {
     if (!templateId || usedUrlTemplate) return;
-    const tpl = [...AREA_TEMPLATES, ...fieldTemplates].find((x) => x.id === templateId);
+    // a URL pode trazer um modelo da trilha Carreira (plano de desenvolvimento, aba Carreira), que não aparece na lista de trabalho
+    const tpl = [...AREA_TEMPLATES, ...(pack && field ? packTemplates(pack, field.area, "TODAS") : [])].find((x) => x.id === templateId);
     if (tpl) {
       setUsedUrlTemplate(true);
       onApplyTemplate(tpl);
@@ -93,7 +98,7 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
       const f = FIELD_INDEX.find((x) => x.pack === m[1]);
       if (f) onFieldChange(f.code);
     }
-  }, [templateId, usedUrlTemplate, fieldTemplates, field, onApplyTemplate, onFieldChange]);
+  }, [templateId, usedUrlTemplate, pack, field, onApplyTemplate, onFieldChange]);
 
   const use = (tpl: TaskTemplate) => {
     if (hasContent) setPending(tpl);
@@ -106,9 +111,9 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
   );
 
   return (
-    <aside className="grid content-start gap-[var(--ws-space-4)]" aria-label={t("tasks.assist.label")} data-testid="task-assist">
+    <aside className="grid min-w-0 content-start gap-[var(--ws-space-4)] [overflow-wrap:anywhere]" aria-label={t("tasks.assist.label")} data-testid="task-assist">
       {/* 1. campo de estudo */}
-      <section className="grid gap-2 rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]">
+      <section className="grid min-w-0 gap-2 rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]">
         <Field label={t("tasks.assist.field")} hint={t("tasks.assist.fieldHint")}>
           {({ id, describedBy }) => (
             <Select id={id} aria-describedby={describedBy} value={fieldCode ?? ""} onChange={(e) => onFieldChange(e.target.value || null)}
@@ -145,7 +150,7 @@ export function TaskAssist({ draft, fieldCode, onFieldChange, onAreaChange, onAp
       </section>
 
       {/* 2. modelos */}
-      <section className="grid gap-2 rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]" aria-labelledby="assist-templates">
+      <section className="grid min-w-0 gap-2 rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]" aria-labelledby="assist-templates">
         <h2 id="assist-templates" className="text-[length:var(--ws-text-body)] font-semibold">{t("tasks.assist.templates")}</h2>
         {pending ? (
           <div role="alertdialog" aria-label={t("tasks.assist.replaceTitle")} className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-warning bg-ws-warning-soft p-2 text-[length:var(--ws-text-body-sm)]">
@@ -187,8 +192,8 @@ function TemplateList({ title, items, onUse }: { title: string; items: TaskTempl
         {items.map((tpl) => (
           <li key={tpl.id} data-template={tpl.id}>
             <details className="rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-2 px-2.5 py-2">
-              <summary className="flex cursor-pointer select-none flex-wrap items-center gap-1.5 text-[length:var(--ws-text-body-sm)]">
-                <span className="min-w-0 flex-1 font-semibold">{tpl.title}</span>
+              <summary className="flex min-w-0 cursor-pointer select-none flex-wrap items-center gap-1.5 text-[length:var(--ws-text-body-sm)]">
+                <span className="min-w-0 flex-[1_1_12rem] font-semibold [overflow-wrap:anywhere]">{tpl.title}</span>
                 <Tag>{t(`social.taskType.${tpl.type}`)}</Tag>
                 {tpl.effort ? <Tag tone="info">{tpl.effort}</Tag> : null}
                 {tpl.level ? <Tag tone="neutral">{t(`tasks.assist.level.${tpl.level}`)}</Tag> : null}
@@ -199,7 +204,7 @@ function TemplateList({ title, items, onUse }: { title: string; items: TaskTempl
                 <ul className="grid list-disc gap-0.5 pl-4">{tpl.criteria.slice(0, 4).map((c, i) => <li key={i}>{c}</li>)}</ul>
               </div>
             </details>
-            <Button size="sm" variant="secondary" className="mt-1" onClick={() => onUse(tpl)} aria-label={t("tasks.assist.useNamed", { title: tpl.title })}>{t("tasks.assist.use")}</Button>
+            <Button size="sm" variant="secondary" className="mt-1 h-auto min-h-0 max-w-full whitespace-normal py-1 text-left" onClick={() => onUse(tpl)} aria-label={t("tasks.assist.useNamed", { title: tpl.title })}>{t("tasks.assist.use")}</Button>
           </li>
         ))}
       </ul>
@@ -215,7 +220,7 @@ function Feedback({ report, onFix, pack, areaLabel, fieldLabel }: { report: Retu
   const groupTitle = (g: CheckGroup) => (g === "ESSENCIAL" ? t("tasks.assist.group.ESSENCIAL") : g === "AREA" ? t("tasks.assist.group.AREA", { area: areaLabel ?? "" }) : t("tasks.assist.group.CAMPO", { field: fieldLabel ?? "" }));
   const next = report.checks.find((c) => c.status === "FALTA") ?? report.checks.find((c) => c.status === "AVISO");
   return (
-    <section aria-labelledby="assist-feedback" className="grid gap-2 rounded-[var(--ws-radius-lg)] border border-ws-ai-spark bg-ws-ai-spark-soft p-[var(--ws-space-3)]" data-testid="task-quality" data-readiness={report.readiness}>
+    <section aria-labelledby="assist-feedback" className="grid min-w-0 gap-2 rounded-[var(--ws-radius-lg)] border border-ws-ai-spark bg-ws-ai-spark-soft p-[var(--ws-space-3)]" data-testid="task-quality" data-readiness={report.readiness}>
       <div className="flex flex-wrap items-center gap-2">
         <span aria-hidden className="text-ws-ai-spark-ink">✦</span>
         <Badge tone="spark">{t("tasks.assist.ai")}</Badge>
@@ -272,10 +277,10 @@ function CheckRow({ check, onFix }: { check: QualityCheck; onFix: (f: QuickFix) 
     : f.kind === "SET_EXTENSION" ? t("tasks.assist.fix.extension", { field: t(`tasks.ext.${f.key}`), value: f.value })
     : t("tasks.assist.fix.access", { access: t(`social.access.${f.accessClass}`) });
   return (
-    <li className={cn("grid gap-1 rounded-[var(--ws-radius-md)] border border-l-4 bg-ws-surface-1 px-2.5 py-2 text-[length:var(--ws-text-body-sm)]", check.status === "FALTA" ? "border-ws-border border-l-ws-danger" : check.status === "AVISO" ? "border-ws-border border-l-ws-warning" : "border-ws-border border-l-ws-success")} data-check={check.id} data-status={check.status}>
+    <li className={cn("grid min-w-0 gap-1 rounded-[var(--ws-radius-md)] border border-l-4 bg-ws-surface-1 px-2.5 py-2 text-[length:var(--ws-text-body-sm)]", check.status === "FALTA" ? "border-ws-border border-l-ws-danger" : check.status === "AVISO" ? "border-ws-border border-l-ws-warning" : "border-ws-border border-l-ws-success")} data-check={check.id} data-status={check.status}>
       <div className="flex flex-wrap items-center gap-1.5">
         <Tag tone={STATUS_TONE[check.status]}><span aria-hidden>{STATUS_MARK[check.status]}</span>{t(`tasks.assist.status.${check.status}`)}</Tag>
-        <span className="min-w-0 flex-1 font-semibold">{t(`tasks.q.${check.id}.title`)}</span>
+        <span className="min-w-0 flex-[1_1_10rem] font-semibold [overflow-wrap:anywhere]">{t(`tasks.q.${check.id}.title`)}</span>
       </div>
       <p>{t(`tasks.q.${check.id}.${check.status === "OK" ? "ok" : check.status === "AVISO" ? "warn" : "missing"}`, vars)}</p>
       {check.status !== "OK" && check.fixes?.length ? (

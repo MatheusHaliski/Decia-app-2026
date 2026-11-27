@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/lib/api/client";
-import { addAlternative, addCriteria, addEvidence, createDecision, decide, recordOutcome, setScore, setStatus, setWeight } from "./commands";
-import { createHttpRepository, diffCommands, fromDto, type DecisionCommandDto, type DecisionTransport, type DecisionViewDto } from "./http";
+import { addAlternative, addCriteria, addEvidence, createDecision, decide, linkWork, recordOutcome, setRecommendationStatus, setScore, setStatus, setWeight, unlinkWork } from "./commands";
+import { createHttpRepository, DecisionApiLimitError, diffCommands, fromDto, isServerId, unsupportedChanges, type DecisionCommandDto, type DecisionTransport, type DecisionViewDto } from "./http";
 import type { DecisionAggregate } from "./types";
 
 const ME = "11111111-1111-4111-8111-111111111111";
@@ -31,7 +31,7 @@ function fakeTransport(handler: (method: "GET" | "POST", path: string, body?: un
 }
 
 describe("fromDto", () => {
-  it("converte nulos em ausentes e preenche as coleções que a API ainda não grava", () => {
+  it("converte nulos em ausentes e preenche vazio o que não veio", () => {
     const agg = fromDto(dto("d1", 3));
     expect(agg.decision.version).toBe(3);
     expect(agg.decision.contextMd).toBeUndefined();
@@ -71,7 +71,8 @@ describe("diffCommands", () => {
       ],
     }));
     const removed = setScore(b, "a1", "c1", ME, null, NOW);
-    expect(diffCommands(b, removed, ME)).toEqual([{ type: "SET_SCORE", alternativeId: "a1", criterionId: "c1", score: null }]);
+    // sem `score` = remover a nota de quem pede (o servidor trata ausente e nulo igual)
+    expect(diffCommands(b, removed, ME)).toEqual([{ type: "SET_SCORE", alternativeId: "a1", criterionId: "c1" }]);
     expect(diffCommands(b, b, ME)).toEqual([]);
   });
 
@@ -175,5 +176,142 @@ describe("createHttpRepository", () => {
     await repo.settled();
     expect(repo.list()).toHaveLength(0);
     expect((repo.lastError() as ApiError).code).toBe("DECISAO_SEM_EMPRESA");
+  });
+});
+
+const TASK = "22222222-2222-4222-8222-222222222222";
+const PROJECT = "33333333-3333-4333-8333-333333333333";
+
+describe("fase 7b — registros da decisão", () => {
+  const withRecords = () => fromDto(dto("d1", 5, {
+    alternatives: [{ id: "a1", label: "A", title: "Sim", doNothing: false, status: "ATIVA", origin: "HUMANO", position: 0 }],
+    assumptions: [{ id: "p1", statement: "Orçamento aprovado", importance: "CRITICO", confidencePct: 70, validationStatus: "NAO_VALIDADA", origin: "HUMANO", alternativeId: null }],
+    risks: [{ id: "r1", title: "Atraso", likelihood: "PROVAVEL", impact: "ALTO", severity: "ALTO", source: "MANUAL", status: "ABERTO", origin: "HUMANO", alternativeId: "a1" }],
+    scenarios: [{ id: "s1", scenarioCase: "BASE", description: "No prazo", likelihood: "POSSIVEL", assumptionIds: ["p1"], expectedResult: "Março" }],
+    forecasts: [{ id: "f1", statement: "Até março?", probabilityPct: 65, resolveBy: "2027-03-31", forecasterUserId: ME, resolution: "PENDENTE" }],
+    recommendations: [{ id: "rec1", source: "MODELO", reasoningMd: "A lidera", supporting: ["s"], contradicting: ["c"], criticalAssumptionIds: ["p1"], limitationsMd: "l", whatWouldChangeMd: "w", modelVersion: "decia-scoring-v1", status: "SUGERIDA", createdAt: NOW.toISOString() }],
+    triggers: [{ id: "g1", conditionText: "Custo > 1 mi", metricKey: "custo", comparator: ">", threshold: 1000000, status: "ATIVO" }],
+    checkpoints: [{ id: "k1", dueAt: "2027-01-10T12:00:00Z", kind: "PROGRAMADO", status: "AGENDADO" }],
+    workLinks: [{ id: "w1", targetType: "PROJETO", targetId: PROJECT, createdByUserId: ME, createdAt: NOW.toISOString() }],
+    retrospective: null,
+  }));
+
+  it("fromDto mapeia premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints e vínculos (sem perda)", () => {
+    const agg = withRecords();
+    expect(agg.assumptions[0]).toMatchObject({ id: "p1", importance: "CRITICO", confidencePct: 70 });
+    expect(agg.assumptions[0].alternativeId).toBeUndefined();
+    expect(agg.risks[0]).toMatchObject({ alternativeId: "a1", likelihood: "PROVAVEL" });
+    expect(agg.scenarios[0]).toMatchObject({ case: "BASE", assumptionIds: ["p1"] });
+    expect(agg.forecasts[0].probabilityPct).toBe(65);
+    expect(agg.recommendations[0].status).toBe("SUGERIDA");
+    expect(agg.triggers[0].threshold).toBe(1000000);
+    expect(agg.checkpoints[0].status).toBe("AGENDADO");
+    // o vínculo não copia dados: o rótulo fica vazio para a tela resolver
+    expect(agg.workLinks[0]).toMatchObject({ targetType: "PROJETO", targetId: PROJECT, label: "" });
+    expect(agg.retrospective).toBeUndefined();
+    // ida e volta sem mudança = nenhum comando
+    expect(diffCommands(agg, agg, ME)).toEqual([]);
+  });
+
+  it("diffCommands cria com ref, altera com itemId e remove registros", () => {
+    const b = withRecords();
+    const next = {
+      ...b,
+      assumptions: [{ ...b.assumptions[0], validationStatus: "VALIDADA" as const }, { id: "p-local", statement: "Equipe disponível", importance: "ALTO" as const, validationStatus: "NAO_VALIDADA" as const, origin: "HUMANO" as const }],
+      risks: [],
+      scenarios: [{ ...b.scenarios[0], assumptionIds: ["p1", "p-local"] }],
+      triggers: [{ ...b.triggers[0], status: "DISPARADO" as const }],
+      forecasts: [{ ...b.forecasts[0], resolution: "OCORREU" as const }, { id: "f-local", statement: "Custo abaixo do teto?", probabilityPct: 80, resolveBy: "2027-06-30T00:00:00.000Z", forecasterUserId: ME, resolution: "PENDENTE" as const }],
+      checkpoints: [{ ...b.checkpoints[0], status: "CONCLUIDO" as const, action: "MANTER" as const, confidencePctAfter: 80 }],
+    };
+    const cmds = diffCommands(b, next, ME);
+    expect(cmds).toContainEqual({ type: "PUT_ASSUMPTION", itemId: "p1", assumption: { statement: "Orçamento aprovado", importance: "CRITICO", confidencePct: 70, validationStatus: "VALIDADA" } });
+    expect(cmds).toContainEqual({ type: "PUT_ASSUMPTION", ref: "p-local", assumption: { statement: "Equipe disponível", importance: "ALTO", validationStatus: "NAO_VALIDADA" } });
+    expect(cmds).toContainEqual({ type: "REMOVE_RISK", itemId: "r1" });
+    expect(cmds).toContainEqual(expect.objectContaining({ type: "PUT_SCENARIO", itemId: "s1", scenario: expect.objectContaining({ assumptionIds: ["p1", "p-local"] }) }));
+    expect(cmds).toContainEqual(expect.objectContaining({ type: "PUT_TRIGGER", itemId: "g1", trigger: expect.objectContaining({ status: "DISPARADO" }) }));
+    expect(cmds).toContainEqual({ type: "PUT_FORECAST", itemId: "f1", forecast: { resolution: "OCORREU" } });
+    expect(cmds).toContainEqual({ type: "PUT_FORECAST", ref: "f-local", forecast: { statement: "Custo abaixo do teto?", probabilityPct: 80, resolveBy: "2027-06-30" } });
+    expect(cmds).toContainEqual(expect.objectContaining({ type: "PUT_CHECKPOINT", itemId: "k1", checkpoint: expect.objectContaining({ status: "CONCLUIDO", action: "MANTER" }) }));
+    // premissa nova vai antes do cenário que a cita
+    expect(cmds.findIndex((c) => c.ref === "p-local")).toBeLessThan(cmds.findIndex((c) => c.type === "PUT_SCENARIO"));
+  });
+
+  it("aceitar recomendação vira PUT_RECOMMENDATION só com o estado; vínculo de tarefa vira LINK_WORK/UNLINK_WORK", () => {
+    const b = withRecords();
+    const accepted = setRecommendationStatus(b, "rec1", "ACEITA", ME, NOW);
+    expect(diffCommands(b, accepted, ME)).toEqual([{ type: "PUT_RECOMMENDATION", itemId: "rec1", recommendation: { status: "ACEITA" } }]);
+    const linked = linkWork(b, { targetType: "TAREFA", targetId: TASK, label: "Levantar preços" }, ME, NOW);
+    const local = linked.workLinks.find((w) => w.targetId === TASK)!;
+    expect(diffCommands(b, linked, ME)).toEqual([{ type: "LINK_WORK", ref: local.id, workLink: { targetType: "TAREFA", targetId: TASK } }]);
+    expect(diffCommands(b, unlinkWork(b, "w1", ME, NOW), ME)).toEqual([{ type: "UNLINK_WORK", itemId: "w1" }]);
+  });
+
+  it("unsupportedChanges aponta o que a API não grava (nunca perda silenciosa)", () => {
+    const b = withRecords();
+    expect(unsupportedChanges(b, b)).toEqual([]);
+    const lab = linkWork(b, { targetType: "TAREFA", targetId: "t-termo", label: "Tarefa do laboratório" }, ME, NOW);
+    expect(unsupportedChanges(b, lab)).toEqual(["workLinks.labTarget"]);
+    expect(diffCommands(b, lab, ME)).toEqual([]);
+    const renamed = { ...b, decision: { ...b.decision, contextMd: "novo" }, alternatives: [{ ...b.alternatives[0], title: "Outro" }] };
+    expect(unsupportedChanges(b, renamed)).toEqual(["decision.fields", "alternatives.edit"]);
+    const ai = { ...b, recommendations: [...b.recommendations, { ...b.recommendations[0], id: "rec-ia", source: "IA" as const }] };
+    expect(unsupportedChanges(b, ai)).toEqual(["recommendations.ai"]);
+    expect(isServerId(TASK)).toBe(true);
+    expect(isServerId("t-termo")).toBe(false);
+  });
+
+  it("save envia o suportado e expõe o limite; registros novos aprendem o id do servidor pelo conteúdo", async () => {
+    const sent: DecisionCommandDto[][] = [];
+    const { transport } = fakeTransport((method, _path, body) => {
+      if (method === "GET") return [dto("d1", 1)];
+      const b = body as { commands: DecisionCommandDto[] };
+      sent.push(b.commands);
+      return dto("d1", 2, { assumptions: [{ id: "srv-p", statement: "Equipe disponível", importance: "ALTO", validationStatus: "NAO_VALIDADA", origin: "HUMANO" }] });
+    });
+    const repo = createHttpRepository({ userId: ME, transport });
+    repo.subscribe(() => {});
+    await repo.settled();
+    const base = repo.get("d1")!;
+    const next = { ...base, decision: { ...base.decision, objective: "mudou" }, assumptions: [{ id: "p-local", statement: "Equipe disponível", importance: "ALTO" as const, validationStatus: "NAO_VALIDADA" as const, origin: "HUMANO" as const }] };
+    repo.save(next);
+    await repo.settled();
+    expect(sent[0]).toEqual([{ type: "PUT_ASSUMPTION", ref: "p-local", assumption: { statement: "Equipe disponível", importance: "ALTO", validationStatus: "NAO_VALIDADA" } }]);
+    expect(repo.lastError()).toBeInstanceOf(DecisionApiLimitError);
+    expect((repo.lastError() as DecisionApiLimitError).limits).toEqual(["decision.fields"]);
+    expect(repo.get("d1")!.assumptions[0].id).toBe("srv-p");
+    // a cópia antiga com o id local não recria a premissa
+    repo.save({ ...repo.get("d1")!, assumptions: next.assumptions });
+    await repo.settled();
+    expect(sent).toHaveLength(1);
+  });
+
+  it("criação com projeto do servidor manda projectId; confirmedId devolve o id definitivo; open busca pelo id", async () => {
+    const { transport, calls } = fakeTransport((method, path) => {
+      if (method === "GET" && path.startsWith("/api/decisions?targetType=")) return [dto("d-linked", 1, { workLinks: [{ id: "w", targetType: "TAREFA", targetId: TASK, createdByUserId: ME, createdAt: NOW.toISOString() }] })];
+      if (method === "GET" && path === "/api/decisions/d-old-uuid") throw new ApiError(404, "NAO_ENCONTRADO", "x");
+      if (method === "GET" && path.startsWith("/api/decisions/")) return dto(path.split("/").pop()!, 1);
+      if (method === "GET") return [];
+      return dto("d-srv", 0, { decision: { ...dto("d-srv", 0).decision, projectId: PROJECT } });
+    });
+    const repo = createHttpRepository({ userId: ME, transport });
+    repo.subscribe(() => {});
+    await repo.settled();
+    const local = repo.create({ question: "Aprovar a saída da fase do projeto?", complexity: "PADRAO", impact: "ALTO", ownerUserId: ME, projectId: PROJECT }, NOW);
+    expect(await repo.confirmedId!(local.decision.id)).toBe("d-srv");
+    expect(calls.find((c) => c.method === "POST")!.body).toMatchObject({ projectId: PROJECT });
+    // projeto do laboratório não vai para o servidor
+    repo.create({ question: "Aprovar a saída da fase do projeto?", complexity: "PADRAO", impact: "ALTO", ownerUserId: ME, projectId: "decia-v1" }, NOW);
+    await repo.settled();
+    expect(calls.filter((c) => c.method === "POST")[1].body).not.toHaveProperty("projectId");
+
+    await repo.linkedTo!("TAREFA", TASK);
+    expect(repo.get("d-linked")).toBeDefined();
+    const id = "44444444-4444-4444-8444-444444444444";
+    const pending = repo.open!(id);
+    expect(repo.isFetching(id)).toBe(true);
+    await pending;
+    expect(repo.isFetching(id)).toBe(false);
+    expect(repo.get(id)?.decision.id).toBe(id);
   });
 });

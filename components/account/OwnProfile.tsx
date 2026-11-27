@@ -13,6 +13,7 @@ import { FollowCounters, useFollow } from "@/components/people/FollowPerson";
 import { MyTasks, useMyTaskList } from "@/components/tasks/PersistedTasks";
 import { DailyTask } from "@/components/tasks/DailyTask";
 import type { Me } from "@/lib/account/client";
+import { CAREER_TAB, CareerTab } from "@/components/career/CareerTab";
 import { MyInstitution } from "./MyInstitution";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { SpecialtyTags } from "./Specialties";
@@ -107,12 +108,12 @@ function SignedInProfile({ page, me }: { page: PageEntry; me: Me }) {
     <RfPage
       page={page}
       subtitle={`@${me.username}`}
-      tabs={ownProfileTabs(me)}
+      tabs={isCompany(me) ? ownProfileTabs(me) : [...ownProfileTabs(me), CAREER_TAB]}
       tabLabel={(tab) => {
         const pt = PROFILE_TABS.find((x) => x.slug === tab.slug);
         return pt && isCompany(me) && pt.companyLabelKey ? t(pt.companyLabelKey) : t(tab.labelKey);
       }}
-      renderTab={(slug) => (slug === "acervo" ? <MyTasks list={list} /> : slug === "tarefa-do-dia" ? <DailyTask /> : undefined)}
+      renderTab={(slug) => (slug === "acervo" ? <MyTasks list={list} /> : slug === "tarefa-do-dia" ? <DailyTask /> : slug === CAREER_TAB.slug ? <CareerTab /> : undefined)}
     >
       <OwnProfileHeader me={me} tasks={list.tasks} />
       <MyInstitution isCompany={isCompany(me)} />

@@ -29,6 +29,9 @@ class LocalMediaStorageTest {
         assertThat(s.read(key)).containsExactly(1, 2, 3);
         s.put(key, new byte[] {9}, "application/pdf");
         assertThat(s.read(key)).containsExactly(9);
+        try (var in = s.open(key)) {
+            assertThat(in.readAllBytes()).as("leitura em fluxo").containsExactly(9);
+        }
         try (var files = Files.list(dir.resolve(key).getParent())) {
             assertThat(files.map(p -> p.getFileName().toString())).as("sem temporário sobrando").allMatch(n -> !n.endsWith(".tmp"));
         }
@@ -36,6 +39,7 @@ class LocalMediaStorageTest {
         s.delete(key);
         assertThat(Files.exists(dir.resolve(key))).isFalse();
         assertThatThrownBy(() -> s.read(key)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> s.open(key)).isInstanceOf(IllegalStateException.class);
     }
 
     @Test

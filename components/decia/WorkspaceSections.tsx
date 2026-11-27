@@ -19,6 +19,7 @@ import { CriteriaMatrix } from "./CriteriaMatrix";
 import { DecisionCard } from "./DecisionCard";
 import { AddAlternativeDialog, AddEvidenceDialog, RecordOutcomeDialog } from "./Dialogs";
 import { formatDateTime, formatDay, formatScore } from "./hooks";
+import { workLinkLabel } from "./LinkedDecisions";
 import { HEALTH_META, LEVEL_TONE } from "./meta";
 import { ReadinessCheck } from "./ReadinessCheck";
 
@@ -549,7 +550,7 @@ export function ExecutionSection(props: SectionProps) {
         <Block title={t("decia.execution.plan")} actions={fresh ? <FreshnessBadge value={fresh} /> : undefined}>
           {aggregate.workLinks.length ? (
             <ul className="grid gap-1.5 text-[length:var(--ws-text-body-sm)]">
-              {aggregate.workLinks.map((w) => <li key={w.id} className="flex flex-wrap items-center gap-2"><Tag tone="neutral">{t(`decia.workLink.${w.targetType}`)}</Tag><span className="min-w-0 flex-1">{w.targetType === "PROJETO" ? <Link href={`/projects/${w.targetId}/edit`}>{w.label}</Link> : w.label}</span><Tag tone={w.done ? "success" : "warning"}>{t(w.done ? "decia.execution.done" : "decia.execution.pending")}</Tag></li>)}
+              {aggregate.workLinks.map((w) => <li key={w.id} className="flex flex-wrap items-center gap-2"><Tag tone="neutral">{t(`decia.workLink.${w.targetType}`)}</Tag><span className="min-w-0 flex-1">{w.targetType === "PROJETO" ? <Link href={`/projects/${w.targetId}/edit`}>{workLinkLabel(w, t)}</Link> : w.targetType === "TAREFA" ? <Link href={`/tasks/${w.targetId}`}>{workLinkLabel(w, t)}</Link> : workLinkLabel(w, t)}</span><Tag tone={w.done ? "success" : "warning"}>{t(w.done ? "decia.execution.done" : "decia.execution.pending")}</Tag></li>)}
             </ul>
           ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("decia.execution.noPlan")}</p>}
         </Block>

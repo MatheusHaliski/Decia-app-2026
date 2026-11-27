@@ -6,7 +6,7 @@
 import { buildSnapshotContent, canonicalJson, MODEL_VERSION, preDecisionGuard, sha256Hex, snapConfidence, type DecisionDraft } from "./rules";
 import type {
   DecisionAggregate, DecisionComplexity, DecisionEvent, DecisionEventType, DecisionKind, DecisionLevel, DecisionLifecycle, DecisionSnapshot,
-  EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel,
+  EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel, WorkLinkTarget,
 } from "./types";
 import { isStructureEditable, LIFECYCLE_TRANSITIONS, PATH_TO_AWAITING } from "./types";
 
@@ -74,6 +74,23 @@ export function setRecommendationStatus(agg: DecisionAggregate, recId: string, s
   if (current.status !== "SUGERIDA") throw new RecommendationStateError(recId, current.status);
   const recommendations = agg.recommendations.map((r) => (r.id === recId ? { ...r, status } : r));
   return touch({ ...agg, recommendations }, now, actor, status === "ACEITA" ? "SUGESTAO_IA_ACEITA" : "SUGESTAO_IA_DESCARTADA", { recId });
+}
+
+/**
+ * Liga a decisão a um item de trabalho (tarefa, projeto, marco) sem copiar dados (§4.2). Vale em qualquer estado (o plano de execução
+ * nasce depois de decidir); ligar de novo o mesmo alvo não muda nada.
+ */
+export function linkWork(agg: DecisionAggregate, input: { targetType: WorkLinkTarget; targetId: string; label?: string }, actor: string, now: Date): DecisionAggregate {
+  if (agg.workLinks.some((w) => w.targetType === input.targetType && w.targetId === input.targetId)) return agg;
+  const id = nextId("wl");
+  const link = { id, targetType: input.targetType, targetId: input.targetId, label: input.label ?? "", createdByUserId: actor, createdAt: now.toISOString() };
+  return touch({ ...agg, workLinks: [...agg.workLinks, link] }, now, actor, "TRABALHO_VINCULADO", { linkId: id, targetType: input.targetType });
+}
+
+/** Desfaz o vínculo com o item de trabalho. */
+export function unlinkWork(agg: DecisionAggregate, linkId: string, actor: string, now: Date): DecisionAggregate {
+  if (!agg.workLinks.some((w) => w.id === linkId)) return agg;
+  return touch({ ...agg, workLinks: agg.workLinks.filter((w) => w.id !== linkId) }, now, actor, "TRABALHO_VINCULADO", { linkId, removed: true });
 }
 
 /** Transição manual de estado: valida contra LIFECYCLE_TRANSITIONS; DECIDIDA só por `decide` (com guarda e snapshot). */
@@ -162,6 +179,8 @@ export interface NewDecisionInput {
   kind?: DecisionKind;
   templateKey?: string;
   ownerUserId: string;
+  /** projeto que abriu a decisão (portão, mudança, seleção — lib/projects/decia.ts); na API só vai quando é um UUID do servidor */
+  projectId?: string;
 }
 
 /** Modelos opcionais da criação: critérios sugeridos (o usuário pode editar tudo depois). DESIGN PROPOSAL. */
@@ -185,7 +204,7 @@ export function createDecision(input: NewDecisionInput, now: Date, id = nextId("
       id, version: 1, title: question.replace(/\?$/, "").slice(0, 160), question, stakeholders: [], ownerUserId: input.ownerUserId, createdByUserId: input.ownerUserId,
       companyId: "c-exemplo", status: "RASCUNHO", complexity: input.complexity, kind: input.kind ?? tpl?.kind ?? "OPERACIONAL", impact: input.impact, urgency: "MEDIO",
       visibility: "PRIVADA", accessClass: "INTERNO", weightingEnabled: input.complexity === "PROFUNDA", independentScoring: false, templateKey: input.templateKey,
-      createdAt: iso, updatedAt: iso,
+      projectId: input.projectId, createdAt: iso, updatedAt: iso,
     },
     participants: [{ userId: input.ownerUserId, role: "CONDUTOR", joinedAt: iso }],
     alternatives: [], criteria: [], assessments: [], evidence: [], evidenceLinks: [], assumptions: [], risks: [], scenarios: [], forecasts: [],

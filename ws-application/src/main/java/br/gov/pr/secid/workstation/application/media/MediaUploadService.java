@@ -12,6 +12,12 @@ import br.gov.pr.secid.workstation.domain.security.ResourceAction;
 import br.gov.pr.secid.workstation.domain.security.ScopedResource;
 import br.gov.pr.secid.workstation.domain.security.Viewer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.io.InputStream;
 import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
@@ -31,6 +37,7 @@ import java.util.UUID;
 public class MediaUploadService {
     public static final String INFECTADO = "ARQUIVO_INFECTADO";
     public static final String QUARENTENA = "MIDIA_EM_QUARENTENA";
+    private static final Logger log = LoggerFactory.getLogger(MediaUploadService.class);
 
     private final MediaUploadInspector inspector;
     private final AntivirusPort antivirus;
@@ -62,6 +69,14 @@ public class MediaUploadService {
     public record ReadGrant(MediaObject media, Optional<URI> signedUrl, Duration ttl) {
     }
 
+    /**
+     * Inspeção + hash do original + captura do EXIF + strip + formato ({@link PreparedUpload}) com o mesmo inspetor deste serviço: o
+     * caminho comum do upload direto e da cópia por conector antes do {@link #upload}.
+     */
+    public PreparedUpload prepare(MediaUploadInspector.UploadCandidate candidate) {
+        return PreparedUpload.prepare(inspector, candidate);
+    }
+
     public Stored upload(Viewer owner, MediaUploadInspector.UploadCandidate candidate, AccessClassification classification, boolean publicAsset) {
         MediaUploadInspector.InspectedUpload ok = inspector.inspect(candidate);
         AntivirusPort.Verdict verdict = antivirus.scan(candidate.content(), ok.type());
@@ -77,6 +92,8 @@ public class MediaUploadService {
         }
         String key = MediaKeys.objectKey(owner.userId(), cls, ok.sha256(), ok.type());
         storage.put(key, candidate.content(), ok.mime());
+        // transação desfeita depois do put (ex.: falha ao gravar o vínculo): o binário recém-gravado não pode ficar órfão no storage
+        cleanupOnRollback(owner.userId(), ok.sha256(), key);
         MediaObject media = repository.save(new MediaObject(UUID.randomUUID(), owner.userId(), bucket, key, ok.mime(), ok.sizeBytes(), ok.sha256(),
                 cls, null));
         boolean scanned = verdict.status() == MediaScanStatus.LIMPO || verdict.status() == MediaScanStatus.INFECTADO;
@@ -120,15 +137,62 @@ public class MediaUploadService {
 
     /**
      * Apaga metadados e binário de um objeto que o chamador já conferiu (ex.: foto substituída do próprio dono, RF3.CA05). Os metadados
-     * saem primeiro: se o armazenamento falhar, a exceção desfaz a transação do chamador e nada fica apontando para um arquivo sumido.
+     * saem na transação do chamador; o binário só depois do COMMIT ({@link TransactionSynchronization#afterCommit}): se a transação for
+     * desfeita, o arquivo continua lá para os metadados que voltaram. Sem transação ativa (testes, rotinas), apaga na hora. Falha ao apagar
+     * depois do commit só deixa um binário órfão (registrado no log, sem a chave), nunca um metadado apontando para o vazio.
      */
     public void delete(MediaObject media) {
         repository.delete(media.id());
-        storage.delete(media.objectKey());
+        String key = media.objectKey();
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    deleteQuietly(key);
+                }
+            });
+        } else {
+            storage.delete(key);
+        }
+    }
+
+    /** Rollback depois do put: apaga o binário, a menos que outra transação já tenha gravado o mesmo objeto (mesmo dono e SHA-256). */
+    private void cleanupOnRollback(UUID ownerId, String sha256, String key) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status != STATUS_ROLLED_BACK) {
+                    return;
+                }
+                try {
+                    if (repository.findByOwnerAndSha256(ownerId, sha256).filter(m -> key.equals(m.objectKey())).isEmpty()) {
+                        deleteQuietly(key);
+                    }
+                } catch (RuntimeException e) {
+                    log.warn("Limpeza do binário depois do rollback não conferida ({})", e.getClass().getSimpleName());
+                }
+            }
+        });
+    }
+
+    private void deleteQuietly(String key) {
+        try {
+            storage.delete(key);
+        } catch (RuntimeException e) {
+            log.warn("Binário de mídia não apagado do storage depois da transação ({}); fica órfão até a limpeza", e.getClass().getSimpleName());
+        }
     }
 
     /** Bytes de uma leitura já autorizada por {@link #authorizeRead}. */
     public byte[] read(ReadGrant grant) {
         return storage.read(grant.media().objectKey());
+    }
+
+    /** Fluxo de uma leitura já autorizada por {@link #authorizeRead} (download em streaming); quem chama fecha. */
+    public InputStream open(ReadGrant grant) {
+        return storage.open(grant.media().objectKey());
     }
 }

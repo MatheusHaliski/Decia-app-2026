@@ -29,6 +29,10 @@ ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError" \
     WS_STORAGE_LOCAL_DIR=/app/data/media \
     WS_API_DOCS_ENABLED=false \
     WS_MANAGEMENT_EXPOSURE=health
+# Anexos/evidências no disco local (ws.storage.type=local, padrão): o diretório é um VOLUME — sem ele os binários ficam na camada
+# gravável do contêiner e somem a cada deploy (metadados no MySQL apontando para arquivos inexistentes). Em produção monte um volume
+# nomeado ou use S3/MinIO (WS_STORAGE_TYPE=s3). Backup do volume junto com o do MySQL: docs/disaster-recovery/media-e-banco.md.
+VOLUME ["/app/data/media"]
 USER ws
 EXPOSE 8080
 # start-period cobre a subida da JVM + Flyway em banco grande; /actuator/health é a única rota pública do Actuator

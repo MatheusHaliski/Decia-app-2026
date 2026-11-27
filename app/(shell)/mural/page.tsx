@@ -15,7 +15,7 @@ export default function Page() {
   return (
     <RfPage
       page={PAGE}
-      actions={<Badge tone="neutral" title={t("social.demoHint")}>{t("decia.demo")}</Badge>}
+      actions={<Badge tone="neutral">{t("decia.demo")}</Badge>}
       renderTab={(slug) => <MuralFeed tab={(slug === "vitrine" || slug === "seguindo" ? slug : "empresa") as MuralTab} />}
     />
   );

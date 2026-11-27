@@ -8,7 +8,8 @@ import { Button, Link, Tag } from "@/components/ui";
 import { isHttpsUrl } from "@/lib/cardviewer/files";
 import { originGroup } from "@/lib/cardviewer/subject";
 import type { ViewerKind } from "@/lib/cardviewer/url";
-import { demoRepository } from "@/lib/decia/repository";
+import { linkedDecisions, useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { taskById } from "@/lib/social/rules";
 import { useViewerData } from "../context";
@@ -33,9 +34,13 @@ function OpenCard({ kind, id, label }: { kind: ViewerKind; id: string; label: st
   );
 }
 
-function Decisions({ ids }: { ids: readonly string[] }) {
+/** Decisões da fonte única (API com sessão, DEMO no laboratório): a de origem do card e as que têm vínculo de trabalho com ele. */
+function Decisions({ ids: origin, linkedTo }: { ids: readonly string[]; linkedTo?: { type: "TAREFA" | "PROJETO"; id: string } }) {
   const { t } = useI18n();
-  const repo = demoRepository();
+  const { repo } = useDecisionSource();
+  const list = useDecisions(repo);
+  const linked = linkedTo ? linkedDecisions(list, linkedTo.type, linkedTo.id).map((a) => a.decision.id) : [];
+  const ids = [...new Set([...origin, ...linked])];
   return (
     <Group title={t("cardviewer.rel.decisions")} empty={!ids.length}>
       {ids.map((id) => {
@@ -80,7 +85,7 @@ export function RelationsWindow() {
             {remixes.map((r) => { const x = taskById(social, r.resultId); return x ? <li key={r.id}><OpenCard kind="tarefa" id={x.id} label={x.title} /></li> : null; })}
           </Group>
         ) : null}
-        <Decisions ids={decisionIds} />
+        <Decisions ids={decisionIds} linkedTo={{ type: "TAREFA", id: s.id }} />
         <Group title={t("cardviewer.rel.seals")} empty={!s.seals.length}>
           {s.seals.map((x) => <li key={x.label}><Tag tone="success"><span aria-hidden>◆ </span>{t(`cardviewer.rel.seal.${x.issuer === "EMPRESA" ? "EMPRESA" : "CHEFE"}`, { label: x.label })}</Tag></li>)}
         </Group>
@@ -117,7 +122,7 @@ export function RelationsWindow() {
           <li>{m.origin ? t(`cardviewer.schemeOrigin.${m.origin.kind}`) : t("cardviewer.schemeOrigin.CRIAR_PROJETO")}{m.origin?.label ? ` · ${m.origin.label}` : ""}</li>
           {(m.origin?.credits ?? []).map((c) => <li key={c.id}>{t("cardviewer.rel.templateCredit", { title: c.title })}</li>)}
         </Group>
-        <Decisions ids={m.decisionIds} />
+        <Decisions ids={m.decisionIds} linkedTo={{ type: "PROJETO", id: m.id }} />
         <Group title={t("cardviewer.rel.gates")} empty={!m.gates.length}>
           {m.gates.map((g) => <li key={g.phase} className="flex flex-wrap items-center gap-1.5">{t(`pm.phase.${g.phase}`)} <Tag tone={g.outcome === "APROVADO" ? "success" : g.outcome === "PENDENTE" ? "neutral" : "warning"}>{t(`pm.gateOutcome.${g.outcome}`)}</Tag></li>)}
         </Group>

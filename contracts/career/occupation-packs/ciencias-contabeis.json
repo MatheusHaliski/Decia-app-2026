@@ -165,7 +165,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "prazos anotados", "sem dado de cliente real"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório de análise de demonstrações de empresa fictícia ou de capital aberto",
@@ -192,7 +193,8 @@
         "criteria": ["indicadores nomeados com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal", "empresa fictícia ou pública declarada"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L9": {
         "title": "Plano 30-60-90 para o cargo-alvo ou para o Exame de Suficiência",
@@ -201,7 +203,8 @@
         "criteria": ["três fases", "três metas mensuráveis por fase", "indicador ou entrega em cada meta", "coerente com o cargo ou o edital"],
         "evidence": "plano",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -215,6 +218,41 @@
         "time": "2 h",
         "trigger": "Quer mostrar como você compara regimes tributários?",
         "level": 3
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Conciliação bancária de um mês com pendências explicadas",
+        "competency": "Conciliação e fechamento contábil",
+        "criteria": ["saldo do extrato e do razão no início e no fim do mês", "cada diferença com data, valor e causa", "lançamentos de ajuste propostos com contas de débito e crédito", "sem dado de cliente real"],
+        "evidence": "planilha de conciliação com memória de cálculo",
+        "time": "60 min",
+        "trigger": "Quer mostrar que sabe fechar o caixa de um mês?",
+        "level": 1,
+        "taskType": "PLANILHA"
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Balanço patrimonial e DRE de empresa fictícia com notas explicativas",
+        "competency": "Elaboração de demonstrações contábeis (CPC 26)",
+        "criteria": ["balanço fecha (ativo = passivo + patrimônio líquido)", "DRE com receita líquida, custos, despesas e resultado", "ao menos três notas explicativas com a norma (CPC) citada", "premissas da empresa fictícia declaradas"],
+        "evidence": "demonstrações em PDF com planilha anexa",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você monta as demonstrações de um exercício?",
+        "level": 2
+      },
+      {
+        "id": "X4",
+        "editor": "letters",
+        "title": "Calendário de obrigações acessórias do mês de uma empresa fictícia",
+        "competency": "Rotina fiscal e cumprimento de prazos",
+        "criteria": ["regime tributário da empresa declarado", "cada obrigação com prazo legal e norma (SPED, EFD, eSocial, DCTFWeb)", "responsável e conferência por obrigação", "alerta para prazos que caem em feriado ou fim de semana"],
+        "evidence": "cronograma do mês com a fonte de cada prazo",
+        "time": "45 min",
+        "trigger": "Quer mostrar que você organiza os prazos fiscais de um cliente?",
+        "level": 1,
+        "taskType": "CRONOGRAMA"
       }
     ]
   },
@@ -281,7 +319,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "plano-30-60-90", "proposta", "parecer", "laudo", "curriculo", "carta", "bio", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); relatórios com índices (L4), comparativo tributário (X1) e fluxos (D4) pedem computador e planilha.",
     "nudges": {
       "cadence": "semanal",

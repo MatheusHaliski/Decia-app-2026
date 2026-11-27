@@ -40,6 +40,7 @@ public record MediaUploadProperties(long maxImagePixels, int maxImageSide, int z
         defaults.put(DetectedType.Category.OFFICE, 50 * MIB);
         defaults.put(DetectedType.Category.ARCHIVE, 100 * MIB);
         defaults.put(DetectedType.Category.CAD, 200 * MIB);
+        defaults.put(DetectedType.Category.TEXT, 20 * MIB);
         Long override = maxBytes.get(type.category().name());
         if (override == null) {
             override = maxBytes.get(type.category().name().toLowerCase(Locale.ROOT));

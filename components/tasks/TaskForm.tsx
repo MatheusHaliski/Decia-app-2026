@@ -17,7 +17,7 @@ import { FileTypeIcon } from "@/components/fileicons/FileTypeIcon";
 import { FileTypeSelect } from "@/components/fileicons/FileTypeSelect";
 import { kindOfExtension } from "@/components/fileicons/kinds";
 import { useSearchParams } from "next/navigation";
-import { Button, Card, Checkbox, Field, Input, Select, Textarea, cn, useToast } from "@/components/ui";
+import { Button, Card, Checkbox, Field, Input, Link, Select, Textarea, cn, useToast } from "@/components/ui";
 import { api, ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
@@ -39,6 +39,9 @@ import { MAX_ATTACHMENT_BYTES } from "./Attachments";
 import { focusSection, sectionDomId, TaskFormNav } from "./TaskFormNav";
 import { FormatPicker } from "./FormatPicker";
 import { AttachmentFormat } from "./AttachmentFormat";
+import { FileDrop } from "./FileDrop";
+import { acceptedAlternatives, adviseFile, askedCodes, splitPicked } from "@/lib/tasks/fileAdvice";
+import { dueDateWarning } from "@/lib/tasks/quality";
 import { AREA_TEMPLATES } from "@/lib/tasks/areaTemplates";
 import { AREA_DEFAULT_ACCESS, AREA_DEFAULT_TYPE, fieldByCode, GUIDED_TASK_KEY, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
 import { discardTaskDraft, loadTaskDraft, type TaskDraftHandoff } from "@/lib/tasks/drafts";
@@ -95,7 +98,7 @@ const FIELD_MEMORY = "ws.tasks.studyField";
 const toDraft = (f: FormState): TaskDraft => ({
   title: f.title, type: f.type, area: f.area, objective: f.objective, descriptionMd: f.descriptionMd, priority: f.priority, dueAt: f.dueAt,
   accessClass: f.accessClass, visibility: f.visibility, deliverables: f.deliverables.map((d) => d.text), criteria: f.criteria.map((c) => c.text),
-  references: f.references, extensions: f.extensions,
+  references: f.references, extensions: f.extensions, startAt: f.extra.startAt,
 });
 const fromDraft = (d: TaskDraft, f: FormState): FormState => ({
   ...f, title: d.title, type: d.type, area: d.area, objective: d.objective, descriptionMd: d.descriptionMd, priority: d.priority, dueAt: d.dueAt,
@@ -182,6 +185,10 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
   /** arquivos escolhidos no criador: enviados como anexos logo depois de criar (o anexo precisa da tarefa) */
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
+  /** situação do envio de cada arquivo escolhido (índice na lista), depois de criar a tarefa */
+  const [fileStatus, setFileStatus] = useState<Record<number, "enviando" | "enviado" | "erro">>({});
+  /** sem sessão (laboratório DEMO ou API fora do ar): salvar exige conta — avisado logo no início */
+  const [noSession, setNoSession] = useState(false);
   const [rules, setRules] = useState<LegalDeadlineRuleView[] | null>(null);
   const [rulesError, setRulesError] = useState(false);
   /** pedido de foco no primeiro campo com erro (muda a cada envio recusado) */
@@ -253,7 +260,10 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
         setForm((cur) => (JSON.stringify(cur) === baseline ? f : cur));
         setBaseline(JSON.stringify(f));
       }
-    }).catch(() => { /* sem sessão: o envio mostra o erro */ });
+    }).catch((e) => {
+      // sem sessão ou sem API: avisa já no topo do criador que salvar exige conta (o envio continua mostrando o erro)
+      if (alive && (!(e instanceof ApiError) || e.status === 401 || e.status === 0)) setNoSession(true);
+    });
     return () => { alive = false; };
   }, []); // uma vez por montagem: a visão inicial e a linha de base já estão no estado
 
@@ -374,11 +384,14 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
       }
     }
     let failed = 0;
-    for (const f of files) {
+    for (const [i, f] of files.entries()) {
+      setFileStatus((s) => ({ ...s, [i]: "enviando" }));
       try {
         if (saved.id) await attachmentsApi.upload(saved.id, f, f.name);
+        setFileStatus((s) => ({ ...s, [i]: "enviado" }));
       } catch {
         failed += 1;
+        setFileStatus((s) => ({ ...s, [i]: "erro" }));
       }
     }
     if (failed) toast({ title: t("taskForm.files.failed", { n: failed }), tone: "aviso" });
@@ -418,6 +431,7 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
         setForm(next);
         setBaseline(JSON.stringify(next));
         setFiles([]);
+        setFileStatus({});
         setErrors({});
         toast({ title: t("taskForm.createdAnother", { title: saved.title ?? form.title }), tone: "sucesso" });
         setFocusReq((r) => ({ field: "title", n: (r?.n ?? 0) + 1 }));
@@ -448,13 +462,21 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
     setConflict(false);
   }
 
-  const addFiles = (list: FileList | null) => {
-    if (!list) return;
-    const picked = [...list];
-    const big = picked.filter((f) => f.size > MAX_ATTACHMENT_BYTES);
-    setFileError(big.length ? t("taskForm.files.tooBig", { names: big.map((f) => f.name).join(", ") }) : null);
-    setFiles((cur) => [...cur, ...picked.filter((f) => f.size <= MAX_ATTACHMENT_BYTES)].slice(0, 20));
+  const addFiles = (picked: File[]) => {
+    if (!picked.length) return;
+    // tipo que o servidor recusa não entra (aviso com as alternativas aceitas); acima do teto também não
+    const { ok, refused } = splitPicked(picked, form.format);
+    const big = ok.filter((f) => f.size > MAX_ATTACHMENT_BYTES);
+    const msgs = [
+      refused.length ? t("criador2.files.refused", { names: refused.map((f) => f.name).join(", "), types: acceptedAlternatives(form.format).join(", ") }) : "",
+      big.length ? t("taskForm.files.tooBig", { names: big.map((f) => f.name).join(", ") }) : "",
+    ].filter(Boolean);
+    setFileError(msgs.length ? msgs.join(" ") : null);
+    setFileStatus({});
+    setFiles((cur) => [...cur, ...ok.filter((f) => f.size <= MAX_ATTACHMENT_BYTES)].slice(0, 20));
   };
+  const askedLabel = form.format.family ? `${t(`taskForm.fmt.familyName.${form.format.family}`)} (${askedCodes(form.format)})` : "";
+  const dueWarn = dueDateWarning(form.dueAt, form.extra.startAt, today);
   const addCriteria = (texts: string[]) => setForm((f) => ({
     ...f, criteria: [...f.criteria, ...texts.filter((x) => !f.criteria.some((c) => c.text === x)).map((text) => ({ text, done: false }))],
   }));
@@ -469,7 +491,7 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
   const toggleTag = <T extends string>(list: T[], v: T, on: boolean) => (on ? [...list, v].slice(0, MAX_TAGS) : list.filter((x) => x !== v));
   return (
     <div className="grid items-start gap-[var(--ws-space-4)] lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
-    <div className="lg:sticky lg:top-[var(--ws-space-4)] lg:order-2 lg:max-h-[calc(100dvh-var(--ws-space-8))] lg:overflow-auto">
+    <div className="min-w-0 lg:sticky lg:top-[var(--ws-space-4)] lg:order-2 lg:max-h-[calc(100dvh-var(--ws-space-8))] lg:overflow-auto">
       <TaskAssist
         draft={draft} fieldCode={studyField} onFieldChange={chooseField} onAreaChange={chooseArea} onApplyTemplate={useTemplate} onFix={fix} hasContent={hasContent}
         templateId={mode === "create" ? templateId : null}
@@ -478,6 +500,13 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
       />
     </div>
     <form ref={formRef} className="grid min-w-0 gap-[var(--ws-space-4)]" onSubmit={(e) => submit(e)} noValidate data-testid="task-form" aria-busy={busy}>
+      {noSession ? (
+        <div role="status" className="grid gap-1 rounded-[var(--ws-radius-md)] border border-ws-warning bg-ws-warning-soft p-3 text-[length:var(--ws-text-body-sm)]" data-testid="task-no-session">
+          <p className="font-semibold"><span aria-hidden>! </span>{t("criador2.noSession.title")}</p>
+          <p>{t("criador2.noSession.body")}</p>
+          <p><Link href={`/login?next=${encodeURIComponent(mode === "create" ? "/tasks/new" : `/tasks/${initial?.id ?? ""}/edit`)}`}>{t("criador2.noSession.signIn")}</Link></p>
+        </div>
+      ) : null}
       {draftOrigin ? (
         <div role="status" className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-info bg-ws-info-soft p-3 text-[length:var(--ws-text-body-sm)]" data-testid="task-draft-origin" data-origin={draftOrigin.kind}>
           <p><span className="font-semibold">{t("career.draft.from", { origin: draftOrigin.label })}</span>{draftOrigin.ref ? <span className="text-ws-text-muted"> · {draftOrigin.ref}</span> : null}</p>
@@ -505,7 +534,7 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
       ) : null}
 
       <FormSection id="ident" n={shownSections.indexOf("ident") + 1}>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <div data-field="title" className="md:col-span-2">
             <Field label={t("tasks.form.title")} required error={err("title")}>
               {({ id, describedBy, invalid }) => <Input id={id} aria-describedby={describedBy} invalid={invalid} aria-required value={form.title} maxLength={200} onChange={(e) => set("title", e.target.value)} />}
@@ -604,6 +633,11 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
             <Field label={t("tasks.form.dueAt")} error={err("dueAt")}>
               {({ id, describedBy, invalid }) => <Input id={id} type="date" aria-describedby={describedBy} invalid={invalid} value={form.dueAt} onChange={(e) => set("dueAt", e.target.value)} />}
             </Field>
+            {dueWarn && !err("dueAt") ? (
+              <p role="status" className="mt-1 rounded-[var(--ws-radius-sm)] bg-ws-warning-soft px-2 py-1 text-[length:var(--ws-text-caption)]" data-testid="due-warning" data-kind={dueWarn}>
+                <span aria-hidden>! </span>{t(dueWarn === "PASSADO" ? "criador2.due.past" : "criador2.due.beforeStart", { date: formatIsoDate(form.dueAt, intl), start: form.extra.startAt ? formatIsoDate(form.extra.startAt, intl) : "" })}
+              </p>
+            ) : null}
           </div>
           <div className="grid gap-3 rounded-[var(--ws-radius-md)] border border-ws-border bg-ws-surface-2 p-3 md:col-span-2" data-testid="task-legal">
             {mode === "create" ? (
@@ -695,20 +729,28 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
           </div>
           {mode === "create" ? (
             <div className="grid gap-2" data-testid="task-files">
-              <Field label={t("taskForm.files.label")} hint={t("taskForm.files.hint")} error={fileError ?? undefined}>
-                {({ id, describedBy, invalid }) => <Input id={id} type="file" multiple aria-describedby={describedBy} invalid={invalid} onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />}
-              </Field>
+              <FileDrop label={t("taskForm.files.label")} hint={t("taskForm.files.hint")} error={fileError ?? undefined} disabled={busy} onFiles={addFiles} testId="task-files-drop" />
               {files.length ? (
-                <ul className="grid gap-1">
-                  {files.map((f, i) => (
-                    <li key={`${f.name}-${i}`} className="flex items-center gap-2 text-[length:var(--ws-text-body-sm)]" data-file={f.name}>
-                      <span className="grid min-w-0 flex-1 gap-0.5">
-                        <span className="truncate">{f.name}</span>
-                        <AttachmentFormat a={{ fileName: f.name, mimeType: f.type }} asked={form.format} />
-                      </span>
-                      <Button size="sm" variant="ghost" onClick={() => setFiles((cur) => cur.filter((_, j) => j !== i))} aria-label={t("tasks.form.remove", { item: f.name })}>×</Button>
-                    </li>
-                  ))}
+                <ul className="grid gap-1" aria-live="polite">
+                  {files.map((f, i) => {
+                    const advice = adviseFile({ name: f.name, type: f.type }, form.format);
+                    const st = fileStatus[i];
+                    return (
+                      <li key={`${f.name}-${i}`} className="flex items-center gap-2 text-[length:var(--ws-text-body-sm)]" data-file={f.name} data-status={st ?? "pendente"}>
+                        <span className="grid min-w-0 flex-1 gap-0.5">
+                          <span className="[overflow-wrap:anywhere]">{f.name}</span>
+                          <AttachmentFormat a={{ fileName: f.name, mimeType: f.type }} asked={form.format} />
+                          {advice.mismatch ? (
+                            <span role="status" className="rounded-[var(--ws-radius-sm)] bg-ws-warning-soft px-1 text-[length:var(--ws-text-caption)]" data-testid="file-format-advice">
+                              <span aria-hidden>! </span>{t("criador2.files.mismatch", { asked: askedLabel, got: advice.got })}
+                            </span>
+                          ) : null}
+                          {st ? <span className={cn("text-[length:var(--ws-text-caption)]", st === "erro" ? "text-ws-danger-ink" : "text-ws-text-muted")} data-testid="file-upload-status">{t(`criador2.upload.${st}`)}</span> : null}
+                        </span>
+                        <Button size="sm" variant="ghost" disabled={busy} onClick={() => { setFiles((cur) => cur.filter((_, j) => j !== i)); setFileStatus({}); }} aria-label={t("tasks.form.remove", { item: f.name })}>×</Button>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : null}
             </div>

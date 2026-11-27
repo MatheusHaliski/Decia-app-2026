@@ -12,6 +12,7 @@ export { AddAlternativeDialog, AddEvidenceDialog, CHALLENGE_MODES, ChallengeDial
 export { DecisionWorkspace } from "./DecisionWorkspace";
 export type { DecisionWorkspaceProps } from "./DecisionWorkspace";
 export { formatDay, formatScore, useMediaQuery, useMounted, useNow, useReducedMotion } from "./hooks";
+export { DecisionApiNotice, LinkedDecisions, workLinkLabel } from "./LinkedDecisions";
 export { ReadinessCheck, ReadinessSummary } from "./ReadinessCheck";
-export { AttentionInbox, DecisionsBoard, filterDecisions, inboxGroups, NewDecisionDialog, ReviewsView, workspaceHref } from "./Views";
+export { AttentionInbox, DecisionsBoard, filterDecisions, inboxGroups, NewDecisionDialog, projectFilterOptions, ReviewsView, workspaceHref } from "./Views";
 export { CompareSection, DecisionSection, EvidenceSection, ExecutionSection, OverviewSection, RisksSection } from "./WorkspaceSections";

@@ -160,7 +160,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão cita critérios definidos antes da triagem", "inclui devolutiva aos candidatos não aprovados"],
         "evidence": "diagrama vetorial (Drawings, modo diagrama)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L4": {
         "title": "Relatório de indicadores de pessoas",
@@ -178,7 +179,8 @@
         "criteria": ["três metas por fase", "cada meta tem indicador e prazo", "metas ligadas a processos e indicadores, não a pessoas", "cita o cargo-alvo"],
         "evidence": "plano em Letters (modelo plano-30-60-90)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -254,7 +256,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "plano-30-60-90", "proposta", "estudo-de-caso", "curriculo", "bio", "carta", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, X1 (descrição de cargo), L6 e L5 funcionam bem; D4 e L4 ficam melhores no computador. Nunca fotografar documentos de empregados para anexar.",
     "nudges": {
       "cadence": "semanal",

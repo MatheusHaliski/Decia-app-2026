@@ -162,7 +162,8 @@
         "criteria": ["indicador nomeado com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados fictícios ou públicos declarados"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -241,7 +242,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["infografico", "diagrama"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "estudo-de-caso", "parecer", "plano-30-60-90", "artigo", "curriculo", "carta", "bio", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); relatórios com cálculos (L4, X1) pedem computador com planilha ou R/Python.",
     "nudges": {
       "cadence": "semanal",

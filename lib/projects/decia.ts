@@ -3,8 +3,14 @@
  * (avançar, avançar com ressalvas, suspender, encerrar), mudança avaliada pelo comitê (CCB/CAB) e seleção de projetos — nascem
  * como decisões estruturadas no DECIA, ligadas ao projeto (`projectId` + vínculo de trabalho). Quando a decisão é tomada lá, o
  * resultado volta para a Mesa (`syncFromDecia`). "Governança decide e cobra; gestão planeja e faz" (aula de Governança de TI, TE1).
+ *
+ * A decisão nasce no MESMO repositório que a página da decisão lê (`useDecisionSource`: API com sessão, DEMO no laboratório), sempre por
+ * `repo.create` — nunca um agregado montado fora dele, que a API não conheceria (o 404 projeto → decisão). Na API o id devolvido é
+ * provisório: quem guarda o id (a Mesa) espera o definitivo com `settleDecision`. Projeto do laboratório (id sem UUID) não vira vínculo
+ * no servidor: a decisão é criada mesmo assim e o retorno traz `labProject: true` para a tela avisar.
  */
-import { addAlternative, createDecision } from "@/lib/decia/commands";
+import { addAlternative, type NewDecisionInput } from "@/lib/decia/commands";
+import { isServerId } from "@/lib/decia/http";
 import type { DecisionRepository } from "@/lib/decia/repository";
 import type { DecisionAggregate } from "@/lib/decia/types";
 import type { ProjectCommand } from "./commands";
@@ -32,6 +38,7 @@ const LABELS = ["A", "B", "C", "D", "E", "F"];
 const DECIDED = new Set(["DECIDIDA", "EM_EXECUCAO", "RESOLVIDA", "REVISADA"]);
 
 function linkToProject(agg: DecisionAggregate, project: ProjectModel, actorId: string, now: Date): DecisionAggregate {
+  if (agg.workLinks.some((w) => w.targetType === "PROJETO" && w.targetId === project.id)) return { ...agg, decision: { ...agg.decision, projectId: project.id } };
   return {
     ...agg,
     decision: { ...agg.decision, projectId: project.id },
@@ -39,43 +46,63 @@ function linkToProject(agg: DecisionAggregate, project: ProjectModel, actorId: s
   };
 }
 
-/** Abre no DECIA a decisão do portão da fase; devolve o id e os comandos para a Mesa registrar o vínculo. */
-export function openGateDecision(repo: DecisionRepository, project: ProjectModel, phase: ProjectPhase, phaseLabel: string, actorId: string, now = new Date()): { decisionId: string; commands: ProjectCommand[] } {
-  const owner = project.charter.sponsorId ?? actorId;
-  let agg = createDecision({
-    question: `Aprovar a saída da fase ${phaseLabel} do projeto "${project.title}"?`, complexity: "PADRAO", impact: "ALTO", kind: "ESTRATEGICA", templateKey: "portao", ownerUserId: owner,
-  }, now);
-  for (const alt of GATE_ALTERNATIVES) agg = addAlternative(agg, { title: alt.title }, owner, now);
-  agg = linkToProject(agg, project, actorId, now);
+export interface OpenedDecision {
+  decisionId: string;
+  commands: ProjectCommand[];
+  /** projeto do laboratório numa sessão real: a decisão existe na API, mas sem vínculo com o projeto (a tela avisa) */
+  labProject?: boolean;
+}
+
+/** Cria pela fonte (`repo.create`), acrescenta as alternativas padrão e o vínculo com o projeto, e grava pelo mesmo repositório. */
+function openIn(repo: DecisionRepository, input: NewDecisionInput, alternatives: readonly { title: string }[], project: ProjectModel, actorId: string, now: Date): { agg: DecisionAggregate; labProject: boolean } {
+  const labProject = repo.source === "API" && !isServerId(project.id);
+  let agg = repo.create({ ...input, projectId: project.id }, now);
+  for (const alt of alternatives) agg = addAlternative(agg, { title: alt.title }, input.ownerUserId, now);
+  if (!labProject) agg = linkToProject(agg, project, actorId, now);
   repo.save(agg);
-  return { decisionId: agg.decision.id, commands: [{ type: "GATE_SET", phase, outcome: "PENDENTE", decisionId: agg.decision.id }, { type: "LINK_DECISION", decisionId: agg.decision.id }] };
+  return { agg, labProject };
+}
+
+/** Troca o id provisório pelo definitivo nos comandos da Mesa. */
+export function remapDecisionId(commands: readonly ProjectCommand[], from: string, to: string): ProjectCommand[] {
+  if (from === to) return [...commands];
+  return commands.map((c) => ("decisionId" in c && c.decisionId === from ? { ...c, decisionId: to } : c) as ProjectCommand);
+}
+
+/** Espera o id definitivo (API) e devolve os comandos da Mesa já com ele; no DEMO o id já é o definitivo. */
+export async function settleDecision(repo: DecisionRepository, opened: OpenedDecision): Promise<OpenedDecision> {
+  const id = repo.confirmedId ? await repo.confirmedId(opened.decisionId) : opened.decisionId;
+  return { ...opened, decisionId: id, commands: remapDecisionId(opened.commands, opened.decisionId, id) };
+}
+
+/** Abre no DECIA a decisão do portão da fase; devolve o id e os comandos para a Mesa registrar o vínculo. */
+export function openGateDecision(repo: DecisionRepository, project: ProjectModel, phase: ProjectPhase, phaseLabel: string, actorId: string, now = new Date()): OpenedDecision {
+  const owner = project.charter.sponsorId ?? actorId;
+  const { agg, labProject } = openIn(repo, {
+    question: `Aprovar a saída da fase ${phaseLabel} do projeto "${project.title}"?`, complexity: "PADRAO", impact: "ALTO", kind: "ESTRATEGICA", templateKey: "portao", ownerUserId: owner,
+  }, GATE_ALTERNATIVES, project, actorId, now);
+  return { decisionId: agg.decision.id, labProject, commands: [{ type: "GATE_SET", phase, outcome: "PENDENTE", decisionId: agg.decision.id }, { type: "LINK_DECISION", decisionId: agg.decision.id }] };
 }
 
 /** Leva a mudança ao comitê (CCB/CAB) no DECIA, com os critérios das seis restrições. */
-export function openChangeDecision(repo: DecisionRepository, project: ProjectModel, change: ChangeRequest, actorId: string, now = new Date()): { decisionId: string; commands: ProjectCommand[] } {
+export function openChangeDecision(repo: DecisionRepository, project: ProjectModel, change: ChangeRequest, actorId: string, now = new Date()): OpenedDecision {
   const owner = project.charter.sponsorId ?? actorId;
-  let agg = createDecision({
+  const { agg, labProject } = openIn(repo, {
     question: `Aprovar a mudança ${change.code} — ${change.title}?`, complexity: "PADRAO", impact: change.impact.cost > 0 || change.impact.scheduleDays > 0 ? "ALTO" : "MEDIO",
     kind: "OPERACIONAL", templateKey: "mudanca", ownerUserId: owner,
-  }, now);
-  for (const alt of CHANGE_ALTERNATIVES) agg = addAlternative(agg, { title: alt.title }, owner, now);
-  agg = linkToProject(agg, project, actorId, now);
-  repo.save(agg);
+  }, CHANGE_ALTERNATIVES, project, actorId, now);
   const cmds: ProjectCommand[] = [{ type: "LINK_DECISION", decisionId: agg.decision.id }];
   if (change.status === "SOLICITADA") cmds.unshift({ type: "CHANGE_SET_STATUS", id: change.id, status: "EM_ANALISE", decisionId: agg.decision.id });
-  return { decisionId: agg.decision.id, commands: cmds };
+  return { decisionId: agg.decision.id, labProject, commands: cmds };
 }
 
 /** Leva a seleção/priorização do projeto ao DECIA (critérios do modelo "selecao": VPL, alinhamento, risco, rapidez). */
-export function openSelectionDecision(repo: DecisionRepository, project: ProjectModel, actorId: string, now = new Date()): { decisionId: string; commands: ProjectCommand[] } {
+export function openSelectionDecision(repo: DecisionRepository, project: ProjectModel, actorId: string, now = new Date()): OpenedDecision {
   const owner = project.charter.sponsorId ?? actorId;
-  let agg = createDecision({
+  const { agg, labProject } = openIn(repo, {
     question: `Priorizar o projeto "${project.title}" no portfólio de TI?`, complexity: "PADRAO", impact: "ALTO", kind: "ESTRATEGICA", templateKey: "selecao", ownerUserId: owner,
-  }, now);
-  for (const alt of SELECTION_ALTERNATIVES) agg = addAlternative(agg, { title: alt.title }, owner, now);
-  agg = linkToProject(agg, project, actorId, now);
-  repo.save(agg);
-  return { decisionId: agg.decision.id, commands: [{ type: "LINK_DECISION", decisionId: agg.decision.id }] };
+  }, SELECTION_ALTERNATIVES, project, actorId, now);
+  return { decisionId: agg.decision.id, labProject, commands: [{ type: "LINK_DECISION", decisionId: agg.decision.id }] };
 }
 
 const selectedLabel = (agg: DecisionAggregate) => agg.alternatives.find((a) => a.id === agg.decision.selectedAlternativeId)?.label;
@@ -94,8 +121,10 @@ export function changeStatusOf(agg: DecisionAggregate): "APROVADA" | "REJEITADA"
 }
 
 /** Comandos que trazem para a Mesa as decisões tomadas no DECIA (portões e mudanças ainda pendentes aqui). */
-export function syncFromDecia(project: ProjectModel, decisions: readonly DecisionAggregate[]): ProjectCommand[] {
-  const byId = new Map(decisions.map((d) => [d.decision.id, d]));
+export function syncFromDecia(project: ProjectModel, decisions: readonly DecisionAggregate[], resolve: (id: string) => DecisionAggregate | undefined = () => undefined): ProjectCommand[] {
+  const index = new Map(decisions.map((d) => [d.decision.id, d]));
+  // `resolve` (repo.get) acha também a decisão pelo id provisório de uma criação recente na API
+  const byId = { get: (id: string) => index.get(id) ?? resolve(id) };
   const cmds: ProjectCommand[] = [];
   for (const g of project.gates) {
     if (g.outcome !== "PENDENTE" || !g.decisionId) continue;

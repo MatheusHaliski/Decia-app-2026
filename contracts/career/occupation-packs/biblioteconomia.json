@@ -150,7 +150,8 @@
         "criteria": ["até 600 caracteres", "nomeia a unidade-alvo", "cita três competências", "inclui um trabalho com link", "sem dado de usuário"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -159,7 +160,8 @@
         "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "registro no CRB indicado, se houver", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "POP de processamento técnico ou de empréstimo",
@@ -273,7 +275,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "pop", "relatorio-tecnico", "artigo", "estudo-de-caso", "proposta", "projeto-de-pesquisa", "plano-de-aula", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; X1, X2, D4 e D7 pedem computador.",
     "nudges": {
       "cadence": "semanal",

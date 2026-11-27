@@ -17,6 +17,9 @@ export const CAREER_DIR = path.join(ROOT, "contracts/career");
 export const FIELDS_FILE = path.join(CAREER_DIR, "academic-fields.json");
 export const PACKS_DIR = path.join(CAREER_DIR, "occupation-packs");
 export const GENERIC_CODE = "generico";
+/** Escada de autonomia (lib/ai/autonomy.ts AUTONOMY_MODES) e teto dos pacotes (D-156, `PACK_AUTONOMY_CEILING`). */
+export const AUTONOMY_ORDER = ["MANUAL", "SOB_SOLICITACAO", "SUGESTOES", "ASSISTIDO", "AGENTE"];
+export const PACK_AUTONOMY_CEILING = "SOB_SOLICITACAO";
 
 export function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -173,6 +176,14 @@ export function validarPacote(doc, catalogo = null) {
       if (/^X/.test(t) && !customIds.has(t)) errors.push(`$.rubric.objective[${i}].appliesTo: tarefa personalizada "${t}" não existe em guidedTasks.custom`);
       if (excluded.has(t)) warnings.push(`$.rubric.objective[${i}].appliesTo: "${t}" está em excluded`);
     }
+  });
+  // D-156: o pacote só restringe — `system.defaultAutonomy` é teto e não passa de SOB_SOLICITACAO; nenhum serviço nasce AGENTE
+  const autonomy = doc.system?.defaultAutonomy;
+  if (typeof autonomy === "string" && AUTONOMY_ORDER.indexOf(autonomy) > AUTONOMY_ORDER.indexOf(PACK_AUTONOMY_CEILING)) {
+    errors.push(`$.system.defaultAutonomy: "${autonomy}" acima do teto ${PACK_AUTONOMY_CEILING} (D-156: o pacote só restringe)`);
+  }
+  (doc.ai?.services ?? []).forEach((s, i) => {
+    if (s?.defaultMode === "AGENTE") errors.push(`$.ai.services[${i}].defaultMode: AGENTE não pode ser padrão de pacote (D-156)`);
   });
   const serviceIds = (doc.ai?.services ?? []).map((s) => s?.service);
   const services = new Set(serviceIds);

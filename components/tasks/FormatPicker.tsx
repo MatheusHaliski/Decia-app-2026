@@ -5,6 +5,7 @@
  * de variante descarta os que deixam de valer e avisa quais. Os valores geram critérios de aceite sugeridos (um clique acrescenta).
  * Reutilizado no criador de projetos (formato de cada entrega).
  */
+import { acceptedAlternatives } from "@/lib/tasks/fileAdvice";
 import { useState } from "react";
 import { Button, Checkbox, Field, Input, Select } from "@/components/ui";
 import { FileTypeSelect } from "@/components/fileicons/FileTypeSelect";
@@ -55,7 +56,7 @@ export function FormatPicker({ value, onChange, onAddCriteria, error, testId = "
           )}
         </Field>
         {value.family && variants.length ? (
-          <Field label={t("taskForm.fmt.variant")} hint={variant?.refused ? t("taskForm.fmt.refused") : variant && !variant.detected && variant.family !== "LINK" ? t("taskForm.fmt.notDetected") : undefined}>
+          <Field label={t("taskForm.fmt.variant")} hint={variant?.refused ? t("taskForm.fmt.refused") : variant && !variant.detected && variant.family !== "LINK" ? t("taskForm.fmt.notDetected", { variant: variant.code, types: acceptedAlternatives(value).join(", ") }) : undefined}>
             {({ id, describedBy }) => (
               <FileTypeSelect
                 id={id} describedBy={describedBy} value={value.variant} onChange={(v) => change(value.family, v)}

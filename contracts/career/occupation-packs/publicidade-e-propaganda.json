@@ -162,7 +162,8 @@
         "criteria": ["três peças com o mesmo conceito", "grade consistente", "assinatura e identificação publicitária presentes", "créditos de imagens, fontes e coautores", "sem marca ou pessoa real sem autorização"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "2 h",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L6": {
         "title": "Resumo de perfil em três frases",
@@ -171,7 +172,8 @@
         "criteria": ["até 600 caracteres", "nomeia a área-alvo", "cita três competências", "inclui link de portfólio ou peça", "sem cliente ou campanha sob sigilo"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -180,7 +182,8 @@
         "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "link de portfólio", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D9": {
         "title": "Wireframe de landing page de campanha",
@@ -189,7 +192,8 @@
         "criteria": ["três estados do formulário", "um objetivo de conversão claro", "anotações de interação", "aviso de privacidade e consentimento no formulário (LGPD)", "sem marca real sem autorização"],
         "evidence": "prancha",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -298,7 +302,7 @@
     "editors": { "letters": "alta", "drawings": "alta" },
     "drawingsModes": ["prancha", "wireframe", "infografico", "diagrama"],
     "lettersTemplates": ["bio", "curriculo", "carta", "proposta", "roteiro", "estudo-de-caso", "post", "revisao", "plano-30-60-90", "relatorio-tecnico", "pop"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e títulos de X1; D2, D5, D9 e X2 pedem computador para layout e planilha de mídia.",
     "nudges": {
       "cadence": "semanal",

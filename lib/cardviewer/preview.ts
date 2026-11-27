@@ -5,12 +5,14 @@
  *    própria nuvem (o iframe nunca ganha `allow-same-origin`, então continua com origem opaca);
  *  • link https da tarefa → iframe com `sandbox` vazio (site externo nunca roda script aqui) e `referrerpolicy=no-referrer`;
  *  • planilha .xlsx → "fotografia" do topo (lib/cardviewer/xlsx.ts); .xlsm (macro) é recusada;
+ *  • PDF → ficha do documento a partir do que o SERVIDOR leu no envio (`formatDetailsJson`: páginas, camada de texto, criptografia,
+ *    variante PDF/A) — o app não tem leitor de PDF (pdf.js não está nas dependências), então nada do arquivo é renderizado aqui;
  *  • o resto → metadados e "abrir".
  * O MIME declarado e a extensão precisam concordar para imagem/svg/html; na dúvida, vira "outro".
  */
 import { extensionOf, isHttpsUrl } from "./files";
 
-export type PreviewKind = "IMAGEM" | "SVG" | "HTML" | "URL" | "XLSX" | "MACRO" | "OUTRO";
+export type PreviewKind = "IMAGEM" | "SVG" | "HTML" | "URL" | "XLSX" | "PDF" | "MACRO" | "OUTRO";
 
 const RASTER_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif"]);
 const RASTER_MIME = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
@@ -24,6 +26,7 @@ export function previewKindOf(name: string | undefined, mime: string | undefined
   if (RASTER_EXT.has(ext) && (!m || RASTER_MIME.has(m))) return "IMAGEM";
   if (!ext && RASTER_MIME.has(m)) return "IMAGEM";
   if ((ext === "html" || ext === "htm") && (!m || m === "text/html")) return "HTML";
+  if ((ext === "pdf" && (!m || m === "application/pdf" || m === "application/octet-stream")) || (!ext && m === "application/pdf")) return "PDF";
   return "OUTRO";
 }
 
@@ -40,20 +43,23 @@ export interface PreviewCandidate {
   date?: string;
   attachmentId?: string;
   url?: string;
+  /** detalhes do formato lidos pelo servidor (`formatDetailsJson` do anexo) */
+  formatDetailsJson?: string | null;
+  formatVariant?: string | null;
   /** só DEMO: conteúdo gerado no navegador */
   demo?: () => Promise<Blob>;
 }
 
 /** Candidatos de prévia a partir dos anexos e dos links da tarefa; imagens e páginas primeiro (o "produto compilado"). */
 export function previewCandidates(
-  attachments: readonly { id?: string; fileName?: string; mimeType?: string; sizeBytes?: number; createdAt?: string; available?: boolean }[],
+  attachments: readonly { id?: string; fileName?: string; mimeType?: string; sizeBytes?: number; createdAt?: string; available?: boolean; formatDetailsJson?: string | null; formatVariant?: string | null }[],
   links: readonly { label?: string; url?: string }[] = [],
 ): PreviewCandidate[] {
-  const order: Record<PreviewKind, number> = { IMAGEM: 0, SVG: 0, HTML: 1, XLSX: 2, URL: 3, MACRO: 4, OUTRO: 5 };
+  const order: Record<PreviewKind, number> = { IMAGEM: 0, SVG: 0, HTML: 1, XLSX: 2, PDF: 2, URL: 3, MACRO: 4, OUTRO: 5 };
   const out: PreviewCandidate[] = [];
   for (const a of attachments) {
     if (!a.id || a.available === false) continue;
-    out.push({ id: `a:${a.id}`, name: a.fileName || a.id, kind: previewKindOf(a.fileName, a.mimeType), source: "NUVEM", mime: a.mimeType, size: a.sizeBytes, date: a.createdAt, attachmentId: a.id });
+    out.push({ id: `a:${a.id}`, name: a.fileName || a.id, kind: previewKindOf(a.fileName, a.mimeType), source: "NUVEM", mime: a.mimeType, size: a.sizeBytes, date: a.createdAt, attachmentId: a.id, formatDetailsJson: a.formatDetailsJson ?? null, formatVariant: a.formatVariant ?? null });
   }
   const seen = new Set<string>();
   for (const l of links) {
@@ -81,4 +87,23 @@ export function stepZoom(z: Zoom, dir: 1 | -1, fitScale = 1): number {
   const base = z === "fit" ? fitScale : z;
   const next = dir > 0 ? base * 1.25 : base / 1.25;
   return Math.round(Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, next)) * 100) / 100;
+}
+
+/** Ficha de um PDF a partir dos detalhes que o servidor gravou no envio. Campo ausente = `null` (não lido), nunca inventado. */
+export interface PdfFacts { pages: number | null; textLayer: boolean | null; encrypted: boolean | null; pdfA: boolean; fromServer: boolean }
+
+export function pdfFacts(detailsJson: string | null | undefined, variant?: string | null): PdfFacts {
+  let d: Record<string, unknown> = {};
+  try {
+    const v: unknown = detailsJson ? JSON.parse(detailsJson) : {};
+    if (v && typeof v === "object" && !Array.isArray(v)) d = v as Record<string, unknown>;
+  } catch {
+    d = {};
+  }
+  const bool = (x: unknown) => (x === true || x === "true" ? true : x === false || x === "false" ? false : null);
+  const n = Number(d.pages);
+  const pages = d.pages !== undefined && Number.isInteger(n) && n > 0 ? n : null;
+  const textLayer = bool(d.textLayer);
+  const encrypted = bool(d.encrypted);
+  return { pages, textLayer, encrypted, pdfA: variant === "PDF_A", fromServer: pages !== null || textLayer !== null || encrypted !== null };
 }

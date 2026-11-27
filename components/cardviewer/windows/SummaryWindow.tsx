@@ -32,7 +32,9 @@ function FactValue({ f }: { f: Fact }) {
       const date = formatIsoDate(f.date, intl);
       if (f.status === "FECHADA") return <>{date} · <span className="text-ws-text-muted">{t("cardviewer.days.closed")}</span></>;
       const tone = f.status === "VENCIDA" ? "danger" : f.status === "HOJE" || f.days <= 3 ? "warning" : f.status === "PROXIMA" ? "info" : "neutral";
-      const label = f.status === "VENCIDA" ? t("cardviewer.days.overdue", { n: -f.days }) : f.status === "HOJE" ? t("cardviewer.days.today") : t("cardviewer.days.left", { n: f.days });
+      // singular com texto próprio: "vencido há 1 dia", "falta 1 dia"
+      const label = f.status === "VENCIDA" ? t(f.days === -1 ? "criador2.days.overdueOne" : "cardviewer.days.overdue", { n: -f.days })
+        : f.status === "HOJE" ? t("cardviewer.days.today") : t(f.days === 1 ? "criador2.days.leftOne" : "cardviewer.days.left", { n: f.days });
       return (
         <span className="inline-flex flex-wrap items-center gap-1.5">
           {f.legal ? <span aria-hidden>⚖</span> : null}{date}

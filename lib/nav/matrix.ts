@@ -164,6 +164,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     id: "meu-trabalho",
     labelKey: "nav.group.meuTrabalho",
     items: [
+      // Hoje: home de quem tem sessão (Tarefa do Dia + primeiros passos + atalhos); o Mural fica como segunda opção em Descobrir
+      { id: "today", labelKey: "guide.today.nav", glyph: "tarefa-do-dia", href: "/today", rfs: ["RF44"], access: logged("E") },
       { id: "profile", labelKey: "nav.profile", glyph: "perfil", href: "/profile", activeOn: ["/profile", "/u/"], rfs: ["RF6", "RF19"], access: logged("E") },
       { id: "tasks", labelKey: "nav.tasks", glyph: "acervo", href: "/tasks", rfs: ["RF41"], access: logged("E") },
       { id: "attachments", labelKey: "nav.attachments", glyph: "acervo", href: "/attachments", rfs: ["RF41"], access: logged("E") },

@@ -1,0 +1,18 @@
+{
+  "$comment": "Teto do First Load JS (gzip nível 9) por rota, lido por scripts/perf/budget.mjs depois de `next build`. 'routes': rota exata ou prefixo terminado em *; o primeiro que casa vale, senão 'default'. Medido em 27/11/2026 (i18n sob demanda + catálogo de RFs fora do bundle): maior rota /decia 669 KB, mediana 548 KB, base compartilhada 403 KB. Tetos com ~5-7% de folga (as frentes ainda em andamento crescem as rotas): subir um teto exige justificar no PR.",
+  "default": "680 KB",
+  "routes": {
+    "/": "430 KB",
+    "/_not-found": "430 KB",
+    "/termos": "430 KB",
+    "/privacidade": "430 KB",
+    "/verify-email": "430 KB",
+    "/login": "490 KB",
+    "/register": "490 KB",
+    "/password-reset": "490 KB",
+    "/decia": "720 KB",
+    "/decia/[sessionId]": "700 KB",
+    "/admin": "700 KB"
+  },
+  "ignore": []
+}

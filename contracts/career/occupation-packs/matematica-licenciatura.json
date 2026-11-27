@@ -526,7 +526,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado para edital ou escola",
@@ -552,7 +553,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L7": {
         "title": "Instrumento de avaliação com gabarito e critérios",
@@ -597,7 +599,8 @@
         ],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L3": {
         "title": "Relato de experiência em formato STAR",
@@ -639,7 +642,8 @@
         ],
         "evidence": "prancha comparativa",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -1071,7 +1075,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6, L10 e ajustes no plano de aula (X1); D5, D7, L7 e X2 pedem computador (GeoGebra, planilha, editor de equações).",
     "nudges": {
       "cadence": "semanal",

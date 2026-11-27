@@ -167,7 +167,8 @@
         "criteria": ["três trabalhos com dois frames cada", "legenda com título, ano, duração e função", "link para vídeo ou reel", "créditos de equipe e música", "declaração de ausência de material sob NDA"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L4": {
         "title": "Memorial ou relatório de produção",
@@ -185,7 +186,8 @@
         "criteria": ["autor, acervo e licença creditados", "licença permite derivação", "duas escolhas de montagem declaradas"],
         "evidence": "remix vinculado",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -209,7 +211,8 @@
         "evidence": "prancha (PDF ou PNG)",
         "time": "2 h",
         "trigger": "Quer mostrar como filmaria uma cena do seu roteiro?",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     ]
   },
@@ -278,7 +281,7 @@
     "editors": { "letters": "media", "drawings": "media" },
     "drawingsModes": ["prancha", "diagrama", "infografico", "2d-tecnico"],
     "lettersTemplates": ["roteiro", "proposta", "memorial", "bio", "curriculo", "estudo-de-caso", "relatorio-tecnico", "post", "revisao", "carta"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D2, D5, D10 e X2 pedem computador ou tablet; roteiro (X1) e projeto (L8) são melhores no computador; no celular ficam L6, L5 e L10.",
     "nudges": {
       "cadence": "semanal",

@@ -137,7 +137,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com padrão, referência ou série", "dados públicos ou fictícios"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D4": {
         "title": "Fluxograma de processo minerário, ambiental ou de sondagem",
@@ -146,7 +147,8 @@
         "criteria": ["início e fim explícitos", "raias por ator", "nenhuma tarefa órfã", "documentos ou relatórios gerados marcados", "legenda de símbolos"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "D2": {
         "title": "Prancha de portfólio A3 com três trabalhos de geologia",
@@ -155,11 +157,12 @@
         "criteria": ["três trabalhos", "grade consistente", "escala e legenda em cada trabalho", "créditos de coautores e fontes de dados"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       }
     },
     "custom": [
-      { "id": "X1", "editor": "drawings", "title": "Mapa geológico simplificado com seção", "competency": "Elaboração de mapas, seções e perfis geológicos", "criteria": ["escala gráfica e numérica", "norte e sistema de coordenadas declarado", "legenda estratigráfica ordenada da unidade mais nova à mais antiga", "seção com exagero vertical declarado e traço no mapa", "fonte da base cartográfica e dados públicos ou fictícios"], "evidence": "prancha PDF", "time": "3 h", "trigger": "Você mapeia em campo? Monte um mapa simplificado com seção a partir de dados públicos ou de um trabalho de campo acadêmico.", "level": 3 }
+      { "id": "X1", "editor": "drawings", "title": "Mapa geológico simplificado com seção", "competency": "Elaboração de mapas, seções e perfis geológicos", "criteria": ["escala gráfica e numérica", "norte e sistema de coordenadas declarado", "legenda estratigráfica ordenada da unidade mais nova à mais antiga", "seção com exagero vertical declarado e traço no mapa", "fonte da base cartográfica e dados públicos ou fictícios"], "evidence": "prancha PDF", "time": "3 h", "trigger": "Você mapeia em campo? Monte um mapa simplificado com seção a partir de dados públicos ou de um trabalho de campo acadêmico.", "level": 3, "taskType": "MAPA" }
     ]
   },
   "rubric": {
@@ -225,7 +228,7 @@
     "editors": { "letters": "alta", "drawings": "alta" },
     "drawingsModes": ["prancha", "infografico", "diagrama", "2d-tecnico", "3d"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "laudo", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); mapa com seção (X1), prancha (D2) e modelos 3D exigem computador.",
     "nudges": {
       "cadence": "semanal",

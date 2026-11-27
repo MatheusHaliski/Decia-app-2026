@@ -7,14 +7,17 @@
  *  • D-153: pacote em `pesquisa` aparece só como conteúdo informativo "em revisão por especialistas"; nada de status, versão ou código
  *    da tarefa-guia (o título, o tempo, o nível e o editor bastam).
  *  • Progresso por evidência ("2 de 6 concluídas"), sem percentual, score ou ranking (RF75.CA08).
- * Hoje fica no criador de tarefas (a aba Carreira do perfil, RF75 n.16, ainda não existe no registro); pronto para ser montado lá.
+ *  • Aberto na primeira visita; se a pessoa o fecha, a escolha fica nas preferências (`careerPlanCollapsed`, só do dono) e ele volta
+ *    fechado nas próximas telas. Itens da trilha Carreira (currículo, perfil, 30-60-90) aparecem marcados.
+ * Montado no criador de tarefas e na aba Carreira do perfil próprio (`CareerTab`).
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from "react";
 import { Button, Link, Tag, type Tone } from "@/components/ui";
 import { packFor, type ProductPack } from "@/lib/career/packs";
 import { developmentPlan, nextPlanItem, type PlanStatus, type PlanTaskInput } from "@/lib/career/plan";
 import { baseLocale } from "@/lib/i18n/state";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { useOptionalPreferences } from "@/lib/preferences/PreferencesProvider";
 import { fieldByCode } from "@/lib/tasks/areas";
 import { tasksApi } from "@/lib/tasks/client";
 import type { TaskTemplate } from "@/lib/tasks/templates";
@@ -29,16 +32,32 @@ export interface DevelopmentPlanProps {
   onUse?: (tpl: TaskTemplate) => void;
   /** tarefas para medir o progresso; sem isto, as da pessoa vêm da API quando o plano é aberto */
   tasks?: readonly PlanTaskInput[];
+  /** sem isto, aberto na primeira visita e depois como a pessoa deixou (preferência `careerPlanCollapsed`) */
   defaultOpen?: boolean;
 }
 
 type TasksState = "idle" | "loading" | "ok" | "unavailable";
 
-export function DevelopmentPlanPanel({ fieldCode, onUse, tasks: given, defaultOpen = false }: DevelopmentPlanProps) {
+export function DevelopmentPlanPanel({ fieldCode, onUse, tasks: given, defaultOpen }: DevelopmentPlanProps) {
   const { t, locale } = useI18n();
   const lang = baseLocale(locale) as "pt-BR" | "en" | "es";
   const field = fieldByCode(fieldCode);
-  const [open, setOpen] = useState(defaultOpen);
+  const prefsCtx = useOptionalPreferences();
+  const remember = defaultOpen === undefined && prefsCtx !== null;
+  const collapsed = prefsCtx?.prefs.careerPlanCollapsed ?? false;
+  const [open, setOpen] = useState(defaultOpen ?? !collapsed);
+  const touched = useRef(false);
+  // as preferências chegam depois do 1º render (local e API): enquanto a pessoa não mexeu, segue o que ficou salvo
+  useEffect(() => {
+    if (remember && !touched.current) setOpen(!collapsed);
+  }, [remember, collapsed]);
+  const onToggle = (e: SyntheticEvent<HTMLDetailsElement>) => {
+    const now = e.currentTarget.open;
+    if (now === open) return; // mudança feita pelo próprio estado
+    touched.current = true;
+    setOpen(now);
+    if (remember && prefsCtx && prefsCtx.prefs.careerPlanCollapsed === now) prefsCtx.update({ careerPlanCollapsed: !now });
+  };
   const [pp, setPp] = useState<ProductPack | null | undefined>(undefined);
   const [fetched, setFetched] = useState<readonly PlanTaskInput[]>([]);
   const [fetchState, setFetchState] = useState<TasksState>("idle");
@@ -75,7 +94,7 @@ export function DevelopmentPlanPanel({ fieldCode, onUse, tasks: given, defaultOp
   return (
     <details
       open={open}
-      onToggle={(e) => setOpen(e.currentTarget.open)}
+      onToggle={onToggle}
       className="rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-3)]"
       data-testid="development-plan"
     >
@@ -107,6 +126,7 @@ export function DevelopmentPlanPanel({ fieldCode, onUse, tasks: given, defaultOp
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Tag tone={STATUS_TONE[item.status]}><span aria-hidden>{STATUS_MARK[item.status]}</span>{t(`career.plan.status.${item.status}`)}</Tag>
                     <span className="min-w-0 flex-1 font-semibold">{item.template.title}</span>
+                    {item.track === "carreira" ? <span data-testid="plan-career-track"><Tag tone="accent">{t("profissao2.plan.careerTrack")}</Tag></span> : null}
                   </div>
                   <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">
                     {[

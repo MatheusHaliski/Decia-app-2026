@@ -570,7 +570,8 @@
         ],
         "evidence": "diagrama vetorial (SVG ou PDF)",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "Runbook de operação ou de incidente",
@@ -653,7 +654,8 @@
         ],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L6": {
         "title": "Resumo de perfil em três frases",
@@ -674,7 +676,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -692,7 +695,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D1": {
         "title": "Planta de um ambiente com pontos de rede e rack",
@@ -717,7 +721,8 @@
         ],
         "evidence": "prancha PDF/SVG",
         "time": "2 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       }
     },
     "custom": [
@@ -1133,7 +1138,7 @@
       "revisao",
       "plano-30-60-90"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D1, D4, D6 e D7 exigem computador; runbooks (L7) podem começar no celular e terminar no computador.",
     "nudges": {
       "cadence": "semanal",

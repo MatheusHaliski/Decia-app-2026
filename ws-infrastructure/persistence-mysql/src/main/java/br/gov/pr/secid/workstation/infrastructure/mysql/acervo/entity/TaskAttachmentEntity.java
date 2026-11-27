@@ -4,6 +4,9 @@ import br.gov.pr.secid.workstation.domain.acervo.FormatFamily;
 import br.gov.pr.secid.workstation.domain.acervo.AntivirusStatus;
 import br.gov.pr.secid.workstation.domain.acervo.OcrStatus;
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
+import br.gov.pr.secid.workstation.domain.acervo.UploadChannel;
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -65,6 +68,20 @@ public class TaskAttachmentEntity extends AuditableEntity {
 
     @Column(name = "format_details_json", columnDefinition = "JSON")
     private String formatDetailsJson;
+
+    @Column(name = "original_sha256", columnDefinition = "CHAR(64)")
+    private String originalSha256;
+
+    @Column(name = "uploaded_by", columnDefinition = "BINARY(16)")
+    private UUID uploadedBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "uploaded_via")
+    private UploadChannel uploadedVia;
+
+    @Convert(converter = AesGcmStringConverter.class)
+    @Column(name = "capture_metadata_enc", columnDefinition = "TEXT")
+    private String captureMetadataEnc;
 
     public UUID getTaskId() {
         return taskId;
@@ -176,5 +193,37 @@ public class TaskAttachmentEntity extends AuditableEntity {
 
     public void setFormatDetailsJson(String formatDetailsJson) {
         this.formatDetailsJson = formatDetailsJson;
+    }
+
+    public String getOriginalSha256() {
+        return originalSha256;
+    }
+
+    public void setOriginalSha256(String originalSha256) {
+        this.originalSha256 = originalSha256;
+    }
+
+    public UUID getUploadedBy() {
+        return uploadedBy;
+    }
+
+    public void setUploadedBy(UUID uploadedBy) {
+        this.uploadedBy = uploadedBy;
+    }
+
+    public UploadChannel getUploadedVia() {
+        return uploadedVia;
+    }
+
+    public void setUploadedVia(UploadChannel uploadedVia) {
+        this.uploadedVia = uploadedVia;
+    }
+
+    public String getCaptureMetadataEnc() {
+        return captureMetadataEnc;
+    }
+
+    public void setCaptureMetadataEnc(String captureMetadataEnc) {
+        this.captureMetadataEnc = captureMetadataEnc;
     }
 }

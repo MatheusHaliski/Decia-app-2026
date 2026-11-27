@@ -8,6 +8,7 @@
  * listas fechadas daqui e do esquema são as mesmas.
  */
 import type { AutonomyMode, AiAction } from "@/lib/ai/autonomy";
+import type { TaskTypeName } from "@/lib/tasks/client";
 
 export const GENERIC_PACK_CODE = "generico";
 export const PACK_STATUSES = ["pesquisa", "revisado", "ativo"] as const;
@@ -39,6 +40,12 @@ export const LETTERS_TEMPLATES = [
   "parecer", "memorial", "laudo", "artigo", "plano-de-aula", "roteiro", "relatorio-de-caso", "projeto-de-pesquisa",
 ] as const;
 export type LettersTemplate = (typeof LETTERS_TEMPLATES)[number];
+/**
+ * Trilha do modelo (curadoria de 27/11/2026, `scripts/career/curar-pacotes.mjs`): `carreira` = currículo, perfil profissional e plano
+ * 30-60-90 — ficam no plano de desenvolvimento e na aba Carreira, fora dos modelos de trabalho do criador; ausente = `trabalho`.
+ */
+export const TASK_TRACKS = ["trabalho", "carreira"] as const;
+export type TaskTrack = (typeof TASK_TRACKS)[number];
 export const RELEVANCES = ["alta", "media", "baixa"] as const;
 export type Relevance = (typeof RELEVANCES)[number];
 
@@ -57,8 +64,12 @@ export interface TaskParams {
   evidence: string;
   time: string;
   level: 1 | 2 | 3;
+  /** ausente = trabalho */
+  track?: TaskTrack;
+  /** TaskType da API; ausente = DOCUMENTO (Letters) ou DESENHO_TECNICO (Drawings) */
+  taskType?: TaskTypeName;
 }
-export interface CustomTask { id: string; editor: "letters" | "drawings"; title: string; competency: string; criteria: string[]; evidence: string; time: string; trigger: string; level: 1 | 2 | 3 }
+export interface CustomTask { id: string; editor: "letters" | "drawings"; title: string; competency: string; criteria: string[]; evidence: string; time: string; trigger: string; level: 1 | 2 | 3; track?: TaskTrack; taskType?: TaskTypeName }
 export interface ObjectiveCriterion { id: string; check: string; appliesTo: string[]; auto: boolean }
 export interface SubjectiveCriterion { id: string; label: string; levels: { aproxima: string; atende: string; supera: string } }
 export interface PackService { service: AiService; capability: AiCapability; defaultMode: AutonomyMode; action: AiAction; consent: PackConsent | null; note: string }

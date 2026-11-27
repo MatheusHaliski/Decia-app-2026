@@ -153,7 +153,8 @@
         "criteria": ["fonte e período citados", "eixos rotulados com unidade", "uma mensagem principal explícita", "variações destacadas", "sem dados sigilosos identificáveis"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L7": {
         "title": "POP de uma rotina financeira",
@@ -171,7 +172,8 @@
         "criteria": ["início e fim explícitos", "raias por área", "nenhuma atividade órfã", "ao menos um gateway de alçada", "ao menos um controle anotado"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L3": {
         "title": "Estudo de caso STAR de um resultado financeiro",
@@ -189,7 +191,8 @@
         "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -202,7 +205,8 @@
         "evidence": "planilha + nota explicativa em PDF",
         "time": "90 min",
         "trigger": "Quer mostrar que sabe prever o caixa de um negócio?",
-        "level": 2
+        "level": 2,
+        "taskType": "PLANILHA"
       },
       {
         "id": "X2",
@@ -283,7 +287,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "carta", "plano-30-60-90", "proposta", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); planilhas de caixa (X1), viabilidade (X2) e infográficos (D7) pedem computador.",
     "nudges": {
       "cadence": "semanal",

@@ -78,6 +78,8 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_API_BASE_URL: https://api.example.invalid
+      - name: Orçamento de bundle (First Load JS gzip por rota)
+        run: node scripts/perf/budget.mjs --top 20
       - name: Dependências de produção sem vulnerabilidade alta ou crítica
         run: npm audit --omit=dev --audit-level=high
 

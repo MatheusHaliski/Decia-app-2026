@@ -199,6 +199,8 @@
     "serviceId": { "enum": ["PERGUNTAS_GUIA", "SUGESTAO_TAREFAS", "PLANO_SEMANAL", "PRE_CHECAGEM_RUBRICA", "RASCUNHO_LETTERS", "APOIO_DRAWINGS", "ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "PESSOAS_SEMELHANTES", "EXPLICACAO_POR_QUE", "RESUMO_PROFISSIONAL", "IMPORTAR_CURRICULO"] },
     "capability": { "enum": ["ARTEFATO", "INSIGHT", "PREENCHER_TAREFA", "MEMORIA_BUSCA", "AUTOPILOT_PROJETO", "CAPA_IA"] },
     "autonomyMode": { "enum": ["MANUAL", "SOB_SOLICITACAO", "SUGESTOES", "ASSISTIDO", "AGENTE"] },
+    "taskTrack": { "description": "trilha do modelo: trabalho (padrão, ausente) ou carreira (currículo, perfil, 30-60-90) — fora dos modelos de trabalho do criador", "enum": ["trabalho", "carreira"] },
+    "taskType": { "description": "TaskType da API do modelo (scripts/career/curar-pacotes.mjs); ausente = DOCUMENTO no Letters e DESENHO_TECNICO no Drawings", "enum": ["TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS", "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO"] },
     "aiAction": { "enum": ["SUGESTAO_ESPONTANEA", "RESPONDER", "PROPOR_ALTERACAO", "APLICAR_ALTERACAO", "EXECUTAR_PASSO"] },
     "consent": { "enum": ["RESUMO_PROFISSIONAL_IA", "GUIA_DE_CARREIRA", "ANALISE_PERFIL_IA", null] },
     "drawingsMode": { "enum": ["2d-tecnico", "3d", "diagrama", "infografico", "prancha", "wireframe"] },
@@ -366,7 +368,9 @@
         "criteria": { "type": "array", "minItems": 3, "maxItems": 7, "items": { "$ref": "#/$defs/shortText" } },
         "evidence": { "$ref": "#/$defs/shortText" },
         "time": { "type": "string", "pattern": "^\\d+ (min|h)$" },
-        "level": { "enum": [1, 2, 3] }
+        "level": { "enum": [1, 2, 3] },
+        "track": { "$ref": "#/$defs/taskTrack" },
+        "taskType": { "$ref": "#/$defs/taskType" }
       }
     },
     "customTask": {
@@ -382,7 +386,9 @@
         "evidence": { "$ref": "#/$defs/shortText" },
         "time": { "type": "string", "pattern": "^\\d+ (min|h)$" },
         "trigger": { "$ref": "#/$defs/shortText" },
-        "level": { "enum": [1, 2, 3] }
+        "level": { "enum": [1, 2, 3] },
+        "track": { "$ref": "#/$defs/taskTrack" },
+        "taskType": { "$ref": "#/$defs/taskType" }
       }
     },
     "objectiveCriterion": {

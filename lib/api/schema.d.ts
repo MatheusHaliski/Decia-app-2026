@@ -595,7 +595,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro */
+        /** RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro; com targetType+targetId, só as ligadas àquela tarefa/projeto/marco (lista vazia se o item não for visível) */
         get: operations["list"];
         put?: never;
         /** RF29.CA01 Criar decisão estruturada (responsável = quem cria, CONDUTOR; RASCUNHO; 422 VALIDACAO/DECISAO_SEM_EMPRESA) */
@@ -632,7 +632,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado); BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA */
+        /** RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado, premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints, vínculos de trabalho e retrospectiva); BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA */
         post: operations["commands"];
         delete?: never;
         options?: never;
@@ -1169,7 +1169,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** RF41.CA06 Conteúdo do anexo (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono) */
+        /** RF41.CA06 Conteúdo do anexo em fluxo, com Range (206) (423 MIDIA_EM_QUARENTENA enquanto o antivírus não libera; RESTRITO/SIGILOSO só o dono) */
         get: operations["attachmentContent"];
         put?: never;
         post?: never;
@@ -1329,6 +1329,7 @@ export interface components {
         };
         AttachmentView: {
             available?: boolean;
+            capture?: components["schemas"]["CaptureView"];
             /** Format: date-time */
             createdAt?: string;
             evidence?: components["schemas"]["EvidenceView"];
@@ -1337,24 +1338,38 @@ export interface components {
             /** @enum {string} */
             formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
             formatVariant?: string;
+            hasCaptureMetadata?: boolean;
             /** Format: uuid */
             id?: string;
             image?: boolean;
             mimeType?: string;
+            originalSha256?: string;
             primary?: boolean;
             /** @enum {string} */
             scanStatus?: "PENDENTE" | "LIMPO" | "INFECTADO" | "NAO_VERIFICADO";
+            sha256?: string;
             /** Format: int64 */
             sizeBytes?: number;
             /** Format: uuid */
             taskId?: string;
             taskTitle?: string;
+            /** Format: uuid */
+            uploadedBy?: string;
+            /** @enum {string} */
+            uploadedVia?: "DIRETO" | "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
         };
         Availability: {
             available?: boolean;
             reason?: string;
             suggestions?: string[];
             username?: string;
+        };
+        CaptureView: {
+            cameraMake?: string;
+            cameraModel?: string;
+            latitude?: string;
+            longitude?: string;
+            takenAt?: string;
         };
         ChangePasswordRequest: {
             confirmPassword: string;
@@ -1471,6 +1486,8 @@ export interface components {
             impact: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
             /** @enum {string} */
             kind?: "ESTRATEGICA" | "TATICA" | "OPERACIONAL" | "TECNICA" | "FINANCEIRA" | "PRODUTO" | "PESSOAS" | "CONTRATACAO" | "RISCO";
+            /** Format: uuid */
+            projectId?: string;
             question: string;
             templateKey?: string;
             /** @enum {string} */
@@ -1519,21 +1536,100 @@ export interface components {
             /** Format: date-time */
             submittedAt?: string;
         };
+        DecisionAssumptionInput: {
+            alternativeId?: string;
+            /** Format: int32 */
+            confidencePct?: number;
+            /** @enum {string} */
+            importance?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** Format: uuid */
+            ownerUserId?: string;
+            statement?: string;
+            validationNote?: string;
+            /** @enum {string} */
+            validationStatus?: "NAO_VALIDADA" | "EM_VALIDACAO" | "VALIDADA" | "INVALIDADA";
+        };
+        DecisionAssumptionView: {
+            /** Format: uuid */
+            alternativeId?: string;
+            /** Format: int32 */
+            confidencePct?: number;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            importance?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            origin?: "HUMANO" | "IA" | "IMPORTADA";
+            /** Format: uuid */
+            ownerUserId?: string;
+            statement?: string;
+            /** Format: date-time */
+            validatedAt?: string;
+            validationNote?: string;
+            /** @enum {string} */
+            validationStatus?: "NAO_VALIDADA" | "EM_VALIDACAO" | "VALIDADA" | "INVALIDADA";
+        };
+        DecisionCheckpointInput: {
+            /** @enum {string} */
+            action?: "MANTER" | "AJUSTAR" | "REABRIR";
+            assumptionsChanged?: boolean;
+            /** Format: int32 */
+            confidencePctAfter?: number;
+            /** Format: date-time */
+            dueAt?: string;
+            /** @enum {string} */
+            kind?: "PROGRAMADO" | "GATILHO";
+            newEvidence?: boolean;
+            note?: string;
+            /** @enum {string} */
+            status?: "AGENDADO" | "CONCLUIDO" | "PERDIDO" | "CANCELADO";
+            stillValid?: boolean;
+        };
+        DecisionCheckpointView: {
+            /** @enum {string} */
+            action?: "MANTER" | "AJUSTAR" | "REABRIR";
+            assumptionsChanged?: boolean;
+            /** Format: date-time */
+            completedAt?: string;
+            /** Format: uuid */
+            completedByUserId?: string;
+            /** Format: int32 */
+            confidencePctAfter?: number;
+            /** Format: date-time */
+            dueAt?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "PROGRAMADO" | "GATILHO";
+            newEvidence?: boolean;
+            note?: string;
+            /** @enum {string} */
+            status?: "AGENDADO" | "CONCLUIDO" | "PERDIDO" | "CANCELADO";
+            stillValid?: boolean;
+        };
         DecisionCommand: {
             alternativeId?: string;
+            assumption?: components["schemas"]["DecisionAssumptionInput"];
+            checkpoint?: components["schemas"]["DecisionCheckpointInput"];
             /** Format: int32 */
             confidencePct?: number;
             criterionId?: string;
             doNothing?: boolean;
+            forecast?: components["schemas"]["DecisionForecastInput"];
+            itemId?: string;
             name?: string;
             /** @enum {string} */
             nature?: "FATO" | "EVIDENCIA" | "OPINIAO";
             rationale?: string;
+            recommendation?: components["schemas"]["DecisionRecommendationInput"];
             ref?: string;
             /** @enum {string} */
             reliability?: "BAIXA" | "MEDIA" | "ALTA";
             /** @enum {string} */
             result?: "SUCESSO" | "PARCIAL" | "FALHOU" | "CANCELADA" | "SUBSTITUIDA";
+            retrospective?: components["schemas"]["DecisionRetrospectiveInput"];
+            risk?: components["schemas"]["DecisionRiskInput"];
+            scenario?: components["schemas"]["DecisionScenarioInput"];
             /** Format: int32 */
             score?: number;
             sourceLabel?: string;
@@ -1543,11 +1639,13 @@ export interface components {
             title?: string;
             /** @enum {string} */
             to?: "RASCUNHO" | "ENQUADRAMENTO" | "PESQUISA" | "COMPARACAO" | "AGUARDANDO_DECISAO" | "DECIDIDA" | "EM_EXECUCAO" | "RESOLVIDA" | "REVISADA" | "REABERTA" | "ARQUIVADA";
+            trigger?: components["schemas"]["DecisionTriggerInput"];
             /** @enum {string} */
-            type?: "TRANSITION" | "REOPEN" | "ADD_ALTERNATIVE" | "ADD_CRITERION" | "SET_WEIGHT" | "SET_SCORE" | "ADD_EVIDENCE" | "DECIDE" | "RECORD_OUTCOME";
+            type?: "TRANSITION" | "REOPEN" | "ADD_ALTERNATIVE" | "ADD_CRITERION" | "SET_WEIGHT" | "SET_SCORE" | "ADD_EVIDENCE" | "DECIDE" | "RECORD_OUTCOME" | "PUT_ASSUMPTION" | "REMOVE_ASSUMPTION" | "PUT_RISK" | "REMOVE_RISK" | "PUT_SCENARIO" | "REMOVE_SCENARIO" | "PUT_FORECAST" | "PUT_RECOMMENDATION" | "PUT_TRIGGER" | "REMOVE_TRIGGER" | "PUT_CHECKPOINT" | "LINK_WORK" | "UNLINK_WORK" | "PUT_RETROSPECTIVE";
             warningsConfirmed?: boolean;
             /** Format: double */
             weightPct?: number;
+            workLink?: components["schemas"]["DecisionWorkLinkInput"];
         };
         DecisionCriterionView: {
             catalogKey?: string;
@@ -1622,6 +1720,33 @@ export interface components {
             supersededAt?: string;
             title?: string;
         };
+        DecisionForecastInput: {
+            alternativeId?: string;
+            /** Format: int32 */
+            probabilityPct?: number;
+            /** @enum {string} */
+            resolution?: "PENDENTE" | "OCORREU" | "NAO_OCORREU" | "ANULADA";
+            /** Format: date */
+            resolveBy?: string;
+            statement?: string;
+        };
+        DecisionForecastView: {
+            /** Format: uuid */
+            alternativeId?: string;
+            /** Format: uuid */
+            forecasterUserId?: string;
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            probabilityPct?: number;
+            /** @enum {string} */
+            resolution?: "PENDENTE" | "OCORREU" | "NAO_OCORREU" | "ANULADA";
+            /** Format: date */
+            resolveBy?: string;
+            /** Format: date-time */
+            resolvedAt?: string;
+            statement?: string;
+        };
         DecisionOutcomeView: {
             /** Format: uuid */
             id?: string;
@@ -1647,8 +1772,110 @@ export interface components {
             assess?: boolean;
             decide?: boolean;
             edit?: boolean;
+            editRecords?: boolean;
             editStructure?: boolean;
             reopen?: boolean;
+        };
+        DecisionRecommendationInput: {
+            alternativeId?: string;
+            contradicting?: string[];
+            criticalAssumptionIds?: string[];
+            limitationsMd?: string;
+            reasoningMd?: string;
+            /** @enum {string} */
+            source?: "MODELO" | "IA";
+            /** @enum {string} */
+            status?: "SUGERIDA" | "ACEITA" | "DESCARTADA";
+            supporting?: string[];
+            whatWouldChangeMd?: string;
+        };
+        DecisionRecommendationView: {
+            /** Format: uuid */
+            alternativeId?: string;
+            contradicting?: string[];
+            /** Format: date-time */
+            createdAt?: string;
+            criticalAssumptionIds?: string[];
+            /** Format: uuid */
+            id?: string;
+            limitationsMd?: string;
+            modelVersion?: string;
+            reasoningMd?: string;
+            /** @enum {string} */
+            source?: "MODELO" | "IA";
+            /** @enum {string} */
+            status?: "SUGERIDA" | "ACEITA" | "DESCARTADA";
+            supporting?: string[];
+            whatWouldChangeMd?: string;
+        };
+        DecisionRetrospectiveInput: {
+            failedAssumptionIds?: string[];
+            lessonsMd?: string;
+            /** @enum {string} */
+            processQuality?: "ADEQUADA" | "PARCIAL" | "INADEQUADA";
+            shareAsLesson?: boolean;
+            whatExpected?: string;
+            whatHappened?: string;
+            whatWasRight?: string;
+            whatWasWrong?: string;
+        };
+        DecisionRetrospectiveView: {
+            failedAssumptionIds?: string[];
+            /** Format: uuid */
+            id?: string;
+            lessonsMd?: string;
+            /** Format: uuid */
+            outcomeId?: string;
+            /** @enum {string} */
+            processQuality?: "ADEQUADA" | "PARCIAL" | "INADEQUADA";
+            /** Format: date-time */
+            reviewedAt?: string;
+            /** Format: uuid */
+            reviewedByUserId?: string;
+            shareAsLesson?: boolean;
+            whatExpected?: string;
+            whatHappened?: string;
+            whatWasRight?: string;
+            whatWasWrong?: string;
+        };
+        DecisionRiskInput: {
+            alternativeId?: string;
+            description?: string;
+            /** @enum {string} */
+            impact?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            likelihood?: "RARA" | "POSSIVEL" | "PROVAVEL" | "QUASE_CERTA";
+            mitigation?: string;
+            /** Format: uuid */
+            ownerUserId?: string;
+            /** @enum {string} */
+            source?: "MANUAL" | "PRE_MORTEM" | "RED_TEAM" | "IA";
+            /** @enum {string} */
+            status?: "ABERTO" | "MITIGADO" | "ACEITO" | "OCORREU" | "ENCERRADO";
+            title?: string;
+        };
+        DecisionRiskView: {
+            /** Format: uuid */
+            alternativeId?: string;
+            description?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            impact?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            likelihood?: "RARA" | "POSSIVEL" | "PROVAVEL" | "QUASE_CERTA";
+            mitigation?: string;
+            /** @enum {string} */
+            origin?: "HUMANO" | "IA" | "IMPORTADA";
+            /** Format: uuid */
+            ownerUserId?: string;
+            /** @enum {string} */
+            severity?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            source?: "MANUAL" | "PRE_MORTEM" | "RED_TEAM" | "IA";
+            /** @enum {string} */
+            status?: "ABERTO" | "MITIGADO" | "ACEITO" | "OCORREU" | "ENCERRADO";
+            title?: string;
         };
         DecisionRoot: {
             /** @enum {string} */
@@ -1707,6 +1934,29 @@ export interface components {
             visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
             weightingEnabled?: boolean;
         };
+        DecisionScenarioInput: {
+            alternativeId?: string;
+            assumptionIds?: string[];
+            description?: string;
+            expectedResult?: string;
+            /** @enum {string} */
+            likelihood?: "RARA" | "POSSIVEL" | "PROVAVEL" | "QUASE_CERTA";
+            /** @enum {string} */
+            scenarioCase?: "MELHOR" | "BASE" | "PIOR";
+        };
+        DecisionScenarioView: {
+            /** Format: uuid */
+            alternativeId?: string;
+            assumptionIds?: string[];
+            description?: string;
+            expectedResult?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            likelihood?: "RARA" | "POSSIVEL" | "PROVAVEL" | "QUASE_CERTA";
+            /** @enum {string} */
+            scenarioCase?: "MELHOR" | "BASE" | "PIOR";
+        };
         DecisionSnapshotView: {
             /** Format: int32 */
             confidencePct?: number;
@@ -1726,18 +1976,67 @@ export interface components {
             /** Format: int32 */
             versionNumber?: number;
         };
+        DecisionTriggerInput: {
+            comparator?: string;
+            conditionText?: string;
+            metricKey?: string;
+            /** @enum {string} */
+            status?: "ATIVO" | "DISPARADO" | "ARQUIVADO";
+            /** Format: double */
+            threshold?: number;
+        };
+        DecisionTriggerView: {
+            comparator?: string;
+            conditionText?: string;
+            /** Format: date-time */
+            firedAt?: string;
+            /** Format: uuid */
+            id?: string;
+            metricKey?: string;
+            /** @enum {string} */
+            status?: "ATIVO" | "DISPARADO" | "ARQUIVADO";
+            /** Format: double */
+            threshold?: number;
+        };
         DecisionView: {
             alternatives?: components["schemas"]["DecisionAlternativeView"][];
             assessments?: components["schemas"]["DecisionAssessmentView"][];
+            assumptions?: components["schemas"]["DecisionAssumptionView"][];
+            checkpoints?: components["schemas"]["DecisionCheckpointView"][];
             criteria?: components["schemas"]["DecisionCriterionView"][];
             decision?: components["schemas"]["DecisionRoot"];
             events?: components["schemas"]["DecisionEventView"][];
             evidence?: components["schemas"]["DecisionEvidenceView"][];
             evidenceLinks?: components["schemas"]["DecisionEvidenceLinkView"][];
+            forecasts?: components["schemas"]["DecisionForecastView"][];
             outcome?: components["schemas"]["DecisionOutcomeView"];
             participants?: components["schemas"]["DecisionParticipantView"][];
             permissions?: components["schemas"]["DecisionPermissions"];
+            recommendations?: components["schemas"]["DecisionRecommendationView"][];
+            retrospective?: components["schemas"]["DecisionRetrospectiveView"];
+            risks?: components["schemas"]["DecisionRiskView"][];
+            scenarios?: components["schemas"]["DecisionScenarioView"][];
             snapshots?: components["schemas"]["DecisionSnapshotView"][];
+            triggers?: components["schemas"]["DecisionTriggerView"][];
+            workLinks?: components["schemas"]["DecisionWorkLinkView"][];
+        };
+        DecisionWorkLinkInput: {
+            /** Format: uuid */
+            targetId?: string;
+            /** @enum {string} */
+            targetType?: "TAREFA" | "PROJETO" | "MARCO";
+        };
+        DecisionWorkLinkView: {
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: uuid */
+            createdByUserId?: string;
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            targetId?: string;
+            /** @enum {string} */
+            targetType?: "TAREFA" | "PROJETO" | "MARCO";
         };
         DeletionBody: {
             currentPassword: string;
@@ -1809,23 +2108,30 @@ export interface components {
             /** Format: uuid */
             attachmentId?: string;
             caption?: string;
+            capture?: components["schemas"]["CaptureView"];
             /** Format: date-time */
             createdAt?: string;
             formatDetailsJson?: string;
             /** @enum {string} */
             formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
             formatVariant?: string;
+            hasCaptureMetadata?: boolean;
             hasLocation?: boolean;
             /** Format: uuid */
             id?: string;
             latitude?: string;
             longitude?: string;
+            originalSha256?: string;
             /** Format: uuid */
             ownerId?: string;
             /** Format: date-time */
             takenAt?: string;
             /** Format: uuid */
             taskId?: string;
+            /** Format: uuid */
+            uploadedBy?: string;
+            /** @enum {string} */
+            uploadedVia?: "DIRETO" | "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
         };
         ExternalItemView: {
             exportFormats?: string[];
@@ -3250,6 +3556,8 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                targetType?: "TAREFA" | "PROJETO" | "MARCO";
+                targetId?: string;
             };
             header?: never;
             path?: never;

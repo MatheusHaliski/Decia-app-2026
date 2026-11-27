@@ -100,7 +100,8 @@
         "criteria": ["até 600 caracteres", "nomeia a área-alvo", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -109,7 +110,8 @@
         "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "sem idade, estado civil ou foto obrigatória"],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "D2": {
         "title": "Prancha de portfólio A3 com três trabalhos",
@@ -118,7 +120,8 @@
         "criteria": ["três trabalhos", "grade consistente", "legenda em cada trabalho", "créditos de coautores e fontes"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "L3": {
         "title": "Estudo de caso STAR",
@@ -188,7 +191,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["prancha", "diagrama", "infografico"],
     "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "post", "pop", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D3 e D8 exigem computador.",
     "nudges": {
       "cadence": "semanal",

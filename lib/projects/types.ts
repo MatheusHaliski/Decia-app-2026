@@ -32,6 +32,9 @@ export type Approach = (typeof APPROACHES)[number];
 export const PROJECT_AREAS = ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"] as const;
 export type ProjectArea = (typeof PROJECT_AREAS)[number];
 export const isItProject = (m: { area?: ProjectArea }) => (m.area ?? "SOFTWARE") === "SOFTWARE";
+/** Área do projeto a partir de uma área de trabalho (`WorkArea` da profissão preferida, mesmos valores); desconhecida → `null`. */
+export const projectAreaOf = (area: string | null | undefined): ProjectArea | null =>
+  area && (PROJECT_AREAS as readonly string[]).includes(area) ? (area as ProjectArea) : null;
 
 /** Modelo de quadro: as 7 fases institucionais, as fases clássicas do PMBOK ou o fluxo do Scrum. */
 export const BOARD_MODELS = ["INSTITUCIONAL", "PMBOK", "SCRUM"] as const;

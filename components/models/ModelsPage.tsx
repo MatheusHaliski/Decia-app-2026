@@ -4,13 +4,16 @@
  * departamento de origem, preço) e ordenação; card com autor, departamento, licença, preço e reutilizações; detalhe com prévia e
  * "Usar este modelo"; "Oferecer como modelo" para EMPREGADO, CHEFE e EMPRESA; "Meus modelos oferecidos" com contadores e retirada
  * (RF40.CA06). Cada reutilização paga credita o autor no razão de DECIA Points (RF42.CA05). Dados DEMO desta aba.
+ * Com profissão preferida, o filtro de área já vem na área da profissão (só a própria pessoa vê esse ajuste, D-147), com "Ver todas".
  */
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { DemoBadge, DemoNote, Dp, formatNumber, useMounted } from "@/components/points/shared";
 import { RfPage } from "@/components/shell/RfPage";
 import { Button, Card, EmptyState, Field, Input, LoadingState, Select, Tag } from "@/components/ui";
+import { occupationArea } from "@/lib/career/categories";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { useOptionalPreferences } from "@/lib/preferences/PreferencesProvider";
 import { browseModels, departmentsOf, EMPTY_FILTERS, MODEL_SORTS, myOffers, PRICE_FILTERS, type ModelFilters, type ModelSort } from "@/lib/models/browse";
 import { canOfferModel, type OfferAuthor } from "@/lib/models/offer";
 import { MODEL_KINDS, type ModelOffer, type Shelf } from "@/lib/models/types";
@@ -125,7 +128,17 @@ function ModelsContent({ page }: { page: PageEntry }) {
   const offers = useModelOffers(repo);
   const holder = pointsHolderOf(user);
   const balance = usePointsBalance(holder) ?? 0;
-  const [filters, setFilters] = useState<ModelFilters>(EMPTY_FILTERS);
+  const occArea = occupationArea(useOptionalPreferences()?.prefs.preferredOccupation);
+  const [filters, setFiltersState] = useState<ModelFilters>(() => (occArea ? { ...EMPTY_FILTERS, area: occArea } : EMPTY_FILTERS));
+  // pré-filtro pela área da profissão até a pessoa mexer na área (as preferências chegam depois do 1º render)
+  const areaTouched = useRef(false);
+  useEffect(() => {
+    if (!areaTouched.current) setFiltersState((f) => ({ ...f, area: occArea ?? "TODAS" }));
+  }, [occArea]);
+  const setFilters = (next: ModelFilters) => {
+    if (next.area !== filters.area) areaTouched.current = true;
+    setFiltersState(next);
+  };
   const [sort, setSort] = useState<ModelSort>("reutilizacoes");
   const [offering, setOffering] = useState(false);
   const canUse = page.access[profile] === "E";
@@ -177,6 +190,13 @@ function ModelsContent({ page }: { page: PageEntry }) {
         {mounted ? (
           <div className="grid gap-[var(--ws-space-4)]">
             <DemoNote hintKey="models.demoHint" />
+            {occArea && filters.area === occArea ? (
+              <p className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]" data-testid="models-occupation-filter">
+                <Tag tone="accent"><span aria-hidden>🔒</span>{t("career.fromProfession")}</Tag>
+                <span>{t("profissao2.models.filtered", { area: t(`tasks.area.${occArea}`) })}</span>
+                <Button size="sm" variant="ghost" onClick={() => setFilters({ ...filters, area: "TODAS" })} data-testid="models-see-all">{t("profissao2.models.seeAll")}</Button>
+              </p>
+            ) : null}
             <Filters filters={filters} setFilters={setFilters} sort={sort} setSort={setSort} departments={departmentsOf(offers)} />
             <MyOffers authorId={actorId} onOpen={setOpen} />
           </div>

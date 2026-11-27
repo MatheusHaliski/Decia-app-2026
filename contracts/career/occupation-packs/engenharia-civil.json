@@ -132,7 +132,8 @@
         "criteria": ["escala declarada no carimbo e no título do desenho", "cotas parciais somam a cota total em cada direção", "legenda com a simbologia usada", "carimbo com título, escala, data, número e autoria", "cortes marcados e nomeados em planta", "declaração de que não é projeto de cliente sob sigilo"],
         "evidence": "prancha PDF ou SVG",
         "time": "2 h",
-        "level": 2
+        "level": 2,
+        "taskType": "DESENHO_TECNICO"
       },
       "D6": {
         "title": "Detalhe construtivo em 1:20 com materiais especificados",
@@ -141,7 +142,8 @@
         "criteria": ["escala de detalhe declarada", "cada material especificado com nome e espessura ou bitola", "cotas que fecham", "referência à norma aplicável com número e ano", "declaração de autoria e ausência de projeto sob sigilo"],
         "evidence": "prancha de detalhe PDF ou SVG",
         "time": "90 min",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "L4": {
         "title": "Relatório técnico curto ou memorial descritivo",
@@ -159,7 +161,8 @@
         "criteria": ["três trabalhos", "grade consistente", "legenda com seu papel em cada trabalho", "créditos de coautores e escritório", "declaração de autorização ou de trabalho próprio"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "D4": {
         "title": "Fluxo de liberação de concretagem ou de medição",
@@ -168,7 +171,8 @@
         "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "documentos de saída identificados (ex.: ficha de slump, boletim de medição)"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de recebimento e controle de concreto",
@@ -262,7 +266,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["2d-tecnico", "prancha", "diagrama", "infografico"],
     "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D1, D6 e D2 exigem computador; no celular ficam L6, L5, L10 e a revisão de critérios.",
     "nudges": {
       "cadence": "semanal",

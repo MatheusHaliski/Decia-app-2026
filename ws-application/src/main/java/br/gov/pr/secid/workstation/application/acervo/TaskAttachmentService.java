@@ -10,13 +10,12 @@ import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
-import br.gov.pr.secid.workstation.application.media.DetectedFormat;
+import br.gov.pr.secid.workstation.application.media.CaptureMetadata.Capture;
 import br.gov.pr.secid.workstation.application.media.DetectedType;
-import br.gov.pr.secid.workstation.application.media.ImageMetadata;
 import br.gov.pr.secid.workstation.application.media.MediaUploadInspector;
-import br.gov.pr.secid.workstation.application.media.MediaUploadInspector.InspectedUpload;
 import br.gov.pr.secid.workstation.application.media.MediaUploadInspector.UploadCandidate;
 import br.gov.pr.secid.workstation.application.media.MediaUploadService;
+import br.gov.pr.secid.workstation.application.media.PreparedUpload;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.acervo.AntivirusStatus;
 import br.gov.pr.secid.workstation.domain.acervo.Evidence;
@@ -25,12 +24,14 @@ import br.gov.pr.secid.workstation.domain.acervo.OcrStatus;
 import br.gov.pr.secid.workstation.domain.acervo.StudioStatus;
 import br.gov.pr.secid.workstation.domain.acervo.TaskAttachment;
 import br.gov.pr.secid.workstation.domain.acervo.TaskItem;
+import br.gov.pr.secid.workstation.domain.acervo.UploadChannel;
 import br.gov.pr.secid.workstation.domain.plataforma.MediaScanStatus;
 import br.gov.pr.secid.workstation.domain.security.ResourceAction;
 import br.gov.pr.secid.workstation.domain.security.Viewer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Clock;
@@ -60,6 +61,11 @@ import java.util.regex.Pattern;
  * evidência só existe se a pessoa a enviar, e fica cifrada (AES-GCM) no banco. O binário pertence ao dono da tarefa (dedupe e
  * {@code OwnMedia}) e só é apagado quando nenhum anexo ou evidência aponta para ele. Evidência = anexo marcado como prova, com legenda,
  * data da captura e localização opcional; desmarcar não apaga o arquivo; remover o anexo leva a marca junto.
+ *
+ * <p>Proveniência (V73): cada anexo guarda o SHA-256 do arquivo COMO RECEBIDO ({@code originalSha256}, antes do strip) além do SHA-256 do
+ * binário guardado, quem enviou ({@code uploadedBy}), por onde entrou ({@code uploadedVia}: DIRETO ou o provedor do conector) e os
+ * metadados de captura do EXIF (data original, GPS, câmera) lidos antes do strip e cifrados no banco; a evidência herda os quatro do anexo.
+ * Os dois hashes vão para a auditoria; a captura nunca (dado pessoal) e só aparece para quem pode editar a tarefa.
  */
 @Service
 public class TaskAttachmentService {
@@ -105,7 +111,18 @@ public class TaskAttachmentService {
      */
     public record AttachmentView(UUID id, UUID taskId, String taskTitle, String fileName, String mimeType, long sizeBytes, boolean image,
                                  boolean primary, MediaScanStatus scanStatus, boolean available, Instant createdAt, EvidenceView evidence,
-                                 FormatFamily formatFamily, String formatVariant, String formatDetailsJson) {
+                                 FormatFamily formatFamily, String formatVariant, String formatDetailsJson, String sha256, String originalSha256,
+                                 UUID uploadedBy, UploadChannel uploadedVia, boolean hasCaptureMetadata, CaptureView capture) {
+    }
+
+    /**
+     * Metadados de captura lidos do EXIF antes do strip (só para quem registrou/enviou ou pode editar a tarefa; os demais veem apenas
+     * {@code hasCaptureMetadata}). {@code takenAt} é a hora local da câmera em ISO-8601 (com fuso quando o EXIF o traz).
+     */
+    public record CaptureView(String takenAt, String latitude, String longitude, String cameraMake, String cameraModel) {
+        static CaptureView of(Capture c) {
+            return c == null ? null : new CaptureView(c.takenAt(), c.latitude(), c.longitude(), c.cameraMake(), c.cameraModel());
+        }
     }
 
     /**
@@ -114,7 +131,8 @@ public class TaskAttachmentService {
      */
     public record EvidenceView(UUID id, UUID taskId, UUID attachmentId, String caption, Instant takenAt, boolean hasLocation, String latitude,
                                String longitude, UUID ownerId, Instant createdAt, FormatFamily formatFamily, String formatVariant,
-                               String formatDetailsJson) {
+                               String formatDetailsJson, String originalSha256, UUID uploadedBy, UploadChannel uploadedVia,
+                               boolean hasCaptureMetadata, CaptureView capture) {
     }
 
     /** Arquivo recebido: bytes e o nome/Content-Type DECLARADOS pelo cliente (só conferidos contra o tipo real). */
@@ -125,8 +143,30 @@ public class TaskAttachmentService {
     public record EvidenceInput(String caption, String takenAt, String latitude, String longitude) {
     }
 
-    /** Conteúdo autorizado para download: {@code inline} só para imagem (o resto sai como anexo). */
-    public record FileContent(String fileName, String mimeType, byte[] content, boolean inline) {
+    /** Abre o binário para leitura (cada chamada devolve um fluxo novo, do começo); quem chama fecha. */
+    @FunctionalInterface
+    public interface ContentSource {
+        InputStream open();
+    }
+
+    /**
+     * Conteúdo autorizado para download, em fluxo (o binário não é carregado inteiro na memória): {@code inline} só para imagem (o resto
+     * sai como anexo); {@code sizeBytes} permite ao controller responder {@code Range} (206) sem ler o arquivo todo.
+     */
+    public record FileContent(String fileName, String mimeType, long sizeBytes, ContentSource source, boolean inline) {
+        /** Conteúdo já em memória (testes e adaptadores sem fluxo). */
+        public FileContent(String fileName, String mimeType, byte[] content, boolean inline) {
+            this(fileName, mimeType, content.length, () -> new java.io.ByteArrayInputStream(content), inline);
+        }
+
+        /** Lê tudo (testes). */
+        public byte[] readAll() {
+            try (InputStream in = source.open()) {
+                return in.readAllBytes();
+            } catch (java.io.IOException e) {
+                throw new java.io.UncheckedIOException(e);
+            }
+        }
     }
 
     private record Parsed(String caption, Instant takenAt, String latitude, String longitude) {
@@ -150,13 +190,19 @@ public class TaskAttachmentService {
         Viewer viewer = authorizer.viewer(actor);
         StoredTask stored = taskService.authorized(viewer, taskId, ResourceAction.EDIT);
         TaskService.requireWritable(stored.task());
-        Attached a = attach(stored.task(), file);
+        Attached a = attach(stored.task(), file, actor.id());
         if (a.existing()) {
             throw ApiException.conflict("ANEXO_DUPLICADO", "Este arquivo já está anexado a esta tarefa.");
         }
         TaskAttachment row = a.stored().attachment();
-        record(actor, ctx, AuditActions.TASK_ATTACHMENT_ADDED, taskId, Map.of("attachment", row.id().toString(), "mime", row.mimeType(),
-                "sizeBytes", row.sizeBytes()));
+        Map<String, Object> meta = new LinkedHashMap<>();
+        meta.put("attachment", row.id().toString());
+        meta.put("mime", row.mimeType());
+        meta.put("sizeBytes", row.sizeBytes());
+        meta.put("sha256", row.sha256());
+        meta.put("originalSha256", row.originalSha256());
+        meta.put("via", UploadChannel.DIRETO.name());
+        record(actor, ctx, AuditActions.TASK_ATTACHMENT_ADDED, taskId, meta);
         return view(a.stored(), stored.task().title(), List.of(), viewer, true);
     }
 
@@ -180,9 +226,8 @@ public class TaskAttachmentService {
         taskService.authorized(viewer, taskId, ResourceAction.VIEW);
         StoredAttachment a = ownAttachment(taskId, attachmentId);
         MediaUploadService.ReadGrant grant = media.authorizeRead(viewer, a.attachment().mediaObjectId(), true);
-        byte[] bytes = media.read(grant);
         String mime = grant.media().mimeType();
-        return new FileContent(a.attachment().fileName(), mime, bytes, IMAGE_MIMES.contains(mime));
+        return new FileContent(a.attachment().fileName(), mime, grant.media().sizeBytes(), () -> media.open(grant), IMAGE_MIMES.contains(mime));
     }
 
     /** Anexos das MINHAS tarefas (página {@code /attachments}), mais recentes primeiro, com o título da tarefa e a marca de evidência. */
@@ -217,7 +262,7 @@ public class TaskAttachmentService {
         StoredTask stored = taskService.authorized(viewer, taskId, ResourceAction.EDIT);
         TaskService.requireWritable(stored.task());
         Parsed p = parse(meta);
-        Attached a = attach(stored.task(), file);
+        Attached a = attach(stored.task(), file, actor.id());
         return mark(actor, viewer, taskId, a.stored(), p, !a.existing(), ctx);
     }
 
@@ -252,25 +297,38 @@ public class TaskAttachmentService {
         if (exists) {
             throw ApiException.conflict("EVIDENCIA_EXISTENTE", "Este arquivo já está registrado como evidência desta tarefa.");
         }
+        TaskAttachment src = a.attachment();
+        // a evidência herda formato e proveniência do anexo de onde nasce
         StoredEvidence saved = evidences.insert(new Evidence(null, viewer.userId(), mediaId, p.takenAt(), p.latitude(), p.longitude(), p.caption(),
-                taskId, null, StudioStatus.ORIGINAL, null, a.attachment().formatFamily(), a.attachment().formatVariant(),
-                a.attachment().formatDetailsJson()));
-        record(actor, ctx, AuditActions.TASK_EVIDENCE_ADDED, taskId, Map.of("evidence", saved.evidence().id().toString(),
-                "attachment", a.attachment().id().toString(), "newFile", newFile, "hasLocation", p.latitude() != null));
+                taskId, null, StudioStatus.ORIGINAL, null, src.formatFamily(), src.formatVariant(), src.formatDetailsJson(), src.originalSha256(),
+                src.uploadedBy(), src.uploadedVia(), src.captureMetadata()));
+        Map<String, Object> meta = new LinkedHashMap<>();
+        meta.put("evidence", saved.evidence().id().toString());
+        meta.put("attachment", src.id().toString());
+        meta.put("newFile", newFile);
+        meta.put("hasLocation", p.latitude() != null);
+        meta.put("sha256", src.sha256());
+        if (src.originalSha256() != null) {
+            meta.put("originalSha256", src.originalSha256());   // nulo nos anexos anteriores à V73
+        }
+        record(actor, ctx, AuditActions.TASK_EVIDENCE_ADDED, taskId, meta);
         return evidenceView(saved, a.attachment().id(), viewer, true);
     }
 
-    /** Pipeline do arquivo: limite, tipo real, metadados fora, dedupe na tarefa, teto de anexos, mídia e o vínculo. */
-    private Attached attach(TaskItem task, FileInput file) {
+    /**
+     * Pipeline do arquivo ({@link PreparedUpload}): limite, tipo real, hash do original e captura do EXIF, metadados fora, dedupe na tarefa,
+     * teto de anexos, mídia e o vínculo com a proveniência (quem enviou, canal DIRETO).
+     */
+    private Attached attach(TaskItem task, FileInput file, UUID uploader) {
         byte[] content = file == null ? null : file.content();
         String name = file == null ? null : file.fileName();
         String type = file == null ? null : file.contentType();
         if (content != null && content.length > MAX_BYTES) {
             throw new ApiException(MediaUploadInspector.GRANDE, 413, "Arquivo acima de 15 MB.", Map.of("maxBytes", MAX_BYTES));
         }
-        InspectedUpload ok = inspector.inspect(new UploadCandidate(content, name, type, ACCEPTED));
-        byte[] clean = ImageMetadata.strip(ok.type(), content);
-        String sha = MediaUploadInspector.sha256(clean);
+        UploadCandidate candidate = new UploadCandidate(content, name, type, ACCEPTED);
+        PreparedUpload prepared = PreparedUpload.prepare(inspector, candidate);
+        String sha = prepared.sha256();
         List<StoredAttachment> current = attachments.listByTask(task.id());
         Optional<StoredAttachment> same = current.stream().filter(x -> sha.equals(x.attachment().sha256())).findFirst();
         if (same.isPresent()) {
@@ -280,14 +338,13 @@ public class TaskAttachmentService {
             throw new ApiException("LIMITE_ANEXOS", 409, "A tarefa já tem " + MAX_PER_TASK + " anexos. Remova algum para enviar outro.",
                     Map.of("max", MAX_PER_TASK));
         }
-        MediaUploadService.Stored s = media.upload(Viewer.user(task.ownerId()), new UploadCandidate(clean, name, type, ACCEPTED),
-                task.accessClass(), false);
+        MediaUploadService.Stored s = media.upload(Viewer.user(task.ownerId()), prepared.cleanCandidate(candidate), task.accessClass(), false);
         int order = current.stream().mapToInt(x -> x.attachment().sortOrder()).max().orElse(-1) + 1;
         // formato pelo tipo REAL (magic bytes) e detalhes extraídos do binário já limpo — nunca pelo nome nem pelo MIME declarado
-        DetectedFormat.Result format = DetectedFormat.of(ok.type(), clean);
         TaskAttachment row = attachments.insert(new TaskAttachment(null, task.id(), s.media().id(), s.safeName(), s.media().mimeType(),
                 s.media().sizeBytes(), s.media().sha256(), antivirus(s.scanStatus()), OcrStatus.PENDENTE, null, current.isEmpty(), order,
-                format.family(), format.variant(), TaskFormatJson.write(format.details())));
+                prepared.format().family(), prepared.format().variant(), prepared.formatDetailsJson(), prepared.originalSha256(), uploader,
+                UploadChannel.DIRETO, prepared.captureJson()));
         return new Attached(new StoredAttachment(row, clock.instant()), false);
     }
 
@@ -309,17 +366,24 @@ public class TaskAttachmentService {
                 .filter(e -> a.taskId().equals(e.evidence().linkedTaskId()) && a.mediaObjectId().equals(e.evidence().mediaObjectId()))
                 .findFirst().map(e -> evidenceView(e, a.id(), viewer, editor)).orElse(null);
         MediaScanStatus scan = a.antivirusStatus() == AntivirusStatus.LIMPO ? MediaScanStatus.LIMPO : media.scanStatus(a.mediaObjectId());
+        boolean hasCapture = a.captureMetadata() != null;
+        boolean showCapture = hasCapture && (editor || viewer.is(a.uploadedBy()));
         return new AttachmentView(a.id(), a.taskId(), taskTitle, a.fileName(), a.mimeType(), a.sizeBytes(), IMAGE_MIMES.contains(a.mimeType()),
-                a.isPrimary(), scan, media.servable(scan), s.createdAt(), evidence, a.formatFamily(), a.formatVariant(), a.formatDetailsJson());
+                a.isPrimary(), scan, media.servable(scan), s.createdAt(), evidence, a.formatFamily(), a.formatVariant(), a.formatDetailsJson(),
+                a.sha256(), a.originalSha256(), a.uploadedBy(), a.uploadedVia(), hasCapture,
+                showCapture ? CaptureView.of(PreparedUpload.readCapture(a.captureMetadata())) : null);
     }
 
     private static EvidenceView evidenceView(StoredEvidence s, UUID attachmentId, Viewer viewer, boolean editor) {
         Evidence e = s.evidence();
         boolean located = e.latitude() != null && e.longitude() != null;
         boolean showCoordinates = located && (editor || viewer.is(e.ownerId()));
+        boolean hasCapture = e.captureMetadata() != null;
+        boolean showCapture = hasCapture && (editor || viewer.is(e.ownerId()) || viewer.is(e.uploadedBy()));
         return new EvidenceView(e.id(), e.linkedTaskId(), attachmentId, e.caption(), e.takenAt(), located,
                 showCoordinates ? e.latitude() : null, showCoordinates ? e.longitude() : null, e.ownerId(), s.createdAt(), e.formatFamily(),
-                e.formatVariant(), e.formatDetailsJson());
+                e.formatVariant(), e.formatDetailsJson(), e.originalSha256(), e.uploadedBy(), e.uploadedVia(), hasCapture,
+                showCapture ? CaptureView.of(PreparedUpload.readCapture(e.captureMetadata())) : null);
     }
 
     /** Quarentena da mídia → situação do anexo: só LIMPO libera; sem motor (NAO_VERIFICADO) fica PENDENTE (D-67). */

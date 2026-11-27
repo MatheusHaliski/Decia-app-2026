@@ -2,21 +2,22 @@
  * Tradução sem React: catálogos, fallback e interpolação de variáveis `{nome}`. O provider React (etapa b) e o
  * `tr()` usado fora de componentes passam por aqui. Cadeia de fallback: idioma escolhido → pt-BR (idioma-fonte) →
  * a própria chave. O ICU completo (plural/select/number/date) do FAI entra junto com as primeiras telas.
+ *
+ * Catálogos sob demanda (lib/i18n/loader.ts): só o pt-BR é estático; en/es chegam por `import()` quando escolhidos. Enquanto
+ * um catálogo não chegou, o texto sai em pt-BR sem ser contado como "sem tradução" (não é falha de tradução, é carregamento).
  */
-import ptBR from "./messages/pt-BR.json";
-import en from "./messages/en.json";
-import es from "./messages/es.json";
 import { pseudo } from "./pseudo";
 import { PSEUDO_LOCALE, baseLocale, getCurrentLocale, type Locale } from "./state";
+import { catalogs, displayLocale, type BaseLocale, type Catalog } from "./loader";
 
-export type Catalog = Record<string, string>;
+export type { Catalog };
 export type Vars = Record<string, string | number | boolean | Date | null | undefined>;
 
-export const MESSAGES: Record<Exclude<Locale, "qps-ploc">, Catalog> = {
-  "pt-BR": ptBR as Catalog,
-  en: en as Catalog,
-  es: es as Catalog,
-};
+/**
+ * Catálogos carregados (objeto vivo do loader). pt-BR sempre presente; en/es só depois de `loadCatalog`/`requestLocale` — ou
+ * de `import "@/lib/i18n/all"` (caminho síncrono de testes/SSR). Leia com `?.` fora dos testes.
+ */
+export const MESSAGES = catalogs as Record<BaseLocale, Catalog>;
 
 /** Chaves sem texto / sem tradução encontradas em tempo de execução (QA lê em window.__wsI18n). */
 export const missingKeys = new Set<string>();
@@ -35,19 +36,21 @@ function report(kind: "missing" | "untranslated", key: string) {
   }
 }
 
-export const hasMessage = (locale: Locale, key: string) => MESSAGES[baseLocale(locale)]?.[key] !== undefined;
+/** A chave tem texto no idioma (ou, com o catálogo ainda carregando, no pt-BR que o substitui enquanto isso)? */
+export const hasMessage = (locale: Locale, key: string) => (catalogs[baseLocale(locale)] ?? MESSAGES["pt-BR"])[key] !== undefined;
 
 /** Texto-fonte de uma chave no idioma pedido, com fallback para pt-BR e, por fim, a própria chave. */
 export function resolveMessage(locale: Locale, key: string): string {
   const base = baseLocale(locale);
-  const msg = MESSAGES[base]?.[key];
+  const catalog = catalogs[base];
+  const msg = catalog?.[key];
   if (msg !== undefined) return msg;
   const pt = MESSAGES["pt-BR"][key];
   if (pt === undefined) {
     report("missing", key);
     return key;
   }
-  if (base !== "pt-BR") report("untranslated", key);
+  if (base !== "pt-BR" && catalog) report("untranslated", key);
   return pt;
 }
 
@@ -73,4 +76,4 @@ export function translate(locale: Locale, key: string, vars?: Vars): string {
 }
 
 /** Tradução no idioma corrente — para módulos sem React (helpers, constantes, cliente da API). */
-export const tr = (key: string, vars?: Vars) => translate(getCurrentLocale(), key, vars);
+export const tr = (key: string, vars?: Vars) => translate(displayLocale(getCurrentLocale()), key, vars);

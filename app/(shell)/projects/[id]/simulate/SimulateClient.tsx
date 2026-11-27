@@ -6,7 +6,7 @@ import { SimulatorView } from "@/components/projects/simulate/SimulatorView";
 import { RfPage } from "@/components/shell/RfPage";
 import { Badge, Button, EmptyState, LoadingState } from "@/components/ui";
 import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
-import { demoRepository } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 import type { ProjectCommand } from "@/lib/projects/commands";
@@ -34,7 +34,9 @@ function Inner({ projectId }: { projectId: string }) {
   const access = PAGE.access[profile];
 
   const dispatch = useCallback((cmd: ProjectCommand) => repo.dispatch(projectId, cmd, { actorId, now: new Date() }), [repo, projectId, actorId]);
-  const openChange = useCallback((m: ProjectModel, c: ChangeRequest) => openChangeDecision(demoRepository(), m, c, actorId), [actorId]);
+  // mesma fonte da página da decisão (API com sessão, DEMO no laboratório)
+  const { repo: deciaRepo, currentUserId: deciaActorId } = useDecisionSource();
+  const openChange = useCallback((m: ProjectModel, c: ChangeRequest) => openChangeDecision(deciaRepo, m, c, deciaActorId), [deciaRepo, deciaActorId]);
   const compare = useMemo(() => parseCompare(search.get("compare")), [search]);
   // a URL guarda os cenários salvos em comparação (?compare=a,b,c), sem recarregar a página
   const onCompareChange = useCallback((ids: string[]) => {

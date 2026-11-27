@@ -7,6 +7,8 @@
  *    `allow-same-origin`, então a página continua sem acesso ao app) e só para conteúdo da própria nuvem.
  *  • Link https da tarefa: iframe com `sandbox` vazio e `referrerpolicy=no-referrer`, aviso de site externo e "abrir em nova aba".
  *  • Planilha .xlsx: fotografia do topo (primeiras 20 linhas × 10 colunas, valores em cache, nada executado); .xlsm recusada.
+ *  • PDF: ficha do documento com o que o servidor leu no envio (páginas, camada de texto, criptografia, PDF/A); o arquivo só é
+ *    baixado se a pessoa pedir — não há leitor de PDF instalado (pdf.js), então nada do PDF é renderizado na página.
  *  • Outros: metadados e abrir/baixar.
  * Sem API de arquivos (laboratório, projetos), exemplos DEMO marcados.
  */
@@ -15,7 +17,7 @@ import { Badge, Button, EmptyState, ErrorState, Field, Link, LoadingState, Selec
 import { describeError } from "@/lib/api/client";
 import { demoCandidates } from "@/lib/cardviewer/demo";
 import { isHttpsUrl } from "@/lib/cardviewer/files";
-import { iframeSandbox, previewCandidates, stepZoom, type PreviewCandidate, type Zoom } from "@/lib/cardviewer/preview";
+import { iframeSandbox, pdfFacts, previewCandidates, stepZoom, type PreviewCandidate, type Zoom } from "@/lib/cardviewer/preview";
 import { projectTitle } from "@/lib/cardviewer/subject";
 import { readXlsxTop, XlsxError, type XlsxSnapshot } from "@/lib/cardviewer/xlsx";
 import { useI18n } from "@/lib/i18n/useI18n";
@@ -53,7 +55,7 @@ export function PreviewWindow() {
         <Field label={t("cardviewer.preview.choose")} className="min-w-0 flex-1">
           {({ id }) => (
             <Select id={id} value={current.id} onChange={(e) => setChosen(e.target.value)}
-              options={candidates.map((c) => ({ value: c.id, label: `${c.name} · ${t(`cardviewer.preview.kind.${c.kind}`)}` }))} />
+              options={candidates.map((c) => ({ value: c.id, label: `${c.name} · ${c.kind === "PDF" ? t("criador2.pdf.kind") : t(`cardviewer.preview.kind.${c.kind}`)}` }))} />
           )}
         </Field>
         {current.source === "DEMO" ? <Badge tone="warning">DEMO</Badge> : null}
@@ -66,7 +68,7 @@ export function PreviewWindow() {
 function useBlob(c: PreviewCandidate, taskId: string | undefined): Loaded {
   const [state, setState] = useState<Loaded>({ status: "idle" });
   useEffect(() => {
-    if (c.kind === "URL" || c.kind === "MACRO") return;
+    if (c.kind === "URL" || c.kind === "MACRO" || c.kind === "PDF") return;
     let alive = true;
     let url: string | null = null;
     setState({ status: "loading" });
@@ -99,6 +101,7 @@ function PreviewBody({ c }: { c: PreviewCandidate }) {
 
   if (c.kind === "MACRO") return <div className="grid gap-2" data-preview="MACRO"><ErrorState title={t("cardviewer.xlsx.refused")} description={t("cardviewer.xlsx.reason.MACRO")} />{meta}</div>;
   if (c.kind === "URL") return <ExternalPage c={c} />;
+  if (c.kind === "PDF") return <PdfView c={c} meta={meta} />;
   if (loaded.status === "loading" || loaded.status === "idle") return <LoadingState label={t("cardviewer.preview.loading")} />;
   if (loaded.status === "error") return <ErrorState title={t("cardviewer.preview.error")} description={loaded.text} />;
   if (c.kind === "IMAGEM" || c.kind === "SVG") return <ImageView c={c} url={loaded.url} meta={meta} />;
@@ -159,6 +162,39 @@ function CloudPage({ c, url, meta }: { c: PreviewCandidate; url: string | null; 
           className="h-[60dvh] w-full rounded-[var(--ws-radius-sm)] border border-ws-border bg-ws-surface-0" data-testid="preview-iframe" />
       ) : null}
       {meta}
+    </div>
+  );
+}
+
+function PdfView({ c, meta }: { c: PreviewCandidate; meta: React.ReactNode }) {
+  const { t } = useI18n();
+  const { toast } = useToast();
+  const { task } = useViewerData();
+  const [busy, setBusy] = useState(false);
+  const f = pdfFacts(c.formatDetailsJson, c.formatVariant);
+  const yesNo = (v: boolean | null, yes: string, no: string) => (v === null ? t("criador2.pdf.unknown") : t(v ? yes : no));
+  const download = async () => {
+    setBusy(true);
+    try {
+      const blob = c.demo ? await c.demo() : task?.subject.id && c.attachmentId ? await attachmentsApi.content(task.subject.id, c.attachmentId) : null;
+      if (isBlob(blob)) openOrDownload(blob, c.name, false);
+    } catch (e) {
+      toast({ title: t("cardviewer.files.openError"), description: describeError(e), tone: "erro" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="grid gap-2" data-preview="PDF">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-[var(--ws-radius-sm)] border border-ws-border bg-ws-surface-2 p-2 text-[length:var(--ws-text-body-sm)]" data-testid="pdf-facts">
+        <dt className="text-ws-text-muted">{t("criador2.pdf.pages")}</dt><dd data-fact="pages">{f.pages ?? t("criador2.pdf.unknown")}</dd>
+        <dt className="text-ws-text-muted">{t("criador2.pdf.textLayer")}</dt><dd data-fact="textLayer">{yesNo(f.textLayer, "criador2.pdf.textYes", "criador2.pdf.textNo")}</dd>
+        <dt className="text-ws-text-muted">{t("criador2.pdf.encrypted")}</dt><dd data-fact="encrypted">{yesNo(f.encrypted, "criador2.pdf.encYes", "criador2.pdf.encNo")}</dd>
+        {f.pdfA ? <><dt className="text-ws-text-muted">{t("criador2.pdf.variant")}</dt><dd>PDF/A</dd></> : null}
+      </dl>
+      <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t(f.fromServer ? "criador2.pdf.fromServer" : "criador2.pdf.noServer")}</p>
+      {meta}
+      <div><Button size="sm" busy={busy} disabled={busy} onClick={() => void download()}>{t("cardviewer.files.download")}</Button></div>
     </div>
   );
 }

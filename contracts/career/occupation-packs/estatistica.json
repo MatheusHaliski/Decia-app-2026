@@ -509,7 +509,8 @@
         ],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L1": {
         "title": "Currículo direcionado de uma página",
@@ -534,7 +535,8 @@
         ],
         "evidence": "PDF versionado",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       },
       "L4": {
         "title": "Relatório estatístico com metodologia",
@@ -585,7 +587,8 @@
         ],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L3": {
         "title": "Estudo de caso STAR de uma análise",
@@ -1023,7 +1026,7 @@
       "plano-30-60-90",
       "revisao"
     ],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular: L5, L6 e L10; L4, D7, D4, L7 e X1 pedem computador (R, Python, planilha).",
     "nudges": {
       "cadence": "semanal",

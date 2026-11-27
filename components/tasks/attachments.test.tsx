@@ -43,6 +43,49 @@ describe("Anexos & Evidências no detalhe da tarefa (RF41.CA06)", () => {
   beforeEach(() => { vi.stubGlobal("fetch", fetchMock); fetchMock.mockReset(); });
   afterEach(() => vi.unstubAllGlobals());
 
+  it("arrastar vários arquivos: tipo recusado fica de fora com o motivo; cada um tem situação própria (enviando → enviado / erro)", async () => {
+    const posted: string[] = [];
+    fetchMock.mockImplementation(async (url, init) => {
+      const u = String(url);
+      const method = init?.method ?? "GET";
+      if (method === "POST" && u.endsWith(`/api/tasks/${ID}/attachments`)) {
+        const name = ((init!.body as FormData).get("file") as File).name;
+        posted.push(name);
+        return name === "b.png" ? json(409, { status: 409, code: "ANEXO_DUPLICADO", message: "duplicado" }) : json(201, attachment({ fileName: name }));
+      }
+      if (u.endsWith(`/api/tasks/${ID}/attachments`)) return json(200, []);
+      return json(404, {});
+    });
+    renderWithProviders(<TaskAttachments task={view({ formatFamily: "DESENHO_TECNICO" }) as never} />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const zone = screen.getByTestId("attach-drop");
+    const files = [new File(["%PDF"], "a.pdf", { type: "application/pdf" }), new File(["x"], "b.png", { type: "image/png" }), new File(["x"], "c.exe", { type: "application/x-msdownload" })];
+    fireEvent.drop(zone, { dataTransfer: { files } });
+    const queue = screen.getByTestId("attach-queue");
+    expect(queue.querySelector('[data-file="c.exe"]')).toBeNull();
+    expect(zone.textContent).toContain("Não será aceito pelo servidor e ficou de fora: c.exe");
+    // PNG num pedido de desenho técnico: aviso já na escolha
+    expect(within(queue.querySelector('[data-file="b.png"]') as HTMLElement).getByTestId("file-format-advice").textContent).toContain("Você pediu Desenho técnico");
+    expect(queue.querySelector('[data-file="a.pdf"]')?.getAttribute("data-status")).toBe("pendente");
+    expect((screen.getByTestId("attach-drop-input") as HTMLInputElement).multiple).toBe(true);
+    expect(screen.getByTestId("attach-drop-camera").getAttribute("capture")).toBe("environment");
+    fireEvent.click(screen.getByRole("button", { name: "Enviar anexo" }));
+    await waitFor(() => expect(queue.querySelector('[data-file="b.png"]')?.getAttribute("data-status")).toBe("erro"));
+    expect(queue.querySelector('[data-file="a.pdf"]')?.getAttribute("data-status")).toBe("enviado");
+    expect(posted).toEqual(["a.pdf", "b.png"]);
+  });
+
+  it("detalhe da tarefa mostra o responsável com a mesma regra do visualizador", async () => {
+    fetchMock.mockImplementation(async (url) => {
+      const u = String(url);
+      if (u.endsWith(`/api/tasks/${ID}`)) return json(200, view({ responsibleId: undefined }));
+      if (u.endsWith("/attachments")) return json(200, []);
+      return json(404, {});
+    });
+    renderWithProviders(<PersistedTaskDetail id={ID} />);
+    expect((await screen.findByTestId("detail-responsible")).textContent).toBe("#11111111 (autor; sem responsável designado)");
+  });
+
   it("lista com antivírus e evidência; envia por multipart; remove só depois de confirmar", async () => {
     const calls: { method: string; url: string; body: unknown }[] = [];
     let items: unknown[] = [attachment({ evidence }), attachment({ id: ATT2, fileName: "planta.pdf", mimeType: "application/pdf", image: false, primary: false, scanStatus: "PENDENTE", available: false })];
@@ -131,7 +174,9 @@ describe("Anexos & Evidências no detalhe da tarefa (RF41.CA06)", () => {
 
     fireEvent.change(screen.getByLabelText("Arquivo"), { target: { files: [new File(["x"], "fachada.jpg", { type: "image/jpeg" })] } });
     fireEvent.click(screen.getByRole("button", { name: "Enviar anexo" }));
-    expect(await screen.findByText("Este arquivo já está anexado a esta tarefa.")).toBeTruthy();
+    // o motivo fica junto do arquivo na fila (situação por arquivo)
+    await waitFor(() => expect(screen.getByTestId("file-upload-status").textContent).toContain("Este arquivo já está anexado a esta tarefa."));
+    expect(document.querySelector('[data-file="fachada.jpg"]')?.getAttribute("data-status")).toBe("erro");
     unmount();
 
     renderWithProviders(<TaskAttachments task={view({ editable: false, state: "CONCLUIDA" }) as never} />);

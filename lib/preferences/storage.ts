@@ -12,6 +12,13 @@ export const PREFS_STORAGE_KEY = "ws.prefs";
  * profissão — dado só do dono — fica no `sessionStorage` desta aba, que some ao fechá-la. Com sessão, a fonte é a API.
  */
 export const OCCUPATION_SESSION_KEY = "ws.prefs.occupation";
+/**
+ * Sem sessão, a pessoa pode CONSENTIR explicitamente (Configurações › Trabalho) em lembrar a profissão neste navegador: aí ela fica numa
+ * chave própria do `localStorage` (nunca no `ws.prefs` que o script do <head> lê) e é apagada ao sair da conta ou ao retirar o
+ * consentimento. Padrão: sem consentimento, só na aba.
+ */
+export const OCCUPATION_DEVICE_KEY = "ws.prefs.occupation.device";
+export const OCCUPATION_CONSENT_KEY = "ws.prefs.occupation.consent";
 
 function readSessionOccupation(): string | null {
   try {
@@ -20,6 +27,55 @@ function readSessionOccupation(): string | null {
   } catch {
     return null;
   }
+}
+
+/** A pessoa consentiu em lembrar a profissão neste navegador (sem sessão)? */
+export function occupationDeviceConsent(): boolean {
+  try {
+    return typeof localStorage !== "undefined" && localStorage.getItem(OCCUPATION_CONSENT_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function readDeviceOccupation(): string | null {
+  if (!occupationDeviceConsent()) return null;
+  try {
+    const v = localStorage.getItem(OCCUPATION_DEVICE_KEY);
+    return isOccupationCode(v) ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDeviceOccupation(code: string | null): void {
+  try {
+    if (typeof localStorage === "undefined") return;
+    if (code && occupationDeviceConsent()) localStorage.setItem(OCCUPATION_DEVICE_KEY, code);
+    else localStorage.removeItem(OCCUPATION_DEVICE_KEY);
+  } catch {
+    /* armazenamento indisponível */
+  }
+}
+
+/**
+ * Dá ou retira o consentimento de lembrar a profissão neste navegador. Dar grava a profissão atual na chave própria; retirar apaga a
+ * chave e o consentimento (a profissão volta a valer só na aba). Devolve o estado final (falso se o navegador bloquear o armazenamento).
+ */
+export function setOccupationDeviceConsent(on: boolean, current: string | null): boolean {
+  try {
+    if (typeof localStorage === "undefined") return false;
+    if (on) {
+      localStorage.setItem(OCCUPATION_CONSENT_KEY, "1");
+      writeDeviceOccupation(isOccupationCode(current) ? current : null);
+    } else {
+      localStorage.removeItem(OCCUPATION_CONSENT_KEY);
+      localStorage.removeItem(OCCUPATION_DEVICE_KEY);
+    }
+  } catch {
+    return false;
+  }
+  return occupationDeviceConsent();
 }
 
 function writeSessionOccupation(code: string | null): void {
@@ -32,17 +88,28 @@ function writeSessionOccupation(code: string | null): void {
   }
 }
 
-/** Esquece a profissão guardada nesta aba (ao sair da conta: a próxima pessoa no mesmo navegador não a herda). */
-export const forgetSessionOccupation = () => writeSessionOccupation(null);
+/**
+ * Esquece a profissão guardada nesta aba e a cópia consentida do navegador (ao sair da conta: a próxima pessoa no mesmo navegador não a
+ * herda). O consentimento em si fica, para valer de novo na próxima escolha.
+ */
+export const forgetSessionOccupation = () => {
+  writeSessionOccupation(null);
+  writeDeviceOccupation(null);
+};
 
 export interface PreferencesAdapter {
   load(): Promise<UserPreferences | null>;
   save(p: UserPreferences): Promise<void>;
+  /**
+   * Fonte do servidor: ao entrar na conta depois de a página abrir, o provider relê este adaptador e sincroniza a profissão (a do
+   * servidor vence; sem profissão no servidor, a escolhida antes de entrar — no cadastro, por exemplo — sobe para a conta).
+   */
+  syncOnSignIn?: boolean;
 }
 
 export const localAdapter: PreferencesAdapter = {
   async load() {
-    const occupation = readSessionOccupation();
+    const occupation = readSessionOccupation() ?? readDeviceOccupation();
     try {
       const raw = typeof localStorage !== "undefined" ? localStorage.getItem(PREFS_STORAGE_KEY) : null;
       if (!raw) return occupation ? sanitizePreferences({ ...DEFAULT_PREFERENCES, preferredOccupation: occupation }) : null;
@@ -53,7 +120,9 @@ export const localAdapter: PreferencesAdapter = {
     }
   },
   async save(p) {
-    writeSessionOccupation(isOccupationCode(p.preferredOccupation) ? p.preferredOccupation : null);
+    const code = isOccupationCode(p.preferredOccupation) ? p.preferredOccupation : null;
+    writeSessionOccupation(code);
+    writeDeviceOccupation(code);
     try {
       const shared: Partial<UserPreferences> = { ...p };
       delete shared.preferredOccupation;
@@ -65,6 +134,7 @@ export const localAdapter: PreferencesAdapter = {
 };
 
 export const apiAdapter: PreferencesAdapter = {
+  syncOnSignIn: true,
   async load() {
     if (!hasSession()) return null;
     try {

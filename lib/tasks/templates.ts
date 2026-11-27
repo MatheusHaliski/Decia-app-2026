@@ -7,7 +7,7 @@
  *    parametrizadas e tarefas próprias do campo), com a rubrica do campo.
  * O conteúdo dos modelos é texto de trabalho em pt-BR (como os pacotes), editável depois de aplicado.
  */
-import type { OccupationPack, GuidedTaskCode, TaskParams, CustomTask } from "@/lib/career/occupationPack";
+import type { OccupationPack, GuidedTaskCode, TaskParams, CustomTask, TaskTrack } from "@/lib/career/occupationPack";
 import { AREA_EXTENSIONS, type PriorityName, type TaskTypeName, type WorkArea } from "./client";
 
 export interface TaskTemplate {
@@ -35,6 +35,8 @@ export interface TaskTemplate {
   /** 1 iniciante · 2 intermediário · 3 avançado */
   level?: 1 | 2 | 3;
   tags?: string[];
+  /** modelos do campo: `carreira` (currículo, perfil, 30-60-90) fica fora dos modelos de trabalho; ausente = trabalho */
+  track?: TaskTrack;
 }
 
 /** Rascunho do criador (o mesmo formato do formulário, em listas simples) — entrada dos modelos e da checagem de qualidade. */
@@ -52,6 +54,8 @@ export interface TaskDraft {
   criteria: string[];
   references: { label: string; url: string }[];
   extensions: Record<string, string>;
+  /** data de início (AAAA-MM-DD), quando o criador tem; a checagem de prazo compara com ela */
+  startAt?: string;
 }
 
 const LETTERS_TYPE: TaskTypeName = "DOCUMENTO";
@@ -62,8 +66,12 @@ function paramsMd(params: TaskParams["parameters"]): string {
   return lines.length ? `## Parâmetros\n${lines.join("\n")}` : "";
 }
 
-/** Modelos de uma profissão a partir do pacote de domínio (tarefas-guia parametrizadas + tarefas próprias do campo). */
-export function packTemplates(pack: OccupationPack, area: WorkArea): TaskTemplate[] {
+/**
+ * Modelos de uma profissão a partir do pacote de domínio (tarefas-guia parametrizadas + tarefas próprias do campo). Por padrão só os de
+ * TRABALHO; `"CARREIRA"` dá a trilha Carreira (currículo, perfil, 30-60-90) e `"TODAS"` as duas, na ordem de prioridade do pacote.
+ * O tipo vem do `taskType` curado do pacote (infográfico ≠ desenho técnico), com o legado DOCUMENTO/DESENHO_TECNICO quando ausente.
+ */
+export function packTemplates(pack: OccupationPack, area: WorkArea, track: "TRABALHO" | "CARREIRA" | "TODAS" = "TRABALHO"): TaskTemplate[] {
   const field = pack.fields[0];
   const excluded = new Set(pack.guidedTasks.excluded.map((e) => e.code));
   const order = (code: string) => {
@@ -79,7 +87,7 @@ export function packTemplates(pack: OccupationPack, area: WorkArea): TaskTemplat
       area,
       fieldCode: field,
       title: p.title,
-      type: code.startsWith("D") ? DRAWINGS_TYPE : LETTERS_TYPE,
+      type: p.taskType ?? (code.startsWith("D") ? DRAWINGS_TYPE : LETTERS_TYPE),
       objective: p.brief,
       descriptionMd: [`## Briefing\n${p.brief}`, paramsMd(p.parameters), `## Evidência\n${p.evidence}`, `## Tempo estimado\n${p.time}`].filter(Boolean).join("\n\n"),
       deliverables: [p.evidence],
@@ -89,6 +97,7 @@ export function packTemplates(pack: OccupationPack, area: WorkArea): TaskTemplat
       effort: p.time,
       level: p.level,
       tags: [code],
+      track: p.track ?? "trabalho",
     }));
   const custom = pack.guidedTasks.custom.map((c: CustomTask): TaskTemplate => ({
     id: `campo.${pack.code}.${c.id}`,
@@ -96,7 +105,7 @@ export function packTemplates(pack: OccupationPack, area: WorkArea): TaskTemplat
     area,
     fieldCode: field,
     title: c.title,
-    type: c.editor === "drawings" ? DRAWINGS_TYPE : LETTERS_TYPE,
+    type: c.taskType ?? (c.editor === "drawings" ? DRAWINGS_TYPE : LETTERS_TYPE),
     objective: `${c.title} — ${c.competency}`,
     descriptionMd: [`## Quando usar\n${c.trigger}`, `## Competência\n${c.competency}`, `## Evidência\n${c.evidence}`, `## Tempo estimado\n${c.time}`].join("\n\n"),
     deliverables: [c.evidence],
@@ -106,8 +115,10 @@ export function packTemplates(pack: OccupationPack, area: WorkArea): TaskTemplat
     effort: c.time,
     level: c.level,
     tags: [c.id],
+    track: c.track ?? "trabalho",
   }));
-  return [...guided, ...custom];
+  const all = [...guided, ...custom];
+  return track === "TODAS" ? all : all.filter((t) => (t.track === "carreira") === (track === "CARREIRA"));
 }
 
 /** Aplica o modelo ao rascunho: substitui o conteúdo de trabalho e mantém o que é da pessoa (prazo, privacidade, responsável). */

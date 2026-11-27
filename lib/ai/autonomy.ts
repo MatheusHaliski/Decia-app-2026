@@ -279,3 +279,41 @@ export function evaluateAiAction(policy: AiPolicy, action: AiAction, ctx: Action
     }
   }
 }
+
+/* ── Política pessoal efetiva com pacote da profissão e consentimento (D-156) ──────────────────────────────── */
+
+/** Posição do modo na escada de autonomia (0 = MANUAL … 4 = AGENTE). */
+export const autonomyRank = (mode: AutonomyMode): number => AUTONOMY_MODES.indexOf(mode);
+
+/** O modo mais restritivo da lista (menor autonomia); sem modos, MANUAL. */
+export function mostRestrictive(...modes: readonly AutonomyMode[]): AutonomyMode {
+  return modes.reduce<AutonomyMode>((min, m) => (autonomyRank(m) < autonomyRank(min) ? m : min), modes[0] ?? "MANUAL");
+}
+
+/**
+ * Teto de autonomia que um pacote de profissão pode declarar (D-156): o pacote só restringe e nunca passa do padrão pessoal
+ * conservador da D-136. O validador dos pacotes (`scripts/career/validar-pacotes.mjs`) recusa `system.defaultAutonomy` acima disto
+ * e o carregador (`lib/career/packs.ts`) rebaixa qualquer valor acima disto antes de entregar o pacote à tela.
+ */
+export const PACK_AUTONOMY_CEILING: AutonomyMode = "SOB_SOLICITACAO";
+
+/** Teto do pacote já limitado ao teto da D-156 (dado adulterado ou antigo não sobe a autonomia). */
+export const packCeiling = (declared: AutonomyMode | null | undefined): AutonomyMode =>
+  declared ? mostRestrictive(declared, PACK_AUTONOMY_CEILING) : PACK_AUTONOMY_CEILING;
+
+/**
+ * Consentimento do serviço de IA: `null`/`undefined` = o serviço não pede consentimento; `true` = concedido; `false` = pedido e não
+ * concedido (ou revogado) — aí a IA não age nem responde: MANUAL.
+ */
+export type ConsentState = boolean | null | undefined;
+
+/**
+ * Política pessoal efetiva (D-156): vale o modo MAIS RESTRITIVO entre o padrão da pessoa (preferência `aiAutonomyDefault`, D-136), o
+ * teto do pacote da profissão (`system.defaultAutonomy`, limitado a SOB_SOLICITACAO) e o consentimento do serviço. Nada aqui sobe a
+ * autonomia acima do que a pessoa escolheu; a política da sessão compartilhada (RF51) continua sendo aplicada por cima por `changeMode`.
+ * Sem pacote (profissão não escolhida), o teto é o da D-156.
+ */
+export function effectivePersonalPolicy(pessoaPadrao: AutonomyMode, tetoPacote: AutonomyMode | null | undefined, consentimento: ConsentState): AiPolicy {
+  const consentCeiling: AutonomyMode = consentimento === false ? "MANUAL" : "AGENTE";
+  return personalPolicy(mostRestrictive(pessoaPadrao, packCeiling(tetoPacote), consentCeiling));
+}

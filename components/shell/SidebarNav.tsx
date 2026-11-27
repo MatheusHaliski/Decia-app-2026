@@ -3,13 +3,18 @@ import { usePathname } from "next/navigation";
 import { Badge, Glyph, Link, Tooltip, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { useMessagesUnread } from "@/lib/messages/unread";
+import { pageForPath } from "@/lib/nav/currentPage";
+import { useLabView } from "@/lib/nav/labView";
 import { isActivePath, resolveHref, visibleGroups, type NavItem } from "@/lib/nav/matrix";
+import { isComingSoon } from "@/lib/pages/status";
 import { useNotificationsState } from "@/lib/notifications/NotificationsProvider";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
 /**
  * SidebarNav (DESIGN_SYSTEM.md §3; Matriz A): grupos Descobrir · Meu trabalho · Criar · Jogar e ganhar · Gestão com os
  * itens visíveis para o perfil, estado ativo por rota (aria-current), badges e modo rail (72 px) com Tooltip.
+ * Rota ainda sem conteúdo (status `skeleton`/`preview` em lib/pages/status.ts) leva o selo em texto "Em breve" (no rail, no nome
+ * acessível e na dica). O selo "proposta" (ABAS_POR_PERFIL) é jargão interno: só no laboratório, e em texto.
  */
 export interface SidebarNavProps {
   collapsed?: boolean;
@@ -38,6 +43,7 @@ export function NavGroups({ collapsed = false, onNavigate }: SidebarNavProps) {
   const { profile, user } = useViewer();
   const badges = useBadges();
   const groups = visibleGroups(profile);
+  const lab = useLabView();
   return (
     <div className="grid gap-[var(--ws-space-4)]">
       {groups.map((g) => (
@@ -50,18 +56,21 @@ export function NavGroups({ collapsed = false, onNavigate }: SidebarNavProps) {
               const href = resolveHref(item, user);
               const on = isActivePath(pathname, href, item.activeOn);
               const count = item.badge ? badges[item.badge] ?? 0 : 0;
+              const soon = isComingSoon(pageForPath(href)?.status ?? "live");
               const label = t(item.labelKey);
+              const fullLabel = soon ? t("guide.soon.navLabel", { label }) : label;
               const link = (
-                <Link href={href} variant="nav" current={on} onClick={onNavigate} className={cn(collapsed && "justify-center px-0")} aria-label={collapsed ? label : undefined}>
+                <Link href={href} variant="nav" current={on} onClick={onNavigate} className={cn(collapsed && "justify-center px-0")} aria-label={collapsed ? fullLabel : undefined} data-soon={soon || undefined}>
                   <Glyph name={item.glyph} size={22} decorative />
-                  {!collapsed ? <span className="min-w-0 flex-1 truncate">{label}</span> : null}
-                  {!collapsed && item.proposal ? <span className="size-1.5 rounded-full bg-ws-ai-spark" aria-label={t("common.proposal")} title={t("common.proposal")} /> : null}
+                  {!collapsed ? <span className={cn("min-w-0 flex-1 truncate", soon && "text-ws-text-muted")}>{label}</span> : null}
+                  {!collapsed && soon ? <Badge tone="neutral" className="shrink-0 px-1.5 py-0.5 normal-case tracking-normal">{t("guide.soon.badge")}</Badge> : null}
+                  {!collapsed && lab && item.proposal ? <Badge tone="spark" className="shrink-0 px-1.5 py-0.5 normal-case tracking-normal">{t("common.proposal")}</Badge> : null}
                   {count > 0 ? <Badge count className={cn(collapsed && "absolute -top-1 right-1")}>{count > 99 ? "99+" : count}</Badge> : null}
                 </Link>
               );
               return (
                 <li key={item.id} className="relative">
-                  {collapsed ? <Tooltip content={label} side="right">{link}</Tooltip> : link}
+                  {collapsed ? <Tooltip content={fullLabel} side="right">{link}</Tooltip> : link}
                 </li>
               );
             })}

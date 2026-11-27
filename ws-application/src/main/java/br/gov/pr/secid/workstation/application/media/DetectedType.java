@@ -25,11 +25,26 @@ public enum DetectedType {
     /** IFC/STEP (ISO 10303-21). */
     IFC("application/x-step", Category.CAD, List.of("ifc")),
     /** glTF binário 2.0. */
-    GLB("model/gltf-binary", Category.CAD, List.of("glb"));
+    GLB("model/gltf-binary", Category.CAD, List.of("glb")),
+    /** OpenDocument (ZIP com a entrada {@code mimetype} = {@code application/vnd.oasis.opendocument.*}). */
+    ODT("application/vnd.oasis.opendocument.text", Category.OFFICE, List.of("odt")),
+    ODS("application/vnd.oasis.opendocument.spreadsheet", Category.OFFICE, List.of("ods")),
+    ODP("application/vnd.oasis.opendocument.presentation", Category.OFFICE, List.of("odp")),
+    /**
+     * Texto (sem assinatura binária): decidido por {@link TextInspector} — conteúdo UTF-8 válido ou Windows-1252, sem NUL; a extensão
+     * declarada escolhe entre os tipos de texto e o conteúdo precisa sustentá-la (JSON/XML bem formados, CSV/TSV com delimitador
+     * consistente). SVG (XML que executa script no navegador) fica de fora.
+     */
+    TXT("text/plain", Category.TEXT, List.of("txt", "text", "log")),
+    CSV("text/csv", Category.TEXT, List.of("csv")),
+    TSV("text/tab-separated-values", Category.TEXT, List.of("tsv", "tab")),
+    MD("text/markdown", Category.TEXT, List.of("md", "markdown")),
+    JSON("application/json", Category.TEXT, List.of("json")),
+    XML("application/xml", Category.TEXT, List.of("xml"));
 
     /** Categoria → limite padrão de tamanho e regras extras (pixels para imagem, zip-bomb para OFFICE/ARCHIVE). */
     public enum Category {
-        IMAGE, DOCUMENT, OFFICE, ARCHIVE, CAD
+        IMAGE, DOCUMENT, OFFICE, ARCHIVE, CAD, TEXT
     }
 
     private final String mime;
@@ -63,6 +78,11 @@ public enum DetectedType {
         return category == Category.IMAGE;
     }
 
+    /** Tipos de texto puro ({@link TextInspector}). */
+    public boolean isText() {
+        return category == Category.TEXT;
+    }
+
     /** Formatos que são um ZIP por dentro e passam pelo guarda de zip-bomb. */
     public boolean isZipBased() {
         return category == Category.OFFICE || category == Category.ARCHIVE;
@@ -88,6 +108,13 @@ public enum DetectedType {
             case DWG -> d.equals("application/acad") || d.equals("application/x-dwg") || d.equals("image/x-dwg");
             case DXF -> d.equals("application/dxf") || d.equals("image/x-dxf") || d.equals("text/plain");
             case IFC -> d.equals("application/ifc") || d.equals("model/ifc") || d.equals("text/plain");
+            case CSV -> d.equals("text/plain") || d.equals("application/csv") || d.equals("text/x-csv") || d.equals("text/comma-separated-values")
+                    || d.equals("application/vnd.ms-excel");
+            case TSV -> d.equals("text/plain") || d.equals("text/tsv");
+            case MD -> d.equals("text/plain") || d.equals("text/x-markdown");
+            case JSON -> d.equals("text/json") || d.equals("text/plain");
+            case XML -> d.equals("text/xml") || d.equals("text/plain");
+            case ODT, ODS, ODP -> d.equals("application/zip");
             default -> false;
         };
     }

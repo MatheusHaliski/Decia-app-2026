@@ -61,7 +61,7 @@ function DeciaHome() {
       router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
     }
   };
-  const view = { decisions, now, people, currentUserId };
+  const view = { decisions, now, people, currentUserId, source: repo.source };
   const loading = <LoadingState />;
 
   return (
@@ -70,7 +70,7 @@ function DeciaHome() {
         page={PAGE}
         actions={
           <>
-            {repo.source === "DEMO" ? <Badge tone="neutral" title={t("decia.demoHint")}>{t("decia.demo")}</Badge> : null}
+            {repo.source === "DEMO" ? <Badge tone="neutral">{t("decia.demo")}</Badge> : null}
             <Button variant="primary" size="sm" onClick={() => setCreating(true)} data-testid="new-decision">+ {t("decia.newDecision")}</Button>
           </>
         }

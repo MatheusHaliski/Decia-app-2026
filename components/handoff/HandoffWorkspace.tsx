@@ -11,7 +11,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { Badge, Button, Card, EmptyState, Field, Input, RadioCards, Select, Switch, Tag, useToast } from "@/components/ui";
-import { demoRepository } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { actorFor, canGenerate, canView, HANDOFF_PEOPLE, peopleList, SELF_ID, subjectsFor } from "@/lib/handoff/access";
 import { collectWithMemory, type HandoffTaskInput } from "@/lib/handoff/collect";
 import { buildDemoHandoffTasks } from "@/lib/handoff/fixtures";
@@ -97,6 +97,7 @@ function GenerateForm({ repo, memory, now, actor, onCreated }: { repo: HandoffRe
   const { toast } = useToast();
   const { profile } = useViewer();
   const session = useOptionalCurrentUser();
+  const { repo: decisionRepo } = useDecisionSource();
   const search = useSearchParams();
   const subjects = subjectsFor(profile);
   const self = profile === "EMPREGADO";
@@ -135,13 +136,15 @@ function GenerateForm({ repo, memory, now, actor, onCreated }: { repo: HandoffRe
       }
     }
     const project = demoProjectRepository().get(DEMO_PROJECT_ID);
+    // decisões da fonte única (API com sessão, DEMO no laboratório); na API espera a carga antes de juntar
+    await decisionRepo.ready?.().catch(() => undefined);
     const collected = collectWithMemory({
       subject,
       today,
       consentForPrivateItems: consent,
       people: HANDOFF_PEOPLE,
       projects: project ? [project] : [],
-      decisions: demoRepository().list(),
+      decisions: decisionRepo.list(),
       tasks,
       taskSource,
     }, memory);

@@ -99,7 +99,7 @@ final class AcervoFakes {
         public TaskAttachment insert(TaskAttachment a) {
             TaskAttachment saved = new TaskAttachment(UUID.randomUUID(), a.taskId(), a.mediaObjectId(), a.fileName(), a.mimeType(), a.sizeBytes(),
                     a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(),
-                    a.formatVariant(), a.formatDetailsJson());
+                    a.formatVariant(), a.formatDetailsJson(), a.originalSha256(), a.uploadedBy(), a.uploadedVia(), a.captureMetadata());
             rows.put(saved.id(), new StoredAttachment(saved, T0.plusSeconds(++tick)));
             return saved;
         }
@@ -145,7 +145,8 @@ final class AcervoFakes {
         @Override
         public StoredEvidence insert(Evidence e) {
             Evidence saved = new Evidence(UUID.randomUUID(), e.ownerId(), e.mediaObjectId(), e.takenAt(), e.latitude(), e.longitude(), e.caption(),
-                    e.linkedTaskId(), e.linkedProjectId(), e.studioStatus(), e.derivedTaskId(), e.formatFamily(), e.formatVariant(), e.formatDetailsJson());
+                    e.linkedTaskId(), e.linkedProjectId(), e.studioStatus(), e.derivedTaskId(), e.formatFamily(), e.formatVariant(), e.formatDetailsJson(),
+                    e.originalSha256(), e.uploadedBy(), e.uploadedVia(), e.captureMetadata());
             StoredEvidence s = new StoredEvidence(saved, T0.plusSeconds(++tick));
             rows.put(saved.id(), s);
             return s;

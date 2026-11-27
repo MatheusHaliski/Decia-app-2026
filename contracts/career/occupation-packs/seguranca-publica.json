@@ -154,7 +154,8 @@
         "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade", "uma mensagem principal explícita", "apenas dados agregados", "linguagem não estigmatizante"],
         "evidence": "imagem PNG e PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       }
     },
     "custom": [
@@ -226,7 +227,7 @@
     "editors": { "letters": "alta", "drawings": "baixa" },
     "drawingsModes": ["infografico", "diagrama"],
     "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "estudo-de-caso", "parecer", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, tarefas curtas (L6, X2, L5) e revisão (L10), úteis entre plantões; L4 e D7 pedem computador.",
     "nudges": {
       "cadence": "semanal",

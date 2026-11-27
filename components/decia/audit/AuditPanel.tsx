@@ -14,7 +14,8 @@ import { auditToCsv, auditToJson, exportFileName } from "@/lib/decia/audit/expor
 import { compareTexts, defaultCompare, filterAudit, NO_AUDIT_FILTERS, sortAudit, type AuditFilters, type CompareMode } from "@/lib/decia/audit/filter";
 import { AUDIT_ACTIONS, type AuditAction, type AuditRecord } from "@/lib/decia/audit/types";
 import { DEMO_PEOPLE } from "@/lib/decia/fixtures";
-import { demoRepository, useDecisions } from "@/lib/decia/repository";
+import { useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { demoSessionRepository, useSessions, type SessionRepository } from "@/lib/decia/session/repository";
 import { WordDiff } from "./WordDiff";
 
@@ -85,7 +86,7 @@ function Comparison({ record }: { record: AuditRecord }) {
 export function AuditPanel({ repo = demoSessionRepository() }: { repo?: SessionRepository }) {
   const { t, intl } = useI18n();
   const logRecords = useSyncExternalStore(repo.audit.subscribe, repo.audit.list, repo.audit.list);
-  const decisions = useDecisions(demoRepository());
+  const decisions = useDecisions(useDecisionSource().repo);
   const sessions = useSessions(repo);
   const [filters, setFilters] = useState<AuditFilters>(NO_AUDIT_FILTERS);
   const [selected, setSelected] = useState<string | null>(null);

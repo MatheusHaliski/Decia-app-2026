@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { OccupationPack } from "@/lib/career/occupationPack";
-import { assessTask, type QualityCheck } from "./quality";
+import { assessTask, dueDateWarning, type QualityCheck } from "./quality";
 import { applyTemplate, packTemplates, type TaskDraft } from "./templates";
 
 const pack = (code: string) => JSON.parse(fs.readFileSync(path.join(process.cwd(), "contracts/career/occupation-packs", `${code}.json`), "utf8")) as OccupationPack;
@@ -112,4 +112,41 @@ describe("checagem de qualidade da tarefa", () => {
     const areaTpl = { ...tpl, origin: "AREA" as const, id: "area.juridico.x", tags: [] };
     expect(applyTemplate(fromField, areaTpl).extensions.guidedTask).toBeUndefined();
   });
+
+  it("prazo no passado ou antes do início vira atenção (com hoje); sem hoje, não cobra", () => {
+    expect(dueDateWarning("2026-11-01", "", "2026-11-27")).toBe("PASSADO");
+    expect(dueDateWarning("2026-12-01", "2026-12-05", "2026-11-27")).toBe("ANTES_INICIO");
+    expect(dueDateWarning("2026-11-27", "", "2026-11-27")).toBeNull();
+    expect(dueDateWarning("", "2026-12-05", "2026-11-27")).toBeNull();
+    expect(dueDateWarning("31/12/2026", "", "2026-11-27")).toBeNull();
+    const past = assessTask({ ...GOOD, dueAt: "2026-11-01" }, null, { today: "2026-11-27" });
+    expect(byId(past.checks, "prazo")!.status).toBe("OK");
+    expect(byId(past.checks, "prazoPassado")).toMatchObject({ status: "AVISO", vars: { date: "2026-11-01" }, field: "dueAt" });
+    expect(past.readiness).toBe("QUASE");
+    const before = assessTask({ ...GOOD, dueAt: "2026-12-01", startAt: "2026-12-10" }, null, { today: "2026-11-27" });
+    expect(byId(before.checks, "prazoInicio")).toMatchObject({ status: "AVISO", vars: { start: "2026-12-10" } });
+    expect(byId(assessTask({ ...GOOD, dueAt: "2026-11-01" }).checks, "prazoPassado")).toBeUndefined();
+  });
+
+  it("norma técnica: vale a citada no título, descrição ou critérios (NBR no título não pede a norma de novo)", () => {
+    const base: TaskDraft = { ...GOOD, area: "ENGENHARIA", extensions: {} };
+    expect(byId(assessTask(base).checks, "engNorma")!.status).toBe("AVISO");
+    expect(byId(assessTask({ ...base, title: "Planta baixa conforme NBR 6492" }).checks, "engNorma")!.status).toBe("OK");
+    expect(byId(assessTask({ ...base, descriptionMd: "Segue a ABNT e a ISO 19650" }).checks, "engNorma")!.status).toBe("OK");
+    expect(byId(assessTask({ ...base, criteria: [...base.criteria, "Atende à NR-18 no canteiro"] }).checks, "engNorma")!.status).toBe("OK");
+    expect(byId(assessTask({ ...base, title: "Parecer conforme Lei 14.133" }).checks, "engNorma")!.status).toBe("OK");
+    expect(byId(assessTask({ ...base, title: "Planta NBR6492 revisada" }).checks, "engNorma")!.status).toBe("OK");
+    expect(byId(assessTask({ ...base, extensions: { standard: "NBR 9050" } }).checks, "engNorma")!.status).toBe("OK");
+    // palavra solta que só contém as letras não conta
+    expect(byId(assessTask({ ...base, title: "Isolamento da fachada" }).checks, "engNorma")!.status).toBe("AVISO");
+  });
+
+  it("entrega típica do campo reconhece o modelo do próprio campo aplicado", () => {
+    const p = pack("engenharia-civil");
+    for (const tpl of packTemplates(p, "ENGENHARIA")) {
+      const applied = applyTemplate({ ...GOOD, area: "ENGENHARIA" }, tpl);
+      expect(byId(assessTask(applied, p).checks, "campoEntregas")?.status).toBe("OK");
+    }
+  });
 });
+

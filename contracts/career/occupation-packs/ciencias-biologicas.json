@@ -151,7 +151,8 @@
         "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "esforço amostral ou n indicado", "dados públicos ou anonimizados"],
         "evidence": "imagem + PDF",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D4": {
         "title": "Fluxograma de campanha de campo ou de licenciamento",
@@ -160,7 +161,8 @@
         "criteria": ["início e fim explícitos", "raias por ator identificadas", "nenhuma tarefa órfã", "autorizações ou documentos gerados marcados", "legenda de símbolos"],
         "evidence": "diagrama vetorial",
         "time": "45 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L8": {
         "title": "Resposta a um briefing de consultoria em biodiversidade",
@@ -244,7 +246,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["infografico", "diagrama", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo", "projeto-de-pesquisa"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); relatório (L4), POP (L7) e Drawings (D4, D7) rendem mais no computador.",
     "nudges": {
       "cadence": "semanal",

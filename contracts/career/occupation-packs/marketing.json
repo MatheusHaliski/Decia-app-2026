@@ -171,7 +171,8 @@
         "criteria": ["uma mensagem principal explícita", "eixos rotulados com unidade", "fonte dos dados citada", "números autorizados, fictícios ou relativos declarados", "sem escala enganosa (eixo truncado sem aviso)"],
         "evidence": "imagem PNG + PDF (Drawings, modo infografico)",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D9": {
         "title": "Wireframe de landing page de captação",
@@ -180,7 +181,8 @@
         "criteria": ["três estados do formulário", "caixa de consentimento não pré-marcada e finalidade explícita", "link para a política de privacidade", "pede só os dados necessários (minimização)", "anotações de interação"],
         "evidence": "prancha (Drawings, modo wireframe)",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       }
     },
     "custom": [
@@ -257,7 +259,7 @@
     "editors": { "letters": "alta", "drawings": "alta" },
     "drawingsModes": ["infografico", "wireframe", "diagrama", "prancha"],
     "lettersTemplates": ["proposta", "relatorio-tecnico", "plano-30-60-90", "estudo-de-caso", "post", "bio", "curriculo", "carta", "revisao", "roteiro"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, L5 (post), L6 (bio), X2 (revisão) e L10 funcionam bem; D9 (wireframe), D7 e X1 pedem computador. Não anexar prints de gerenciadores de anúncios ou CRM com dados de clientes.",
     "nudges": {
       "cadence": "semanal",

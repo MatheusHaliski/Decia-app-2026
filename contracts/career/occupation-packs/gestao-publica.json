@@ -162,7 +162,8 @@
         "criteria": ["início e fim explícitos", "raias por unidade ou papel", "nenhuma atividade órfã", "ao menos um gateway de decisão", "prazo legal anotado em pelo menos uma etapa, com a norma", "sem número de processo ou nome de pessoa"],
         "evidence": "diagrama vetorial (SVG/PDF)",
         "time": "45 min",
-        "level": 1
+        "level": 1,
+        "taskType": "DIAGRAMA"
       },
       "L7": {
         "title": "POP de uma rotina administrativa",
@@ -198,7 +199,8 @@
         "criteria": ["indicador nomeado com definição", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem dado pessoal"],
         "evidence": "imagem PNG + PDF",
         "time": "60 min",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       },
       "L6": {
         "title": "Resumo de perfil em gestão pública",
@@ -207,7 +209,8 @@
         "criteria": ["até 600 caracteres", "nomeia área e esfera", "cita três competências", "inclui uma prova com link"],
         "evidence": "bio no perfil",
         "time": "15 min",
-        "level": 1
+        "level": 1,
+        "track": "carreira"
       }
     },
     "custom": [
@@ -307,7 +310,7 @@
     "editors": { "letters": "alta", "drawings": "media" },
     "drawingsModes": ["diagrama", "infografico", "prancha"],
     "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "bio", "curriculo", "carta", "plano-30-60-90", "revisao", "post", "parecer"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); fluxos BPMN (D4), infográficos (D7) e ETP (X1) pedem computador.",
     "nudges": {
       "cadence": "semanal",

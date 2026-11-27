@@ -6,6 +6,7 @@
 import type { GlyphName, MojiName } from "@/components/ui/glyphs/sprite.gen";
 import { ADMIN_TABS, AGENTS_ACCESS, AGENTS_TABS, DECIA_TABS, DESK_TABS, FIND_TABS, INSIGHTS_TABS, MESSAGES_TABS, MODELS_TABS, MURAL_TABS, POINTS_TABS, SEARCH_TABS, SESSION_TABS, SETTINGS_TABS, type SubTab } from "@/lib/nav/matrix";
 import { access, everyone, logged, type AccessMatrix } from "@/lib/viewer/profiles";
+import { statusOfRoute, type PageStatus } from "./status";
 
 export interface PageEntry {
   /** rota do App Router (com [param]) */
@@ -24,10 +25,12 @@ export interface PageEntry {
   /** matriz de origem */
   matrix: "A" | "B" | "C" | "D" | "E" | "auth" | "lab" | "global";
   note?: "proposal" | "sessionCards";
+  /** live · demo · preview · skeleton (lib/pages/status.ts — troque lá ao implementar a rota) */
+  status: PageStatus;
 }
 
 const p = (route: string, file: string, titleKey: string, rfs: readonly string[], acc: AccessMatrix, glyph: GlyphName, matrix: PageEntry["matrix"], extra: Partial<PageEntry> = {}): PageEntry =>
-  ({ route, file, titleKey, rfs, access: acc, glyph, matrix, ...extra });
+  ({ route, file, titleKey, rfs, access: acc, glyph, matrix, status: statusOfRoute(route), ...extra });
 
 /** Matriz B (§3): 15 sub-abas do perfil pessoal. `thirdParty` = visível no perfil de terceiros (1–5). */
 export interface ProfileTab extends SubTab { n: number; thirdParty: boolean; companyLabelKey?: string }
@@ -91,6 +94,8 @@ export const PAGES: readonly PageEntry[] = [
   p("/messages/[conversationId]", "app/(shell)/messages/[conversationId]/page.tsx", "page.conversation", ["RF46", "RF13"], logged("E"), "sessao-decia", "A", { note: "proposal" }),
   p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF48", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
   // Meu trabalho (§2.2)
+  // Hoje: home de quem tem sessão (Tarefa do Dia RF44 + primeiros passos + atalhos); o Mural vira a segunda opção
+  p("/today", "app/(shell)/today/page.tsx", "guide.today.title", ["RF44"], logged("E"), "tarefa-do-dia", "A"),
   p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40", "RF75", "RF76", "RF77", "RF78", "RF79"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/tasks", "app/(shell)/tasks/page.tsx", "nav.tasks", ["RF41", "RF44", "RF18", "RF13"], logged("E"), "acervo", "A"),

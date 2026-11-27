@@ -6,9 +6,21 @@ import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.Graph;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredDecision;
+import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.Records;
 import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredEvidence;
+import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredRecommendation;
+import br.gov.pr.secid.workstation.application.decisao.DecisionRepositoryPort.StoredWorkLink;
 import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionAlternativeView;
 import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionAssessmentView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionAssumptionView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionCheckpointView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionForecastView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionRecommendationView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionRetrospectiveView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionRiskView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionScenarioView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionTriggerView;
+import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionWorkLinkView;
 import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionCriterionView;
 import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionEventView;
 import br.gov.pr.secid.workstation.application.decisao.DecisionView.DecisionEvidenceLinkView;
@@ -31,19 +43,28 @@ import br.gov.pr.secid.workstation.domain.decisao.CriterionAssessment;
 import br.gov.pr.secid.workstation.domain.decisao.CriterionDirection;
 import br.gov.pr.secid.workstation.domain.decisao.Decision;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionAlternative;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionAssumption;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionCheckpoint;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionComplexity;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionCriterion;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionEvent;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionEventType;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionEvidence;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionForecast;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionKind;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionLevel;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionLifecycle;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionOutcome;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionParticipant;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRecommendation;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRetrospective;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRisk;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionRole;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionRules;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionScenario;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionSnapshot;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionTrigger;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionWorkLink;
 import br.gov.pr.secid.workstation.domain.decisao.EvidenceKind;
 import br.gov.pr.secid.workstation.domain.decisao.EvidenceLink;
 import br.gov.pr.secid.workstation.domain.decisao.EvidenceStance;
@@ -51,13 +72,16 @@ import br.gov.pr.secid.workstation.domain.decisao.EvidenceTarget;
 import br.gov.pr.secid.workstation.domain.decisao.RelevanceLevel;
 import br.gov.pr.secid.workstation.domain.decisao.SnapshotKind;
 import br.gov.pr.secid.workstation.domain.decisao.SourceQuality;
+import br.gov.pr.secid.workstation.domain.decisao.WorkLinkTarget;
 import br.gov.pr.secid.workstation.domain.decisao.analise.DivergenceAnalysis;
 import br.gov.pr.secid.workstation.domain.decisao.analise.EvidenceStrength;
 import br.gov.pr.secid.workstation.domain.decisao.analise.MatrixInput;
 import br.gov.pr.secid.workstation.domain.decisao.analise.PreDecisionGuard;
 import br.gov.pr.secid.workstation.domain.decisao.analise.Readiness;
+import br.gov.pr.secid.workstation.domain.decisao.analise.RecommendationValidator;
 import br.gov.pr.secid.workstation.domain.decisao.analise.WeightedScoring;
 import br.gov.pr.secid.workstation.domain.security.AccessDecision;
+import br.gov.pr.secid.workstation.domain.security.AccessPolicy;
 import br.gov.pr.secid.workstation.domain.security.DecisionAccessPolicy;
 import br.gov.pr.secid.workstation.domain.security.ResourceAction;
 import br.gov.pr.secid.workstation.domain.security.ScopedResource;
@@ -115,7 +139,7 @@ public class DecisionService {
     /** Caminho explícito até AGUARDANDO_DECISAO para o "Decidir" de uma ação (§4.3) — o mesmo PATH_TO_AWAITING de lib/decia/types.ts. */
     static final Map<DecisionLifecycle, List<DecisionLifecycle>> PATH_TO_AWAITING = pathToAwaiting();
 
-    private static final ObjectMapper JSON = JsonMapper.builder().build();
+    static final ObjectMapper JSON = JsonMapper.builder().build();
     private static final TypeReference<Map<String, Object>> MAP = new TypeReference<>() {
     };
     private static final TypeReference<List<String>> STRINGS = new TypeReference<>() {
@@ -125,17 +149,24 @@ public class DecisionService {
     private final ResourceAuthorizer authorizer;
     private final AuditLogPort audit;
     private final Clock clock;
+    private final DecisionRecordCommands records;
 
     public DecisionService(DecisionRepositoryPort decisions, ResourceAuthorizer authorizer, AuditLogPort audit, Clock clock) {
         this.decisions = decisions;
         this.authorizer = authorizer;
         this.audit = audit;
         this.clock = clock;
+        this.records = new DecisionRecordCommands(this, decisions);
     }
 
     /** Criação (botão "Nova decisão"): o responsável é quem cria (G1), CONDUTOR; critérios opcionais vêm do modelo escolhido. */
     public record NewDecision(String question, DecisionComplexity complexity, DecisionLevel impact, DecisionKind kind, DecisionLevel urgency,
-                              String templateKey, Visibility visibility, List<String> criteria) {
+                              String templateKey, Visibility visibility, List<String> criteria, UUID projectId) {
+
+        public NewDecision(String question, DecisionComplexity complexity, DecisionLevel impact, DecisionKind kind, DecisionLevel urgency,
+                           String templateKey, Visibility visibility, List<String> criteria) {
+            this(question, complexity, impact, kind, urgency, templateKey, visibility, criteria, null);
+        }
     }
 
     // ------------------------------------------------------------------------------------------------ leitura
@@ -151,6 +182,30 @@ public class DecisionService {
             }
         }
         return out;
+    }
+
+    /**
+     * Decisões ligadas a um item de trabalho (bloco "Decisões ligadas" da tarefa/projeto): o alvo precisa ser visível para quem pede — senão a
+     * lista volta vazia, sem dizer se o alvo existe — e cada decisão passa pela mesma política da listagem.
+     */
+    public List<DecisionView> listLinked(CurrentUser actor, WorkLinkTarget type, UUID targetId, int limit) {
+        Viewer viewer = authorizer.viewer(actor);
+        if (type == null || targetId == null || !targetVisible(viewer, type, targetId)) {
+            return List.of();
+        }
+        int size = Math.max(1, Math.min(limit, MAX_LIST));
+        List<DecisionView> out = new ArrayList<>();
+        for (StoredDecision s : decisions.findByWorkTarget(type, targetId, size)) {
+            DecisionRole role = decisions.roleOf(s.decision().id(), viewer.userId()).orElse(null);
+            if (DecisionAccessPolicy.decide(viewer, s.decision(), role, false, ResourceAction.VIEW) == AccessDecision.ALLOW) {
+                out.add(view(viewer, role, s, decisions.graph(s.decision().id())));
+            }
+        }
+        return out;
+    }
+
+    boolean targetVisible(Viewer viewer, WorkLinkTarget type, UUID targetId) {
+        return decisions.workTarget(type, targetId).map(r -> AccessPolicy.visible(viewer, r)).orElse(false);
     }
 
     public DecisionView get(CurrentUser actor, UUID id) {
@@ -195,6 +250,9 @@ public class DecisionService {
             }
             criteria.add(name);
         }
+        if (in.projectId() != null && !targetVisible(viewer, WorkLinkTarget.PROJETO, in.projectId())) {
+            errors.put("projectId", "Projeto inexistente ou fora do seu acesso.");
+        }
         if (!errors.isEmpty()) {
             throw invalid(errors);
         }
@@ -206,7 +264,7 @@ public class DecisionService {
         title = title.length() > MAX_TITLE ? title.substring(0, MAX_TITLE) : title;
         DecisionComplexity complexity = in.complexity();
         Decision draft = new Decision(null, title, question, null, null, null, null, null, null, null, null, viewer.userId(), viewer.userId(),
-                viewer.companyId(), viewer.departmentId(), null, null, null, null, DecisionLifecycle.RASCUNHO, complexity,
+                viewer.companyId(), viewer.departmentId(), null, in.projectId(), null, null, DecisionLifecycle.RASCUNHO, complexity,
                 in.kind() == null ? DecisionKind.OPERACIONAL : in.kind(), in.impact(), in.urgency() == null ? DecisionLevel.MEDIO : in.urgency(),
                 in.visibility() == null ? Visibility.PRIVADA : in.visibility(), AccessClassification.INTERNO,
                 complexity == DecisionComplexity.PROFUNDA, false, template, null, null, null, null, null);
@@ -222,6 +280,12 @@ public class DecisionService {
         }
         if (!criteria.isEmpty()) {
             trail.add(DecisionEventType.CRITERIO_ATUALIZADO, Map.of("added", criteria.size()));
+        }
+        if (in.projectId() != null) {
+            // o projeto da raiz também vira vínculo de trabalho (o bloco "Decisões ligadas" do projeto lê os vínculos)
+            UUID linkId = UUID.randomUUID();
+            decisions.addWorkLink(new DecisionWorkLink(linkId, id, WorkLinkTarget.PROJETO, in.projectId(), viewer.userId()), now);
+            trail.add(DecisionEventType.TRABALHO_VINCULADO, Map.of("linkId", linkId.toString(), "targetType", WorkLinkTarget.PROJETO.name()));
         }
         trail.flush();
         audit.record(AuditEvent.of(viewer.userId(), AuditActions.DECISION_CREATED, "decision", id.toString(), AuditEvent.OK, ctx.ip(),
@@ -290,6 +354,20 @@ public class DecisionService {
             case ADD_EVIDENCE -> addEvidence(w, c, i);
             case DECIDE -> decide(w, c, i);
             case RECORD_OUTCOME -> recordOutcome(w, c, i);
+            case PUT_ASSUMPTION -> records.putAssumption(w, c, i);
+            case REMOVE_ASSUMPTION -> records.removeAssumption(w, c, i);
+            case PUT_RISK -> records.putRisk(w, c, i);
+            case REMOVE_RISK -> records.removeRisk(w, c, i);
+            case PUT_SCENARIO -> records.putScenario(w, c, i);
+            case REMOVE_SCENARIO -> records.removeScenario(w, c, i);
+            case PUT_FORECAST -> records.putForecast(w, c, i);
+            case PUT_RECOMMENDATION -> records.putRecommendation(w, c, i);
+            case PUT_TRIGGER -> records.putTrigger(w, c, i);
+            case REMOVE_TRIGGER -> records.removeTrigger(w, c, i);
+            case PUT_CHECKPOINT -> records.putCheckpoint(w, c, i);
+            case LINK_WORK -> records.linkWork(w, c, i);
+            case UNLINK_WORK -> records.unlinkWork(w, c, i);
+            case PUT_RETROSPECTIVE -> records.putRetrospective(w, c, i);
             default -> throw invalid(Map.of(field(i, "type"), "Comando desconhecido."));
         }
     }
@@ -564,11 +642,11 @@ public class DecisionService {
 
     // ------------------------------------------------------------------------------------------------ autorização
 
-    private void require(Work w, ResourceAction action) {
+    void require(Work w, ResourceAction action) {
         authorizer.requireDecision(w.viewer, w.decision, w.role, false, action);
     }
 
-    private static void requireEditable(Work w) {
+    static void requireEditable(Work w) {
         if (!editable(w.decision.status())) {
             throw new ApiException(CICLO_INVALIDO, 409, "A estrutura só muda antes de decidir; reabra a decisão para alterar.");
         }
@@ -596,9 +674,10 @@ public class DecisionService {
                 editable && allowed(viewer, d, role, ResourceAction.ASSESS),
                 PATH_TO_AWAITING.containsKey(d.status()) && allowed(viewer, d, role, ResourceAction.DECIDE),
                 d.status().canTransitionTo(DecisionLifecycle.REABERTA) && allowed(viewer, d, role, ResourceAction.REOPEN),
-                allowed(viewer, d, role, ResourceAction.EDIT));
+                allowed(viewer, d, role, ResourceAction.EDIT), allowed(viewer, d, role, ResourceAction.EDIT_STRUCTURE));
         DecisionParticipant me = g.participants().stream().filter(p -> p.userId().equals(viewer.userId())).findFirst().orElse(null);
         boolean seeOthers = !d.independentScoring() || (me != null && me.assessmentsSubmittedAt() != null);
+        Records r = g.records();
         DecisionRoot root = new DecisionRoot(d.id(), s.version(), d.title(), d.question(), d.contextMd(), d.objective(), d.constraintsMd(),
                 d.scope(), strings(d.stakeholdersJson()), d.targetDate(), d.ownerUserId(), d.createdByUserId(), d.companyId(), d.departmentId(),
                 d.sessionId(), d.projectId(), d.status(), d.complexity(), d.kind(), d.impact(), d.urgency(), d.visibility(), d.accessClass(),
@@ -624,7 +703,35 @@ public class DecisionService {
                         g.outcome().summary(), g.outcome().recordedByUserId()),
                 g.events().stream().map(e -> new DecisionEventView(e.id(), e.actorUserId(), e.type(), payload(e.payloadJson()), e.at(),
                         e.correlationId())).toList(),
-                perms);
+                perms,
+                r.assumptions().stream().map(a -> new DecisionAssumptionView(a.id(), a.statement(), a.importance(), a.confidencePct(),
+                        a.validationStatus(), a.ownerUserId(), a.alternativeId(), a.validationNote(), a.validatedAt(), a.origin())).toList(),
+                r.risks().stream().map(x -> new DecisionRiskView(x.id(), x.title(), x.description(), x.alternativeId(), x.likelihood(), x.impact(),
+                        x.severity(), x.mitigation(), x.ownerUserId(), x.source(), x.status(), x.origin())).toList(),
+                r.scenarios().stream().map(x -> new DecisionScenarioView(x.id(), x.alternativeId(), x.scenarioCase(), x.description(), x.likelihood(),
+                        strings(x.assumptionIdsJson()), x.expectedResult())).toList(),
+                r.forecasts().stream().map(x -> new DecisionForecastView(x.id(), x.alternativeId(), x.statement(), x.probabilityPct(), x.resolveBy(),
+                        x.forecasterUserId(), x.resolution(), x.resolvedAt())).toList(),
+                r.recommendations().stream().map(sr -> {
+                    DecisionRecommendation x = sr.recommendation();
+                    return new DecisionRecommendationView(x.id(), x.alternativeId(), x.source(), x.reasoningMd(), strings(x.supportingJson()),
+                            strings(x.contradictingJson()), strings(x.criticalAssumptionIdsJson()), x.limitationsMd(), x.whatWouldChangeMd(),
+                            x.modelVersion(), x.status(), sr.createdAt());
+                }).toList(),
+                r.triggers().stream().map(x -> new DecisionTriggerView(x.id(), x.conditionText(), x.metricKey(), x.comparator(),
+                        x.threshold() == null ? null : x.threshold().doubleValue(), x.status(), x.firedAt())).toList(),
+                r.checkpoints().stream().map(x -> new DecisionCheckpointView(x.id(), x.dueAt(), x.kind(), x.status(), x.completedAt(),
+                        x.completedByUserId(), x.stillValid(), x.assumptionsChanged(), x.newEvidence(), x.confidencePctAfter(), x.action(),
+                        x.note())).toList(),
+                r.workLinks().stream().map(x -> new DecisionWorkLinkView(x.link().id(), x.link().targetType(), x.link().targetId(),
+                        x.link().createdByUserId(), x.createdAt())).toList(),
+                retrospective(r.retrospective()));
+    }
+
+    private static DecisionRetrospectiveView retrospective(DecisionRetrospective x) {
+        return x == null ? null : new DecisionRetrospectiveView(x.id(), x.outcomeId(), x.whatHappened(), x.whatExpected(), x.whatWasRight(),
+                x.whatWasWrong(), strings(x.failedAssumptionIdsJson()), x.processQuality(), x.lessonsMd(), x.shareAsLesson(), x.reviewedByUserId(),
+                x.reviewedAt());
     }
 
     private static DecisionEvidenceView evidenceView(StoredEvidence s) {
@@ -650,6 +757,16 @@ public class DecisionService {
         final List<CriterionAssessment> assessments;
         final List<DecisionEvidence> evidence;
         final List<EvidenceLink> links;
+        final List<DecisionParticipant> participants;
+        final List<DecisionAssumption> assumptions;
+        final List<DecisionRisk> risks;
+        final List<DecisionScenario> scenarios;
+        final List<DecisionForecast> forecasts;
+        final List<StoredRecommendation> recommendations;
+        final List<DecisionTrigger> triggers;
+        final List<DecisionCheckpoint> checkpoints;
+        final List<StoredWorkLink> workLinks;
+        DecisionRetrospective retrospective;
         DecisionOutcome outcome;
         int snapshots;
         final Instant now;
@@ -667,6 +784,17 @@ public class DecisionService {
             this.assessments = new ArrayList<>(g.assessments());
             this.evidence = new ArrayList<>(g.evidence().stream().map(StoredEvidence::evidence).toList());
             this.links = new ArrayList<>(g.evidenceLinks());
+            this.participants = new ArrayList<>(g.participants());
+            Records r = g.records();
+            this.assumptions = new ArrayList<>(r.assumptions());
+            this.risks = new ArrayList<>(r.risks());
+            this.scenarios = new ArrayList<>(r.scenarios());
+            this.forecasts = new ArrayList<>(r.forecasts());
+            this.recommendations = new ArrayList<>(r.recommendations());
+            this.triggers = new ArrayList<>(r.triggers());
+            this.checkpoints = new ArrayList<>(r.checkpoints());
+            this.workLinks = new ArrayList<>(r.workLinks());
+            this.retrospective = r.retrospective();
             this.outcome = g.outcome();
             this.snapshots = g.snapshots().stream().mapToInt(DecisionSnapshot::versionNumber).max().orElse(0);
             this.now = now;
@@ -688,6 +816,18 @@ public class DecisionService {
 
         UUID criterion(String idOrRef, int i) {
             return resolve(idOrRef, criteria.stream().map(DecisionCriterion::id).toList(), field(i, "criterionId"));
+        }
+
+        /** Registro da fase 7b apontado por {@code itemId} (UUID desta decisão ou ref do lote). */
+        UUID item(String idOrRef, List<UUID> known, int i) {
+            if (idOrRef == null || idOrRef.isBlank()) {
+                throw invalid(Map.of(field(i, "itemId"), "Informe o item."));
+            }
+            return resolve(idOrRef, known, field(i, "itemId"));
+        }
+
+        UUID resolveIn(String idOrRef, List<UUID> known, String fieldName) {
+            return resolve(idOrRef, known, fieldName);
         }
 
         /** Id de filho DESTA decisão (ou ref do lote); qualquer outro id — inclusive de outra decisão — é 422, nunca acesso cruzado. */
@@ -746,6 +886,10 @@ public class DecisionService {
             details.put("warnings", e.getDetails());
             return ApiException.unprocessable(code, "Confirme os avisos antes de decidir.", details);
         }
+        if (RecommendationValidator.RECOMENDACAO_INCOMPLETA.equals(code)) {
+            details.put("missing", e.getDetails());
+            return ApiException.unprocessable(code, "A recomendação precisa dos quatro porquês.", details);
+        }
         if ("VALIDACAO".equals(code)) {
             return ApiException.unprocessable(ApiException.VALIDACAO, "Revise os campos destacados.", details);
         }
@@ -756,7 +900,7 @@ public class DecisionService {
         return ApiException.unprocessable(ApiException.VALIDACAO, "Revise os campos destacados.", Map.of("fields", Map.copyOf(fields)));
     }
 
-    private static String field(int i, String name) {
+    static String field(int i, String name) {
         return "commands[" + i + "]." + name;
     }
 
@@ -770,7 +914,7 @@ public class DecisionService {
         return sb.toString();
     }
 
-    private static String blankToNull(String s) {
+    static String blankToNull(String s) {
         return s == null || s.isBlank() ? null : s.strip();
     }
 

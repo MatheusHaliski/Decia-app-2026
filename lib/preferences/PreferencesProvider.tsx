@@ -41,6 +41,8 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
   const [firstLoadDone, setFirstLoadDone] = useState(initial !== undefined);
   const [systemDark, setSystemDark] = useState(false);
   const adaptersRef = useRef(adapters);
+  const prefsRef = useRef(prefs);
+  useEffect(() => { prefsRef.current = prefs; }, [prefs]);
 
   // 1) carrega: local primeiro (instantâneo), depois API (quando houver sessão) sobrepõe
   useEffect(() => {
@@ -61,14 +63,28 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
     return () => { alive = false; mq.removeEventListener("change", l); };
   }, []);
 
-  // 1b) sair da conta esquece a profissão preferida (D-147: dado só do dono; quem entrar depois no mesmo navegador não a herda)
+  // 1b) sair da conta esquece a profissão preferida (D-147: dado só do dono; quem entrar depois no mesmo navegador não a herda);
+  //     entrar sincroniza com o servidor (`/api/me/preferences`): a profissão da conta vence; sem ela, a escolhida antes de entrar sobe
   useEffect(() => {
+    let alive = true;
     const off = onSessionChange((signedIn) => {
-      if (signedIn) return;
+      if (signedIn) {
+        void (async () => {
+          for (const a of adaptersRef.current.filter((x) => x.syncOnSignIn)) {
+            const server = await a.load();
+            if (!alive || !server) continue;
+            const next = mergeOnSignIn(prefsRef.current, server);
+            setPrefs(next);
+            if (next.preferredOccupation !== server.preferredOccupation) void a.save(next);
+            for (const other of adaptersRef.current) if (other !== a) void other.save(next);
+          }
+        })();
+        return;
+      }
       forgetSessionOccupation();
       setPrefs((p) => (p.preferredOccupation ? { ...p, preferredOccupation: null } : p));
     });
-    return () => { off(); };
+    return () => { alive = false; off(); };
   }, []);
 
   // 2) aplica no <html> e no estado do i18n a cada mudança — em layout effect, no mesmo commit do render: o tema/idioma
@@ -99,6 +115,19 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
   const resolvedTheme = prefs.theme === "auto" ? (systemDark ? "escuro" : "claro") : prefs.theme;
   const value = useMemo(() => ({ prefs, ready, update, reset, resolvedTheme }), [prefs, ready, update, reset, resolvedTheme]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/**
+ * Ao entrar na conta: as preferências do servidor valem, mas a profissão escolhida antes de entrar (cadastro, aba anônima) sobe para a
+ * conta quando a conta ainda não tem uma (D-148). Pura, testada em occupation.test.tsx.
+ */
+export function mergeOnSignIn(local: UserPreferences, server: UserPreferences): UserPreferences {
+  return server.preferredOccupation || !local.preferredOccupation ? server : { ...server, preferredOccupation: local.preferredOccupation };
+}
+
+/** Preferências fora do provider (componentes reaproveitáveis em testes e em telas sem o provider): `null`. */
+export function useOptionalPreferences(): PreferencesContextValue | null {
+  return useContext(Ctx);
 }
 
 export function usePreferences(): PreferencesContextValue {

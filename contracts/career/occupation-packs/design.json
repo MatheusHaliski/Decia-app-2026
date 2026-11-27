@@ -162,7 +162,8 @@
         "criteria": ["três projetos", "um quadro de processo por projeto", "legenda com problema, solução e resultado", "grid consistente e hierarquia tipográfica", "créditos de coautores, fontes e imagens", "declaração de ausência de material sob NDA"],
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "90 min",
-        "level": 1
+        "level": 1,
+        "taskType": "APRESENTACAO"
       },
       "D9": {
         "title": "Wireframe de uma tela em três estados com anotações",
@@ -171,7 +172,8 @@
         "criteria": ["três estados nomeados", "anotações de interação em cada estado", "uma nota de acessibilidade por estado", "hierarquia de conteúdo legível sem cor", "só dados fictícios"],
         "evidence": "prancha de wireframes (PDF ou PNG)",
         "time": "90 min",
-        "level": 2
+        "level": 2,
+        "taskType": "DIAGRAMA"
       },
       "L8": {
         "title": "Resposta a um briefing de design",
@@ -189,7 +191,8 @@
         "criteria": ["duas versões lado a lado", "três mudanças anotadas com justificativa", "ao menos uma mudança de acessibilidade ou legibilidade", "crédito da peça original"],
         "evidence": "prancha comparativa",
         "time": "60 min",
-        "level": 1
+        "level": 1,
+        "taskType": "IMAGEM_EDITADA"
       },
       "D3": {
         "title": "Modelo 3D de produto com três renders",
@@ -198,7 +201,8 @@
         "criteria": ["dimensões reais declaradas", "materiais aplicados", "três renders", "uma vista com referência de escala"],
         "evidence": "modelo GLB + renders PNG",
         "time": "3 h",
-        "level": 3
+        "level": 3,
+        "taskType": "DESENHO_TECNICO"
       },
       "L4": {
         "title": "Memorial descritivo ou relatório de teste de usabilidade",
@@ -220,7 +224,8 @@
         "evidence": "prancha publicada (PDF ou PNG)",
         "time": "2 h",
         "trigger": "Você já criou uma marca ou uma biblioteca de componentes? Quer sistematizá-la em uma prancha?",
-        "level": 2
+        "level": 2,
+        "taskType": "IMAGEM_EDITADA"
       }
     ]
   },
@@ -294,7 +299,7 @@
     "editors": { "letters": "media", "drawings": "alta" },
     "drawingsModes": ["prancha", "wireframe", "3d", "infografico", "2d-tecnico", "diagrama"],
     "lettersTemplates": ["proposta", "memorial", "estudo-de-caso", "relatorio-tecnico", "bio", "curriculo", "post", "revisao", "carta", "plano-30-60-90"],
-    "defaultAutonomy": "SUGESTOES",
+    "defaultAutonomy": "SOB_SOLICITACAO",
     "deviceNotes": "D2, D9, D3, D5 e X1 exigem computador; no celular ficam L6, L5, L10 e a conferência de critérios da prancha.",
     "nudges": {
       "cadence": "semanal",

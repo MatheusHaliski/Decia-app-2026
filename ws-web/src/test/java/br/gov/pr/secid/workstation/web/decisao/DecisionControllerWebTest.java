@@ -15,6 +15,8 @@ import br.gov.pr.secid.workstation.domain.decisao.DecisionComplexity;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionKind;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionLevel;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionLifecycle;
+import br.gov.pr.secid.workstation.domain.decisao.Likelihood;
+import br.gov.pr.secid.workstation.domain.decisao.WorkLinkTarget;
 import br.gov.pr.secid.workstation.web.config.JwtConfig;
 import br.gov.pr.secid.workstation.web.config.SecurityConfig;
 import br.gov.pr.secid.workstation.web.error.ErrorWriter;
@@ -96,7 +98,8 @@ class DecisionControllerWebTest {
                 DecisionLevel.MEDIO, DecisionLevel.MEDIO, Visibility.PRIVADA, AccessClassification.INTERNO, false, false, null, null, null, null,
                 null, null, Instant.now(), Instant.now());
         return new DecisionView(root, List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), null, List.of(),
-                new DecisionView.DecisionPermissions(true, true, true, false, true));
+                new DecisionView.DecisionPermissions(true, true, true, false, true, true), List.of(), List.of(), List.of(), List.of(), List.of(),
+                List.of(), List.of(), List.of(), null);
     }
 
     private static String commands(long version) {
@@ -220,5 +223,49 @@ class DecisionControllerWebTest {
         });
         mvc.perform(authed(post("/api/decisions/" + other + "/commands"), "USER").contentType(MediaType.APPLICATION_JSON).content(commands(0)))
                 .andExpect(status().isNotFound()).andExpect(jsonPath("$.code").value("NAO_ENCONTRADO"));
+    }
+
+    @Test
+    void listaPorItemDeTrabalhoEComandosDosRegistros() throws Exception {
+        UUID task = UUID.randomUUID();
+        when(decisions.listLinked(any(), eq(WorkLinkTarget.TAREFA), eq(task), eq(50))).thenReturn(List.of(view(2, DecisionLifecycle.DECIDIDA)));
+        mvc.perform(authed(get("/api/decisions?targetType=TAREFA&targetId=" + task), "USER")).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].decision.status").value("DECIDIDA")).andExpect(jsonPath("$[0].permissions.editRecords").value(true));
+        verify(decisions, never()).list(any(), eq(50));
+        mvc.perform(authed(get("/api/decisions?targetType=TAREFONA&targetId=" + task), "USER")).andExpect(status().isBadRequest());
+        mvc.perform(authed(get("/api/decisions?targetType=TAREFA&targetId=nao-uuid"), "USER")).andExpect(status().isBadRequest());
+
+        String url = "/api/decisions/" + decisionId + "/commands";
+        when(decisions.apply(any(), eq(decisionId), eq(6L), anyList(), any())).thenAnswer(inv -> {
+            AuthorizationTrail.record("DECISION:EDIT_STRUCTURE");
+            return view(7, DecisionLifecycle.COMPARACAO);
+        });
+        String body = json(Map.of("version", 6, "commands", List.of(
+                Map.of("type", "PUT_RISK", "ref", "r1", "risk", Map.of("title", "Atraso", "likelihood", "PROVAVEL", "impact", "ALTO")),
+                Map.of("type", "LINK_WORK", "workLink", Map.of("targetType", "TAREFA", "targetId", task.toString())),
+                Map.of("type", "REMOVE_ASSUMPTION", "itemId", "p1"))));
+        mvc.perform(authed(post(url), "USER").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.risks").isArray()).andExpect(jsonPath("$.workLinks").isArray());
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<DecisionCommand>> cap = ArgumentCaptor.forClass(List.class);
+        verify(decisions).apply(any(), eq(decisionId), eq(6L), cap.capture(), any());
+        assertThat(cap.getValue()).hasSize(3);
+        assertThat(cap.getValue().get(0).risk().likelihood()).isEqualTo(Likelihood.PROVAVEL);
+        assertThat(cap.getValue().get(1).workLink().targetId()).isEqualTo(task);
+        assertThat(cap.getValue().get(2).itemId()).isEqualTo("p1");
+        // enum desconhecido dentro do registro é 400 (corpo inválido), antes do serviço
+        mvc.perform(authed(post(url), "USER").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("version", 6, "commands",
+                        List.of(Map.of("type", "PUT_RISK", "risk", Map.of("title", "x", "likelihood", "TALVEZ", "impact", "ALTO")))))))
+                .andExpect(status().isBadRequest());
+
+        when(decisions.create(any(), any(), any())).thenReturn(view(0, DecisionLifecycle.RASCUNHO));
+        UUID project = UUID.randomUUID();
+        mvc.perform(authed(post("/api/decisions"), "USER").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("question", "Aprovar a saída da fase?", "complexity", "PADRAO", "impact", "ALTO", "projectId",
+                                project.toString()))))
+                .andExpect(status().isCreated());
+        ArgumentCaptor<DecisionService.NewDecision> created = ArgumentCaptor.forClass(DecisionService.NewDecision.class);
+        verify(decisions).create(any(), created.capture(), any());
+        assertThat(created.getValue().projectId()).isEqualTo(project);
     }
 }

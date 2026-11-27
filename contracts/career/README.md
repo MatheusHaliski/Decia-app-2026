@@ -17,6 +17,22 @@ npm run career:validate
 
 Valida o catálogo e todos os pacotes contra os esquemas e faz as checagens cruzadas que um esquema não expressa: códigos e rótulos únicos, vizinhos e `paths.to` que existem, prioridade sem tarefa excluída, parâmetros das três primeiras prioridades, serviços externos declarados em `ai.services`, um pacote por ramo, pacote genérico presente. Arquivos avulsos (ex.: saída de pesquisa): `node scripts/career/validar-pacotes.mjs --ramos arquivo.json --pacote pasta/`. Sem dependências novas: o subconjunto de JSON Schema está implementado no próprio script.
 
+Também recusa `system.defaultAutonomy` acima de `SOB_SOLICITACAO` e serviço com `defaultMode: AGENTE` (D-156: o pacote só restringe).
+
+## Curadoria reprodutível
+
+```
+node scripts/career/curar-pacotes.mjs          # aplica
+node scripts/career/curar-pacotes.mjs --check  # só confere (sai com 1 se algo estiver fora das regras)
+```
+
+Edita o texto dos JSON sem reformatá-los e é idempotente (`lib/career/curation.test.ts` exige que rodar de novo não mude nada): teto de
+autonomia da D-156; `track: "carreira"` em currículo (L1), perfil profissional/bio (L6) e plano 30-60-90 — ficam fora dos modelos de
+trabalho do criador e aparecem no plano de desenvolvimento e na aba Carreira do perfil; `taskType` (um TaskType da API) nas tarefas de
+desenho e nas próprias do campo com tipo próprio (infográfico → IMAGEM_EDITADA, fluxo/wireframe → DIAGRAMA, portfólio → APRESENTACAO,
+mapa → MAPA, planilha, cronograma); sem `taskType` valem DOCUMENTO (Letters) e DESENHO_TECNICO (Drawings). Ciências Contábeis recebe
+modelos próprios da área (conciliação, demonstrações, calendário de obrigações).
+
 ## Versão e status
 
 - `version` (`AAAA.MM.N`) é a versão do **dado**; `schemaVersion` só muda quando o esquema muda de forma incompatível.

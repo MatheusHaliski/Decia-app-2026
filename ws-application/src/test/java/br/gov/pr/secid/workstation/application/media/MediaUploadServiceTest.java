@@ -170,4 +170,54 @@ class MediaUploadServiceTest {
         assertThat(e.code()).isEqualTo(MediaUploadInspector.TIPO_DIVERGENTE);
         assertThat(blobs).isEmpty();
     }
+
+    /** Roda {@code body} com sincronização de transação ativa (como dentro de um {@code @Transactional}) e termina com o status dado. */
+    private static void inTransaction(Runnable body, int status) {
+        org.springframework.transaction.support.TransactionSynchronizationManager.initSynchronization();
+        try {
+            body.run();
+            var syncs = org.springframework.transaction.support.TransactionSynchronizationManager.getSynchronizations();
+            if (status == org.springframework.transaction.support.TransactionSynchronization.STATUS_COMMITTED) {
+                syncs.forEach(org.springframework.transaction.support.TransactionSynchronization::afterCommit);
+            }
+            syncs.forEach(x -> x.afterCompletion(status));
+        } finally {
+            org.springframework.transaction.support.TransactionSynchronizationManager.clearSynchronization();
+        }
+    }
+
+    @Test
+    void binarioSoSaiDoStorageDepoisDoCommit() {
+        MediaUploadService s = service(null, false);
+        MediaUploadService.Stored st = s.upload(owner, png("a.png"), AccessClassification.INTERNO, false);
+        String key = st.media().objectKey();
+
+        // transação desfeita: metadado "volta" (no banco real) e o binário continua no storage
+        inTransaction(() -> {
+            s.delete(st.media());
+            assertThat(blobs).as("nada apagado antes do commit").containsKey(key);
+        }, org.springframework.transaction.support.TransactionSynchronization.STATUS_ROLLED_BACK);
+        assertThat(blobs).containsKey(key);
+
+        rows.put(st.media().id(), st.media());
+        inTransaction(() -> s.delete(st.media()), org.springframework.transaction.support.TransactionSynchronization.STATUS_COMMITTED);
+        assertThat(blobs).as("apagado no afterCommit").doesNotContainKey(key);
+        assertThat(rows).isEmpty();
+    }
+
+    @Test
+    void uploadDesfeitoNaoDeixaBinarioOrfaoEStreamingLeOMesmoConteudo() throws Exception {
+        MediaUploadService s = service(null, false);
+        inTransaction(() -> {
+            s.upload(owner, png("a.png"), AccessClassification.INTERNO, false);
+            rows.clear();   // o rollback do banco desfaz o metadado
+        }, org.springframework.transaction.support.TransactionSynchronization.STATUS_ROLLED_BACK);
+        assertThat(blobs).as("binário recém-gravado sai no rollback").isEmpty();
+
+        MediaUploadService.Stored st = s.upload(owner, png("b.png"), AccessClassification.INTERNO, false);
+        MediaUploadService.ReadGrant g = s.authorizeRead(owner, st.media().id(), true);
+        try (var in = s.open(g)) {
+            assertThat(in.readAllBytes()).isEqualTo(Fixtures.png(32, 32));
+        }
+    }
 }

@@ -2,12 +2,13 @@ import { describe, expect, it } from "vitest";
 import { buildDemoProject } from "@/lib/projects/fixtures";
 import { writeZip } from "@/lib/letters/io/zip";
 import type { TaskView } from "@/lib/tasks/client";
-import { applyFix, projectChecks, taskChecks } from "./checks";
+import { applyFix, concreteSuggestion, projectChecks, renderMsg, taskChecks } from "./checks";
 import { buildXlsx } from "./demo";
 import { buildCloudTree, categoryOf, flattenTree, providerOf, readLocalTree, treeTotals, type LocalDirHandle } from "./files";
-import { assignWindow, defaultLayout, gridColumns, MIN_RATIO, normalizeLayout, resizeAt, resizeToPoint, separatorValue, withCount } from "./layout";
-import { iframeSandbox, previewCandidates, previewKindOf, stepZoom } from "./preview";
-import { projectFacts, subjectFromView, taskFacts } from "./subject";
+import { assignWindow, showWindow, defaultLayout, gridColumns, MIN_RATIO, normalizeLayout, resizeAt, resizeToPoint, separatorValue, withCount } from "./layout";
+import { iframeSandbox, pdfFacts, previewCandidates, previewKindOf, stepZoom } from "./preview";
+import { projectFacts, responsibleOf, subjectFromView, taskFacts } from "./subject";
+import ptBR from "@/lib/i18n/messages/pt-BR.json";
 import { parseViewerParam, withViewer } from "./url";
 import { classifyFormatCode, columnIndex, columnLetters, formatCell, readXlsxTop, serialToIso, XlsxError } from "./xlsx";
 
@@ -109,12 +110,13 @@ describe("prévia", () => {
     expect(previewKindOf("p.html", "text/html")).toBe("HTML");
     expect(previewKindOf("p.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")).toBe("XLSX");
     expect(previewKindOf("p.xlsm", "")).toBe("MACRO");
-    expect(previewKindOf("p.pdf", "application/pdf")).toBe("OUTRO");
+    expect(previewKindOf("p.pdf", "application/pdf")).toBe("PDF");
+    expect(previewKindOf("p.pdf", "text/html")).toBe("OUTRO");
   });
   it("candidatos: imagens primeiro, só https, sem anexo indisponível", () => {
     const c = previewCandidates([{ id: "1", fileName: "a.pdf", mimeType: "application/pdf" }, { id: "2", fileName: "b.png", mimeType: "image/png" }, { id: "3", fileName: "c.png", available: false }],
       [{ label: "Site", url: "https://example.org" }, { url: "http://inseguro.org" }]);
-    expect(c.map((x) => x.id)).toEqual(["a:2", "u:https://example.org", "a:1"]);
+    expect(c.map((x) => x.id)).toEqual(["a:2", "a:1", "u:https://example.org"]);
   });
   it("sandbox: nuvem sem scripts por padrão; site externo nunca roda script; nunca allow-same-origin", () => {
     expect(iframeSandbox("NUVEM", false)).toBe("");
@@ -256,9 +258,13 @@ describe("Melhorias ✦ (CI determinístico)", () => {
 describe("formato família → variante", () => {
   it("formato do arquivo pela extensão e pelo MIME; desconhecido é nulo", async () => {
     const { formatOfFile } = await import("./files");
-    expect(formatOfFile("a.xlsx", "")).toEqual({ family: "PLANILHA", variant: "XLSX" });
-    expect(formatOfFile("semext", "image/png")).toEqual({ family: "IMAGEM", variant: "PNG" });
+    expect(formatOfFile("a.xlsx", "")).toEqual({ family: "PLANILHA", variant: "XLSX", estimated: true });
+    expect(formatOfFile("semext", "image/png")).toEqual({ family: "IMAGEM", variant: "PNG", estimated: true });
     expect(formatOfFile("a.xyz", "")).toBeNull();
+    // o formato detectado pelo servidor vale mais que a extensão (um .xlsx que é PDF por dentro)
+    expect(formatOfFile("a.xlsx", "", { formatFamily: "DOCUMENTO", formatVariant: "PDF" })).toEqual({ family: "DOCUMENTO", variant: "PDF", estimated: false });
+    expect(formatOfFile("a.gif", "", { formatFamily: "IMAGEM", formatVariant: null })).toEqual({ family: "IMAGEM", variant: "", estimated: false });
+    expect(formatOfFile("a.xlsx", "", { formatFamily: "INVALIDA" })).toMatchObject({ estimated: true });
   });
   it("aponta anexo em formato diferente do pedido", async () => {
     const { formatMismatch } = await import("./checks");
@@ -268,5 +274,80 @@ describe("formato família → variante", () => {
     expect(formatMismatch({ family: "", variant: "", details: {} }, [{ fileName: "a.xlsx" }])).toBeNull();
     const r = taskChecks({ subject: subjectFromView(view({ extensions: { fileFormat: "family=PLANILHA&variant=XLSX" } })), today: "2026-11-15", files: { attachments: 1, evidences: 0, list: [{ fileName: "b.csv" }] } });
     expect(r.checks.find((c) => c.id === "formatoAnexo")?.verdict).toBe("ATENCAO");
+  });
+});
+
+/** tradução mínima com o catálogo pt-BR (para comparar textos renderizados) */
+const tr = (k: string, v: Record<string, string | number> = {}) =>
+  ((ptBR as Record<string, string>)[k] ?? k).replace(/\{(\w+)\}/g, (_, n: string) => String(v[n] ?? `{${n}}`));
+
+describe("sugestões concretas (nunca repetem o achado)", () => {
+  const subjects = [
+    subjectFromView(view({ objective: "", descriptionMd: "", acceptanceCriteria: [], deliverables: [], area: undefined })),
+    subjectFromView(view({ objective: "melhorar", dueAt: undefined, area: "ENGENHARIA", extensions: {} })),
+    subjectFromView(view({ formatFamily: "PLANILHA", formatVariant: "CSV", formatDetailsJson: JSON.stringify({ encoding: "UTF8" }), acceptanceCriteria: [{ text: "Um", done: false }] })),
+    subjectFromView(view({ dueAt: "2026-11-14", responsibleId: undefined, state: "BLOQUEADA" })),
+  ];
+  it("em toda verificação, a sugestão (quando existe) difere do achado", () => {
+    for (const subject of subjects) {
+      const r = taskChecks({ subject, today: "2026-11-15", files: { attachments: 0, evidences: 0 } });
+      for (const c of r.checks) {
+        if (!c.suggestion) continue;
+        expect(renderMsg(tr, c.suggestion)).not.toBe(renderMsg(tr, c.detail));
+        expect(c.suggestion.key).not.toBe(c.detail.key);
+      }
+    }
+  });
+  it("objetivo pré-redigido do título, tipo e prazo; sem título, nenhuma sugestão", () => {
+    const s = subjectFromView(view({ objective: "" }));
+    const q = { id: "objetivo", group: "ESSENCIAL" as const, status: "FALTA" as const };
+    expect(renderMsg(tr, concreteSuggestion(q, s)!)).toBe("Proposta de objetivo: “Documento “Vistoria da obra da escola” entregue até 2026-11-20, com todos os critérios de aceite atendidos.”");
+    expect(concreteSuggestion(q, subjectFromView(view({ objective: "", dueAt: undefined })))?.key).toBe("criador2.sug.objectiveNoDue");
+    expect(concreteSuggestion(q, subjectFromView(view({ title: "  " })))).toBeUndefined();
+  });
+  it("critério sugerido pelo formato pedido; sem formato, omite; correção vira texto acionável", () => {
+    const csv = subjectFromView(view({ formatFamily: "PLANILHA", formatVariant: "CSV" }));
+    const q = { id: "criterios", group: "ESSENCIAL" as const, status: "AVISO" as const };
+    expect(renderMsg(tr, concreteSuggestion(q, csv)!)).toBe("Critério sugerido pelo formato pedido: “Entregue em CSV”.");
+    expect(concreteSuggestion(q, subjectFromView(view()))).toBeUndefined();
+    const fix = { ...q, id: "swTestes", fixes: [{ kind: "ADD_CRITERION" as const, text: "Testes passam" }] };
+    expect(renderMsg(tr, concreteSuggestion(fix, csv)!)).toBe("Acrescente o critério: “Testes passam”.");
+    expect(concreteSuggestion({ id: "titulo", group: "ESSENCIAL", status: "AVISO" }, csv)).toBeUndefined();
+  });
+  it("plural do prazo: 1 dia e hoje com texto próprio", () => {
+    const one = taskChecks({ subject: subjectFromView(view({ dueAt: "2026-11-14" })), today: "2026-11-15", files: null }).checks.find((c) => c.id === "prazoSituacao")!;
+    expect(renderMsg(tr, one.detail)).toBe("Vencida há 1 dia.");
+    const today = taskChecks({ subject: subjectFromView(view({ dueAt: "2026-11-15" })), today: "2026-11-15", files: null }).checks.find((c) => c.id === "prazoSituacao")!;
+    expect(renderMsg(tr, today.detail)).toBe("Vence hoje.");
+    const many = taskChecks({ subject: subjectFromView(view({ dueAt: "2026-11-10" })), today: "2026-11-15", files: null }).checks.find((c) => c.id === "prazoSituacao")!;
+    expect(renderMsg(tr, many.detail)).toBe("Vencida há 5 dias.");
+  });
+  it("formato pedido nas colunas da API (V71) vale para o aviso de anexo divergente", () => {
+    const r = taskChecks({ subject: subjectFromView(view({ formatFamily: "PLANILHA", formatVariant: "XLSX" })), today: "2026-11-15", files: { attachments: 1, evidences: 0, list: [{ fileName: "b.csv" }] } });
+    expect(r.checks.find((c) => c.id === "formatoAnexo")?.verdict).toBe("ATENCAO");
+  });
+});
+
+describe("responsável, abas e PDF", () => {
+  it("responsável: designado, autor marcado ou nenhum — a mesma regra no visualizador e na página", () => {
+    expect(responsibleOf({ responsibleId: "abcdef1234", responsibleName: null, ownerId: "x", ownerName: null })).toMatchObject({ kind: "DESIGNADO", vars: { name: "#abcdef12" } });
+    expect(responsibleOf({ responsibleId: null, responsibleName: null, ownerId: "o1", ownerName: "Pessoa Exemplo" })).toMatchObject({ kind: "AUTOR", vars: { name: "Pessoa Exemplo" } });
+    expect(responsibleOf({ responsibleId: null, responsibleName: null, ownerId: null, ownerName: null }).kind).toBe("NENHUM");
+    const fact = taskFacts(subjectFromView(view({ responsibleId: undefined, ownerId: "11111111-aaaa" })), "2026-11-15").find((f) => f.id === "responsible");
+    expect(fact).toMatchObject({ type: "label", key: "criador2.viewer.responsibleOwner" });
+  });
+  it("showWindow: a janela que já está num painel não muda nada; a outra entra no último painel", () => {
+    const l = defaultLayout(2);
+    expect(showWindow(l, "resumo")).toBe(l);
+    expect(showWindow(l, "melhorias").panes).toEqual(["resumo", "melhorias"]);
+    expect(showWindow(defaultLayout(3), "arquivos").panes).toEqual(["resumo", "previa", "arquivos"]);
+  });
+  it("ficha do PDF a partir dos detalhes do servidor; ausente fica nulo, nunca inventado", () => {
+    expect(pdfFacts(JSON.stringify({ pages: "12", textLayer: "true", encrypted: "false" }), "PDF_A")).toEqual({ pages: 12, textLayer: true, encrypted: false, pdfA: true, fromServer: true });
+    expect(pdfFacts(null)).toEqual({ pages: null, textLayer: null, encrypted: null, pdfA: false, fromServer: false });
+    expect(pdfFacts("{quebrado").pages).toBeNull();
+    expect(pdfFacts(JSON.stringify({ pages: "-3" })).pages).toBeNull();
+    const c = previewCandidates([{ id: "9", fileName: "x.pdf", mimeType: "application/pdf", formatDetailsJson: "{\"pages\":\"2\"}", formatVariant: "PDF" }]);
+    expect(c[0]).toMatchObject({ kind: "PDF", formatDetailsJson: "{\"pages\":\"2\"}" });
   });
 });

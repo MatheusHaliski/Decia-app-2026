@@ -18,6 +18,8 @@ export { GLYPH_NAMES, GLYPHS, Glyph, MOJI_NAMES, MOJIS, Moji } from "./glyphs/Gl
 export type { GlyphName, GlyphProps, MojiName, MojiProps } from "./glyphs/Glyph";
 export { Link } from "./Link";
 export type { LinkProps } from "./Link";
+export { Notice } from "./Notice";
+export type { NoticeProps, NoticeTone } from "./Notice";
 export { PercentBar } from "./PercentBar";
 export type { PercentBarProps } from "./PercentBar";
 export { Popover, PopoverClose } from "./Popover";
