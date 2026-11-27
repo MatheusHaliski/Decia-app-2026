@@ -7,7 +7,7 @@
 | 1 | Auditoria + matriz bibliográfica + modelo funcional + specs de card/workspace + vetores | `claude/decia-fase1-auditoria` | este pacote |
 | 2 | Domínio da decisão (contexto 5b, V22, JPA) + regras puras Java + testes com vetores | `claude/decia-dominio-decisao` | em andamento |
 | 3–6 | Decision Cards (4 modos, flip), workspace (6 seções), evidências/alternativas/critérios, matriz + trade-offs + sensibilidade, snapshot (mock) | `claude/decia-cards-workspace` | em andamento |
-| 7 | Serviços de aplicação + API (após Blocos 4–5 de segurança: BOLA/BFLA), cliente TS gerado do OpenAPI | — | depende do Bloco 4/5 e da tarefa OpenAPI→TS |
+| 7 | Serviços de aplicação + API (após Blocos 4–5 de segurança: BOLA/BFLA), cliente TS gerado do OpenAPI | `claude/clever-hawking-ep507w` | **feito (27/11/2026)** para raiz, participantes, alternativas, critérios, notas, evidência, snapshots, resultado e trilha: `DecisionService`/`JpaDecisionAdapters`/`DecisionController` (`/api/decisions…`, 404 uniforme, 403 por papel DACI, 409 versão, 422 guarda) e `lib/decia/http.ts` (`source: "API"` com sessão; DEMO no laboratório). Pendente: premissas, riscos, cenários, previsões, recomendações, gatilhos, checkpoints, retrospectiva, vínculos, delegação do APROVADOR e convite de participantes — ver docs/diagramas/RF29/README.md |
 | 8 | Execução + checkpoints + notificações (outbox `domain_events`) | — | após 7 |
 | 9 | Resultado + retrospectiva + memória (RF33) | — | após 7 |
 | 10 | IA: desafio, recomendação com 4 porquês, proveniência (`ai_inference_log`), modos ECONOMIA/AVANCADO | — | após cliente de IA (RF43) |
@@ -25,7 +25,7 @@
 | P1 | core workflow | Decision Card 4 modos + flip acessível (fase 3) |
 | P1 | core workflow | Workspace 6 seções + trilha de estágios (fase 3) |
 | P1 | core workflow | Guarda pré-decisão proporcional (fases 2–3) |
-| P1 | core workflow | Serviços + API de decisão com BOLA/BFLA (fase 7) |
+| P1 | core workflow | Serviços + API de decisão com BOLA/BFLA (fase 7) — feito 27/11/2026 (fatia: estrutura, notas, evidência, ciclo, snapshot) |
 | P1 | foundation | Tornar `decisions` a fonte canônica; nó de rastro e ATA como projeções (fase 7) |
 | P2 | core workflow | Matriz, trade-offs, dominância, sensibilidade (fase 3) |
 | P2 | collaboration | Rodada independente + painel de divergência (fase 3 mock; fase 7 real) |
