@@ -1,10 +1,10 @@
 /**
  * Memória Institucional — repositório DEMO (mesmo padrão de `lib/decia/repository.ts`). A API `/api/memory/*` (MemoryService,
  * índice OpenSearch `ws-memory`) ainda não existe e não é presumida: `MemoryRepository` é o contrato que o cliente HTTP real
- * implementará. Aqui o acervo = corpus de exemplo + decisões ENCERRADAS do repositório DEMO do DECIA (somente leitura, relidas a
- * cada mudança) + documentos ingeridos nesta aba. O índice é reconstruído só quando o acervo muda. Tudo vive na memória da aba.
+ * implementará. Aqui o acervo = corpus de exemplo + decisões ENCERRADAS da fonte única do DECIA (`activeDecisionSource`: API com
+ * sessão, DEMO no laboratório; somente leitura, relidas a cada mudança) + documentos ingeridos nesta aba. O índice é reconstruído só quando o acervo muda. Tudo vive na memória da aba.
  */
-import { demoRepository } from "@/lib/decia/repository";
+import { activeDecisionSource } from "@/lib/decia/useDecisionRepository";
 import type { DecisionAggregate } from "@/lib/decia/types";
 import { closedDecisionDocs } from "./adapters";
 import { DEMO_MEMORY_DOCS } from "./corpus";
@@ -103,9 +103,9 @@ export function createMemoryRepository(opts: { base: readonly MemoryDocument[]; 
 }
 
 let demo: MemoryRepository | null = null;
-/** Repositório DEMO da aba: corpus de exemplo + decisões encerradas do DECIA DEMO + ingestões desta aba. */
+/** Repositório DEMO da aba: corpus de exemplo + decisões encerradas da fonte ativa do DECIA + ingestões desta aba. */
 export function demoMemoryRepository(): MemoryRepository {
-  demo ??= createMemoryRepository({ base: DEMO_MEMORY_DOCS, decisions: demoRepository() });
+  demo ??= createMemoryRepository({ base: DEMO_MEMORY_DOCS, decisions: activeDecisionSource });
   return demo;
 }
 /** Só para testes: troca o repositório usado pelas telas e pela busca registrada. */

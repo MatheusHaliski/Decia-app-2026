@@ -3,7 +3,7 @@
  * navegador poderia resolver para outra origem: `//evil`, `/\evil`, `https://…`, `javascript:`, barra invertida, caractere de
  * controle e as mesmas formas codificadas (`%2F%2F`, `%5C`, dupla codificação). Sem open redirect (OWASP A01).
  */
-export const DEFAULT_AFTER_LOGIN = "/mural";
+export const DEFAULT_AFTER_LOGIN = "/today";
 const MAX_NEXT = 2048;
 /** Rotas de entrada não são destino (evita laço login → login). */
 const AUTH_ROUTES = /^\/(login|register|password-reset|verify-email)(\/|\?|#|$)/;

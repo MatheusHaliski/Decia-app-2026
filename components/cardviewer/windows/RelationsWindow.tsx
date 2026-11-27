@@ -8,7 +8,8 @@ import { Button, Link, Tag } from "@/components/ui";
 import { isHttpsUrl } from "@/lib/cardviewer/files";
 import { originGroup } from "@/lib/cardviewer/subject";
 import type { ViewerKind } from "@/lib/cardviewer/url";
-import { demoRepository } from "@/lib/decia/repository";
+import { linkedDecisions, useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { taskById } from "@/lib/social/rules";
 import { useViewerData } from "../context";
@@ -33,9 +34,13 @@ function OpenCard({ kind, id, label }: { kind: ViewerKind; id: string; label: st
   );
 }
 
-function Decisions({ ids }: { ids: readonly string[] }) {
+/** Decisões da fonte única (API com sessão, DEMO no laboratório): a de origem do card e as que têm vínculo de trabalho com ele. */
+function Decisions({ ids: origin, linkedTo }: { ids: readonly string[]; linkedTo?: { type: "TAREFA" | "PROJETO"; id: string } }) {
   const { t } = useI18n();
-  const repo = demoRepository();
+  const { repo } = useDecisionSource();
+  const list = useDecisions(repo);
+  const linked = linkedTo ? linkedDecisions(list, linkedTo.type, linkedTo.id).map((a) => a.decision.id) : [];
+  const ids = [...new Set([...origin, ...linked])];
   return (
     <Group title={t("cardviewer.rel.decisions")} empty={!ids.length}>
       {ids.map((id) => {

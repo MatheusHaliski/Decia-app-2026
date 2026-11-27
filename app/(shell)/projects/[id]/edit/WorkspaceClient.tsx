@@ -8,11 +8,12 @@ import { PageHeader } from "@/components/shell/PageHeader";
 import { ViewerProfileSelect } from "@/components/shell/UserPanel";
 import { Button, EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui";
 import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
-import { demoRepository, useDecisions } from "@/lib/decia/repository";
+import { useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 import type { ProjectCommand } from "@/lib/projects/commands";
-import { openChangeDecision, openGateDecision, openSelectionDecision, syncFromDecia } from "@/lib/projects/decia";
+import { openChangeDecision, openGateDecision, openSelectionDecision, settleDecision, syncFromDecia, type OpenedDecision } from "@/lib/projects/decia";
 import { DEMO_PROJECT_ID } from "@/lib/projects/fixtures";
 import type { WorkspaceTab } from "@/lib/projects/metrics";
 import { demoProjectRepository, useProject } from "@/lib/projects/repository";
@@ -30,7 +31,8 @@ function Inner({ projectId }: { projectId: string }) {
   const mounted = useMounted();
   const repo = demoProjectRepository();
   const model = useProject(projectId, repo);
-  const deciaRepo = demoRepository();
+  // mesma fonte da página da decisão (API com sessão, DEMO no laboratório): a decisão aberta aqui existe lá
+  const { repo: deciaRepo, currentUserId: deciaActorId } = useDecisionSource();
   const decisions = useDecisions(deciaRepo);
   const access = PAGE.access[profile];
   const actorId = DEMO_CURRENT_USER_ID;
@@ -40,27 +42,32 @@ function Inner({ projectId }: { projectId: string }) {
   // decisões tomadas no DECIA (portões, mudanças) voltam para a Mesa
   useEffect(() => {
     if (!model) return;
-    for (const cmd of syncFromDecia(model, decisions)) dispatch(cmd);
-  }, [model, decisions, dispatch]);
+    for (const cmd of syncFromDecia(model, decisions, (id) => deciaRepo.get(id))) dispatch(cmd);
+  }, [model, decisions, dispatch, deciaRepo]);
 
   const decia = useMemo<DeciaActions | undefined>(() => {
     if (!model) return undefined;
-    const open = (r: { decisionId: string; commands: ProjectCommand[] }, title: string) => {
-      r.commands.forEach(dispatch);
-      toast({ title, description: t("pm.ws.openedInDecia"), tone: "sucesso" });
-      router.push(decisionHref(r.decisionId));
+    // na API o id definitivo chega depois da criação: a Mesa só grava o vínculo e navega com ele (nunca com o provisório)
+    const open = (opened: OpenedDecision, title: string) => {
+      void settleDecision(deciaRepo, opened).then((r) => {
+        r.commands.forEach(dispatch);
+        toast(r.labProject
+          ? { title, description: t("decia2.project.labLink"), tone: "aviso" }
+          : { title, description: t("pm.ws.openedInDecia"), tone: "sucesso" });
+        router.push(decisionHref(r.decisionId));
+      });
     };
     return {
-      openGate: (phase) => open(openGateDecision(deciaRepo, model, phase, t(`pm.phase.${phase}`), actorId), t("pm.ws.gateOpened", { phase: t(`pm.phase.${phase}`) })),
+      openGate: (phase) => open(openGateDecision(deciaRepo, model, phase, t(`pm.phase.${phase}`), deciaActorId), t("pm.ws.gateOpened", { phase: t(`pm.phase.${phase}`) })),
       openChange: (changeId) => {
         const change = model.changes.find((c) => c.id === changeId);
-        if (change) open(openChangeDecision(deciaRepo, model, change, actorId), t("pm.ws.changeOpened", { code: change.code }));
+        if (change) open(openChangeDecision(deciaRepo, model, change, deciaActorId), t("pm.ws.changeOpened", { code: change.code }));
       },
-      openSelection: () => open(openSelectionDecision(deciaRepo, model, actorId), t("pm.ws.selectionOpened")),
+      openSelection: () => open(openSelectionDecision(deciaRepo, model, deciaActorId), t("pm.ws.selectionOpened")),
       decisionHref,
       decisionStatus: (id) => decisions.find((d) => d.decision.id === id)?.decision.status,
     };
-  }, [model, decisions, deciaRepo, dispatch, router, toast, t, actorId]);
+  }, [model, decisions, deciaRepo, deciaActorId, dispatch, router, toast, t]);
 
   if (access === "O") {
     return (

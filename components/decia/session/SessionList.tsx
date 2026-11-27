@@ -9,7 +9,8 @@ import { useState } from "react";
 import { Badge, Button, Card, Checkbox, Dialog, EmptyState, Field, Input, Link, Select, Textarea } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
-import { demoRepository, useDecisions } from "@/lib/decia/repository";
+import { useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { effectivePolicy } from "@/lib/decia/session/policy";
 import { demoSessionRepository, useOrgPolicy, useSessions, type SessionRepository } from "@/lib/decia/session/repository";
 import type { DeciaSession, SessionStatus } from "@/lib/decia/session/types";
@@ -31,7 +32,7 @@ function NewSessionDialog({ open, onOpenChange, repo, me }: { open: boolean; onO
   const { t } = useI18n();
   const router = useRouter();
   const denial = useDenial();
-  const decisions = useDecisions(demoRepository());
+  const decisions = useDecisions(useDecisionSource().repo);
   const org = useOrgPolicy(repo);
   const [title, setTitle] = useState("");
   const [objective, setObjective] = useState("");
@@ -76,7 +77,7 @@ export function SessionList({ filter, repo = demoSessionRepository(), currentUse
   const { t } = useI18n();
   const sessions = useSessions(repo);
   const org = useOrgPolicy(repo);
-  const decisions = useDecisions(demoRepository());
+  const decisions = useDecisions(useDecisionSource().repo);
   const [creating, setCreating] = useState(false);
   const items = filterSessions(sessions, filter, currentUserId);
   return (

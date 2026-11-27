@@ -8,7 +8,8 @@ import { Button, Card, EmptyState, Field, Tag, Textarea, type Tone } from "@/com
 import { useI18n } from "@/lib/i18n/useI18n";
 import { DecisionCard } from "@/components/decia/DecisionCard";
 import { workspaceHref } from "@/components/decia/Views";
-import { demoRepository, useDecisions } from "@/lib/decia/repository";
+import { useDecisions } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { toDecisionCardViewModel } from "@/lib/decia/view-model";
 import { reasonRequired, SESSION_TRANSITIONS } from "@/lib/decia/session/machine";
 import { can } from "@/lib/decia/session/roles";
@@ -39,7 +40,7 @@ export function SessionStatusTag({ status }: { status: SessionStatus }) {
 function LinkedDecision() {
   const { t } = useI18n();
   const { session, people, now } = useSessionCtx();
-  const decisions = useDecisions(demoRepository());
+  const decisions = useDecisions(useDecisionSource().repo);
   const agg = session.decisionId ? decisions.find((d) => d.decision.id === session.decisionId) : undefined;
   if (!agg) return <EmptyState compact title={t("session.decision.none")} description={t("session.decision.noneHint")} />;
   return <DecisionCard vm={toDecisionCardViewModel(agg, now, { people })} mode="COMPACT" href={workspaceHref(agg.decision.id)} />;
