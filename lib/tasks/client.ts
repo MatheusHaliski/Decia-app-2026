@@ -72,6 +72,8 @@ export function requestFromView(v: TaskView, patch: Partial<TaskRequest> = {}): 
     title: v.title, descriptionMd: v.descriptionMd, type: v.type, category: v.category, priority: v.priority, dueAt: v.dueAt,
     responsibleId: v.responsibleId, accessClass: v.accessClass, visibility: v.visibility, objective: v.objective, area: v.area,
     deliverables: v.deliverables, acceptanceCriteria: v.acceptanceCriteria, references: v.references, extensions: v.extensions,
+    // o PUT grava o formato do corpo: sem repetir as colunas, editar outra coisa apagaria o formato salvo
+    formatFamily: v.formatFamily, formatVariant: v.formatVariant, formatDetailsJson: v.formatDetailsJson,
     version: v.version, ...patch,
   };
 }
