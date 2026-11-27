@@ -112,9 +112,9 @@ class TaskPersistenceIT {
         assertThat(reopened.task().formatVariant()).isEqualTo("PNG");
         assertThat(reopened.task().formatDetailsJson()).contains("minWidth");
         assertThatThrownBy(() -> jdbc.update("UPDATE tasks SET format_family = 'GIGANTE' WHERE id = ?", (Object) bytes(id)))
-                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+                .isInstanceOf(org.springframework.dao.DataAccessException.class).hasMessageContaining("ck_tasks_");
         assertThatThrownBy(() -> jdbc.update("UPDATE tasks SET format_details_json = '[1]' WHERE id = ?", (Object) bytes(id)))
-                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+                .isInstanceOf(org.springframework.dao.DataAccessException.class).hasMessageContaining("ck_tasks_");
 
         // só o briefing muda: a versão da tarefa sobe mesmo assim (PESSIMISTIC_FORCE_INCREMENT)
         StoredTask edited = tasks.update(reopened.task(), brief(id, "Novo objetivo"), reopened.version());

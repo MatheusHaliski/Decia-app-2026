@@ -111,8 +111,8 @@ class DecisionServiceTest {
         assertThat(v.decision().visibility()).isEqualTo(Visibility.PRIVADA);
         assertThat(v.decision().weightingEnabled()).isTrue();
         assertThat(v.participants()).singleElement().satisfies(p -> assertThat(p.role()).isEqualTo(DecisionRole.CONDUTOR));
-        assertThat(v.criteria()).extracting(DecisionView.Criterion::name).containsExactly("Custo", "Prazo");
-        assertThat(v.events()).extracting(DecisionView.Event::type)
+        assertThat(v.criteria()).extracting(DecisionView.DecisionCriterionView::name).containsExactly("Custo", "Prazo");
+        assertThat(v.events()).extracting(DecisionView.DecisionEventView::type)
                 .containsExactly(DecisionEventType.DECISAO_CRIADA, DecisionEventType.CRITERIO_ATUALIZADO);
         assertThat(v.permissions().editStructure()).isTrue();
         assertThat(v.permissions().decide()).isTrue();
@@ -182,7 +182,7 @@ class DecisionServiceTest {
                 DecisionCommand.addEvidence("Cotação oficial", EvidenceNature.FATO, "Portal de compras", RelevanceLevel.ALTA, "tmp-a",
                         EvidenceStance.SUSTENTA)), CTX);
         assertThat(after.decision().version()).isEqualTo(v.decision().version() + 1);
-        assertThat(after.alternatives()).extracting(DecisionView.Alternative::label).containsExactly("A", "B");
+        assertThat(after.alternatives()).extracting(DecisionView.DecisionAlternativeView::label).containsExactly("A", "B");
         assertThat(after.alternatives().get(1).doNothing()).isTrue();
         assertThat(after.assessments()).hasSize(2);
         assertThat(after.evidence()).singleElement().satisfies(e -> assertThat(e.sourceLabel()).isEqualTo("Portal de compras"));
@@ -202,7 +202,7 @@ class DecisionServiceTest {
         });
         assertThat(repo.snapshots.get(0).isIntact()).isTrue();
         // caminho explícito RASCUNHO → ENQUADRAMENTO → COMPARACAO → AGUARDANDO_DECISAO → DECIDIDA, tudo na trilha
-        List<DecisionEventType> tail = decided.events().stream().map(DecisionView.Event::type).toList();
+        List<DecisionEventType> tail = decided.events().stream().map(DecisionView.DecisionEventView::type).toList();
         assertThat(tail.subList(tail.size() - 5, tail.size())).containsExactly(DecisionEventType.ESTADO_ALTERADO, DecisionEventType.ESTADO_ALTERADO,
                 DecisionEventType.ESTADO_ALTERADO, DecisionEventType.DECISAO_FINALIZADA, DecisionEventType.ESTADO_ALTERADO);
         assertThat(decided.permissions().editStructure()).isFalse();
@@ -290,7 +290,7 @@ class DecisionServiceTest {
         assertThat(api(() -> service.apply(cu(contributor), id, dv, List.of(DecisionCommand.reopen("rever")), CTX)).status()).isEqualTo(403);
         DecisionView reopened = service.apply(cu(owner), id, dv, List.of(DecisionCommand.transition(DecisionLifecycle.REABERTA)), CTX);
         assertThat(reopened.decision().status()).isEqualTo(DecisionLifecycle.REABERTA);
-        assertThat(reopened.snapshots()).extracting(DecisionView.Snapshot::kind).containsExactly(SnapshotKind.DECISAO, SnapshotKind.REABERTURA);
+        assertThat(reopened.snapshots()).extracting(DecisionView.DecisionSnapshotView::kind).containsExactly(SnapshotKind.DECISAO, SnapshotKind.REABERTURA);
         assertThat(reopened.snapshots().get(1).versionNumber()).isEqualTo(2);
     }
 

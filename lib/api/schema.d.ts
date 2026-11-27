@@ -199,7 +199,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
-        get: operations["list_2"];
+        get: operations["list_3"];
         put?: never;
         post?: never;
         /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
@@ -457,7 +457,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF46.CA06 Minhas conversas por atividade, com última mensagem e não lidas (até 100) */
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         /** RF46.CA01 Iniciar conversa (201 nova; 200 = a 1:1 que já existia; 422 PARTICIPANTE_INDISPONIVEL uniforme) */
         post: operations["start"];
@@ -492,7 +492,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF46.CA01 Abrir conversa (não participa → 404 NAO_ENCONTRADO) */
-        get: operations["get_1"];
+        get: operations["get_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -582,6 +582,58 @@ export interface paths {
         put?: never;
         /** RF46.CA06 Marcar a conversa como lida (devolve os totais de não lidas) */
         post: operations["markRead_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF29.CA02 Decisões que a pessoa pode ver (responsável, participante DACI ou pela visibilidade), mais recentes primeiro */
+        get: operations["list"];
+        put?: never;
+        /** RF29.CA01 Criar decisão estruturada (responsável = quem cria, CONDUTOR; RASCUNHO; 422 VALIDACAO/DECISAO_SEM_EMPRESA) */
+        post: operations["create_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/decisions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF29.CA02 Abrir decisão (agregado com alternativas, critérios, notas, evidência, snapshots e trilha; 404 uniforme) */
+        get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/decisions/{id}/commands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF29.CA03 Aplicar comandos (estrutura, notas, evidência, transições, decidir com guarda e snapshot, reabrir, resultado); BFLA por papel DACI (403), 409 EDICAO_CONCORRENTE, 422 DECISAO_INCOMPLETA */
+        post: operations["commands"];
         delete?: never;
         options?: never;
         head?: never;
@@ -875,7 +927,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF27 Minhas notificações, mais recentes primeiro (até 50) */
-        get: operations["list_1"];
+        get: operations["list_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1275,12 +1327,53 @@ export interface components {
             total?: number;
             truncated?: boolean;
         };
+        Alternative: {
+            cons?: string[];
+            description?: string;
+            discardReason?: string;
+            doNothing?: boolean;
+            estimatedCost?: string;
+            /** Format: int32 */
+            estimatedDurationDays?: number;
+            /** Format: uuid */
+            id?: string;
+            label?: string;
+            /** @enum {string} */
+            origin?: "HUMANO" | "IA" | "IMPORTADA";
+            /** Format: int32 */
+            position?: number;
+            pros?: string[];
+            /** @enum {string} */
+            status?: "ATIVA" | "DESCARTADA";
+            title?: string;
+        };
+        Assessment: {
+            /** Format: uuid */
+            alternativeId?: string;
+            /** Format: uuid */
+            assessorUserId?: string;
+            /** Format: uuid */
+            criterionId?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            origin?: "HUMANO" | "IA" | "IMPORTADA";
+            rationale?: string;
+            /** Format: int32 */
+            score?: number;
+            /** Format: date-time */
+            submittedAt?: string;
+        };
         AttachmentView: {
             available?: boolean;
             /** Format: date-time */
             createdAt?: string;
             evidence?: components["schemas"]["EvidenceView"];
             fileName?: string;
+            formatDetailsJson?: string;
+            /** @enum {string} */
+            formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
+            formatVariant?: string;
             /** Format: uuid */
             id?: string;
             image?: boolean;
@@ -1307,6 +1400,11 @@ export interface components {
         };
         CodeBody: {
             code: string;
+        };
+        CommandsRequest: {
+            commands: components["schemas"]["DecisionCommand"][];
+            /** Format: int64 */
+            version: number;
         };
         CompanyPageView: {
             about?: string;
@@ -1402,9 +1500,67 @@ export interface components {
             /** Format: int64 */
             unread?: number;
         };
+        CreateRequest: {
+            /** @enum {string} */
+            complexity: "RAPIDA" | "PADRAO" | "PROFUNDA";
+            criteria?: string[];
+            /** @enum {string} */
+            impact: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            kind?: "ESTRATEGICA" | "TATICA" | "OPERACIONAL" | "TECNICA" | "FINANCEIRA" | "PRODUTO" | "PESSOAS" | "CONTRATACAO" | "RISCO";
+            question: string;
+            templateKey?: string;
+            /** @enum {string} */
+            urgency?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+        };
         Criterion: {
             done?: boolean;
             text?: string;
+        };
+        DecisionCommand: {
+            alternativeId?: string;
+            /** Format: int32 */
+            confidencePct?: number;
+            criterionId?: string;
+            doNothing?: boolean;
+            name?: string;
+            /** @enum {string} */
+            nature?: "FATO" | "EVIDENCIA" | "OPINIAO";
+            rationale?: string;
+            ref?: string;
+            /** @enum {string} */
+            reliability?: "BAIXA" | "MEDIA" | "ALTA";
+            /** @enum {string} */
+            result?: "SUCESSO" | "PARCIAL" | "FALHOU" | "CANCELADA" | "SUBSTITUIDA";
+            /** Format: int32 */
+            score?: number;
+            sourceLabel?: string;
+            /** @enum {string} */
+            stance?: "SUSTENTA" | "CONTRADIZ" | "CONTEXTO";
+            summary?: string;
+            title?: string;
+            /** @enum {string} */
+            to?: "RASCUNHO" | "ENQUADRAMENTO" | "PESQUISA" | "COMPARACAO" | "AGUARDANDO_DECISAO" | "DECIDIDA" | "EM_EXECUCAO" | "RESOLVIDA" | "REVISADA" | "REABERTA" | "ARQUIVADA";
+            /** @enum {string} */
+            type?: "TRANSITION" | "REOPEN" | "ADD_ALTERNATIVE" | "ADD_CRITERION" | "SET_WEIGHT" | "SET_SCORE" | "ADD_EVIDENCE" | "DECIDE" | "RECORD_OUTCOME";
+            warningsConfirmed?: boolean;
+            /** Format: double */
+            weightPct?: number;
+        };
+        DecisionView: {
+            alternatives?: components["schemas"]["Alternative"][];
+            assessments?: components["schemas"]["Assessment"][];
+            criteria?: components["schemas"]["Criterion"][];
+            decision?: components["schemas"]["Root"];
+            events?: components["schemas"]["Event"][];
+            evidence?: components["schemas"]["Evidence"][];
+            evidenceLinks?: components["schemas"]["EvidenceLinkView"][];
+            outcome?: components["schemas"]["Outcome"];
+            participants?: components["schemas"]["Participant"][];
+            permissions?: components["schemas"]["Permissions"];
+            snapshots?: components["schemas"]["Snapshot"][];
         };
         DeletionBody: {
             currentPassword: string;
@@ -1454,6 +1610,64 @@ export interface components {
         EmailRequest: {
             email: string;
         };
+        Event: {
+            /** Format: uuid */
+            actorUserId?: string;
+            /** Format: date-time */
+            at?: string;
+            correlationId?: string;
+            /** Format: uuid */
+            id?: string;
+            payload?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            type?: "DECISAO_CRIADA" | "PROBLEMA_ENQUADRADO" | "ESTADO_ALTERADO" | "EVIDENCIA_ADICIONADA" | "EVIDENCIA_SUBSTITUIDA" | "ALTERNATIVA_CRIADA" | "ALTERNATIVA_DESCARTADA" | "CRITERIO_ATUALIZADO" | "AVALIACAO_REGISTRADA" | "PREMISSA_ATUALIZADA" | "RISCO_ALTERADO" | "RECOMENDACAO_GERADA" | "SUGESTAO_IA_ACEITA" | "SUGESTAO_IA_DESCARTADA" | "DECISAO_DESAFIADA" | "DECISAO_FINALIZADA" | "DECISAO_REABERTA" | "TRABALHO_VINCULADO" | "CHECKPOINT_VENCENDO" | "CHECKPOINT_CONCLUIDO" | "GATILHO_DISPARADO" | "RESULTADO_REGISTRADO" | "REVISAO_CONCLUIDA" | "DECISAO_ARQUIVADA";
+        };
+        Evidence: {
+            /** Format: date-time */
+            addedAt?: string;
+            /** Format: uuid */
+            addedByUserId?: string;
+            authorLabel?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "DOCUMENTO" | "METRICA" | "CONJUNTO_DADOS" | "PESQUISA" | "FEEDBACK_USUARIO" | "BENCHMARK" | "TESTE_TECNICO" | "OPINIAO_ESPECIALISTA" | "FONTE_EXTERNA" | "NORMA";
+            /** @enum {string} */
+            nature?: "FATO" | "EVIDENCIA" | "OPINIAO";
+            /** Format: date-time */
+            observedAt?: string;
+            /** @enum {string} */
+            origin?: "HUMANO" | "IA" | "IMPORTADA";
+            /** @enum {string} */
+            relevance?: "BAIXA" | "MEDIA" | "ALTA";
+            /** @enum {string} */
+            reliability?: "BAIXA" | "MEDIA" | "ALTA";
+            /** Format: date-time */
+            retrievedAt?: string;
+            sourceLabel?: string;
+            /** @enum {string} */
+            sourceQuality?: "PRIMARIA" | "SECUNDARIA" | "INTERNA" | "ESPECIALISTA" | "NAO_VERIFICADA";
+            sourceUrl?: string;
+            summary?: string;
+            /** Format: date-time */
+            supersededAt?: string;
+            title?: string;
+        };
+        EvidenceLinkView: {
+            /** Format: uuid */
+            evidenceId?: string;
+            /** Format: uuid */
+            id?: string;
+            note?: string;
+            /** @enum {string} */
+            stance?: "SUSTENTA" | "CONTRADIZ" | "CONTEXTO";
+            /** Format: uuid */
+            targetId?: string;
+            /** @enum {string} */
+            targetType?: "ALTERNATIVA" | "CRITERIO" | "PREMISSA" | "RISCO" | "AVALIACAO";
+        };
         EvidenceRequest: {
             caption?: string;
             /**
@@ -1478,6 +1692,10 @@ export interface components {
             caption?: string;
             /** Format: date-time */
             createdAt?: string;
+            formatDetailsJson?: string;
+            /** @enum {string} */
+            formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
+            formatVariant?: string;
             hasLocation?: boolean;
             /** Format: uuid */
             id?: string;
@@ -1646,6 +1864,27 @@ export interface components {
             idToken: string;
             nonce: string;
         };
+        Outcome: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            observedAt?: string;
+            /** Format: uuid */
+            recordedByUserId?: string;
+            /** @enum {string} */
+            result?: "SUCESSO" | "PARCIAL" | "FALHOU" | "CANCELADA" | "SUBSTITUIDA";
+            summary?: string;
+        };
+        Participant: {
+            /** Format: date-time */
+            assessmentsSubmittedAt?: string;
+            /** Format: date-time */
+            joinedAt?: string;
+            /** @enum {string} */
+            role?: "CONDUTOR" | "APROVADOR" | "CONTRIBUIDOR" | "INFORMADO";
+            /** Format: uuid */
+            userId?: string;
+        };
         ParticipantView: {
             active?: boolean;
             avatarUrl?: string;
@@ -1661,6 +1900,13 @@ export interface components {
         };
         PasswordBody: {
             currentPassword: string;
+        };
+        Permissions: {
+            assess?: boolean;
+            decide?: boolean;
+            edit?: boolean;
+            editStructure?: boolean;
+            reopen?: boolean;
         };
         PersonCard: {
             avatarUrl?: string;
@@ -1765,6 +2011,63 @@ export interface components {
         RequestBodyDto: {
             email: string;
         };
+        Root: {
+            /** @enum {string} */
+            accessClass?: "PUBLICO" | "INTERNO" | "RESTRITO" | "SIGILOSO";
+            /** Format: uuid */
+            companyId?: string;
+            /** @enum {string} */
+            complexity?: "RAPIDA" | "PADRAO" | "PROFUNDA";
+            constraintsMd?: string;
+            contextMd?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: uuid */
+            createdByUserId?: string;
+            /** Format: date-time */
+            decidedAt?: string;
+            /** Format: int32 */
+            decisionConfidencePct?: number;
+            /** Format: uuid */
+            departmentId?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            impact?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            independentScoring?: boolean;
+            /** @enum {string} */
+            kind?: "ESTRATEGICA" | "TATICA" | "OPERACIONAL" | "TECNICA" | "FINANCEIRA" | "PRODUTO" | "PESSOAS" | "CONTRATACAO" | "RISCO";
+            objective?: string;
+            /** Format: uuid */
+            ownerUserId?: string;
+            /** Format: uuid */
+            projectId?: string;
+            question?: string;
+            rationale?: string;
+            /** Format: int32 */
+            reviewEveryDays?: number;
+            scope?: string;
+            /** Format: uuid */
+            selectedAlternativeId?: string;
+            /** Format: uuid */
+            sessionId?: string;
+            stakeholders?: string[];
+            /** @enum {string} */
+            status?: "RASCUNHO" | "ENQUADRAMENTO" | "PESQUISA" | "COMPARACAO" | "AGUARDANDO_DECISAO" | "DECIDIDA" | "EM_EXECUCAO" | "RESOLVIDA" | "REVISADA" | "REABERTA" | "ARQUIVADA";
+            /** Format: date */
+            targetDate?: string;
+            templateKey?: string;
+            title?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** @enum {string} */
+            urgency?: "BAIXO" | "MEDIO" | "ALTO" | "CRITICO";
+            /** Format: int64 */
+            version?: number;
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+            weightingEnabled?: boolean;
+        };
         SensitiveRequest: {
             currentPassword: string;
             email?: string;
@@ -1804,6 +2107,25 @@ export interface components {
             periodSeconds?: number;
             secret?: string;
         };
+        Snapshot: {
+            /** Format: int32 */
+            confidencePct?: number;
+            contentJson?: string;
+            contentSha256?: string;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "DECISAO" | "REABERTURA" | "CHECKPOINT";
+            modelVersion?: string;
+            rationale?: string;
+            selectedAlternativeLabel?: string;
+            /** Format: date-time */
+            takenAt?: string;
+            /** Format: uuid */
+            takenByUserId?: string;
+            /** Format: int32 */
+            versionNumber?: number;
+        };
         StartRequest: {
             participantIds?: string[];
             title?: string;
@@ -1832,6 +2154,10 @@ export interface components {
             extensions?: {
                 [key: string]: string;
             };
+            formatDetailsJson?: string;
+            /** @enum {string} */
+            formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
+            formatVariant?: string;
             objective?: string;
             /** @enum {string} */
             priority?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
@@ -1871,6 +2197,10 @@ export interface components {
             extensions?: {
                 [key: string]: string;
             };
+            formatDetailsJson?: string;
+            /** @enum {string} */
+            formatFamily?: "PLANILHA" | "DOCUMENTO" | "APRESENTACAO" | "IMAGEM" | "DESENHO_TECNICO" | "DADOS" | "AUDIO_VIDEO" | "PACOTE" | "LINK" | "OUTRO";
+            formatVariant?: string;
             /** Format: uuid */
             id?: string;
             /** Format: date */
@@ -2242,7 +2572,7 @@ export interface operations {
             };
         };
     };
-    list_2: {
+    list_3: {
         parameters: {
             query?: never;
             header?: never;
@@ -2646,7 +2976,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2712,7 +3042,7 @@ export interface operations {
             };
         };
     };
-    get_1: {
+    get_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2897,6 +3227,100 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UnreadSummary"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DecisionView"][];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DecisionView"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DecisionView"];
+                };
+            };
+        };
+    };
+    commands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommandsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DecisionView"];
                 };
             };
         };
@@ -3424,7 +3848,7 @@ export interface operations {
             };
         };
     };
-    list_1: {
+    list_2: {
         parameters: {
             query?: {
                 limit?: number;
