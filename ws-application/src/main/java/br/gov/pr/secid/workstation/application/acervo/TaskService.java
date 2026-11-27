@@ -13,6 +13,7 @@ import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
+import br.gov.pr.secid.workstation.domain.acervo.FormatFamily;
 import br.gov.pr.secid.workstation.domain.acervo.LinkMode;
 import br.gov.pr.secid.workstation.domain.acervo.SourceKind;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
@@ -81,7 +82,8 @@ public class TaskService {
     public record TaskInput(String title, String descriptionMd, TaskType type, TaskCategory category, Priority priority, LocalDate dueAt,
                             UUID responsibleId, AccessClassification accessClass, Visibility visibility, String objective, WorkArea area,
                             List<Deliverable> deliverables, List<Criterion> acceptanceCriteria, List<Reference> references,
-                            Map<String, String> extensions, Boolean draft) {
+                            Map<String, String> extensions, Boolean draft, FormatFamily formatFamily, String formatVariant,
+                            String formatDetailsJson) {
     }
 
     /** Mudança de estado; BLOQUEADA exige motivo e causa (tarefa ou pessoa). */
@@ -99,7 +101,8 @@ public class TaskService {
                            UUID blockedByTaskId, UUID blockedByUserId, String blockReason,
                            String objective, WorkArea area, List<Deliverable> deliverables, List<Criterion> acceptanceCriteria,
                            List<Reference> references, Map<String, String> extensions, boolean editable, Instant createdAt, Instant updatedAt,
-                           UUID legalDeadlineRuleId, LocalDate legalDeadlineBaseDate, LocalDate legalDueAt) {
+                           UUID legalDeadlineRuleId, LocalDate legalDeadlineBaseDate, LocalDate legalDueAt, FormatFamily formatFamily,
+                           String formatVariant, String formatDetailsJson) {
     }
 
     /**
@@ -116,7 +119,7 @@ public class TaskService {
         Viewer viewer = authorizer.viewer(actor);
         Validated v = validate(viewer, in);
         TaskItem draft = TaskItem.create(actor.id(), viewer.departmentId(), v.title, v.description, in.type(), in.category(), v.priority,
-                in.dueAt(), in.responsibleId(), v.accessClass, v.visibility);
+                in.dueAt(), in.responsibleId(), v.accessClass, v.visibility).withFormat(v.formatFamily, v.formatVariant, v.formatDetails);
         StoredTask stored = tasks.insert(draft, v.brief(null));
         UUID id = stored.task().id();
         Instant now = clock.instant();
@@ -208,7 +211,7 @@ public class TaskService {
             throw ApiException.conflict("OFERTA_ATIVA", "Modelo público ou oferecido: visibilidade e classificação ficam travadas.");
         }
         TaskItem changed = current.withDetails(v.title, v.description, in.type(), in.category(), v.priority, in.dueAt(), in.responsibleId(),
-                v.accessClass, v.visibility);
+                v.accessClass, v.visibility).withFormat(v.formatFamily, v.formatVariant, v.formatDetails);
         StoredTask saved = tasks.update(changed, v.brief(id), version);
         audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_UPDATED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("version", saved.version())));
@@ -320,12 +323,14 @@ public class TaskService {
                 t.blockedByTaskId(), t.blockedByUserId(), t.blockReason(),
                 b.objective(), b.area(), TaskBriefJson.readDeliverables(b.deliverablesJson()), TaskBriefJson.readCriteria(b.acceptanceCriteriaJson()),
                 TaskBriefJson.readReferences(b.referencesJson()), TaskBriefJson.readExtensions(b.extensionsJson()), canEdit, s.createdAt(),
-                s.updatedAt(), t.legalDeadlineRuleId(), t.legalDeadlineBaseDate(), t.legalDueAt());
+                s.updatedAt(), t.legalDeadlineRuleId(), t.legalDeadlineBaseDate(), t.legalDueAt(), t.formatFamily(), t.formatVariant(),
+                t.formatDetailsJson());
     }
 
     /** Valores normalizados e briefing serializado; erros de campo juntos num único 422 VALIDACAO. */
     private record Validated(String title, String description, Priority priority, AccessClassification accessClass, Visibility visibility,
-                             String objective, WorkArea area, String deliverables, String criteria, String references, String extensions) {
+                             String objective, WorkArea area, String deliverables, String criteria, String references, String extensions,
+                             FormatFamily formatFamily, String formatVariant, String formatDetails) {
         TaskBrief brief(UUID taskId) {
             return new TaskBrief(taskId, objective, area, deliverables, criteria, references, extensions);
         }
@@ -361,11 +366,13 @@ public class TaskService {
         String criteria = TaskBriefJson.criteria(in.acceptanceCriteria(), errors);
         String references = TaskBriefJson.references(in.references(), errors);
         String extensions = TaskBriefJson.extensions(in.extensions(), errors);
+        String variant = in.formatVariant() == null || in.formatVariant().isBlank() ? null : in.formatVariant().strip();
+        String formatDetails = TaskFormatJson.details(in.formatFamily(), variant, in.formatDetailsJson(), errors);
         if (!errors.isEmpty()) {
             throw TaskBriefJson.invalid(errors);
         }
         return new Validated(title, description, in.priority() == null ? Priority.MEDIA : in.priority(),
                 in.accessClass() == null ? AccessClassification.INTERNO : in.accessClass(), in.visibility() == null ? Visibility.PRIVADA : in.visibility(),
-                objective, in.area(), deliverables, criteria, references, extensions);
+                objective, in.area(), deliverables, criteria, references, extensions, in.formatFamily(), variant, formatDetails);
     }
 }

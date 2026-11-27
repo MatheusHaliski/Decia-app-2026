@@ -106,7 +106,7 @@ class ReviewFindingsPr22Test {
         return new TaskItem(UUID.randomUUID(), UUID.randomUUID(), null, "Ofício 12", null, null, TaskType.DOCUMENTO, null, null, null, null,
                 AccessClassification.INTERNO, "pdf", null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.ARQUIVO, null, null, null, null,
                 null, null, null, null, null, Priority.MEDIA, state, null, null, null, null, null, null, null, null, Visibility.PRIVADA, false,
-                false, false, null, null, null, null, CoverMode.AUTO, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
+                false, false, null, null, null, null, CoverMode.AUTO, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null, null);
     }
 
     @Test

@@ -23,5 +23,8 @@ public record Evidence(
         @Attr(value = "tarefa vinculada", opt = true, ref = "tasks", onDelete = OnDelete.SET_NULL) UUID linkedTaskId,
         @Attr(value = "projeto vinculado", opt = true, ref = "project_schemes", onDelete = OnDelete.SET_NULL) UUID linkedProjectId,
         @Attr(value = "tratamento no estúdio", def = "'ORIGINAL'") StudioStatus studioStatus,
-        @Attr(value = "tarefa derivada (OCR → documento)", opt = true, ref = "tasks", onDelete = OnDelete.SET_NULL) UUID derivedTaskId) {
+        @Attr(value = "tarefa derivada (OCR → documento)", opt = true, ref = "tasks", onDelete = OnDelete.SET_NULL) UUID derivedTaskId,
+        @Attr(value = "família do formato, pelo tipo REAL detectado (V71)", opt = true) FormatFamily formatFamily,
+        @Attr(value = "variante do formato, pelo tipo REAL detectado", opt = true, len = 10) String formatVariant,
+        @Attr(value = "detalhes extraídos pelo servidor (páginas, dimensões, abas…)", opt = true) String formatDetailsJson) {
 }

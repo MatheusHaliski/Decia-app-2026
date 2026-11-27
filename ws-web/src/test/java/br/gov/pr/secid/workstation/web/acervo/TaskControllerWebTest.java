@@ -101,7 +101,7 @@ class TaskControllerWebTest {
         return new TaskView(taskId, version, userId, null, "Relatório", null, TaskType.DOCUMENTO, null, Priority.MEDIA, TaskState.DISPONIVEL,
                 LocalDate.of(2026, 11, 1), null, AccessClassification.INTERNO, Visibility.PRIVADA, SourceKind.MANUAL, null, null, null, null, null,
                 "Objetivo", WorkArea.PESQUISA,
-                List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now(), null, null, null);
+                List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now(), null, null, null, null, null, null);
     }
 
     private List<MockHttpServletRequestBuilder> allEndpoints() {

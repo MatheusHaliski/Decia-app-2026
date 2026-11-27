@@ -200,6 +200,9 @@ public class JpaAcervoAdapters {
                 e.setOcrTextRef(a.ocrTextRef());
                 e.setIsPrimary(a.isPrimary());
                 e.setSortOrder(a.sortOrder());
+                e.setFormatFamily(a.formatFamily());
+                e.setFormatVariant(a.formatVariant());
+                e.setFormatDetailsJson(a.formatDetailsJson());
                 return toDomain(repo.saveAndFlush(e));
             }
 
@@ -260,6 +263,9 @@ public class JpaAcervoAdapters {
                 e.setLinkedProjectId(ev.linkedProjectId());
                 e.setStudioStatus(ev.studioStatus());
                 e.setDerivedTaskId(ev.derivedTaskId());
+                e.setFormatFamily(ev.formatFamily());
+                e.setFormatVariant(ev.formatVariant());
+                e.setFormatDetailsJson(ev.formatDetailsJson());
                 return stored(repo.saveAndFlush(e));
             }
 
@@ -325,7 +331,7 @@ public class JpaAcervoAdapters {
 
     static StoredEvidence stored(EvidenceEntity e) {
         return new StoredEvidence(new Evidence(e.getId(), e.getOwnerId(), e.getMediaObjectId(), e.getTakenAt(), e.getLatitudeEnc(),
-                e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId()),
+                e.getLongitudeEnc(), e.getCaption(), e.getLinkedTaskId(), e.getLinkedProjectId(), e.getStudioStatus(), e.getDerivedTaskId(), e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson()),
                 e.getCreatedAt());
     }
 
@@ -336,7 +342,7 @@ public class JpaAcervoAdapters {
 
     static TaskAttachment toDomain(TaskAttachmentEntity e) {
         return new TaskAttachment(e.getId(), e.getTaskId(), e.getMediaObjectId(), e.getFileName(), e.getMimeType(), e.getSizeBytes(), e.getSha256(),
-                e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder());
+                e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder(), e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson());
     }
 
     private static StoredTask stored(TaskItemEntity e, TaskBriefEntity b) {
@@ -419,6 +425,9 @@ public class JpaAcervoAdapters {
         e.setRemixesCount(t.remixesCount());
         e.setViewsCount(t.viewsCount());
         e.setSealIdsJson(t.sealIdsJson());
+        e.setFormatFamily(t.formatFamily());
+        e.setFormatVariant(t.formatVariant());
+        e.setFormatDetailsJson(t.formatDetailsJson());
     }
 
     static TaskItem toDomain(TaskItemEntity e) {
@@ -433,7 +442,7 @@ public class JpaAcervoAdapters {
                 e.getThumbnailUrl(), e.getCoverUrl(), e.getCoverMode(), e.getCardSkin(), readSet(e.getTagsJson(), new TypeReference<Set<String>>() { }),
                 e.getNotes(), e.getOriginalTaskId(), e.getSourceProjectId(), e.getChecklistItemId(), e.getReuseCount(), e.getProjectUsageCount(),
                 e.getLikesCount(), e.getCommentsCount(), e.getSavesCount(), e.getSharesCount(), e.getRemixesCount(), e.getViewsCount(),
-                e.getSealIdsJson());
+                e.getSealIdsJson(), e.getFormatFamily(), e.getFormatVariant(), e.getFormatDetailsJson());
     }
 
     private static String writeSet(Set<?> set) {

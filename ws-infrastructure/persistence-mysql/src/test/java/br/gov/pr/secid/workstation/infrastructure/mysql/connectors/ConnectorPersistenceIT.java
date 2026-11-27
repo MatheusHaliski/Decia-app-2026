@@ -233,7 +233,7 @@ class ConnectorPersistenceIT {
                 bin(media), bin(u.getId()), "ws-media", "private/" + u.getId() + "/ab/" + "a".repeat(64) + ".pdf", "application/pdf", 10,
                 "a".repeat(64), MediaAccessClass.PRIVATE.name());
         TaskAttachment saved = attachments.insert(new TaskAttachment(null, s.task().id(), media, "Relatório.pdf", "application/pdf", 10, "a".repeat(64),
-                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0));
+                AntivirusStatus.PENDENTE, OcrStatus.PENDENTE, null, true, 0, null, null, null));
         assertThat(saved.id()).isNotNull();
         assertThat(attachments.findByTask(s.task().id())).singleElement().satisfies(a -> {
             assertThat(a.mediaObjectId()).isEqualTo(media);

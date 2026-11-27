@@ -5,8 +5,10 @@ import { DecisionWorkspace, useMounted, useNow } from "@/components/decia";
 import { PageHeader } from "@/components/shell/PageHeader";
 import { ViewerProfileSelect } from "@/components/shell/UserPanel";
 import { Button, EmptyState, ErrorState, LoadingState } from "@/components/ui";
-import { DEMO_CURRENT_USER_ID, DEMO_PEOPLE } from "@/lib/decia/fixtures";
-import { demoRepository, useDecision } from "@/lib/decia/repository";
+import { describeError } from "@/lib/api/client";
+import type { HttpDecisionRepository } from "@/lib/decia/http";
+import { useDecision } from "@/lib/decia/repository";
+import { useDecisionSource } from "@/lib/decia/useDecisionRepository";
 import { isWorkspaceSection, type WorkspaceSection } from "@/lib/decia/stages";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
@@ -20,8 +22,10 @@ function Inner({ decisionId }: { decisionId: string }) {
   const search = useSearchParams();
   const mounted = useMounted();
   const now = useNow(5_000);
-  const repo = demoRepository();
+  const { repo, currentUserId, people } = useDecisionSource();
   const aggregate = useDecision(decisionId, repo);
+  const http = repo.source === "API" ? (repo as HttpDecisionRepository) : null;
+  const apiError = http?.lastError() ?? null;
   const fromUrl = search.get("secao");
   const initialSection: WorkspaceSection = isWorkspaceSection(fromUrl) ? fromUrl : "visao-geral";
 
@@ -39,6 +43,11 @@ function Inner({ decisionId }: { decisionId: string }) {
     );
   }
   if (!mounted) return <LoadingState />;
+  if (!aggregate && http && http.status() !== "ready" && http.status() !== "error") return <LoadingState />;
+  if (!aggregate && http) {
+    // na API, inexistente e sem acesso são o mesmo 404 (BOLA): a tela não distingue
+    return <EmptyState title={t("deciaapi.notFound")} description={apiError ? describeError(apiError) : t("deciaapi.notFoundDesc")} action={<Button variant="primary" href="/decia?tab=decisoes">{t("decia.ws.back")}</Button>} />;
+  }
   if (!aggregate) {
     return <EmptyState title={t("decia.ws.notInMemory")} description={t("decia.ws.notInMemoryDesc")} action={<Button variant="primary" href="/decia?tab=decisoes">{t("decia.ws.back")}</Button>} />;
   }
@@ -49,16 +58,19 @@ function Inner({ decisionId }: { decisionId: string }) {
     window.history.replaceState(window.history.state, "", q ? `${window.location.pathname}?${q}` : window.location.pathname);
   };
   return (
+    <>
+    {apiError ? <p role="alert" className="mb-3 rounded-[var(--ws-radius-md)] bg-ws-danger-soft p-3 text-[length:var(--ws-text-body-sm)] text-ws-danger-ink">{t("deciaapi.saveError")} {describeError(apiError)}</p> : null}
     <DecisionWorkspace
       aggregate={aggregate}
       now={now}
-      currentUserId={DEMO_CURRENT_USER_ID}
-      people={DEMO_PEOPLE}
+      currentUserId={currentUserId}
+      people={people}
       onSave={(next) => repo.save(next)}
       initialSection={initialSection}
       onSectionChange={onSectionChange}
       backHref="/decia?tab=decisoes"
     />
+    </>
   );
 }
 

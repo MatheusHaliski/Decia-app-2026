@@ -280,3 +280,80 @@ export function formatIconSource(f: { family: FormatFamilyId | ""; variant: stri
   if (f.family === "LINK") return { url: "https://" };
   return { extension: f.family ? first[f.family] : undefined };
 }
+
+// ---------- formato de anexos e evidências ----------
+
+/** Anexo/evidência como chega da API: os campos de formato do backend (quando houver) e, sempre, nome e MIME. */
+export interface AttachmentFormatInput {
+  fileName?: string | null;
+  mimeType?: string | null;
+  formatFamily?: string | null;
+  formatVariant?: string | null;
+  formatDetails?: Readonly<Record<string, string>> | null;
+}
+/** Formato do anexo; `estimated` = derivado no navegador pela extensão/MIME (o servidor ainda não mandou o tipo real). */
+export interface AttachmentFormat { format: FormatChoice; estimated: boolean }
+
+const extOf = (name: string | null | undefined) => {
+  const m = /\.([a-z0-9]{1,8})$/i.exec((name ?? "").trim());
+  return m ? m[1]!.toLowerCase() : "";
+};
+
+/**
+ * Formato de um anexo: o do servidor (`formatFamily`/`formatVariant`/`formatDetails`, calculado do tipo real) quando vier; senão, estimado
+ * pela extensão (primeira variante do catálogo que a aceita — PDF cai em Documento) e, sem extensão conhecida, pelo MIME. Desconhecido →
+ * `null` (nunca adivinhado).
+ */
+export function attachmentFormat(a: AttachmentFormatInput): AttachmentFormat | null {
+  if (a.formatFamily && isFormatFamily(a.formatFamily)) {
+    return { format: normalizeFormat({ family: a.formatFamily, variant: a.formatVariant ?? "", details: a.formatDetails ?? {} }), estimated: false };
+  }
+  const ext = extOf(a.fileName);
+  const mime = (a.mimeType ?? "").toLowerCase().split(";")[0]!.trim();
+  const hit = (ext ? FORMAT_VARIANTS.find((x) => x.extensions.includes(ext)) : undefined)
+    ?? (mime ? FORMAT_VARIANTS.find((x) => x.mime.includes(mime)) : undefined);
+  return hit ? { format: { family: hit.family, variant: hit.code, details: {} }, estimated: true } : null;
+}
+
+/**
+ * O anexo atende ao formato pedido? Pedido só de família: alguma variante da família aceita a extensão/MIME do arquivo (um .pdf atende a
+ * "Desenho técnico", que tem a prancha em PDF); com variante: a mesma variante — ou, se estimado, a extensão é da variante pedida (PDF/A
+ * não se distingue de PDF pela extensão: conta como atende, a conferência do PDF/A fica para o leitor). Sem formato pedido ou anexo de
+ * formato desconhecido: `null` (não se aplica).
+ */
+export function matchesFormat(asked: FormatChoice, a: AttachmentFormatInput): boolean | null {
+  if (!asked.family) return null;
+  const got = attachmentFormat(a);
+  if (!got) return null;
+  const ext = extOf(a.fileName);
+  const mime = (a.mimeType ?? "").toLowerCase().split(";")[0]!.trim();
+  const accepts = (v: FormatVariant) => (ext ? v.extensions.includes(ext) : !!mime && v.mime.includes(mime));
+  if (!asked.variant) {
+    return got.estimated ? variantsOf(asked.family).some(accepts) || got.format.family === asked.family : got.format.family === asked.family;
+  }
+  const want = variantOf(asked.family, asked.variant);
+  if (!got.estimated) return got.format.variant === asked.variant || (!!want && ["PDF", "PDF_A"].includes(asked.variant) && ["PDF", "PDF_A"].includes(got.format.variant));
+  return !!want && accepts(want);
+}
+
+export interface FormatMismatchItem { fileName: string; actual: FormatChoice; estimated: boolean }
+
+/**
+ * Anexos (não evidências) em formato diferente do pedido na tarefa — base do aviso na lista de anexos e da verificação "formato do anexo"
+ * da aba Melhorias ✦. Vazio quando não há formato pedido ou tudo confere.
+ */
+export function formatMismatch(
+  task: { extensions?: Readonly<Record<string, string>> } & FormatColumns,
+  attachments: readonly (AttachmentFormatInput & { evidence?: unknown })[],
+): FormatMismatchItem[] {
+  const asked = formatFromView(task);
+  if (!asked.family) return [];
+  const out: FormatMismatchItem[] = [];
+  for (const a of attachments) {
+    if (a.evidence) continue;
+    if (matchesFormat(asked, a) !== false) continue;
+    const got = attachmentFormat(a)!;
+    out.push({ fileName: a.fileName ?? "?", actual: got.format, estimated: got.estimated });
+  }
+  return out;
+}

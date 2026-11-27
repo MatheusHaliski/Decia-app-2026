@@ -274,7 +274,7 @@ final class ConnectorFakes {
         @Override
         public TaskAttachment insert(TaskAttachment a) {
             TaskAttachment saved = new TaskAttachment(UUID.randomUUID(), a.taskId(), a.mediaObjectId(), a.fileName(), a.mimeType(), a.sizeBytes(),
-                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder());
+                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(), a.formatVariant(), a.formatDetailsJson());
             rows.add(saved);
             return saved;
         }
@@ -375,7 +375,7 @@ final class ConnectorFakes {
                     t.retentionPolicyJson(), t.visibility(), t.favorite(), t.offeredInCounter(), t.aiGenerated(), t.aiInferenceId(),
                     t.aiConfidenceJson(), t.thumbnailUrl(), t.coverUrl(), t.coverMode(), t.cardSkin(), t.tags(), t.notes(), t.originalTaskId(),
                     t.sourceProjectId(), t.checklistItemId(), t.reuseCount(), t.projectUsageCount(), t.likesCount(), t.commentsCount(),
-                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson());
+                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(), t.formatDetailsJson());
         }
     }
 }

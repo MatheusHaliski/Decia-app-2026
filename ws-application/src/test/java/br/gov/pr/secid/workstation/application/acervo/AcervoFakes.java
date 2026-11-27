@@ -98,7 +98,7 @@ final class AcervoFakes {
         @Override
         public TaskAttachment insert(TaskAttachment a) {
             TaskAttachment saved = new TaskAttachment(UUID.randomUUID(), a.taskId(), a.mediaObjectId(), a.fileName(), a.mimeType(), a.sizeBytes(),
-                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder());
+                    a.sha256(), a.antivirusStatus(), a.ocrStatus(), a.ocrTextRef(), a.isPrimary(), a.sortOrder(), a.formatFamily(), a.formatVariant(), a.formatDetailsJson());
             rows.put(saved.id(), new StoredAttachment(saved, T0.plusSeconds(++tick)));
             return saved;
         }
@@ -144,7 +144,7 @@ final class AcervoFakes {
         @Override
         public StoredEvidence insert(Evidence e) {
             Evidence saved = new Evidence(UUID.randomUUID(), e.ownerId(), e.mediaObjectId(), e.takenAt(), e.latitude(), e.longitude(), e.caption(),
-                    e.linkedTaskId(), e.linkedProjectId(), e.studioStatus(), e.derivedTaskId());
+                    e.linkedTaskId(), e.linkedProjectId(), e.studioStatus(), e.derivedTaskId(), e.formatFamily(), e.formatVariant(), e.formatDetailsJson());
             StoredEvidence s = new StoredEvidence(saved, T0.plusSeconds(++tick));
             rows.put(saved.id(), s);
             return s;
@@ -212,7 +212,7 @@ final class AcervoFakes {
                 t.retentionPolicyJson(), t.visibility(), t.favorite(), t.offeredInCounter(), t.aiGenerated(), t.aiInferenceId(),
                 t.aiConfidenceJson(), t.thumbnailUrl(), t.coverUrl(), t.coverMode(), t.cardSkin(), t.tags(), t.notes(), t.originalTaskId(),
                 t.sourceProjectId(), t.checklistItemId(), t.reuseCount(), t.projectUsageCount(), t.likesCount(), t.commentsCount(),
-                t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson());
+                t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(), t.formatDetailsJson());
     }
 
     /** O record não expõe "withId": reconstrói pelos acessores, como o adaptador faz a partir da entidade. */
@@ -225,6 +225,6 @@ final class AcervoFakes {
                 t.retentionPolicyJson(), t.visibility(), t.favorite(), t.offeredInCounter(), t.aiGenerated(), t.aiInferenceId(),
                 t.aiConfidenceJson(), t.thumbnailUrl(), t.coverUrl(), t.coverMode(), t.cardSkin(), t.tags(), t.notes(), t.originalTaskId(),
                 t.sourceProjectId(), t.checklistItemId(), t.reuseCount(), t.projectUsageCount(), t.likesCount(), t.commentsCount(),
-                t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson());
+                t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(), t.formatDetailsJson());
     }
 }

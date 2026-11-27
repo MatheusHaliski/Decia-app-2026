@@ -102,7 +102,7 @@ class TaskServiceTest {
         return new TaskInput(title, "Contexto da tarefa.", TaskType.DOCUMENTO, null, Priority.ALTA, LocalDate.of(2026, 11, 1), null,
                 AccessClassification.INTERNO, Visibility.EMPRESA, "Entregar o resultado combinado", area,
                 List.of(new Deliverable("Documento final")), List.of(new Criterion("Revisado pela chefia", false)),
-                List.of(new Reference("Norma", "https://www.w3.org/TR/WCAG22/")), extensions, false);
+                List.of(new Reference("Norma", "https://www.w3.org/TR/WCAG22/")), extensions, false, null, null, null);
     }
 
     @Test
@@ -135,14 +135,14 @@ class TaskServiceTest {
     void rascunhoFicaEmRascunhoEValidacaoVoltaComTodosOsCampos() {
         User me = person(company, Role.USER);
         TaskInput draft = new TaskInput("Rascunho", null, TaskType.TEXTO_MANUAL, null, null, null, null, null, null, null, null, null, null,
-                null, null, true);
+                null, null, true, null, null, null);
         TaskView v = service.create(cu(me), draft, CTX);
         assertThat(v.state()).isEqualTo(TaskState.RASCUNHO);
         assertThat(v.visibility()).isEqualTo(Visibility.PRIVADA);
         assertThat(v.priority()).isEqualTo(Priority.MEDIA);
 
         TaskInput bad = new TaskInput(" ", null, null, null, null, null, null, null, null, null, null, null, null,
-                List.of(new Reference("x", "javascript:alert(1)")), Map.of("Bad Key", "v"), false);
+                List.of(new Reference("x", "javascript:alert(1)")), Map.of("Bad Key", "v"), false, null, null, null);
         assertThatThrownBy(() -> service.create(cu(me), bad, CTX)).isInstanceOfSatisfying(ApiException.class, e -> {
             assertThat(e.status()).isEqualTo(422);
             @SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ class TaskServiceTest {
         User me = person(company, Role.USER);
         User outsider = person(otherCompany, Role.USER);
         TaskInput in = new TaskInput("Com responsável", null, TaskType.DOCUMENTO, null, null, null, outsider.getId(), null, null, null, null,
-                null, null, null, null, false);
+                null, null, null, null, false, null, null, null);
         assertThatThrownBy(() -> service.create(cu(me), in, CTX)).isInstanceOfSatisfying(ApiException.class,
                 e -> assertThat(e.status()).isEqualTo(422));
     }
@@ -168,7 +168,7 @@ class TaskServiceTest {
         TaskInput changed = new TaskInput("Editada", "Nova descrição", TaskType.DOCUMENTO, null, Priority.BAIXA, null, null,
                 AccessClassification.INTERNO, Visibility.EMPRESA, "Novo objetivo", WorkArea.PESQUISA,
                 List.of(new Deliverable("Relatório"), new Deliverable("Planilha")), List.of(new Criterion("Revisado pela chefia", true)),
-                List.of(), Map.of("method", "Survey"), null);
+                List.of(), Map.of("method", "Survey"), null, null, null, null);
         TaskView edited = service.update(cu(me), created.id(), changed, created.version(), CTX);
         assertThat(edited.title()).isEqualTo("Editada");
         assertThat(edited.version()).isGreaterThan(created.version());
@@ -190,7 +190,7 @@ class TaskServiceTest {
         User colleague = person(company, Role.USER);
         User admin = person(company, Role.ADMIN);
         TaskInput sig = new TaskInput("Parecer sigiloso", null, TaskType.DOCUMENTO, null, null, null, null, AccessClassification.SIGILOSO,
-                Visibility.EMPRESA, null, null, null, null, null, null, false);
+                Visibility.EMPRESA, null, null, null, null, null, null, false, null, null, null);
         TaskView v = service.create(cu(owner), sig, CTX);
         assertThatThrownBy(() -> service.get(cu(colleague), v.id())).isInstanceOfSatisfying(ApiException.class,
                 e -> assertThat(e.status()).isEqualTo(404));
@@ -261,7 +261,7 @@ class TaskServiceTest {
         TaskInput base = input("Parecer sobre o contrato", WorkArea.JURIDICO, Map.of());
         TaskInput withResp = new TaskInput(base.title(), base.descriptionMd(), base.type(), base.category(), base.priority(), base.dueAt(),
                 colleague.getId(), base.accessClass(), Visibility.PRIVADA, base.objective(), base.area(), base.deliverables(),
-                base.acceptanceCriteria(), base.references(), base.extensions(), false);
+                base.acceptanceCriteria(), base.references(), base.extensions(), false, null, null, null);
         TaskView created = service.create(cu(me), withResp, CTX);
         assertThat(notes.of(colleague.getId())).singleElement().satisfies(n -> {
             assertThat(n.type()).isEqualTo(NotificationType.ATRIBUICAO_PROPOSTA);
@@ -308,7 +308,8 @@ class TaskServiceTest {
         public StoredTask insert(TaskItem task, TaskBrief brief) {
             UUID id = UUID.randomUUID();
             TaskItem withId = TaskItem.create(task.ownerId(), task.departmentId(), task.title(), task.descriptionMd(), task.type(), task.category(),
-                    task.priority(), task.dueAt(), task.responsibleId(), task.accessClass(), task.visibility());
+                    task.priority(), task.dueAt(), task.responsibleId(), task.accessClass(), task.visibility())
+                    .withFormat(task.formatFamily(), task.formatVariant(), task.formatDetailsJson());
             withId = new TaskItemIdSetter(withId).with(id);
             Instant at = NOW.plusSeconds(clock++);
             StoredTask s = new StoredTask(withId, brief == null ? TaskBrief.empty(id) : rebind(brief, id), 0, at, at);
@@ -350,7 +351,50 @@ class TaskServiceTest {
                     t.retentionPolicyJson(), t.visibility(), t.favorite(), t.offeredInCounter(), t.aiGenerated(), t.aiInferenceId(),
                     t.aiConfidenceJson(), t.thumbnailUrl(), t.coverUrl(), t.coverMode(), t.cardSkin(), t.tags(), t.notes(), t.originalTaskId(),
                     t.sourceProjectId(), t.checklistItemId(), t.reuseCount(), t.projectUsageCount(), t.likesCount(), t.commentsCount(),
-                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson());
+                    t.savesCount(), t.sharesCount(), t.remixesCount(), t.viewsCount(), t.sealIdsJson(), t.formatFamily(), t.formatVariant(), t.formatDetailsJson());
         }
+    }
+
+    static TaskInput withFormat(String title, br.gov.pr.secid.workstation.domain.acervo.FormatFamily family, String variant, String details) {
+        TaskInput b = input(title, WorkArea.ADMINISTRACAO, Map.of());
+        return new TaskInput(b.title(), b.descriptionMd(), b.type(), b.category(), b.priority(), b.dueAt(), b.responsibleId(), b.accessClass(),
+                b.visibility(), b.objective(), b.area(), b.deliverables(), b.acceptanceCriteria(), b.references(), b.extensions(), b.draft(), family,
+                variant, details);
+    }
+
+    @Test
+    void formatoDeEntregaFamiliaVarianteEDetalhesValidados() {
+        User me = person(company, Role.USER);
+        var planilha = br.gov.pr.secid.workstation.domain.acervo.FormatFamily.PLANILHA;
+        TaskView v = service.create(cu(me), withFormat("Planilha de custos", planilha, "CSV",
+                "{\"encoding\":\"UTF8\",\"delimiter\":\"SEMICOLON\",\"headerRow\":\"true\",\"decimal\":\"\"}"), CTX);
+        assertThat(v.formatFamily()).isEqualTo(planilha);
+        assertThat(v.formatVariant()).isEqualTo("CSV");
+        // canônico: chaves ordenadas e vazios descartados
+        assertThat(v.formatDetailsJson()).isEqualTo("{\"delimiter\":\"SEMICOLON\",\"encoding\":\"UTF8\",\"headerRow\":\"true\"}");
+
+        // variante de outra família, chave desconhecida e valor fora do campo → 422 com os campos
+        assertThatThrownBy(() -> service.create(cu(me), withFormat("X", planilha, "DOCX", null), CTX)).isInstanceOfSatisfying(ApiException.class,
+                e -> {
+                    assertThat(e.status()).isEqualTo(422);
+                    assertThat(e.details().get("fields")).asString().contains("formatVariant");
+                });
+        assertThatThrownBy(() -> service.create(cu(me), withFormat("X", planilha, "XLSX", "{\"cor\":\"azul\",\"formulas\":\"talvez\"}"), CTX))
+                .isInstanceOfSatisfying(ApiException.class, e -> assertThat(e.details().get("fields")).asString()
+                        .contains("formatDetails.cor").contains("formatDetails.formulas"));
+        assertThatThrownBy(() -> service.create(cu(me), withFormat("X", null, "CSV", null), CTX))
+                .isInstanceOfSatisfying(ApiException.class, e -> assertThat(e.status()).isEqualTo(422));
+        // não é objeto JSON de textos → 400
+        for (String bad : List.of("[1,2]", "{\"pages\": 3}", "nao-json")) {
+            assertThatThrownBy(() -> service.create(cu(me), withFormat("X", planilha, "XLSX", bad), CTX))
+                    .isInstanceOfSatisfying(ApiException.class, e -> {
+                        assertThat(e.status()).isEqualTo(400);
+                        assertThat(e.code()).isEqualTo("FORMATO_DETALHES_INVALIDO");
+                    });
+        }
+        // edição troca o formato; sem família limpa tudo
+        TaskView edited = service.update(cu(me), v.id(), withFormat("Planilha de custos", null, null, null), v.version(), CTX);
+        assertThat(edited.formatFamily()).isNull();
+        assertThat(edited.formatDetailsJson()).isNull();
     }
 }

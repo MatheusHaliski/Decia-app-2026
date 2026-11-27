@@ -38,6 +38,7 @@ import { formatIsoDate, legalDueDate, localTodayIso } from "@/lib/tasks/legalDea
 import { MAX_ATTACHMENT_BYTES } from "./Attachments";
 import { focusSection, sectionDomId, TaskFormNav } from "./TaskFormNav";
 import { FormatPicker } from "./FormatPicker";
+import { AttachmentFormat } from "./AttachmentFormat";
 import { AREA_TEMPLATES } from "@/lib/tasks/areaTemplates";
 import { AREA_DEFAULT_ACCESS, AREA_DEFAULT_TYPE, fieldByCode, GUIDED_TASK_KEY, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
 import { discardTaskDraft, loadTaskDraft, type TaskDraftHandoff } from "@/lib/tasks/drafts";
@@ -701,8 +702,10 @@ export function TaskForm({ mode, initial, onSaved, templateId, draftId: draftIdP
                 <ul className="grid gap-1">
                   {files.map((f, i) => (
                     <li key={`${f.name}-${i}`} className="flex items-center gap-2 text-[length:var(--ws-text-body-sm)]" data-file={f.name}>
-                      <FileTypeIcon name={f.name} mime={f.type} size={26} />
-                      <span className="min-w-0 flex-1 truncate">{f.name}</span>
+                      <span className="grid min-w-0 flex-1 gap-0.5">
+                        <span className="truncate">{f.name}</span>
+                        <AttachmentFormat a={{ fileName: f.name, mimeType: f.type }} asked={form.format} />
+                      </span>
                       <Button size="sm" variant="ghost" onClick={() => setFiles((cur) => cur.filter((_, j) => j !== i))} aria-label={t("tasks.form.remove", { item: f.name })}>×</Button>
                     </li>
                   ))}

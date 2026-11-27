@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.application.acervo.TaskService.SourcedTaskInp
 import br.gov.pr.secid.workstation.application.acervo.TaskService.TaskView;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
+import br.gov.pr.secid.workstation.application.media.DetectedFormat;
 import br.gov.pr.secid.workstation.application.media.MediaUploadService;
 import br.gov.pr.secid.workstation.domain.acervo.AntivirusStatus;
 import br.gov.pr.secid.workstation.domain.acervo.OcrStatus;
@@ -46,8 +47,10 @@ public class ConnectorImportWriter {
     public TaskView write(CurrentUser actor, SourcedTaskInput task, MediaUploadService.Stored copy, ExternalOrigin origin, RequestContext ctx) {
         TaskView view = tasks.createFromSource(actor, task, ctx);
         if (copy != null) {
+            DetectedFormat.Result format = DetectedFormat.ofStoredMime(copy.media().mimeType());
             attachments.insert(new TaskAttachment(null, view.id(), copy.media().id(), copy.safeName(), copy.media().mimeType(),
-                    copy.media().sizeBytes(), copy.media().sha256(), antivirus(copy.scanStatus()), OcrStatus.PENDENTE, null, true, 0));
+                    copy.media().sizeBytes(), copy.media().sha256(), antivirus(copy.scanStatus()), OcrStatus.PENDENTE, null, true, 0,
+                    format.family(), format.variant(), null));
         }
         if (origin != null) {
             links.insert(new TaskExternalLink(view.id(), origin.accountId(), origin.provider(), origin.externalId(), origin.mimeType(),
