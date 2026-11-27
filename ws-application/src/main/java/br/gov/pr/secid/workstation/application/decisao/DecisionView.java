@@ -29,7 +29,8 @@ import java.util.UUID;
 /**
  * Projeção do agregado da decisão para a API ({@code /api/decisions…}). Os registros internos levam o prefixo Decision para não colidir no
  * OpenAPI com schemas de mesmo nome (ex.: o Criterion do briefing da tarefa). Espelha o {@code DecisionAggregate} do front
- * (lib/decia/types.ts) para que o cliente HTTP (lib/decia/http.ts) só converta datas e nulos. Coleções que a API ainda não grava (premissas, riscos, cenários,
+ * (lib/decia/types.ts) para que o cliente HTTP (lib/decia/http.ts) só converta datas e nulos. Coleções que a API ainda não grava
+ * (premissas, riscos, cenários,
  * previsões, recomendações, gatilhos, checkpoints, retrospectiva e vínculos de trabalho) ficam fora desta fatia — o cliente preenche vazio.
  * Com avaliação independente (G5), as notas dos outros só aparecem para quem já enviou as próprias (§6.2).
  *
