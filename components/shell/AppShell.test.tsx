@@ -77,7 +77,8 @@ describe("RfPage (página-esqueleto)", () => {
     expect(await screen.findByRole("tablist")).toBeTruthy();
     expect(screen.getByRole("tab", { name: "Mural da empresa" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "O que esta aba vai fazer" })).toBeTruthy();
-    expect(screen.getAllByRole("list", { name: "Critérios de aceite" })[0]!.children.length).toBe(6);
+    // os CAs vêm do catálogo de RFs baixado sob demanda (lib/rf/load.ts, fora do bundle das rotas)
+    expect((await screen.findAllByRole("list", { name: "Critérios de aceite" }, { timeout: 5000 }))[0]!.children.length).toBe(6);
     expect(screen.getByText(/“Mural da empresa” ainda não tem conteúdo/)).toBeTruthy();
   });
 

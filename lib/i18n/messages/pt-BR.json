@@ -9852,5 +9852,11 @@
   "decia2.linked.dialogDesc": "O vínculo não copia dados: a decisão passa a mostrar esta tarefa no plano de execução.",
   "decia2.linked.choose": "Decisão",
   "decia2.linked.choosePlaceholder": "Escolha a decisão",
-  "decia2.linked.confirm": "Ligar"
+  "decia2.linked.confirm": "Ligar",
+  "boundary.title": "Não foi possível abrir esta tela",
+  "boundary.description": "Algo deu errado ao carregar o conteúdo. Seus dados não foram perdidos. Tente de novo; se o problema continuar, volte ao início.",
+  "boundary.home": "Voltar ao início",
+  "boundary.global.title": "O Work Station encontrou um problema",
+  "boundary.global.description": "A página não pôde ser exibida. Tente de novo; se continuar, recarregue a página no navegador.",
+  "boundary.support": "Se precisar de ajuda, informe ao suporte o código abaixo."
 }

@@ -5,7 +5,7 @@ import { Badge, Button, Card, Checkbox, ErrorState, Field, Input, Link, RadioCar
 import { ApiError, auth, describeError } from "@/lib/api/client";
 import { safeNext } from "@/lib/auth/next";
 import { useI18n } from "@/lib/i18n/useI18n";
-import { RfBlock, rfById } from "@/components/shell/RfPage";
+import { RfBlockById } from "@/components/shell/RfPage";
 import { OccupationCombobox } from "@/components/career/OccupationCombobox";
 import { useOptionalPreferences } from "@/lib/preferences/PreferencesProvider";
 
@@ -40,9 +40,9 @@ function Failure({ error, onRetry }: { error: unknown; onRetry: () => void }) {
   );
 }
 
+/** CAs do RF (só no laboratório; catálogo baixado sob demanda — lib/rf/load.ts). */
 function RfFooter({ id }: { id: string }) {
-  const rf = rfById(id);
-  return rf ? <RfBlock rf={rf} /> : null;
+  return <RfBlockById id={id} />;
 }
 
 /** Por que a pessoa caiu no login (Bloco 4): saiu em outra aba / sessão encerrada, ou o IdP institucional recusou. */

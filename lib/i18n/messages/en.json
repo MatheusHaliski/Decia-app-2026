@@ -9852,5 +9852,11 @@
   "decia2.linked.dialogDesc": "The link copies no data: the decision starts showing this task in its execution plan.",
   "decia2.linked.choose": "Decision",
   "decia2.linked.choosePlaceholder": "Choose the decision",
-  "decia2.linked.confirm": "Link"
+  "decia2.linked.confirm": "Link",
+  "boundary.title": "We couldn't open this screen",
+  "boundary.description": "Something went wrong while loading the content. Your data was not lost. Try again; if the problem continues, go back to the start.",
+  "boundary.home": "Back to start",
+  "boundary.global.title": "Work Station ran into a problem",
+  "boundary.global.description": "The page could not be displayed. Try again; if it continues, reload the page in your browser.",
+  "boundary.support": "If you need help, give support the code below."
 }
